@@ -9222,7 +9222,7 @@ extension StringsData {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A device answers at the new address {ip}, but it does not accept the saved credentials. Restore a backup or set up the air conditioner again."
+            "value" : "An air conditioner answers at the new address {ip}, but it does not accept the saved credentials. Restore a backup or set up the air conditioner again."
           }
         }
       }
@@ -12582,7 +12582,7 @@ extension StringsData {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No air conditioner set up yet. You can do that in the main window."
+            "value" : "No air conditioner set up yet. You can do this in the main window."
           }
         }
       }
@@ -20318,7 +20318,7 @@ public enum L {
             public static func moved(ip: String) -> String { Localizer.text("message.relocate.moved", ["ip": ip]) }
             /// The air conditioner was not found on Wi-Fi. Check that it has power and is connected to Wi-Fi. The …
             public static var notFound: String { Localizer.text("message.relocate.notFound") }
-            /// A device answers at the new address {ip}, but it does not accept the saved credentials. Restore a b…
+            /// An air conditioner answers at the new address {ip}, but it does not accept the saved credentials. R…
             public static func rejected(ip: String) -> String { Localizer.text("message.relocate.rejected", ["ip": ip]) }
             /// The air conditioner is still at {ip} but is not responding right now. Try again in a minute.
             public static func sameNoReply(ip: String) -> String { Localizer.text("message.relocate.sameNoReply", ["ip": ip]) }
@@ -20808,7 +20808,7 @@ public enum L {
             public static var emailPlaceholder: String { Localizer.text("settings.connection.emailPlaceholder") }
             /// Set up an air conditioner first; the Midea account needs the air conditioner ID.
             public static var needsDevice: String { Localizer.text("settings.connection.needsDevice") }
-            /// No air conditioner set up yet. You can do that in the main window.
+            /// No air conditioner set up yet. You can do this in the main window.
             public static var noDevice: String { Localizer.text("settings.connection.noDevice") }
             /// Password
             public static var passwordPlaceholder: String { Localizer.text("settings.connection.passwordPlaceholder") }

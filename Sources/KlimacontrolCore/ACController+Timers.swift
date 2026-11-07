@@ -51,6 +51,25 @@ public enum TimerOutcome: Equatable, Sendable {
     }
 }
 
+extension TimerOutcome {
+    /// Deutscher Text fürs Protokoll, unabhängig von der Oberflächensprache.
+    var logMessage: String {
+        let name = Localizer.text(powerOn ? "timer.nameOn" : "timer.nameOff", language: .de)
+        let time = Fmt.clock(due, profile: .germany)
+        switch self {
+        case let .executed(_, _, at):
+            return Localizer.text(powerOn ? "timer.executedOn" : "timer.executedOff", language: .de,
+                                  ["name": name, "time": Fmt.clock(at, profile: .germany)])
+        case .missed:
+            return Localizer.text("timer.missed", language: .de, ["name": name, "time": time])
+        case .failed(_, _, .noDevice):
+            return Localizer.text("timer.failedNoDevice", language: .de, ["name": name, "time": time])
+        case .failed(_, _, .unreachable):
+            return Localizer.text("timer.failedUnreachable", language: .de, ["name": name, "time": time])
+        }
+    }
+}
+
 public enum TimerFailure: Equatable, Sendable {
     case noDevice
     case unreachable
@@ -109,7 +128,7 @@ extension ACController {
         let now = now ?? self.now()
         cancelTimerFire()
         onAt = date.map { Self.nextOccurrence(of: $0, after: now) }
-        AppLog.write(onAt.map { "Timer: ein um \(Self.timerLabel($0, now: now))" } ?? "Timer „ein“ gelöscht")
+        AppLog.write(onAt.map { "Timer: ein um \(Self.logLabel($0, now: now))" } ?? "Timer „ein“ gelöscht")
         timerRuntime.tried.remove(true)
         persistTimers()
     }
@@ -148,6 +167,21 @@ extension ACController {
         return day + " " + clock(date)
     }
 
+    /// Wie `timerLabel`, aber deutsch und 24 Stunden: das Protokoll bleibt unabhängig von der Oberflächensprache.
+    static func logLabel(_ date: Date, now: Date) -> String {
+        let cal = Calendar.current
+        let day: String
+        if cal.isDate(date, inSameDayAs: now) {
+            day = Localizer.text("date.today", language: .de)
+        } else if let tomorrow = cal.date(byAdding: .day, value: 1, to: now), cal.isDate(date, inSameDayAs: tomorrow) {
+            day = Localizer.text("date.tomorrow", language: .de)
+        } else {
+            let names = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
+            day = Localizer.text("date.weekdayShort." + names[cal.component(.weekday, from: date) - 1], language: .de)
+        }
+        return day + " " + Fmt.clock(date, profile: .germany)
+    }
+
     /// Anzeigetexte der gesetzten Timer („heute 07:00“); nil = kein Timer.
     public var onTimerLabel: String? { onAt.map { Self.timerLabel($0, now: now()) } }
     public var offTimerLabel: String? { offAt.map { Self.timerLabel($0, now: now()) } }
@@ -167,7 +201,7 @@ extension ACController {
             guard let raw = settings.object(forKey: key) as? Double, raw.isFinite else { return nil }
             let t = Date(timeIntervalSince1970: raw)
             guard now.timeIntervalSince(t) <= Self.timerGrace else {
-                AppLog.write("App-Timer „\(powerOn ? "ein" : "aus")“ verpasst (fällig war \(Self.timerLabel(t, now: now)))")
+                AppLog.write("App-Timer „\(powerOn ? "ein" : "aus")“ verpasst (fällig war \(Self.logLabel(t, now: now)))")
                 settings.removeObject(forKey: key)
                 report(.missed(powerOn: powerOn, due: t))
                 return nil
@@ -313,7 +347,7 @@ extension ACController {
         if outcome.powerOn { onAt = nil } else { offAt = nil }
         timerRuntime.tried.remove(outcome.powerOn)
         persistTimers()
-        if outcome.succeeded { AppLog.write(outcome.message) } else { AppLog.error(outcome.message) }
+        if outcome.succeeded { AppLog.write(outcome.logMessage) } else { AppLog.error(outcome.logMessage) }
         report(outcome)
     }
 

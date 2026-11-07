@@ -251,7 +251,7 @@ private let dataCommands: [BridgeCommand] = [
                 return nil
             } catch {
                 let text = exportHistoryMessage(for: error)
-                AppLog.error(text)
+                AppLog.error("Verlauf exportieren gescheitert (\(bridgeIssue(for: error).code ?? "export-failed"))")
                 return text
             }
         }
