@@ -222,7 +222,7 @@ extension PathFailure {
         case .notInAccount: return L.Reason.Cloud.notInAccount
         case .badReply: return L.Reason.Cloud.badReply
         case .sessionExpired: return L.Reason.Cloud.session
-        case .keychainLocked: return L.Reason.Cloud.keychainLocked
+        case .keychainLocked: return keychainLockedText()
         default: return L.Reason.Cloud.error
         }
     }
@@ -237,10 +237,15 @@ extension MideaCloud.CloudError {
         case .tokenRejected: L.Reason.Cloud.tokenRejected
         case .notInAccount: L.Reason.Cloud.notInAccount
         case .paused(let until): L.Reason.Cloud.paused(time: Fmt.clock(until))
-        case .keychainLocked: L.Reason.Cloud.keychainLocked
+        case .keychainLocked: keychainLockedText()
         case .network(let msg): ReasonText.showsRawGerman ? msg : L.Reason.Cloud.unreachable
         case .badReply(let msg): ReasonText.showsRawGerman ? msg : L.Reason.Cloud.badReply
         case .sessionKeys(let msg), .incompleteLogin(let msg): ReasonText.showsRawGerman ? msg : L.Reason.Cloud.session
         }
     }
+}
+
+/// Wo die Cloud-Sitzung liegt, hängt vom Rechner ab: Schlüsselbund (Mac) bzw. Anmeldeinformationsverwaltung (Windows).
+func keychainLockedText(host: HostWords = .current) -> String {
+    host.isWindows ? L.Reason.Cloud.Windows.keychainLocked : L.Reason.Cloud.keychainLocked
 }

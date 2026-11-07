@@ -131,6 +131,114 @@ extension StringsData {
         }
       }
     },
+    "app.windows.miniName" : {
+      "comment" : "Windows: UIA-Name des Mini-Fensters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol Mini-Fenster"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol mini window"
+          }
+        }
+      }
+    },
+    "app.windows.miniTitle" : {
+      "comment" : "Windows: Fenstertitel des Mini-Fensters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol – Mini-Fenster"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol mini window"
+          }
+        }
+      }
+    },
+    "app.windows.quitting" : {
+      "comment" : "Windows: Rückgabe von Core.Send nach Stop()",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol wird gerade beendet. Der Befehl wurde nicht mehr ausgeführt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol is quitting. The command was not carried out."
+          }
+        }
+      }
+    },
+    "app.windows.restartFailed" : {
+      "comment" : "Windows: Hinweis, wenn der Neustart (Restart) scheitert",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol konnte sich nicht neu starten. Bitte von Hand starten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol could not restart itself. Please start it manually."
+          }
+        }
+      }
+    },
+    "app.windows.settingsTitle" : {
+      "comment" : "Windows: Fenstertitel der Einstellungen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol – Einstellungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol settings"
+          }
+        }
+      }
+    },
+    "app.windows.uiError" : {
+      "comment" : "Windows: Fehlerdialog im Betrieb (App.ReportError); danach \"\\n\\n(Typ: Meldung)\" im Code anhängen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In der Oberfläche ist etwas schiefgelaufen. Klimacontrol läuft weiter. Reagiert etwas nicht mehr, Klimacontrol über das Symbol im Infobereich beenden und neu starten. Weitere Fehler stehen nur in der Datei klimacontrol-ui.log im Temp-Ordner."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Something went wrong in the interface. Klimacontrol keeps running. If something stops responding, quit Klimacontrol from the icon in the notification area and start it again. Further errors are written only to the file klimacontrol-ui.log in the Temp folder."
+          }
+        }
+      }
+    },
     "appearance.accent.byMode" : {
       "comment" : "Darstellung: Name einer Auswahl",
       "extractionState" : "manual",
@@ -2453,6 +2561,42 @@ extension StringsData {
         }
       }
     },
+    "charts.windows.rangeName" : {
+      "comment" : "Windows: UIA-Name eines Zeitraum-Knopfs",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitraum {label}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Period {label}"
+          }
+        }
+      }
+    },
+    "charts.windows.tooFew" : {
+      "comment" : "Windows: Verlauf-Spalte, leerer Zustand",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch zu wenig Daten – der Verlauf füllt sich alle 10 Sekunden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not enough data yet. The history fills every 10 seconds."
+          }
+        }
+      }
+    },
     "commands.alwaysOnTop" : {
       "comment" : "Menü: Darstellung",
       "extractionState" : "manual",
@@ -2687,6 +2831,60 @@ extension StringsData {
         }
       }
     },
+    "common.ago.minutes" : {
+      "comment" : "Alter eines Werts in Minuten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "vor {minutes} min"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{minutes} min ago"
+          }
+        }
+      }
+    },
+    "common.ago.never" : {
+      "comment" : "Alter eines Werts, wenn nie gelesen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "noch nicht gelesen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "not read yet"
+          }
+        }
+      }
+    },
+    "common.ago.seconds" : {
+      "comment" : "Alter eines Werts in Sekunden",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "vor {seconds} s"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{seconds} s ago"
+          }
+        }
+      }
+    },
     "common.asOf" : {
       "comment" : "Zeitstempel eines nicht mehr aktuellen Werts, heute; time = Uhrzeit",
       "extractionState" : "manual",
@@ -2719,6 +2917,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "As of {date}, {time}"
+          }
+        }
+      }
+    },
+    "common.atTime" : {
+      "comment" : "Uhrzeit in Sätzen (Zeitangabe, Timer-Kurzinfo)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "um {time}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "at {time}"
           }
         }
       }
@@ -2779,6 +2995,24 @@ extension StringsData {
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "common.dismiss" : {
+      "comment" : "Kurzinfo am Schließen-Knopf einer Meldung (Windows)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausblenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dismiss"
           }
         }
       }
@@ -3013,6 +3247,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "unknown"
+          }
+        }
+      }
+    },
+    "common.windows.showInExplorer" : {
+      "comment" : "Windows: Knopf/Link (Einstellungen Verlauf, Diagnose-Spalte)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Explorer zeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show in File Explorer"
           }
         }
       }
@@ -4781,6 +5033,24 @@ extension StringsData {
         }
       }
     },
+    "diagnostics.panel.windows.showInExplorerHelp" : {
+      "comment" : "Windows: Diagnose-Spalte, Kurzinfo des Links",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ablageordner öffnen und verlauf.sqlite markieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the data folder and select verlauf.sqlite"
+          }
+        }
+      }
+    },
     "diagnostics.panel.withTarget" : {
       "comment" : "Diagnose: Wert mit Sollwert",
       "extractionState" : "manual",
@@ -6383,6 +6653,330 @@ extension StringsData {
         }
       }
     },
+    "keys.windows.alt" : {
+      "comment" : "Windows: Name der Alt-Taste in Tastenkürzeln",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alt"
+          }
+        }
+      }
+    },
+    "keys.windows.backspace" : {
+      "comment" : "Windows: Tastenname im Kürzel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rücktaste"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backspace"
+          }
+        }
+      }
+    },
+    "keys.windows.ctrl" : {
+      "comment" : "Windows: Name der Strg-Taste in Tastenkürzeln",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strg"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ctrl"
+          }
+        }
+      }
+    },
+    "keys.windows.custom" : {
+      "comment" : "Windows: Einstellungen → Allgemein, Kürzel-Auswahl, Eintrag für eigene Kombination",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigene Kombination …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom combination…"
+          }
+        }
+      }
+    },
+    "keys.windows.delete" : {
+      "comment" : "Windows: Tastenname im Kürzel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entf"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Del"
+          }
+        }
+      }
+    },
+    "keys.windows.end" : {
+      "comment" : "Windows: Tastenname im Kürzel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ende"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End"
+          }
+        }
+      }
+    },
+    "keys.windows.enter" : {
+      "comment" : "Windows: Tastenname im Kürzel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eingabe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter"
+          }
+        }
+      }
+    },
+    "keys.windows.home" : {
+      "comment" : "Windows: Tastenname im Kürzel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pos1"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home"
+          }
+        }
+      }
+    },
+    "keys.windows.insert" : {
+      "comment" : "Windows: Tastenname im Kürzel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einfg"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ins"
+          }
+        }
+      }
+    },
+    "keys.windows.none" : {
+      "comment" : "Windows: Einstellungen → Allgemein, Kürzel-Auswahl, Eintrag ohne Kürzel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        }
+      }
+    },
+    "keys.windows.numpad" : {
+      "comment" : "Windows: Taste auf dem Ziffernblock im Kürzel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ziffernblock {digit}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Numpad {digit}"
+          }
+        }
+      }
+    },
+    "keys.windows.pageDown" : {
+      "comment" : "Windows: Tastenname im Kürzel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bild↓"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PgDn"
+          }
+        }
+      }
+    },
+    "keys.windows.pageUp" : {
+      "comment" : "Windows: Tastenname im Kürzel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bild↑"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PgUp"
+          }
+        }
+      }
+    },
+    "keys.windows.shift" : {
+      "comment" : "Windows: Name der Umschalttaste in Tastenkürzeln",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Umschalt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shift"
+          }
+        }
+      }
+    },
+    "keys.windows.space" : {
+      "comment" : "Windows: Tastenname im Kürzel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leertaste"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Space"
+          }
+        }
+      }
+    },
+    "keys.windows.standardSuffix" : {
+      "comment" : "Windows: Einstellungen → Allgemein, Kürzel-Auswahl, voreingestelltes Kürzel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{shortcut} (Standard)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{shortcut} (default)"
+          }
+        }
+      }
+    },
+    "keys.windows.win" : {
+      "comment" : "Windows: Name der Windows-Taste in Tastenkürzeln",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Win"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Win"
+          }
+        }
+      }
+    },
+    "keys.windows.withShortcut" : {
+      "comment" : "Windows: Kurzinfo mit Tastenkürzel, z. B. Einschalten (Strg+P)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{text} ({shortcut})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{text} ({shortcut})"
+          }
+        }
+      }
+    },
     "main.comfort.display" : {
       "comment" : "Funktion weitere Funktionen (Anzeige am Gerät)",
       "extractionState" : "manual",
@@ -7859,6 +8453,618 @@ extension StringsData {
         }
       }
     },
+    "main.timer.windows.invalidTime" : {
+      "comment" : "Windows: Hinweis unter dem Uhrzeitfeld",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das ist keine Uhrzeit. Bitte Stunde und Minute eingeben, z. B. {example}."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That is not a valid time. Enter the hour and minute, for example {example}."
+          }
+        }
+      }
+    },
+    "main.timer.windows.onHelp" : {
+      "comment" : "Windows: Kurzinfo Knopf Einschalten um …",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schaltet die Anlage zur gewählten Uhrzeit ein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turns the air conditioner on at the chosen time"
+          }
+        }
+      }
+    },
+    "main.timer.windows.onNote" : {
+      "comment" : "Windows: Erklärtext unter dem Uhrzeitfeld (E12: Variante zu main.timer.onNote)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit den zuletzt benutzten Einstellungen. {requirement} Klimacontrol hält den Rechner bis dahin wach."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uses the most recent settings. {requirement} Klimacontrol keeps the computer awake until then."
+          }
+        }
+      }
+    },
+    "main.timer.windows.onTimeName" : {
+      "comment" : "Windows: UIA-Name Uhrzeitfeld des Einschalt-Timers",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uhrzeit zum Einschalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time to turn on"
+          }
+        }
+      }
+    },
+    "main.timer.windows.onWeekdayDate" : {
+      "comment" : "Windows: Tagesangabe im Einschalt-Timer, weder heute noch morgen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "am {weekday}, {date}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "on {weekday}, {date}"
+          }
+        }
+      }
+    },
+    "main.timer.windows.switchesOff" : {
+      "comment" : "Windows: Kurzinfo Aus-Timer-Chip; when = Label des Kerns oder common.atTime",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schaltet {when} aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turns off {when}"
+          }
+        }
+      }
+    },
+    "main.timer.windows.timeHelp" : {
+      "comment" : "Windows: Kurzinfo Uhrzeitfeld des Einschalt-Timers",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uhrzeit, z. B. {example}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time, for example {example}"
+          }
+        }
+      }
+    },
+    "main.windows.chartsShow" : {
+      "comment" : "Windows: Kurzinfo Verlauf-Knopf (ohne Kürzel, Kürzel über keys.windows.withShortcut)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf links einblenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show history on the left"
+          }
+        }
+      }
+    },
+    "main.windows.diagnosticsShow" : {
+      "comment" : "Windows: Kurzinfo Diagnose-Knopf (ohne Kürzel)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnose rechts einblenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show diagnostics on the right"
+          }
+        }
+      }
+    },
+    "main.windows.dismissMessage" : {
+      "comment" : "Windows: UIA-Name Schließen-Knopf der Fehlermeldung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldung ausblenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dismiss message"
+          }
+        }
+      }
+    },
+    "main.windows.dismissNotice" : {
+      "comment" : "Windows: UIA-Name Schließen-Knopf des Hinweises",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hinweis ausblenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dismiss notice"
+          }
+        }
+      }
+    },
+    "main.windows.fanAutoName" : {
+      "comment" : "Windows: UIA-Name des Auto-Knopfs am Lüfter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüfter automatisch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fan automatic"
+          }
+        }
+      }
+    },
+    "main.windows.fanMarkName" : {
+      "comment" : "Windows: UIA-Name einer Sprungmarke am Lüfter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüfter {label}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fan {label}"
+          }
+        }
+      }
+    },
+    "main.windows.fanStatusAuto" : {
+      "comment" : "Windows: UIA-Status des Lüfterreglers bei Auto",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "automatisch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "automatic"
+          }
+        }
+      }
+    },
+    "main.windows.fanStatusPercent" : {
+      "comment" : "Windows: UIA-Status des Lüfterreglers",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{percent} Prozent"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{percent} percent"
+          }
+        }
+      }
+    },
+    "main.windows.fanStatusQuiet" : {
+      "comment" : "Windows: UIA-Status des Lüfterreglers bei Außengerät leise",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außengerät leise, 1 Prozent"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quiet outdoor, 1 percent"
+          }
+        }
+      }
+    },
+    "main.windows.fanStatusTurbo" : {
+      "comment" : "Windows: UIA-Status des Lüfterreglers bei Turbo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turbo, 100 Prozent"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turbo, 100 percent"
+          }
+        }
+      }
+    },
+    "main.windows.moreHeader" : {
+      "comment" : "Windows: Überschrift des eingeklappten Bereichs",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MEHR …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MORE…"
+          }
+        }
+      }
+    },
+    "main.windows.moreHelp" : {
+      "comment" : "Windows: Kurzinfo des Mehr-Knopfs",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Komfort, weitere Funktionen und Szenen ein- oder ausblenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show or hide comfort, more features, and scenes"
+          }
+        }
+      }
+    },
+    "main.windows.moreName" : {
+      "comment" : "Windows: UIA-Name des Mehr-Knopfs",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More"
+          }
+        }
+      }
+    },
+    "main.windows.paneControls" : {
+      "comment" : "Windows: Reiter im schmalen Hauptfenster",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steuerung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controls"
+          }
+        }
+      }
+    },
+    "main.windows.paneGroupName" : {
+      "comment" : "Windows: UIA-Gruppenname der Reiter im schmalen Hauptfenster",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bereiche"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sections"
+          }
+        }
+      }
+    },
+    "main.windows.powerToggle" : {
+      "comment" : "Windows: Kurzinfo des Ein/Aus-Knopfs im Fenster (Platzhalter)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein/Aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On/Off"
+          }
+        }
+      }
+    },
+    "main.windows.ratePercent" : {
+      "comment" : "Windows: UIA-Name der Knöpfe Leistung begrenzen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistung {pct} Prozent"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power {pct} percent"
+          }
+        }
+      }
+    },
+    "main.windows.reconnectHelp" : {
+      "comment" : "Windows: Kurzinfo Erneut-versuchen-Knopf beim Verbinden",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sofort neu verbinden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reconnect right away"
+          }
+        }
+      }
+    },
+    "main.windows.refreshHelp" : {
+      "comment" : "Windows: Kurzinfo Aktualisieren in der Fußzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt aktualisieren – probiert alle Wege neu ({shortcut} oder F5)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh now; tries every connection again ({shortcut} or F5)"
+          }
+        }
+      }
+    },
+    "main.windows.refreshingHelp" : {
+      "comment" : "Windows: Kurzinfo des Aktualisieren-Knopfs, während gelesen wird",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird aktualisiert …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refreshing…"
+          }
+        }
+      }
+    },
+    "main.windows.refreshingName" : {
+      "comment" : "Windows: UIA-Name des Aktualisieren-Knopfs, während gelesen wird",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird aktualisiert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refreshing"
+          }
+        }
+      }
+    },
+    "main.windows.retryHelp" : {
+      "comment" : "Windows: Kurzinfo Erneut-versuchen-Knopf im Banner (Kürzel über keys.windows.withShortcut)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sofort neu abfragen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh right away"
+          }
+        }
+      }
+    },
+    "main.windows.roomHero" : {
+      "comment" : "Windows: UIA-Name der großen Zahl, wenn sie die Raumtemperatur zeigt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raumtemperatur {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room temperature {value}"
+          }
+        }
+      }
+    },
+    "main.windows.sceneNameAccessibility" : {
+      "comment" : "Windows: UIA-Name des Namensfelds beim Sichern einer Szene",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name der Szene"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scene name"
+          }
+        }
+      }
+    },
+    "main.windows.scenesToggleHelp" : {
+      "comment" : "Windows: Kurzinfo Szenen-Kopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Szenen ein- oder ausblenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show or hide scenes"
+          }
+        }
+      }
+    },
+    "main.windows.spokenDone" : {
+      "comment" : "Windows: Sprachausgabe der Schritte beim Verbinden (✓)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "erledigt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "done"
+          }
+        }
+      }
+    },
+    "main.windows.spokenRunning" : {
+      "comment" : "Windows: Sprachausgabe der Schritte beim Verbinden (…)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "läuft"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "in progress"
+          }
+        }
+      }
+    },
     "menu.mac.openApp" : {
       "comment" : "Menüleisten-Fenster: Knopf",
       "extractionState" : "manual",
@@ -8017,6 +9223,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "The setup changed during sign-in. Please sign in again."
+          }
+        }
+      }
+    },
+    "message.account.windows.notSaved" : {
+      "comment" : "Kern (Windows): Variante zu message.account.notSaved",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Midea-Konto wurde nicht in der Anmeldeinformationsverwaltung gespeichert. Prüfe den Zugriff auf die Anmeldeinformationsverwaltung und melde dich noch einmal an."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Midea account was not saved in Windows Credential Manager. Check access to Windows Credential Manager and sign in again."
           }
         }
       }
@@ -9101,6 +10325,60 @@ extension StringsData {
         }
       }
     },
+    "message.keychain.windows.saveFailed.what" : {
+      "comment" : "Kern (Windows): Variante zu message.keychain.saveFailed.what",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Zugangsdaten konnten nicht in der Anmeldeinformationsverwaltung gespeichert werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The credentials could not be saved in Windows Credential Manager."
+          }
+        }
+      }
+    },
+    "message.keychain.windows.unavailable.todo" : {
+      "comment" : "Kern (Windows): Variante zu message.keychain.unavailable.todo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows entsperren bzw. den Zugriff erlauben und erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock Windows or allow access, then try again."
+          }
+        }
+      }
+    },
+    "message.keychain.windows.unavailable.what" : {
+      "comment" : "Kern (Windows): Variante zu message.keychain.unavailable.what",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anmeldeinformationsverwaltung ist gesperrt oder hat den Zugriff abgelehnt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows Credential Manager is locked or denied access."
+          }
+        }
+      }
+    },
     "message.outdoorSilent.notApplied" : {
       "comment" : "Hinweis: Außengerät leise nicht übernommen",
       "extractionState" : "manual",
@@ -9583,6 +10861,42 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "License text"
+          }
+        }
+      }
+    },
+    "notices.windows.licenseTextName" : {
+      "comment" : "Windows: UIA-Name des Lizenztextfelds",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lizenztext {name}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "License text {name}"
+          }
+        }
+      }
+    },
+    "notices.windows.trademarks" : {
+      "comment" : "Windows: Einstellungen → Lizenzen, Schlussvermerk",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol ist kein Produkt von Midea und steht in keiner Verbindung zu Midea. Midea, MSmartHome, NetHome Plus und PortaSplit sind Marken ihrer jeweiligen Inhaber."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol is not a Midea product and is not affiliated with Midea. Midea, MSmartHome, NetHome Plus, and PortaSplit are trademarks of their respective owners."
           }
         }
       }
@@ -10897,6 +12211,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cloud not reachable"
+          }
+        }
+      }
+    },
+    "reason.cloud.windows.keychainLocked" : {
+      "comment" : "Kern (Windows): Variante zu reason.cloud.keychainLocked",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anmeldeinformationsverwaltung ist gesperrt. Windows entsperren; Klimacontrol versucht es danach von selbst wieder."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows Credential Manager is locked. Unlock Windows; Klimacontrol will then try again on its own."
           }
         }
       }
@@ -12479,6 +13811,402 @@ extension StringsData {
         }
       }
     },
+    "settings.appearance.windows.blurHelp" : {
+      "comment" : "Windows: Einstellungen → Darstellung → Hintergrund (Variante zu blur.help)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie weich der Hintergrund hinter den Karten verschwimmt. Unter Windows kommt sie vom Glas-Effekt des Systems."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How softly the background blurs behind the cards. On Windows this comes from the system’s glass effect."
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.customColorName" : {
+      "comment" : "Windows: UIA-Name eines Farbfelds",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigene Farbe {color}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom color {color}"
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.digitsHelp" : {
+      "comment" : "Windows: Einstellungen → Darstellung → Ziffernstil",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Form der großen Zahl, daneben die Vorschau."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Style of the large number, with a preview next to it."
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.digitsPreviewName" : {
+      "comment" : "Windows: UIA-Name der Vorschauzahl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorschau Ziffernstil"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digit style preview"
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.footer" : {
+      "comment" : "Windows: Einstellungen → Darstellung, Fußzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Werte dieses Reiters gelten sofort und bleiben gespeichert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All values on this tab take effect immediately and are saved."
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.glowAccessibility" : {
+      "comment" : "Windows: UIA-Name des Reglers Leuchten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leuchten der Temperatur in Prozent"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temperature glow in percent"
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.highContrast" : {
+      "comment" : "Windows: Einstellungen → Darstellung → Farben, Hinweis",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoher Kontrast ist in Windows an: Dann gelten die Farben des Kontrastdesigns."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "High contrast is on in Windows: the colors of the contrast theme apply."
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.miniHelp" : {
+      "comment" : "Windows: Einstellungen → Darstellung → Fenster (Variante zu mac.miniHelp)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kleines schwebendes Fenster mit Temperatur und Ein/Aus."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Small floating window with temperature and on/off."
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.reduceMotionSystem" : {
+      "comment" : "Windows: Einstellungen → Darstellung → Bewegung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„Animationseffekte“ ist in den Windows-Einstellungen ausgeschaltet (Barrierefreiheit → Visuelle Effekte) – Effekte bleiben aus."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Animation effects” is turned off in Windows settings (Accessibility → Visual effects); effects stay off."
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.resetAccessibility" : {
+      "comment" : "Windows: UIA-Name des Zurücksetzen-Knopfs",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Darstellung auf Standard zurücksetzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset appearance to default"
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.schemeHelp" : {
+      "comment" : "Windows: Einstellungen → Darstellung → Modus (Variante zu scheme.help)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hell, dunkel oder wie Windows."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Light, dark, or same as Windows."
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.themeAccessibility" : {
+      "comment" : "Windows: UIA-Name einer Themenkarte",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thema {theme}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Theme {theme}"
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.themeContrastHelp" : {
+      "comment" : "Windows: Themenkarte Kontrast",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deckende Flächen, gut lesbar."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opaque surfaces, easy to read."
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.themeHelp" : {
+      "comment" : "Windows: Einstellungen → Darstellung, unter den Themenkarten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Thema setzt alle Werte darunter auf einmal; danach lässt sich jeder einzeln ändern."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A theme sets all values below at once; you can then change each one separately."
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.themeMinimalHelp" : {
+      "comment" : "Windows: Themenkarte Minimal",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dünne Schrift, fast farblos."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thin type, almost colorless."
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.themeNeonHelp" : {
+      "comment" : "Windows: Themenkarte Neon",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leuchtende Kanten, kräftige Farben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowing edges, vivid colors."
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.themeNightHelp" : {
+      "comment" : "Windows: Themenkarte Nacht",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gedimmt und rotarm, angenehm im dunklen Raum."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dimmed with little red, comfortable in a dark room."
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.themeStandardHelp" : {
+      "comment" : "Windows: Themenkarte Standard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie bisher: Glas, Farben nach Modus."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As before: glass, colors by mode."
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.transparencyAccessibility" : {
+      "comment" : "Windows: UIA-Name des Reglers Transparenz",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transparenz in Prozent"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transparency in percent"
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.trayAccessibility" : {
+      "comment" : "Windows: UIA-Name der Auswahl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzeige im Infobereich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notification area display"
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.trayHelp" : {
+      "comment" : "Windows: Einstellungen → Darstellung → Infobereich",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Was das Symbol im Infobereich und seine Kurzinfo zeigen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What the icon in the notification area and its tooltip show."
+          }
+        }
+      }
+    },
+    "settings.appearance.windows.trayTitle" : {
+      "comment" : "Windows: Einstellungen → Darstellung, Abschnitt (Gegenstück zur Menüleiste am Mac)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Infobereich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notification area"
+          }
+        }
+      }
+    },
     "settings.connection.accountHeader" : {
       "comment" : "Abschnittstitel Midea-Konto",
       "extractionState" : "manual",
@@ -12673,6 +14401,60 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Connection to the air conditioner"
+          }
+        }
+      }
+    },
+    "settings.connection.windows.emailAccessibility" : {
+      "comment" : "Windows: UIA-Name des E-Mail-Felds",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-Mail"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email"
+          }
+        }
+      }
+    },
+    "settings.connection.windows.hint" : {
+      "comment" : "Windows: Einstellungen → Verbindung → Midea-Konto",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hinweis: Midea meldet bei jeder Anmeldung „Konto anderswo eingeloggt“. Die Anmeldung auf anderen Geräten kann dadurch enden. Das Midea-Konto in Klimacontrol am besten nur auf einem Rechner benutzen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note: Midea reports “account signed in elsewhere” at every sign-in. This can end the sign-in on other devices. Use the Midea account in Klimacontrol on one computer only."
+          }
+        }
+      }
+    },
+    "settings.connection.windows.openMain" : {
+      "comment" : "Windows: Einstellungen → Verbindung/Anlage ohne Einrichtung, Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hauptfenster öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open main window"
           }
         }
       }
@@ -13051,6 +14833,204 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "via Midea account"
+          }
+        }
+      }
+    },
+    "settings.device.windows.backupDone" : {
+      "comment" : "Windows: Einstellungen → Anlage, Status",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ Zugangsdaten gesichert. Nach einer Änderung (z. B. neue Einrichtung) erneut sichern."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ Credentials backed up. Back up again after any change, such as a new setup."
+          }
+        }
+      }
+    },
+    "settings.device.windows.backupFilter" : {
+      "comment" : "Windows: Dateidialog Zugangsdaten sichern, Filter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol-Sicherung (*.json)|*.json"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol backup (*.json)|*.json"
+          }
+        }
+      }
+    },
+    "settings.device.windows.backupMissing" : {
+      "comment" : "Windows: Einstellungen → Anlage, Status",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch nicht gesichert. Ohne Sicherung muss die Anlage auf einem neuen Rechner oder nach „Neu einrichten“ wieder gesucht werden. Jetzt „Zugangsdaten sichern …“ wählen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not backed up yet. Without a backup, the air conditioner has to be found again on a new computer or after “Set up again”. Choose “Back up credentials…” now."
+          }
+        }
+      }
+    },
+    "settings.device.windows.forgetFailedTitle" : {
+      "comment" : "Windows: Titel des Hinweisfensters bei Neu einrichten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht zurückgesetzt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not reset"
+          }
+        }
+      }
+    },
+    "settings.device.windows.importButtonBusy" : {
+      "comment" : "Windows: Knopf Sicherung einlesen, während des Einlesens",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lese ein …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restoring…"
+          }
+        }
+      }
+    },
+    "settings.device.windows.importDeclined" : {
+      "comment" : "Windows: Ergebniszeile, wenn die Rückfrage abgelehnt wurde",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht eingelesen. Die bisherige Einrichtung bleibt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not restored. The current setup is kept."
+          }
+        }
+      }
+    },
+    "settings.device.windows.importFilter" : {
+      "comment" : "Windows: Dateidialog Sicherung einlesen, Filter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol-Sicherung (*.json)|*.json|Alle Dateien|*.*"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol backup (*.json)|*.json|All files|*.*"
+          }
+        }
+      }
+    },
+    "settings.device.windows.importing" : {
+      "comment" : "Windows: Einstellungen → Anlage und Einrichtung, während des Einlesens",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sicherung wird eingelesen und an der Anlage geprüft …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restoring the backup and checking it with the air conditioner…"
+          }
+        }
+      }
+    },
+    "settings.device.windows.openDataFolder" : {
+      "comment" : "Windows: Einstellungen → Anlage, Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datenordner öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open data folder"
+          }
+        }
+      }
+    },
+    "settings.device.windows.setAsideNote" : {
+      "comment" : "Windows: Einstellungen → Anlage, Hinweis nach Neu einrichten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die bisherige Einrichtung liegt als „{name}“ im Datenordner. Sie enthält Token und Schlüssel der alten Anlage. Wer sie nicht mehr braucht, löscht sie dort."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The previous setup is stored as “{name}” in the data folder. It contains the token and key of the old air conditioner. If you no longer need it, delete it there."
+          }
+        }
+      }
+    },
+    "settings.general.apply" : {
+      "comment" : "Windows: Einstellungen, Knopf neben Name, Preis, Eigener Wert",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übernehmen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apply"
           }
         }
       }
@@ -13685,6 +15665,654 @@ extension StringsData {
         }
       }
     },
+    "settings.general.windows.autostartAddFailed" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Start, Fehler",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol ließ sich nicht in den Autostart eintragen. Windows hat den Zugriff verweigert. In den Windows-Einstellungen unter Apps → Autostart prüfen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol could not be added to startup. Windows denied access. Check Settings → Apps → Startup in Windows."
+          }
+        }
+      }
+    },
+    "settings.general.windows.autostartFailedTitle" : {
+      "comment" : "Windows: Titel des Hinweisfensters bei Autostart-Fehler",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autostart nicht geändert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Startup not changed"
+          }
+        }
+      }
+    },
+    "settings.general.windows.autostartHelp" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Start",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Startet beim Anmelden nur im Infobereich. Timer und Verlauf laufen nur, solange Klimacontrol läuft."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starts at sign-in in the notification area only. Timers and history run only while Klimacontrol is running."
+          }
+        }
+      }
+    },
+    "settings.general.windows.autostartMissing" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Start, Hinweis",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Autostart zeigt auf eine Datei, die es nicht mehr gibt ({path}). Darum startet Klimacontrol beim Anmelden nicht. Haken setzen, um diese Klimacontrol-Datei einzutragen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The startup entry points to a file that no longer exists ({path}). Klimacontrol therefore does not start at sign-in. Select the checkbox to register this Klimacontrol file."
+          }
+        }
+      }
+    },
+    "settings.general.windows.autostartOther" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Start, Hinweis",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Autostart zeigt auf eine andere Klimacontrol-Datei ({path}). Haken setzen, um stattdessen diese hier einzutragen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The startup entry points to a different Klimacontrol file ({path}). Select the checkbox to register this one instead."
+          }
+        }
+      }
+    },
+    "settings.general.windows.autostartRemoveFailed" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Start, Fehler",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol ließ sich nicht aus dem Autostart austragen. Windows hat den Zugriff verweigert. In den Windows-Einstellungen unter Apps → Autostart ausschalten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol could not be removed from startup. Windows denied access. Turn it off in Settings → Apps → Startup in Windows."
+          }
+        }
+      }
+    },
+    "settings.general.windows.autostartTitle" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Start, Haken",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Windows starten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start with Windows"
+          }
+        }
+      }
+    },
+    "settings.general.windows.csvFilter" : {
+      "comment" : "Windows: Dateidialog Verlauf exportieren, Filter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CSV (*.csv)|*.csv"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CSV (*.csv)|*.csv"
+          }
+        }
+      }
+    },
+    "settings.general.windows.customAccessibility" : {
+      "comment" : "Windows: UIA-Name des Aufnahmefelds",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neue Tastenkombination"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New key combination"
+          }
+        }
+      }
+    },
+    "settings.general.windows.customHelp" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Tastatur, Aufnahmefeld",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ins Feld klicken und die Tasten zusammen drücken, mit Strg, Alt oder Win. Esc bricht ab."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Click the field and press the keys together, including Ctrl, Alt, or Win. Esc cancels."
+          }
+        }
+      }
+    },
+    "settings.general.windows.customTitle" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Tastatur, Aufnahmefeld",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigene Kombination"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom combination"
+          }
+        }
+      }
+    },
+    "settings.general.windows.exportHelp" : {
+      "comment" : "Windows: Einstellungen → Allgemein, Zeile Verlauf exportieren",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als CSV-Datei mit Ortszeit und Spaltennamen in der Sprache der App, z. B. für Excel."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As a CSV file with local time and column names in the app language, for example for Excel."
+          }
+        }
+      }
+    },
+    "settings.general.windows.exporting" : {
+      "comment" : "Windows: Ergebniszeile während des Verlauf-Exports",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportiere …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporting…"
+          }
+        }
+      }
+    },
+    "settings.general.windows.hotkeyAccessibility" : {
+      "comment" : "Windows: UIA-Name der Kürzel-Auswahl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tastenkürzel für das Fenster am Infobereich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keyboard shortcut for the window at the notification area"
+          }
+        }
+      }
+    },
+    "settings.general.windows.hotkeyF12" : {
+      "comment" : "Windows: Fehler im Aufnahmefeld",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "F12 ist unter Windows reserviert. Bitte eine andere Taste wählen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "F12 is reserved by Windows. Choose a different key."
+          }
+        }
+      }
+    },
+    "settings.general.windows.hotkeyHelp" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Tastatur, Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tastenkürzel, das in jedem Programm wirkt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keyboard shortcut that works in every program."
+          }
+        }
+      }
+    },
+    "settings.general.windows.hotkeyInvalid" : {
+      "comment" : "Windows: Fehler im Aufnahmefeld; example = Strg+Alt+K",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Kombination geht nicht. Bitte mit Strg, Alt oder Win zusammen drücken, z. B. {example}."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This combination does not work. Press it together with Ctrl, Alt, or Win, for example {example}."
+          }
+        }
+      }
+    },
+    "settings.general.windows.hotkeyOff" : {
+      "comment" : "Windows: Ergebniszeile nach Kürzel aus",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ Kein Tastenkürzel. Das Fenster öffnet sich mit einem Klick auf das Symbol im Infobereich."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ No keyboard shortcut. The window opens when you click the icon in the notification area."
+          }
+        }
+      }
+    },
+    "settings.general.windows.hotkeyOn" : {
+      "comment" : "Windows: Ergebniszeile nach Kürzel setzen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ {shortcut} öffnet das Fenster am Infobereich – in jedem Programm."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ {shortcut} opens the window at the notification area, in any program."
+          }
+        }
+      }
+    },
+    "settings.general.windows.hotkeyTitle" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Tastatur, Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenster am Infobereich öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the window at the notification area"
+          }
+        }
+      }
+    },
+    "settings.general.windows.iconAlways" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Tastatur",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen → Personalisierung → Taskleiste → Andere Symbole → Klimacontrol einschalten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings → Personalization → Taskbar → Other system tray icons → turn on Klimacontrol."
+          }
+        }
+      }
+    },
+    "settings.general.windows.iconAlwaysLabel" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Tastatur, Beschriftung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbol immer anzeigen:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Always show the icon:"
+          }
+        }
+      }
+    },
+    "settings.general.windows.iconKeys" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Tastatur",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{win}+B springt in den Infobereich, mit den Pfeiltasten zum Symbol; Enter öffnet das Fenster, {shift}+F10 das Menü."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{win}+B moves focus to the notification area; use the arrow keys to reach the icon. Enter opens the window, {shift}+F10 opens the menu."
+          }
+        }
+      }
+    },
+    "settings.general.windows.iconKeysLabel" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Tastatur, Beschriftung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbol per Tastatur:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icon by keyboard:"
+          }
+        }
+      }
+    },
+    "settings.general.windows.inWindowKeys" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Tastatur; ctrl = keys.windows.ctrl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{ctrl}+P ein/aus · {ctrl}+↑/↓ Temperatur · F5 oder {ctrl}+R aktualisieren · {ctrl}+G Verlauf · {ctrl}+D Diagnose · {ctrl}+, Einstellungen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{ctrl}+P on/off · {ctrl}+↑/↓ temperature · F5 or {ctrl}+R refresh · {ctrl}+G history · {ctrl}+D diagnostics · {ctrl}+, settings."
+          }
+        }
+      }
+    },
+    "settings.general.windows.inWindowLabel" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Tastatur, Beschriftung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Fenster:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In the window:"
+          }
+        }
+      }
+    },
+    "settings.general.windows.nameHelp" : {
+      "comment" : "Windows: Einstellungen → Allgemein, Zeile Name (E12: Variante zu nameHelp)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steht im Fenster und im Infobereich."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shown in the window and in the notification area."
+          }
+        }
+      }
+    },
+    "settings.general.windows.pressKeys" : {
+      "comment" : "Windows: Aufnahmefeld, wartet auf Tasten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tasten drücken …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Press keys…"
+          }
+        }
+      }
+    },
+    "settings.general.windows.priceFailedTitle" : {
+      "comment" : "Windows: Titel des Hinweisfensters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strompreis nicht übernommen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Electricity price not applied"
+          }
+        }
+      }
+    },
+    "settings.general.windows.priceNotNumber" : {
+      "comment" : "Windows: Hinweisfenster Strompreis; example = Fmt.Num(0.30, 2)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Wert ist keine Zahl. Bitte einen Preis wie {example} eingeben. (price)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The value is not a number. Enter a price such as {example}. (price)"
+          }
+        }
+      }
+    },
+    "settings.general.windows.refreshFailedTitle" : {
+      "comment" : "Windows: Titel des Hinweisfensters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abfrage-Abstand nicht übernommen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh interval not applied"
+          }
+        }
+      }
+    },
+    "settings.general.windows.refreshOutOfRange" : {
+      "comment" : "Windows: Hinweisfenster Eigener Wert der Abfrage",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Wert liegt außerhalb des erlaubten Bereichs. Bitte eine ganze Zahl von {min} bis {max} Sekunden eingeben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The value is outside the allowed range. Enter a whole number from {min} to {max} seconds."
+          }
+        }
+      }
+    },
+    "settings.general.windows.sectionKeyboard" : {
+      "comment" : "Windows: Einstellungen → Allgemein, Abschnitt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tastatur"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keyboard"
+          }
+        }
+      }
+    },
+    "settings.general.windows.updatesSetupOnly" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Updates, wenn nicht per Setup installiert",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatische Updates gibt es nur mit dem Setup."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatic updates are available only when installed with the setup program."
+          }
+        }
+      }
+    },
+    "settings.general.windows.updatesSigned" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Updates",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neue Versionen sind signiert und kommen nur von der Release-Seite des Projekts."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New versions are signed and come only from the project’s release page."
+          }
+        }
+      }
+    },
+    "settings.general.windows.versionLine" : {
+      "comment" : "Windows: Fußzeile der Einstellungen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} für Windows · Daten in {folder}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} for Windows · data in {folder}"
+          }
+        }
+      }
+    },
     "settings.language.english" : {
       "comment" : "Sprachwahl (Eigenname, nicht übersetzen)",
       "extractionState" : "manual",
@@ -14027,6 +16655,60 @@ extension StringsData {
         }
       }
     },
+    "settings.log.windows.eventsOnlyHelp" : {
+      "comment" : "Windows: Einstellungen → Protokoll, Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blendet die ausführlichen Zeilen (Nachrichten an Anlage und Midea) in der Anzeige aus – die Datei bleibt vollständig"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hides the detailed lines (messages to the air conditioner and Midea) in the view; the file stays complete"
+          }
+        }
+      }
+    },
+    "settings.log.windows.notCleared" : {
+      "comment" : "Windows: Titel des Hinweisfensters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protokoll nicht geleert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log not cleared"
+          }
+        }
+      }
+    },
+    "settings.log.windows.showInExplorer" : {
+      "comment" : "Windows: Einstellungen → Protokoll, Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protokoll im Explorer zeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show log in File Explorer"
+          }
+        }
+      }
+    },
     "settings.price.invalid" : {
       "comment" : "Meldung bei ungültigem Strompreis",
       "extractionState" : "manual",
@@ -14167,6 +16849,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Receive pre-release (beta) versions"
+          }
+        }
+      }
+    },
+    "settings.windows.notApplied" : {
+      "comment" : "Windows: Titel des Hinweisfensters bei abgelehntem Befehl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht übernommen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not applied"
           }
         }
       }
@@ -15989,6 +18689,474 @@ extension StringsData {
         }
       }
     },
+    "setup.view.windows.accountHint" : {
+      "comment" : "Windows: Einrichtung mit Midea-Konto, Schritt 1",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Konto der MSmartHome-App. Das Passwort geht nur an Midea und wird nicht gespeichert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The account of the MSmartHome app. The password goes only to Midea and is not saved."
+          }
+        }
+      }
+    },
+    "setup.view.windows.accountIntro" : {
+      "comment" : "Windows: Einrichtung mit Midea-Konto, Einleitung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol holt Token und Schlüssel einmalig über dein Konto. Unterwegs oder bei ausgeschalteter Anlage geht es über das Konto auch per Cloud."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol gets the token and key once through your account. Through the account it also works over the Cloud, when you are away or when the air conditioner is off."
+          }
+        }
+      }
+    },
+    "setup.view.windows.accountWarning" : {
+      "comment" : "Windows: Einrichtung mit Midea-Konto, Schritt 1",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anmeldung kann die MSmartHome-App oder einen anderen Rechner mit diesem Konto abmelden („Konto anderswo eingeloggt“). Dort dann einfach neu anmelden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signing in can sign out the MSmartHome app or another computer that uses this account (“account signed in elsewhere”). Just sign in again there."
+          }
+        }
+      }
+    },
+    "setup.view.windows.applianceIdExample" : {
+      "comment" : "Windows: Einrichtung mit Zugangsdaten, Hinweis im Feld Anlagen-ID",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "aus der Suche, z. B. 123456789012345"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "from the search, for example 123456789012345"
+          }
+        }
+      }
+    },
+    "setup.view.windows.back" : {
+      "comment" : "Windows: Einrichtung, Link oben links (Konto und Zugangsdaten)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "‹ Zurück"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "‹ Back"
+          }
+        }
+      }
+    },
+    "setup.view.windows.backHelp" : {
+      "comment" : "Windows: Einrichtung, Kurzinfo des Zurück-Links",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurück zur Auswahl (Esc)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back to the choice (Esc)"
+          }
+        }
+      }
+    },
+    "setup.view.windows.check" : {
+      "comment" : "Windows: Einrichtung, Knopf (Adresse prüfen bzw. Zugangsdaten prüfen)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check"
+          }
+        }
+      }
+    },
+    "setup.view.windows.choiceAccountDetail" : {
+      "comment" : "Windows: Einrichtung, Startseite, Karte Midea-Konto",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Holt Token und Schlüssel automatisch. Findet die Anlage auch, wenn sie ausgeschaltet ist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gets the token and key automatically. Also finds the air conditioner when it is off."
+          }
+        }
+      }
+    },
+    "setup.view.windows.choiceAccountName" : {
+      "comment" : "Windows: Einrichtung, Startseite, UIA-Name der Karte",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Midea-Konto, empfohlen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "With Midea account, recommended"
+          }
+        }
+      }
+    },
+    "setup.view.windows.choiceBackupDetail" : {
+      "comment" : "Windows: Einrichtung, Startseite, Karte Sicherung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sicherungsdatei mit den Zugangsdaten, z. B. von einem anderen Rechner."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A backup file with the credentials, for example from another computer."
+          }
+        }
+      }
+    },
+    "setup.view.windows.choiceManualDetail" : {
+      "comment" : "Windows: Einrichtung, Startseite, Karte Zugangsdaten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token und Schlüssel liegen dir schon vor. Kein Midea-Konto nötig."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You already have the token and key. No Midea account needed."
+          }
+        }
+      }
+    },
+    "setup.view.windows.deviceSetUp" : {
+      "comment" : "Windows: Einrichtung mit Midea-Konto, Erfolgszeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage eingerichtet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner set up."
+          }
+        }
+      }
+    },
+    "setup.view.windows.helpFirewall" : {
+      "comment" : "Windows: Einrichtung, Hilfe, Punkt 3",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beim ersten Start fragt Windows, ob Klimacontrol ins Netzwerk darf – dort „Private Netzwerke“ erlauben. Schon abgelehnt? Windows-Sicherheit → Firewall- und Netzwerkschutz → „Zugriff von App durch Firewall zulassen“ → Klimacontrol bei „Privat“ anhaken."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The first time Klimacontrol starts, Windows asks whether it may use the network; allow Private networks. Already declined? Windows Security → Firewall & network protection → Allow an app through firewall → select Private for Klimacontrol."
+          }
+        }
+      }
+    },
+    "setup.view.windows.helpGuest" : {
+      "comment" : "Windows: Einrichtung, Hilfe, Punkt 4",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Gast-WLAN: Es trennt die Geräte voneinander. Rechner und Anlage ins normale WLAN bringen oder am Router erlauben, dass sich die Geräte sehen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No guest Wi-Fi: it isolates devices from each other. Put the computer and the air conditioner on the normal Wi-Fi, or allow devices to see each other on the router."
+          }
+        }
+      }
+    },
+    "setup.view.windows.helpPowerWifi" : {
+      "comment" : "Windows: Einrichtung, Hilfe, Punkt 1",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage ist eingeschaltet, und dieser Rechner ist im selben WLAN wie sie."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner is on, and this computer is on the same Wi-Fi network."
+          }
+        }
+      }
+    },
+    "setup.view.windows.helpPrivate" : {
+      "comment" : "Windows: Einrichtung, Hilfe, Punkt 2",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das WLAN ist auf „Privat“ gestellt: Einstellungen → Netzwerk und Internet → WLAN → dein WLAN → Netzwerkprofiltyp „Privates Netzwerk“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Wi-Fi network is set to Private: Settings → Network & internet → Wi-Fi → your network → Network profile type → Private network."
+          }
+        }
+      }
+    },
+    "setup.view.windows.helpTitleNotFound" : {
+      "comment" : "Windows: Einrichtung, Überschrift der Hilfe bei leerer Suche",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nichts gefunden? Das hilft oft:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing found? This often helps:"
+          }
+        }
+      }
+    },
+    "setup.view.windows.helpTitleUnreachable" : {
+      "comment" : "Windows: Einrichtung, Überschrift der Hilfe bei Verbindungsproblem",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage antwortet nicht? Das hilft oft:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner not responding? This often helps:"
+          }
+        }
+      }
+    },
+    "setup.view.windows.importFailedTitle" : {
+      "comment" : "Windows: Einrichtung, Titel des Hinweisfensters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sicherung nicht eingelesen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup not restored"
+          }
+        }
+      }
+    },
+    "setup.view.windows.ipAccessibility" : {
+      "comment" : "Windows: Einrichtung mit Midea-Konto, UIA-Name des Adressfelds",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IP-Adresse"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IP address"
+          }
+        }
+      }
+    },
+    "setup.view.windows.modeFailedTitle" : {
+      "comment" : "Windows: Einrichtung, Titel des Hinweisfensters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbindungsweg nicht geändert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection method not changed"
+          }
+        }
+      }
+    },
+    "setup.view.windows.openNetwork" : {
+      "comment" : "Windows: Einrichtung, Hilfe, Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netzwerkeinstellungen öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open network settings"
+          }
+        }
+      }
+    },
+    "setup.view.windows.openNetworkHelp" : {
+      "comment" : "Windows: Einrichtung, Kurzinfo des Knopfs",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnet Einstellungen → Netzwerk und Internet → WLAN"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens Settings → Network & internet → Wi-Fi"
+          }
+        }
+      }
+    },
+    "setup.view.windows.pastedNone" : {
+      "comment" : "Windows: Einrichtung mit Zugangsdaten, nach dem Einfügen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übernommen: keine Änderung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applied: no change"
+          }
+        }
+      }
+    },
+    "setup.view.windows.searchWifiHelp" : {
+      "comment" : "Windows: Einrichtung, Kurzinfo des Suchen-Knopfs",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sucht Anlagen im WLAN"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Searches for air conditioners on Wi-Fi"
+          }
+        }
+      }
+    },
+    "setup.view.windows.settingsHelp" : {
+      "comment" : "Windows: Einrichtung, Kurzinfo des Links Einstellungen (Kürzel über keys.windows.withShortcut)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protokoll und Verbindung in den Einstellungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log and connection are in Settings"
+          }
+        }
+      }
+    },
     "startup.handshake" : {
       "comment" : "Startanzeige: Schritt 2",
       "extractionState" : "manual",
@@ -16853,6 +20021,456 @@ extension StringsData {
         }
       }
     },
+    "tray.hint.text" : {
+      "comment" : "Windows: Hinweis beim ersten Schließen des Hauptfensters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Fenster ist zu, Klimacontrol läuft im Infobereich weiter (evtl. hinter dem Pfeil ^). Klick aufs Symbol öffnet die Schnellsteuerung, Rechtsklick das Menü mit „Beenden“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The window is closed, but Klimacontrol keeps running in the notification area (possibly behind the ^ arrow). Click the icon to open the quick controls; right-click it for the menu with “Quit”."
+          }
+        }
+      }
+    },
+    "tray.hint.textWithHotkey" : {
+      "comment" : "Windows: Hinweis beim ersten Schließen, wenn ein Tastenkürzel gesetzt ist",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Fenster ist zu, Klimacontrol läuft im Infobereich weiter (evtl. hinter dem Pfeil ^). Klick aufs Symbol öffnet die Schnellsteuerung, Rechtsklick das Menü mit „Beenden“. Tastenkürzel: {hotkey}."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The window is closed, but Klimacontrol keeps running in the notification area (possibly behind the ^ arrow). Click the icon to open the quick controls; right-click it for the menu with “Quit”. Keyboard shortcut: {hotkey}."
+          }
+        }
+      }
+    },
+    "tray.hint.title" : {
+      "comment" : "Windows: Titel des Hinweises beim ersten Schließen des Hauptfensters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol läuft weiter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol keeps running"
+          }
+        }
+      }
+    },
+    "tray.menu.checkUpdates" : {
+      "comment" : "Windows: Menü am Symbol, nur mit Setup-Installation",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach _Updates suchen …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check for _updates…"
+          }
+        }
+      }
+    },
+    "tray.menu.closeMini" : {
+      "comment" : "Windows: Kontextmenü des Mini-Fensters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini-Fenster _schließen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "_Close mini window"
+          }
+        }
+      }
+    },
+    "tray.menu.deleteOffTimer" : {
+      "comment" : "Windows: Menü am Symbol, wenn ein Aus-Timer läuft",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus-_Timer löschen (aus um {time})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete off ti_mer (off at {time})"
+          }
+        }
+      }
+    },
+    "tray.menu.log" : {
+      "comment" : "Windows: Menü am Symbol, öffnet Einstellungen → Protokoll",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "_Protokoll"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "_Log"
+          }
+        }
+      }
+    },
+    "tray.menu.offInOneHour" : {
+      "comment" : "Windows: Menü am Symbol, Aus-Timer in einer Stunde",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus in _1 Stunde"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn off in _1 hour"
+          }
+        }
+      }
+    },
+    "tray.menu.openApp" : {
+      "comment" : "Windows: Menü am Symbol, Zugriffstaste Ö bzw. O",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol _öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "_Open Klimacontrol"
+          }
+        }
+      }
+    },
+    "tray.menu.quickControls" : {
+      "comment" : "Windows: Menü am Symbol, Zugriffstaste S bzw. C",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "_Schnellsteuerung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quick _controls"
+          }
+        }
+      }
+    },
+    "tray.menu.quit" : {
+      "comment" : "Windows: Menü am Symbol, Zugriffstaste B bzw. Q",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "_Beenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "_Quit"
+          }
+        }
+      }
+    },
+    "tray.menu.refresh" : {
+      "comment" : "Windows: Menü am Symbol, Zugriffstaste K bzw. R",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt a_ktualisieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "_Refresh now"
+          }
+        }
+      }
+    },
+    "tray.menu.scenes" : {
+      "comment" : "Windows: Menü am Symbol, Untermenü Szenen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S_zenen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "_Scenes"
+          }
+        }
+      }
+    },
+    "tray.menu.settings" : {
+      "comment" : "Windows: Menü am Symbol, Zugriffstaste I bzw. N",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E_instellungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setti_ngs"
+          }
+        }
+      }
+    },
+    "tray.menu.turnOff" : {
+      "comment" : "Windows: Menü am Symbol, Zugriffstaste A bzw. T",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "_Ausschalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "_Turn off"
+          }
+        }
+      }
+    },
+    "tray.menu.turnOn" : {
+      "comment" : "Windows: Menü am Symbol, Zugriffstaste E bzw. T",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "_Einschalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "_Turn on"
+          }
+        }
+      }
+    },
+    "tray.tip.connecting" : {
+      "comment" : "Windows: Kurzinfo am Symbol beim Verbinden",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "verbindet …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "connecting…"
+          }
+        }
+      }
+    },
+    "tray.tip.handshake" : {
+      "comment" : "Windows: Kurzinfo am Symbol beim Verbinden, Schritt Anmelden",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "meldet sich an der Anlage an …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "signing in to the air conditioner…"
+          }
+        }
+      }
+    },
+    "tray.tip.line" : {
+      "comment" : "Windows: Kurzinfo am Symbol, Name der Anlage und Text",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{name}: {text}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{name}: {text}"
+          }
+        }
+      }
+    },
+    "tray.tip.notConfigured" : {
+      "comment" : "Windows: Kurzinfo am Symbol ohne Einrichtung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol – nicht eingerichtet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol is not set up"
+          }
+        }
+      }
+    },
+    "tray.tip.reading" : {
+      "comment" : "Windows: Kurzinfo am Symbol beim Verbinden, Schritt Werte lesen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "liest die Werte …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reading values…"
+          }
+        }
+      }
+    },
+    "tray.tip.roomTarget" : {
+      "comment" : "Windows: Kurzinfo am Symbol, Raum und Soll",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{room} · {target}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{room} · {target}"
+          }
+        }
+      }
+    },
+    "tray.tip.searching" : {
+      "comment" : "Windows: Kurzinfo am Symbol beim Verbinden, Schritt Suche",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sucht die Anlage …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "finding the air conditioner…"
+          }
+        }
+      }
+    },
+    "tray.tip.statusRoom" : {
+      "comment" : "Windows: Kurzinfo am Symbol, Zustand und Raum",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{status} · {room}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{status} · {room}"
+          }
+        }
+      }
+    },
+    "tray.tip.statusTarget" : {
+      "comment" : "Windows: Kurzinfo am Symbol, Zustand und Soll",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{status} · {target}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{status} · {target}"
+          }
+        }
+      }
+    },
     "updates.checkButton" : {
       "comment" : "Knopf: nach Updates suchen",
       "extractionState" : "manual",
@@ -17190,6 +20808,12 @@ extension StringsData {
         "app.restartNow",
         "app.window.main",
         "app.window.mini",
+        "app.windows.miniName",
+        "app.windows.miniTitle",
+        "app.windows.quitting",
+        "app.windows.restartFailed",
+        "app.windows.settingsTitle",
+        "app.windows.uiError",
         "appearance.accent.byMode",
         "appearance.accent.custom",
         "appearance.accent.system",
@@ -17319,6 +20943,8 @@ extension StringsData {
         "charts.tile.peakHelp",
         "charts.title",
         "charts.tooFew",
+        "charts.windows.rangeName",
+        "charts.windows.tooFew",
         "commands.alwaysOnTop",
         "commands.checkUpdates",
         "commands.cooler",
@@ -17332,10 +20958,15 @@ extension StringsData {
         "commands.showDiagnostics",
         "commands.showHistory",
         "commands.warmer",
+        "common.ago.minutes",
+        "common.ago.never",
+        "common.ago.seconds",
         "common.asOf",
         "common.asOfDay",
+        "common.atTime",
         "common.cancel",
         "common.days",
+        "common.dismiss",
         "common.hours",
         "common.minutes",
         "common.off",
@@ -17345,6 +20976,7 @@ extension StringsData {
         "common.switchOff",
         "common.switchOn",
         "common.unknown",
+        "common.windows.showInExplorer",
         "connection.mode.auto",
         "connection.mode.cloud",
         "connection.mode.lan",
@@ -17443,6 +21075,7 @@ extension StringsData {
         "diagnostics.panel.tp",
         "diagnostics.panel.unitRpm",
         "diagnostics.panel.unitSteps",
+        "diagnostics.panel.windows.showInExplorerHelp",
         "diagnostics.panel.withTarget",
         "energy.cost.approx",
         "energy.help",
@@ -17532,6 +21165,24 @@ extension StringsData {
         "host.windows.passwordStorage",
         "host.windows.setAsideDevice",
         "host.windows.updatesHelp",
+        "keys.windows.alt",
+        "keys.windows.backspace",
+        "keys.windows.ctrl",
+        "keys.windows.custom",
+        "keys.windows.delete",
+        "keys.windows.end",
+        "keys.windows.enter",
+        "keys.windows.home",
+        "keys.windows.insert",
+        "keys.windows.none",
+        "keys.windows.numpad",
+        "keys.windows.pageDown",
+        "keys.windows.pageUp",
+        "keys.windows.shift",
+        "keys.windows.space",
+        "keys.windows.standardSuffix",
+        "keys.windows.win",
+        "keys.windows.withShortcut",
         "main.comfort.display",
         "main.comfort.eco",
         "main.comfort.frostProtection",
@@ -17614,6 +21265,40 @@ extension StringsData {
         "main.timer.set",
         "main.timer.switchesOn",
         "main.timer.time",
+        "main.timer.windows.invalidTime",
+        "main.timer.windows.onHelp",
+        "main.timer.windows.onNote",
+        "main.timer.windows.onTimeName",
+        "main.timer.windows.onWeekdayDate",
+        "main.timer.windows.switchesOff",
+        "main.timer.windows.timeHelp",
+        "main.windows.chartsShow",
+        "main.windows.diagnosticsShow",
+        "main.windows.dismissMessage",
+        "main.windows.dismissNotice",
+        "main.windows.fanAutoName",
+        "main.windows.fanMarkName",
+        "main.windows.fanStatusAuto",
+        "main.windows.fanStatusPercent",
+        "main.windows.fanStatusQuiet",
+        "main.windows.fanStatusTurbo",
+        "main.windows.moreHeader",
+        "main.windows.moreHelp",
+        "main.windows.moreName",
+        "main.windows.paneControls",
+        "main.windows.paneGroupName",
+        "main.windows.powerToggle",
+        "main.windows.ratePercent",
+        "main.windows.reconnectHelp",
+        "main.windows.refreshHelp",
+        "main.windows.refreshingHelp",
+        "main.windows.refreshingName",
+        "main.windows.retryHelp",
+        "main.windows.roomHero",
+        "main.windows.sceneNameAccessibility",
+        "main.windows.scenesToggleHelp",
+        "main.windows.spokenDone",
+        "main.windows.spokenRunning",
         "menu.mac.openApp",
         "menu.noDevice",
         "menu.quit",
@@ -17623,6 +21308,7 @@ extension StringsData {
         "message.account.notSaved",
         "message.account.running",
         "message.account.setupChanged",
+        "message.account.windows.notSaved",
         "message.backup.nothingToExport",
         "message.backup.otherDevice",
         "message.backup.rejected",
@@ -17683,6 +21369,9 @@ extension StringsData {
         "message.keychain.unavailable.what",
         "message.keychain.unreadable.todo",
         "message.keychain.unreadable.what",
+        "message.keychain.windows.saveFailed.what",
+        "message.keychain.windows.unavailable.todo",
+        "message.keychain.windows.unavailable.what",
         "message.outdoorSilent.notApplied",
         "message.relocate.loginFailed.todo",
         "message.relocate.loginFailed.what",
@@ -17710,6 +21399,8 @@ extension StringsData {
         "mode.verb.heat",
         "notices.intro",
         "notices.licenseText",
+        "notices.windows.licenseTextName",
+        "notices.windows.trademarks",
         "options.address.example",
         "options.address.orHost",
         "options.fan.autoCaption",
@@ -17783,6 +21474,7 @@ extension StringsData {
         "reason.cloud.session",
         "reason.cloud.tokenRejected",
         "reason.cloud.unreachable",
+        "reason.cloud.windows.keychainLocked",
         "reason.noCloud",
         "reason.noLan",
         "reason.noPath",
@@ -17868,6 +21560,28 @@ extension StringsData {
         "settings.appearance.weather.help",
         "settings.appearance.weather.title",
         "settings.appearance.window.section",
+        "settings.appearance.windows.blurHelp",
+        "settings.appearance.windows.customColorName",
+        "settings.appearance.windows.digitsHelp",
+        "settings.appearance.windows.digitsPreviewName",
+        "settings.appearance.windows.footer",
+        "settings.appearance.windows.glowAccessibility",
+        "settings.appearance.windows.highContrast",
+        "settings.appearance.windows.miniHelp",
+        "settings.appearance.windows.reduceMotionSystem",
+        "settings.appearance.windows.resetAccessibility",
+        "settings.appearance.windows.schemeHelp",
+        "settings.appearance.windows.themeAccessibility",
+        "settings.appearance.windows.themeContrastHelp",
+        "settings.appearance.windows.themeHelp",
+        "settings.appearance.windows.themeMinimalHelp",
+        "settings.appearance.windows.themeNeonHelp",
+        "settings.appearance.windows.themeNightHelp",
+        "settings.appearance.windows.themeStandardHelp",
+        "settings.appearance.windows.transparencyAccessibility",
+        "settings.appearance.windows.trayAccessibility",
+        "settings.appearance.windows.trayHelp",
+        "settings.appearance.windows.trayTitle",
         "settings.connection.accountHeader",
         "settings.connection.accountRemove",
         "settings.connection.accountTitle",
@@ -17879,6 +21593,9 @@ extension StringsData {
         "settings.connection.signingIn",
         "settings.connection.status",
         "settings.connection.wayTitle",
+        "settings.connection.windows.emailAccessibility",
+        "settings.connection.windows.hint",
+        "settings.connection.windows.openMain",
         "settings.currency.invalid",
         "settings.currency.title",
         "settings.device.backup.export",
@@ -17900,6 +21617,17 @@ extension StringsData {
         "settings.device.relocate.help",
         "settings.device.section",
         "settings.device.viaAccount",
+        "settings.device.windows.backupDone",
+        "settings.device.windows.backupFilter",
+        "settings.device.windows.backupMissing",
+        "settings.device.windows.forgetFailedTitle",
+        "settings.device.windows.importButtonBusy",
+        "settings.device.windows.importDeclined",
+        "settings.device.windows.importFilter",
+        "settings.device.windows.importing",
+        "settings.device.windows.openDataFolder",
+        "settings.device.windows.setAsideNote",
+        "settings.general.apply",
         "settings.general.csvHelp",
         "settings.general.csvTitle",
         "settings.general.currencyAccessibility",
@@ -17935,6 +21663,42 @@ extension StringsData {
         "settings.general.soundTitle",
         "settings.general.updatesSection",
         "settings.general.versionTitle",
+        "settings.general.windows.autostartAddFailed",
+        "settings.general.windows.autostartFailedTitle",
+        "settings.general.windows.autostartHelp",
+        "settings.general.windows.autostartMissing",
+        "settings.general.windows.autostartOther",
+        "settings.general.windows.autostartRemoveFailed",
+        "settings.general.windows.autostartTitle",
+        "settings.general.windows.csvFilter",
+        "settings.general.windows.customAccessibility",
+        "settings.general.windows.customHelp",
+        "settings.general.windows.customTitle",
+        "settings.general.windows.exportHelp",
+        "settings.general.windows.exporting",
+        "settings.general.windows.hotkeyAccessibility",
+        "settings.general.windows.hotkeyF12",
+        "settings.general.windows.hotkeyHelp",
+        "settings.general.windows.hotkeyInvalid",
+        "settings.general.windows.hotkeyOff",
+        "settings.general.windows.hotkeyOn",
+        "settings.general.windows.hotkeyTitle",
+        "settings.general.windows.iconAlways",
+        "settings.general.windows.iconAlwaysLabel",
+        "settings.general.windows.iconKeys",
+        "settings.general.windows.iconKeysLabel",
+        "settings.general.windows.inWindowKeys",
+        "settings.general.windows.inWindowLabel",
+        "settings.general.windows.nameHelp",
+        "settings.general.windows.pressKeys",
+        "settings.general.windows.priceFailedTitle",
+        "settings.general.windows.priceNotNumber",
+        "settings.general.windows.refreshFailedTitle",
+        "settings.general.windows.refreshOutOfRange",
+        "settings.general.windows.sectionKeyboard",
+        "settings.general.windows.updatesSetupOnly",
+        "settings.general.windows.updatesSigned",
+        "settings.general.windows.versionLine",
         "settings.language.english",
         "settings.language.german",
         "settings.language.restartHint",
@@ -17954,6 +21718,9 @@ extension StringsData {
         "settings.log.legend",
         "settings.log.mac.showInFinder",
         "settings.log.refresh",
+        "settings.log.windows.eventsOnlyHelp",
+        "settings.log.windows.notCleared",
+        "settings.log.windows.showInExplorer",
         "settings.price.invalid",
         "settings.tabs.appearance",
         "settings.tabs.connection",
@@ -17962,6 +21729,7 @@ extension StringsData {
         "settings.tabs.log",
         "settings.tabs.notices",
         "settings.updates.betaChannel",
+        "settings.windows.notApplied",
         "setup.busy",
         "setup.cloud.applianceOffline",
         "setup.cloud.error",
@@ -18063,6 +21831,32 @@ extension StringsData {
         "setup.view.step.credentials",
         "setup.view.step.device",
         "setup.view.step.find",
+        "setup.view.windows.accountHint",
+        "setup.view.windows.accountIntro",
+        "setup.view.windows.accountWarning",
+        "setup.view.windows.applianceIdExample",
+        "setup.view.windows.back",
+        "setup.view.windows.backHelp",
+        "setup.view.windows.check",
+        "setup.view.windows.choiceAccountDetail",
+        "setup.view.windows.choiceAccountName",
+        "setup.view.windows.choiceBackupDetail",
+        "setup.view.windows.choiceManualDetail",
+        "setup.view.windows.deviceSetUp",
+        "setup.view.windows.helpFirewall",
+        "setup.view.windows.helpGuest",
+        "setup.view.windows.helpPowerWifi",
+        "setup.view.windows.helpPrivate",
+        "setup.view.windows.helpTitleNotFound",
+        "setup.view.windows.helpTitleUnreachable",
+        "setup.view.windows.importFailedTitle",
+        "setup.view.windows.ipAccessibility",
+        "setup.view.windows.modeFailedTitle",
+        "setup.view.windows.openNetwork",
+        "setup.view.windows.openNetworkHelp",
+        "setup.view.windows.pastedNone",
+        "setup.view.windows.searchWifiHelp",
+        "setup.view.windows.settingsHelp",
         "startup.handshake",
         "startup.reading",
         "startup.retry",
@@ -18111,6 +21905,31 @@ extension StringsData {
         "timer.title.missed",
         "timer.title.off",
         "timer.title.on",
+        "tray.hint.text",
+        "tray.hint.textWithHotkey",
+        "tray.hint.title",
+        "tray.menu.checkUpdates",
+        "tray.menu.closeMini",
+        "tray.menu.deleteOffTimer",
+        "tray.menu.log",
+        "tray.menu.offInOneHour",
+        "tray.menu.openApp",
+        "tray.menu.quickControls",
+        "tray.menu.quit",
+        "tray.menu.refresh",
+        "tray.menu.scenes",
+        "tray.menu.settings",
+        "tray.menu.turnOff",
+        "tray.menu.turnOn",
+        "tray.tip.connecting",
+        "tray.tip.handshake",
+        "tray.tip.line",
+        "tray.tip.notConfigured",
+        "tray.tip.reading",
+        "tray.tip.roomTarget",
+        "tray.tip.searching",
+        "tray.tip.statusRoom",
+        "tray.tip.statusTarget",
         "updates.checkButton",
         "updates.checking",
         "updates.current",
@@ -18140,6 +21959,12 @@ extension StringsData {
         "app.restartNow": [],
         "app.window.main": [],
         "app.window.mini": [],
+        "app.windows.miniName": [],
+        "app.windows.miniTitle": [],
+        "app.windows.quitting": [],
+        "app.windows.restartFailed": [],
+        "app.windows.settingsTitle": [],
+        "app.windows.uiError": [],
         "appearance.accent.byMode": [],
         "appearance.accent.custom": [],
         "appearance.accent.system": [],
@@ -18269,6 +22094,8 @@ extension StringsData {
         "charts.tile.peakHelp": [],
         "charts.title": [],
         "charts.tooFew": [],
+        "charts.windows.rangeName": ["label"],
+        "charts.windows.tooFew": [],
         "commands.alwaysOnTop": [],
         "commands.checkUpdates": [],
         "commands.cooler": [],
@@ -18282,10 +22109,15 @@ extension StringsData {
         "commands.showDiagnostics": [],
         "commands.showHistory": [],
         "commands.warmer": [],
+        "common.ago.minutes": ["minutes"],
+        "common.ago.never": [],
+        "common.ago.seconds": ["seconds"],
         "common.asOf": ["time"],
         "common.asOfDay": ["date", "time"],
+        "common.atTime": ["time"],
         "common.cancel": [],
         "common.days": ["count"],
+        "common.dismiss": [],
         "common.hours": ["count"],
         "common.minutes": ["count"],
         "common.off": [],
@@ -18295,6 +22127,7 @@ extension StringsData {
         "common.switchOff": [],
         "common.switchOn": [],
         "common.unknown": [],
+        "common.windows.showInExplorer": [],
         "connection.mode.auto": [],
         "connection.mode.cloud": [],
         "connection.mode.lan": [],
@@ -18393,6 +22226,7 @@ extension StringsData {
         "diagnostics.panel.tp": [],
         "diagnostics.panel.unitRpm": [],
         "diagnostics.panel.unitSteps": [],
+        "diagnostics.panel.windows.showInExplorerHelp": [],
         "diagnostics.panel.withTarget": ["value", "target"],
         "energy.cost.approx": ["cost"],
         "energy.help": [],
@@ -18482,6 +22316,24 @@ extension StringsData {
         "host.windows.passwordStorage": [],
         "host.windows.setAsideDevice": [],
         "host.windows.updatesHelp": [],
+        "keys.windows.alt": [],
+        "keys.windows.backspace": [],
+        "keys.windows.ctrl": [],
+        "keys.windows.custom": [],
+        "keys.windows.delete": [],
+        "keys.windows.end": [],
+        "keys.windows.enter": [],
+        "keys.windows.home": [],
+        "keys.windows.insert": [],
+        "keys.windows.none": [],
+        "keys.windows.numpad": ["digit"],
+        "keys.windows.pageDown": [],
+        "keys.windows.pageUp": [],
+        "keys.windows.shift": [],
+        "keys.windows.space": [],
+        "keys.windows.standardSuffix": ["shortcut"],
+        "keys.windows.win": [],
+        "keys.windows.withShortcut": ["text", "shortcut"],
         "main.comfort.display": [],
         "main.comfort.eco": [],
         "main.comfort.frostProtection": [],
@@ -18564,6 +22416,40 @@ extension StringsData {
         "main.timer.set": [],
         "main.timer.switchesOn": ["day", "time"],
         "main.timer.time": [],
+        "main.timer.windows.invalidTime": ["example"],
+        "main.timer.windows.onHelp": [],
+        "main.timer.windows.onNote": ["requirement"],
+        "main.timer.windows.onTimeName": [],
+        "main.timer.windows.onWeekdayDate": ["weekday", "date"],
+        "main.timer.windows.switchesOff": ["when"],
+        "main.timer.windows.timeHelp": ["example"],
+        "main.windows.chartsShow": [],
+        "main.windows.diagnosticsShow": [],
+        "main.windows.dismissMessage": [],
+        "main.windows.dismissNotice": [],
+        "main.windows.fanAutoName": [],
+        "main.windows.fanMarkName": ["label"],
+        "main.windows.fanStatusAuto": [],
+        "main.windows.fanStatusPercent": ["percent"],
+        "main.windows.fanStatusQuiet": [],
+        "main.windows.fanStatusTurbo": [],
+        "main.windows.moreHeader": [],
+        "main.windows.moreHelp": [],
+        "main.windows.moreName": [],
+        "main.windows.paneControls": [],
+        "main.windows.paneGroupName": [],
+        "main.windows.powerToggle": [],
+        "main.windows.ratePercent": ["pct"],
+        "main.windows.reconnectHelp": [],
+        "main.windows.refreshHelp": ["shortcut"],
+        "main.windows.refreshingHelp": [],
+        "main.windows.refreshingName": [],
+        "main.windows.retryHelp": [],
+        "main.windows.roomHero": ["value"],
+        "main.windows.sceneNameAccessibility": [],
+        "main.windows.scenesToggleHelp": [],
+        "main.windows.spokenDone": [],
+        "main.windows.spokenRunning": [],
         "menu.mac.openApp": [],
         "menu.noDevice": [],
         "menu.quit": [],
@@ -18573,6 +22459,7 @@ extension StringsData {
         "message.account.notSaved": [],
         "message.account.running": [],
         "message.account.setupChanged": [],
+        "message.account.windows.notSaved": [],
         "message.backup.nothingToExport": [],
         "message.backup.otherDevice": ["backup", "current"],
         "message.backup.rejected": [],
@@ -18633,6 +22520,9 @@ extension StringsData {
         "message.keychain.unavailable.what": [],
         "message.keychain.unreadable.todo": [],
         "message.keychain.unreadable.what": [],
+        "message.keychain.windows.saveFailed.what": [],
+        "message.keychain.windows.unavailable.todo": [],
+        "message.keychain.windows.unavailable.what": [],
         "message.outdoorSilent.notApplied": [],
         "message.relocate.loginFailed.todo": [],
         "message.relocate.loginFailed.what": ["ip"],
@@ -18660,6 +22550,8 @@ extension StringsData {
         "mode.verb.heat": [],
         "notices.intro": [],
         "notices.licenseText": [],
+        "notices.windows.licenseTextName": ["name"],
+        "notices.windows.trademarks": [],
         "options.address.example": [],
         "options.address.orHost": [],
         "options.fan.autoCaption": [],
@@ -18733,6 +22625,7 @@ extension StringsData {
         "reason.cloud.session": [],
         "reason.cloud.tokenRejected": [],
         "reason.cloud.unreachable": [],
+        "reason.cloud.windows.keychainLocked": [],
         "reason.noCloud": [],
         "reason.noLan": [],
         "reason.noPath": [],
@@ -18818,6 +22711,28 @@ extension StringsData {
         "settings.appearance.weather.help": [],
         "settings.appearance.weather.title": [],
         "settings.appearance.window.section": [],
+        "settings.appearance.windows.blurHelp": [],
+        "settings.appearance.windows.customColorName": ["color"],
+        "settings.appearance.windows.digitsHelp": [],
+        "settings.appearance.windows.digitsPreviewName": [],
+        "settings.appearance.windows.footer": [],
+        "settings.appearance.windows.glowAccessibility": [],
+        "settings.appearance.windows.highContrast": [],
+        "settings.appearance.windows.miniHelp": [],
+        "settings.appearance.windows.reduceMotionSystem": [],
+        "settings.appearance.windows.resetAccessibility": [],
+        "settings.appearance.windows.schemeHelp": [],
+        "settings.appearance.windows.themeAccessibility": ["theme"],
+        "settings.appearance.windows.themeContrastHelp": [],
+        "settings.appearance.windows.themeHelp": [],
+        "settings.appearance.windows.themeMinimalHelp": [],
+        "settings.appearance.windows.themeNeonHelp": [],
+        "settings.appearance.windows.themeNightHelp": [],
+        "settings.appearance.windows.themeStandardHelp": [],
+        "settings.appearance.windows.transparencyAccessibility": [],
+        "settings.appearance.windows.trayAccessibility": [],
+        "settings.appearance.windows.trayHelp": [],
+        "settings.appearance.windows.trayTitle": [],
         "settings.connection.accountHeader": [],
         "settings.connection.accountRemove": [],
         "settings.connection.accountTitle": [],
@@ -18829,6 +22744,9 @@ extension StringsData {
         "settings.connection.signingIn": [],
         "settings.connection.status": [],
         "settings.connection.wayTitle": [],
+        "settings.connection.windows.emailAccessibility": [],
+        "settings.connection.windows.hint": [],
+        "settings.connection.windows.openMain": [],
         "settings.currency.invalid": [],
         "settings.currency.title": [],
         "settings.device.backup.export": [],
@@ -18850,6 +22768,17 @@ extension StringsData {
         "settings.device.relocate.help": [],
         "settings.device.section": [],
         "settings.device.viaAccount": [],
+        "settings.device.windows.backupDone": [],
+        "settings.device.windows.backupFilter": [],
+        "settings.device.windows.backupMissing": [],
+        "settings.device.windows.forgetFailedTitle": [],
+        "settings.device.windows.importButtonBusy": [],
+        "settings.device.windows.importDeclined": [],
+        "settings.device.windows.importFilter": [],
+        "settings.device.windows.importing": [],
+        "settings.device.windows.openDataFolder": [],
+        "settings.device.windows.setAsideNote": ["name"],
+        "settings.general.apply": [],
         "settings.general.csvHelp": [],
         "settings.general.csvTitle": [],
         "settings.general.currencyAccessibility": [],
@@ -18885,6 +22814,42 @@ extension StringsData {
         "settings.general.soundTitle": [],
         "settings.general.updatesSection": [],
         "settings.general.versionTitle": ["version"],
+        "settings.general.windows.autostartAddFailed": [],
+        "settings.general.windows.autostartFailedTitle": [],
+        "settings.general.windows.autostartHelp": [],
+        "settings.general.windows.autostartMissing": ["path"],
+        "settings.general.windows.autostartOther": ["path"],
+        "settings.general.windows.autostartRemoveFailed": [],
+        "settings.general.windows.autostartTitle": [],
+        "settings.general.windows.csvFilter": [],
+        "settings.general.windows.customAccessibility": [],
+        "settings.general.windows.customHelp": [],
+        "settings.general.windows.customTitle": [],
+        "settings.general.windows.exportHelp": [],
+        "settings.general.windows.exporting": [],
+        "settings.general.windows.hotkeyAccessibility": [],
+        "settings.general.windows.hotkeyF12": [],
+        "settings.general.windows.hotkeyHelp": [],
+        "settings.general.windows.hotkeyInvalid": ["example"],
+        "settings.general.windows.hotkeyOff": [],
+        "settings.general.windows.hotkeyOn": ["shortcut"],
+        "settings.general.windows.hotkeyTitle": [],
+        "settings.general.windows.iconAlways": [],
+        "settings.general.windows.iconAlwaysLabel": [],
+        "settings.general.windows.iconKeys": ["win", "shift"],
+        "settings.general.windows.iconKeysLabel": [],
+        "settings.general.windows.inWindowKeys": ["ctrl"],
+        "settings.general.windows.inWindowLabel": [],
+        "settings.general.windows.nameHelp": [],
+        "settings.general.windows.pressKeys": [],
+        "settings.general.windows.priceFailedTitle": [],
+        "settings.general.windows.priceNotNumber": ["example"],
+        "settings.general.windows.refreshFailedTitle": [],
+        "settings.general.windows.refreshOutOfRange": ["min", "max"],
+        "settings.general.windows.sectionKeyboard": [],
+        "settings.general.windows.updatesSetupOnly": [],
+        "settings.general.windows.updatesSigned": [],
+        "settings.general.windows.versionLine": ["version", "folder"],
         "settings.language.english": [],
         "settings.language.german": [],
         "settings.language.restartHint": [],
@@ -18904,6 +22869,9 @@ extension StringsData {
         "settings.log.legend": [],
         "settings.log.mac.showInFinder": [],
         "settings.log.refresh": [],
+        "settings.log.windows.eventsOnlyHelp": [],
+        "settings.log.windows.notCleared": [],
+        "settings.log.windows.showInExplorer": [],
         "settings.price.invalid": [],
         "settings.tabs.appearance": [],
         "settings.tabs.connection": [],
@@ -18912,6 +22880,7 @@ extension StringsData {
         "settings.tabs.log": [],
         "settings.tabs.notices": [],
         "settings.updates.betaChannel": [],
+        "settings.windows.notApplied": [],
         "setup.busy": [],
         "setup.cloud.applianceOffline": [],
         "setup.cloud.error": ["message", "code"],
@@ -19013,6 +22982,32 @@ extension StringsData {
         "setup.view.step.credentials": [],
         "setup.view.step.device": [],
         "setup.view.step.find": [],
+        "setup.view.windows.accountHint": [],
+        "setup.view.windows.accountIntro": [],
+        "setup.view.windows.accountWarning": [],
+        "setup.view.windows.applianceIdExample": [],
+        "setup.view.windows.back": [],
+        "setup.view.windows.backHelp": [],
+        "setup.view.windows.check": [],
+        "setup.view.windows.choiceAccountDetail": [],
+        "setup.view.windows.choiceAccountName": [],
+        "setup.view.windows.choiceBackupDetail": [],
+        "setup.view.windows.choiceManualDetail": [],
+        "setup.view.windows.deviceSetUp": [],
+        "setup.view.windows.helpFirewall": [],
+        "setup.view.windows.helpGuest": [],
+        "setup.view.windows.helpPowerWifi": [],
+        "setup.view.windows.helpPrivate": [],
+        "setup.view.windows.helpTitleNotFound": [],
+        "setup.view.windows.helpTitleUnreachable": [],
+        "setup.view.windows.importFailedTitle": [],
+        "setup.view.windows.ipAccessibility": [],
+        "setup.view.windows.modeFailedTitle": [],
+        "setup.view.windows.openNetwork": [],
+        "setup.view.windows.openNetworkHelp": [],
+        "setup.view.windows.pastedNone": [],
+        "setup.view.windows.searchWifiHelp": [],
+        "setup.view.windows.settingsHelp": [],
         "startup.handshake": [],
         "startup.reading": [],
         "startup.retry": [],
@@ -19061,6 +23056,31 @@ extension StringsData {
         "timer.title.missed": [],
         "timer.title.off": [],
         "timer.title.on": [],
+        "tray.hint.text": [],
+        "tray.hint.textWithHotkey": ["hotkey"],
+        "tray.hint.title": [],
+        "tray.menu.checkUpdates": [],
+        "tray.menu.closeMini": [],
+        "tray.menu.deleteOffTimer": ["time"],
+        "tray.menu.log": [],
+        "tray.menu.offInOneHour": [],
+        "tray.menu.openApp": [],
+        "tray.menu.quickControls": [],
+        "tray.menu.quit": [],
+        "tray.menu.refresh": [],
+        "tray.menu.scenes": [],
+        "tray.menu.settings": [],
+        "tray.menu.turnOff": [],
+        "tray.menu.turnOn": [],
+        "tray.tip.connecting": [],
+        "tray.tip.handshake": [],
+        "tray.tip.line": ["name", "text"],
+        "tray.tip.notConfigured": [],
+        "tray.tip.reading": [],
+        "tray.tip.roomTarget": ["room", "target"],
+        "tray.tip.searching": [],
+        "tray.tip.statusRoom": ["status", "room"],
+        "tray.tip.statusTarget": ["status", "target"],
         "updates.checkButton": [],
         "updates.checking": [],
         "updates.current": [],
@@ -19102,6 +23122,20 @@ public enum L {
             public static var main: String { Localizer.text("app.window.main") }
             /// Mini window
             public static var mini: String { Localizer.text("app.window.mini") }
+        }
+        public enum Windows {
+            /// Klimacontrol mini window
+            public static var miniName: String { Localizer.text("app.windows.miniName") }
+            /// Klimacontrol mini window
+            public static var miniTitle: String { Localizer.text("app.windows.miniTitle") }
+            /// Klimacontrol is quitting. The command was not carried out.
+            public static var quitting: String { Localizer.text("app.windows.quitting") }
+            /// Klimacontrol could not restart itself. Please start it manually.
+            public static var restartFailed: String { Localizer.text("app.windows.restartFailed") }
+            /// Klimacontrol settings
+            public static var settingsTitle: String { Localizer.text("app.windows.settingsTitle") }
+            /// Something went wrong in the interface. Klimacontrol keeps running. If something stops responding, q…
+            public static var uiError: String { Localizer.text("app.windows.uiError") }
         }
     }
     public enum Appearance {
@@ -19401,6 +23435,12 @@ public enum L {
         public static var title: String { Localizer.text("charts.title") }
         /// Not enough data yet. The history fills with every refresh of the air conditioner.
         public static var tooFew: String { Localizer.text("charts.tooFew") }
+        public enum Windows {
+            /// Period {label}
+            public static func rangeName(label: String) -> String { Localizer.text("charts.windows.rangeName", ["label": label]) }
+            /// Not enough data yet. The history fills every 10 seconds.
+            public static var tooFew: String { Localizer.text("charts.windows.tooFew") }
+        }
     }
     public enum Commands {
         /// Always on top
@@ -19431,14 +23471,26 @@ public enum L {
         public static var warmer: String { Localizer.text("commands.warmer") }
     }
     public enum Common {
+        public enum Ago {
+            /// {minutes} min ago
+            public static func minutes(minutes: String) -> String { Localizer.text("common.ago.minutes", ["minutes": minutes]) }
+            /// not read yet
+            public static var never: String { Localizer.text("common.ago.never") }
+            /// {seconds} s ago
+            public static func seconds(seconds: String) -> String { Localizer.text("common.ago.seconds", ["seconds": seconds]) }
+        }
         /// As of {time}
         public static func asOf(time: String) -> String { Localizer.text("common.asOf", ["time": time]) }
         /// As of {date}, {time}
         public static func asOfDay(date: String, time: String) -> String { Localizer.text("common.asOfDay", ["date": date, "time": time]) }
+        /// at {time}
+        public static func atTime(time: String) -> String { Localizer.text("common.atTime", ["time": time]) }
         /// Cancel
         public static var cancel: String { Localizer.text("common.cancel") }
         /// {count} days
         public static func days(count: Int) -> String { Localizer.plural("common.days", count: count) }
+        /// Dismiss
+        public static var dismiss: String { Localizer.text("common.dismiss") }
         /// {count} hours
         public static func hours(count: Int) -> String { Localizer.plural("common.hours", count: count) }
         /// {count} minutes
@@ -19457,6 +23509,10 @@ public enum L {
         public static var switchOn: String { Localizer.text("common.switchOn") }
         /// unknown
         public static var unknown: String { Localizer.text("common.unknown") }
+        public enum Windows {
+            /// Show in File Explorer
+            public static var showInExplorer: String { Localizer.text("common.windows.showInExplorer") }
+        }
     }
     public enum Connection {
         public enum Mode {
@@ -19676,6 +23732,10 @@ public enum L {
             public static var unitRpm: String { Localizer.text("diagnostics.panel.unitRpm") }
             /// steps
             public static var unitSteps: String { Localizer.text("diagnostics.panel.unitSteps") }
+            public enum Windows {
+                /// Open the data folder and select verlauf.sqlite
+                public static var showInExplorerHelp: String { Localizer.text("diagnostics.panel.windows.showInExplorerHelp") }
+            }
             /// {value} (target {target})
             public static func withTarget(value: String, target: String) -> String { Localizer.text("diagnostics.panel.withTarget", ["value": value, "target": target]) }
         }
@@ -19890,6 +23950,46 @@ public enum L {
             public static var updatesHelp: String { Localizer.text("host.windows.updatesHelp") }
         }
     }
+    public enum Keys {
+        public enum Windows {
+            /// Alt
+            public static var alt: String { Localizer.text("keys.windows.alt") }
+            /// Backspace
+            public static var backspace: String { Localizer.text("keys.windows.backspace") }
+            /// Ctrl
+            public static var ctrl: String { Localizer.text("keys.windows.ctrl") }
+            /// Custom combination…
+            public static var custom: String { Localizer.text("keys.windows.custom") }
+            /// Del
+            public static var delete: String { Localizer.text("keys.windows.delete") }
+            /// End
+            public static var end: String { Localizer.text("keys.windows.end") }
+            /// Enter
+            public static var enter: String { Localizer.text("keys.windows.enter") }
+            /// Home
+            public static var home: String { Localizer.text("keys.windows.home") }
+            /// Ins
+            public static var insert: String { Localizer.text("keys.windows.insert") }
+            /// Off
+            public static var none: String { Localizer.text("keys.windows.none") }
+            /// Numpad {digit}
+            public static func numpad(digit: String) -> String { Localizer.text("keys.windows.numpad", ["digit": digit]) }
+            /// PgDn
+            public static var pageDown: String { Localizer.text("keys.windows.pageDown") }
+            /// PgUp
+            public static var pageUp: String { Localizer.text("keys.windows.pageUp") }
+            /// Shift
+            public static var shift: String { Localizer.text("keys.windows.shift") }
+            /// Space
+            public static var space: String { Localizer.text("keys.windows.space") }
+            /// {shortcut} (default)
+            public static func standardSuffix(shortcut: String) -> String { Localizer.text("keys.windows.standardSuffix", ["shortcut": shortcut]) }
+            /// Win
+            public static var win: String { Localizer.text("keys.windows.win") }
+            /// {text} ({shortcut})
+            public static func withShortcut(text: String, shortcut: String) -> String { Localizer.text("keys.windows.withShortcut", ["text": text, "shortcut": shortcut]) }
+        }
+    }
     public enum Main {
         public enum Comfort {
             /// Display
@@ -20088,6 +24188,78 @@ public enum L {
             public static func switchesOn(day: String, time: String) -> String { Localizer.text("main.timer.switchesOn", ["day": day, "time": time]) }
             /// Time
             public static var time: String { Localizer.text("main.timer.time") }
+            public enum Windows {
+                /// That is not a valid time. Enter the hour and minute, for example {example}.
+                public static func invalidTime(example: String) -> String { Localizer.text("main.timer.windows.invalidTime", ["example": example]) }
+                /// Turns the air conditioner on at the chosen time
+                public static var onHelp: String { Localizer.text("main.timer.windows.onHelp") }
+                /// Uses the most recent settings. {requirement} Klimacontrol keeps the computer awake until then.
+                public static func onNote(requirement: String) -> String { Localizer.text("main.timer.windows.onNote", ["requirement": requirement]) }
+                /// Time to turn on
+                public static var onTimeName: String { Localizer.text("main.timer.windows.onTimeName") }
+                /// on {weekday}, {date}
+                public static func onWeekdayDate(weekday: String, date: String) -> String { Localizer.text("main.timer.windows.onWeekdayDate", ["weekday": weekday, "date": date]) }
+                /// Turns off {when}
+                public static func switchesOff(when: String) -> String { Localizer.text("main.timer.windows.switchesOff", ["when": when]) }
+                /// Time, for example {example}
+                public static func timeHelp(example: String) -> String { Localizer.text("main.timer.windows.timeHelp", ["example": example]) }
+            }
+        }
+        public enum Windows {
+            /// Show history on the left
+            public static var chartsShow: String { Localizer.text("main.windows.chartsShow") }
+            /// Show diagnostics on the right
+            public static var diagnosticsShow: String { Localizer.text("main.windows.diagnosticsShow") }
+            /// Dismiss message
+            public static var dismissMessage: String { Localizer.text("main.windows.dismissMessage") }
+            /// Dismiss notice
+            public static var dismissNotice: String { Localizer.text("main.windows.dismissNotice") }
+            /// Fan automatic
+            public static var fanAutoName: String { Localizer.text("main.windows.fanAutoName") }
+            /// Fan {label}
+            public static func fanMarkName(label: String) -> String { Localizer.text("main.windows.fanMarkName", ["label": label]) }
+            /// automatic
+            public static var fanStatusAuto: String { Localizer.text("main.windows.fanStatusAuto") }
+            /// {percent} percent
+            public static func fanStatusPercent(percent: String) -> String { Localizer.text("main.windows.fanStatusPercent", ["percent": percent]) }
+            /// Quiet outdoor, 1 percent
+            public static var fanStatusQuiet: String { Localizer.text("main.windows.fanStatusQuiet") }
+            /// Turbo, 100 percent
+            public static var fanStatusTurbo: String { Localizer.text("main.windows.fanStatusTurbo") }
+            /// MORE…
+            public static var moreHeader: String { Localizer.text("main.windows.moreHeader") }
+            /// Show or hide comfort, more features, and scenes
+            public static var moreHelp: String { Localizer.text("main.windows.moreHelp") }
+            /// More
+            public static var moreName: String { Localizer.text("main.windows.moreName") }
+            /// Controls
+            public static var paneControls: String { Localizer.text("main.windows.paneControls") }
+            /// Sections
+            public static var paneGroupName: String { Localizer.text("main.windows.paneGroupName") }
+            /// On/Off
+            public static var powerToggle: String { Localizer.text("main.windows.powerToggle") }
+            /// Power {pct} percent
+            public static func ratePercent(pct: String) -> String { Localizer.text("main.windows.ratePercent", ["pct": pct]) }
+            /// Reconnect right away
+            public static var reconnectHelp: String { Localizer.text("main.windows.reconnectHelp") }
+            /// Refresh now; tries every connection again ({shortcut} or F5)
+            public static func refreshHelp(shortcut: String) -> String { Localizer.text("main.windows.refreshHelp", ["shortcut": shortcut]) }
+            /// Refreshing…
+            public static var refreshingHelp: String { Localizer.text("main.windows.refreshingHelp") }
+            /// Refreshing
+            public static var refreshingName: String { Localizer.text("main.windows.refreshingName") }
+            /// Refresh right away
+            public static var retryHelp: String { Localizer.text("main.windows.retryHelp") }
+            /// Room temperature {value}
+            public static func roomHero(value: String) -> String { Localizer.text("main.windows.roomHero", ["value": value]) }
+            /// Scene name
+            public static var sceneNameAccessibility: String { Localizer.text("main.windows.sceneNameAccessibility") }
+            /// Show or hide scenes
+            public static var scenesToggleHelp: String { Localizer.text("main.windows.scenesToggleHelp") }
+            /// done
+            public static var spokenDone: String { Localizer.text("main.windows.spokenDone") }
+            /// in progress
+            public static var spokenRunning: String { Localizer.text("main.windows.spokenRunning") }
         }
     }
     public enum Menu {
@@ -20114,6 +24286,10 @@ public enum L {
             public static var running: String { Localizer.text("message.account.running") }
             /// The setup changed during sign-in. Please sign in again.
             public static var setupChanged: String { Localizer.text("message.account.setupChanged") }
+            public enum Windows {
+                /// The Midea account was not saved in Windows Credential Manager. Check access to Windows Credential M…
+                public static var notSaved: String { Localizer.text("message.account.windows.notSaved") }
+            }
         }
         public enum Backup {
             /// No air conditioner is set up yet. Set one up first.
@@ -20300,6 +24476,18 @@ public enum L {
                 /// The stored entry is unreadable.
                 public static var what: String { Localizer.text("message.keychain.unreadable.what") }
             }
+            public enum Windows {
+                public enum SaveFailed {
+                    /// The credentials could not be saved in Windows Credential Manager.
+                    public static var what: String { Localizer.text("message.keychain.windows.saveFailed.what") }
+                }
+                public enum Unavailable {
+                    /// Unlock Windows or allow access, then try again.
+                    public static var todo: String { Localizer.text("message.keychain.windows.unavailable.todo") }
+                    /// Windows Credential Manager is locked or denied access.
+                    public static var what: String { Localizer.text("message.keychain.windows.unavailable.what") }
+                }
+            }
         }
         public enum OutdoorSilent {
             /// The air conditioner did not apply “Quiet outdoor unit”. This only works when cooling or heating.
@@ -20373,6 +24561,12 @@ public enum L {
         public static var intro: String { Localizer.text("notices.intro") }
         /// License text
         public static var licenseText: String { Localizer.text("notices.licenseText") }
+        public enum Windows {
+            /// License text {name}
+            public static func licenseTextName(name: String) -> String { Localizer.text("notices.windows.licenseTextName", ["name": name]) }
+            /// Klimacontrol is not a Midea product and is not affiliated with Midea. Midea, MSmartHome, NetHome Pl…
+            public static var trademarks: String { Localizer.text("notices.windows.trademarks") }
+        }
     }
     public enum Options {
         public enum Address {
@@ -20554,6 +24748,10 @@ public enum L {
             public static var tokenRejected: String { Localizer.text("reason.cloud.tokenRejected") }
             /// Cloud not reachable
             public static var unreachable: String { Localizer.text("reason.cloud.unreachable") }
+            public enum Windows {
+                /// Windows Credential Manager is locked. Unlock Windows; Klimacontrol will then try again on its own.
+                public static var keychainLocked: String { Localizer.text("reason.cloud.windows.keychainLocked") }
+            }
         }
         /// Cloud not set up; sign in once with the Midea account
         public static var noCloud: String { Localizer.text("reason.noCloud") }
@@ -20796,6 +24994,52 @@ public enum L {
                 /// Window
                 public static var section: String { Localizer.text("settings.appearance.window.section") }
             }
+            public enum Windows {
+                /// How softly the background blurs behind the cards. On Windows this comes from the system’s glass eff…
+                public static var blurHelp: String { Localizer.text("settings.appearance.windows.blurHelp") }
+                /// Custom color {color}
+                public static func customColorName(color: String) -> String { Localizer.text("settings.appearance.windows.customColorName", ["color": color]) }
+                /// Style of the large number, with a preview next to it.
+                public static var digitsHelp: String { Localizer.text("settings.appearance.windows.digitsHelp") }
+                /// Digit style preview
+                public static var digitsPreviewName: String { Localizer.text("settings.appearance.windows.digitsPreviewName") }
+                /// All values on this tab take effect immediately and are saved.
+                public static var footer: String { Localizer.text("settings.appearance.windows.footer") }
+                /// Temperature glow in percent
+                public static var glowAccessibility: String { Localizer.text("settings.appearance.windows.glowAccessibility") }
+                /// High contrast is on in Windows: the colors of the contrast theme apply.
+                public static var highContrast: String { Localizer.text("settings.appearance.windows.highContrast") }
+                /// Small floating window with temperature and on/off.
+                public static var miniHelp: String { Localizer.text("settings.appearance.windows.miniHelp") }
+                /// “Animation effects” is turned off in Windows settings (Accessibility → Visual effects); effects sta…
+                public static var reduceMotionSystem: String { Localizer.text("settings.appearance.windows.reduceMotionSystem") }
+                /// Reset appearance to default
+                public static var resetAccessibility: String { Localizer.text("settings.appearance.windows.resetAccessibility") }
+                /// Light, dark, or same as Windows.
+                public static var schemeHelp: String { Localizer.text("settings.appearance.windows.schemeHelp") }
+                /// Theme {theme}
+                public static func themeAccessibility(theme: String) -> String { Localizer.text("settings.appearance.windows.themeAccessibility", ["theme": theme]) }
+                /// Opaque surfaces, easy to read.
+                public static var themeContrastHelp: String { Localizer.text("settings.appearance.windows.themeContrastHelp") }
+                /// A theme sets all values below at once; you can then change each one separately.
+                public static var themeHelp: String { Localizer.text("settings.appearance.windows.themeHelp") }
+                /// Thin type, almost colorless.
+                public static var themeMinimalHelp: String { Localizer.text("settings.appearance.windows.themeMinimalHelp") }
+                /// Glowing edges, vivid colors.
+                public static var themeNeonHelp: String { Localizer.text("settings.appearance.windows.themeNeonHelp") }
+                /// Dimmed with little red, comfortable in a dark room.
+                public static var themeNightHelp: String { Localizer.text("settings.appearance.windows.themeNightHelp") }
+                /// As before: glass, colors by mode.
+                public static var themeStandardHelp: String { Localizer.text("settings.appearance.windows.themeStandardHelp") }
+                /// Transparency in percent
+                public static var transparencyAccessibility: String { Localizer.text("settings.appearance.windows.transparencyAccessibility") }
+                /// Notification area display
+                public static var trayAccessibility: String { Localizer.text("settings.appearance.windows.trayAccessibility") }
+                /// What the icon in the notification area and its tooltip show.
+                public static var trayHelp: String { Localizer.text("settings.appearance.windows.trayHelp") }
+                /// Notification area
+                public static var trayTitle: String { Localizer.text("settings.appearance.windows.trayTitle") }
+            }
         }
         public enum Connection {
             /// Midea account: control from anywhere
@@ -20820,6 +25064,14 @@ public enum L {
             public static var status: String { Localizer.text("settings.connection.status") }
             /// Connection to the air conditioner
             public static var wayTitle: String { Localizer.text("settings.connection.wayTitle") }
+            public enum Windows {
+                /// Email
+                public static var emailAccessibility: String { Localizer.text("settings.connection.windows.emailAccessibility") }
+                /// Note: Midea reports “account signed in elsewhere” at every sign-in. This can end the sign-in on oth…
+                public static var hint: String { Localizer.text("settings.connection.windows.hint") }
+                /// Open main window
+                public static var openMain: String { Localizer.text("settings.connection.windows.openMain") }
+            }
         }
         public enum Currency {
             /// The currency must have one to three characters: letters or a currency sign, no digits. Please corre…
@@ -20880,8 +25132,32 @@ public enum L {
             public static var section: String { Localizer.text("settings.device.section") }
             /// via Midea account
             public static var viaAccount: String { Localizer.text("settings.device.viaAccount") }
+            public enum Windows {
+                /// ✓ Credentials backed up. Back up again after any change, such as a new setup.
+                public static var backupDone: String { Localizer.text("settings.device.windows.backupDone") }
+                /// Klimacontrol backup (*.json)|*.json
+                public static var backupFilter: String { Localizer.text("settings.device.windows.backupFilter") }
+                /// Not backed up yet. Without a backup, the air conditioner has to be found again on a new computer or…
+                public static var backupMissing: String { Localizer.text("settings.device.windows.backupMissing") }
+                /// Not reset
+                public static var forgetFailedTitle: String { Localizer.text("settings.device.windows.forgetFailedTitle") }
+                /// Restoring…
+                public static var importButtonBusy: String { Localizer.text("settings.device.windows.importButtonBusy") }
+                /// Not restored. The current setup is kept.
+                public static var importDeclined: String { Localizer.text("settings.device.windows.importDeclined") }
+                /// Klimacontrol backup (*.json)|*.json|All files|*.*
+                public static var importFilter: String { Localizer.text("settings.device.windows.importFilter") }
+                /// Restoring the backup and checking it with the air conditioner…
+                public static var importing: String { Localizer.text("settings.device.windows.importing") }
+                /// Open data folder
+                public static var openDataFolder: String { Localizer.text("settings.device.windows.openDataFolder") }
+                /// The previous setup is stored as “{name}” in the data folder. It contains the token and key of the o…
+                public static func setAsideNote(name: String) -> String { Localizer.text("settings.device.windows.setAsideNote", ["name": name]) }
+            }
         }
         public enum General {
+            /// Apply
+            public static var apply: String { Localizer.text("settings.general.apply") }
             /// The history is always stored in verlauf.sqlite. Optionally, a line is also written to verlauf.csv e…
             public static var csvHelp: String { Localizer.text("settings.general.csvHelp") }
             /// Also write as CSV
@@ -20954,6 +25230,80 @@ public enum L {
             public static var updatesSection: String { Localizer.text("settings.general.updatesSection") }
             /// Version {version}
             public static func versionTitle(version: String) -> String { Localizer.text("settings.general.versionTitle", ["version": version]) }
+            public enum Windows {
+                /// Klimacontrol could not be added to startup. Windows denied access. Check Settings → Apps → Startup …
+                public static var autostartAddFailed: String { Localizer.text("settings.general.windows.autostartAddFailed") }
+                /// Startup not changed
+                public static var autostartFailedTitle: String { Localizer.text("settings.general.windows.autostartFailedTitle") }
+                /// Starts at sign-in in the notification area only. Timers and history run only while Klimacontrol is …
+                public static var autostartHelp: String { Localizer.text("settings.general.windows.autostartHelp") }
+                /// The startup entry points to a file that no longer exists ({path}). Klimacontrol therefore does not …
+                public static func autostartMissing(path: String) -> String { Localizer.text("settings.general.windows.autostartMissing", ["path": path]) }
+                /// The startup entry points to a different Klimacontrol file ({path}). Select the checkbox to register…
+                public static func autostartOther(path: String) -> String { Localizer.text("settings.general.windows.autostartOther", ["path": path]) }
+                /// Klimacontrol could not be removed from startup. Windows denied access. Turn it off in Settings → Ap…
+                public static var autostartRemoveFailed: String { Localizer.text("settings.general.windows.autostartRemoveFailed") }
+                /// Start with Windows
+                public static var autostartTitle: String { Localizer.text("settings.general.windows.autostartTitle") }
+                /// CSV (*.csv)|*.csv
+                public static var csvFilter: String { Localizer.text("settings.general.windows.csvFilter") }
+                /// New key combination
+                public static var customAccessibility: String { Localizer.text("settings.general.windows.customAccessibility") }
+                /// Click the field and press the keys together, including Ctrl, Alt, or Win. Esc cancels.
+                public static var customHelp: String { Localizer.text("settings.general.windows.customHelp") }
+                /// Custom combination
+                public static var customTitle: String { Localizer.text("settings.general.windows.customTitle") }
+                /// As a CSV file with local time and column names in the app language, for example for Excel.
+                public static var exportHelp: String { Localizer.text("settings.general.windows.exportHelp") }
+                /// Exporting…
+                public static var exporting: String { Localizer.text("settings.general.windows.exporting") }
+                /// Keyboard shortcut for the window at the notification area
+                public static var hotkeyAccessibility: String { Localizer.text("settings.general.windows.hotkeyAccessibility") }
+                /// F12 is reserved by Windows. Choose a different key.
+                public static var hotkeyF12: String { Localizer.text("settings.general.windows.hotkeyF12") }
+                /// Keyboard shortcut that works in every program.
+                public static var hotkeyHelp: String { Localizer.text("settings.general.windows.hotkeyHelp") }
+                /// This combination does not work. Press it together with Ctrl, Alt, or Win, for example {example}.
+                public static func hotkeyInvalid(example: String) -> String { Localizer.text("settings.general.windows.hotkeyInvalid", ["example": example]) }
+                /// ✓ No keyboard shortcut. The window opens when you click the icon in the notification area.
+                public static var hotkeyOff: String { Localizer.text("settings.general.windows.hotkeyOff") }
+                /// ✓ {shortcut} opens the window at the notification area, in any program.
+                public static func hotkeyOn(shortcut: String) -> String { Localizer.text("settings.general.windows.hotkeyOn", ["shortcut": shortcut]) }
+                /// Open the window at the notification area
+                public static var hotkeyTitle: String { Localizer.text("settings.general.windows.hotkeyTitle") }
+                /// Settings → Personalization → Taskbar → Other system tray icons → turn on Klimacontrol.
+                public static var iconAlways: String { Localizer.text("settings.general.windows.iconAlways") }
+                /// Always show the icon:
+                public static var iconAlwaysLabel: String { Localizer.text("settings.general.windows.iconAlwaysLabel") }
+                /// {win}+B moves focus to the notification area; use the arrow keys to reach the icon. Enter opens the…
+                public static func iconKeys(win: String, shift: String) -> String { Localizer.text("settings.general.windows.iconKeys", ["win": win, "shift": shift]) }
+                /// Icon by keyboard:
+                public static var iconKeysLabel: String { Localizer.text("settings.general.windows.iconKeysLabel") }
+                /// {ctrl}+P on/off · {ctrl}+↑/↓ temperature · F5 or {ctrl}+R refresh · {ctrl}+G history · {ctrl}+D dia…
+                public static func inWindowKeys(ctrl: String) -> String { Localizer.text("settings.general.windows.inWindowKeys", ["ctrl": ctrl]) }
+                /// In the window:
+                public static var inWindowLabel: String { Localizer.text("settings.general.windows.inWindowLabel") }
+                /// Shown in the window and in the notification area.
+                public static var nameHelp: String { Localizer.text("settings.general.windows.nameHelp") }
+                /// Press keys…
+                public static var pressKeys: String { Localizer.text("settings.general.windows.pressKeys") }
+                /// Electricity price not applied
+                public static var priceFailedTitle: String { Localizer.text("settings.general.windows.priceFailedTitle") }
+                /// The value is not a number. Enter a price such as {example}. (price)
+                public static func priceNotNumber(example: String) -> String { Localizer.text("settings.general.windows.priceNotNumber", ["example": example]) }
+                /// Refresh interval not applied
+                public static var refreshFailedTitle: String { Localizer.text("settings.general.windows.refreshFailedTitle") }
+                /// The value is outside the allowed range. Enter a whole number from {min} to {max} seconds.
+                public static func refreshOutOfRange(min: String, max: String) -> String { Localizer.text("settings.general.windows.refreshOutOfRange", ["min": min, "max": max]) }
+                /// Keyboard
+                public static var sectionKeyboard: String { Localizer.text("settings.general.windows.sectionKeyboard") }
+                /// Automatic updates are available only when installed with the setup program.
+                public static var updatesSetupOnly: String { Localizer.text("settings.general.windows.updatesSetupOnly") }
+                /// New versions are signed and come only from the project’s release page.
+                public static var updatesSigned: String { Localizer.text("settings.general.windows.updatesSigned") }
+                /// Klimacontrol {version} for Windows · data in {folder}
+                public static func versionLine(version: String, folder: String) -> String { Localizer.text("settings.general.windows.versionLine", ["version": version, "folder": folder]) }
+            }
         }
         public enum Language {
             /// English
@@ -21004,6 +25354,14 @@ public enum L {
             }
             /// Refresh
             public static var refresh: String { Localizer.text("settings.log.refresh") }
+            public enum Windows {
+                /// Hides the detailed lines (messages to the air conditioner and Midea) in the view; the file stays co…
+                public static var eventsOnlyHelp: String { Localizer.text("settings.log.windows.eventsOnlyHelp") }
+                /// Log not cleared
+                public static var notCleared: String { Localizer.text("settings.log.windows.notCleared") }
+                /// Show log in File Explorer
+                public static var showInExplorer: String { Localizer.text("settings.log.windows.showInExplorer") }
+            }
         }
         public enum Price {
             /// The electricity price must be between 0 and 1000 per kWh. Please correct it. (price)
@@ -21026,6 +25384,10 @@ public enum L {
         public enum Updates {
             /// Receive pre-release (beta) versions
             public static var betaChannel: String { Localizer.text("settings.updates.betaChannel") }
+        }
+        public enum Windows {
+            /// Not applied
+            public static var notApplied: String { Localizer.text("settings.windows.notApplied") }
         }
     }
     public enum Setup {
@@ -21282,6 +25644,60 @@ public enum L {
                 /// Find the air conditioner
                 public static var find: String { Localizer.text("setup.view.step.find") }
             }
+            public enum Windows {
+                /// The account of the MSmartHome app. The password goes only to Midea and is not saved.
+                public static var accountHint: String { Localizer.text("setup.view.windows.accountHint") }
+                /// Klimacontrol gets the token and key once through your account. Through the account it also works ov…
+                public static var accountIntro: String { Localizer.text("setup.view.windows.accountIntro") }
+                /// Signing in can sign out the MSmartHome app or another computer that uses this account (“account sig…
+                public static var accountWarning: String { Localizer.text("setup.view.windows.accountWarning") }
+                /// from the search, for example 123456789012345
+                public static var applianceIdExample: String { Localizer.text("setup.view.windows.applianceIdExample") }
+                /// ‹ Back
+                public static var back: String { Localizer.text("setup.view.windows.back") }
+                /// Back to the choice (Esc)
+                public static var backHelp: String { Localizer.text("setup.view.windows.backHelp") }
+                /// Check
+                public static var check: String { Localizer.text("setup.view.windows.check") }
+                /// Gets the token and key automatically. Also finds the air conditioner when it is off.
+                public static var choiceAccountDetail: String { Localizer.text("setup.view.windows.choiceAccountDetail") }
+                /// With Midea account, recommended
+                public static var choiceAccountName: String { Localizer.text("setup.view.windows.choiceAccountName") }
+                /// A backup file with the credentials, for example from another computer.
+                public static var choiceBackupDetail: String { Localizer.text("setup.view.windows.choiceBackupDetail") }
+                /// You already have the token and key. No Midea account needed.
+                public static var choiceManualDetail: String { Localizer.text("setup.view.windows.choiceManualDetail") }
+                /// Air conditioner set up.
+                public static var deviceSetUp: String { Localizer.text("setup.view.windows.deviceSetUp") }
+                /// The first time Klimacontrol starts, Windows asks whether it may use the network; allow Private netw…
+                public static var helpFirewall: String { Localizer.text("setup.view.windows.helpFirewall") }
+                /// No guest Wi-Fi: it isolates devices from each other. Put the computer and the air conditioner on th…
+                public static var helpGuest: String { Localizer.text("setup.view.windows.helpGuest") }
+                /// The air conditioner is on, and this computer is on the same Wi-Fi network.
+                public static var helpPowerWifi: String { Localizer.text("setup.view.windows.helpPowerWifi") }
+                /// The Wi-Fi network is set to Private: Settings → Network & internet → Wi-Fi → your network → Network…
+                public static var helpPrivate: String { Localizer.text("setup.view.windows.helpPrivate") }
+                /// Nothing found? This often helps:
+                public static var helpTitleNotFound: String { Localizer.text("setup.view.windows.helpTitleNotFound") }
+                /// Air conditioner not responding? This often helps:
+                public static var helpTitleUnreachable: String { Localizer.text("setup.view.windows.helpTitleUnreachable") }
+                /// Backup not restored
+                public static var importFailedTitle: String { Localizer.text("setup.view.windows.importFailedTitle") }
+                /// IP address
+                public static var ipAccessibility: String { Localizer.text("setup.view.windows.ipAccessibility") }
+                /// Connection method not changed
+                public static var modeFailedTitle: String { Localizer.text("setup.view.windows.modeFailedTitle") }
+                /// Open network settings
+                public static var openNetwork: String { Localizer.text("setup.view.windows.openNetwork") }
+                /// Opens Settings → Network & internet → Wi-Fi
+                public static var openNetworkHelp: String { Localizer.text("setup.view.windows.openNetworkHelp") }
+                /// Applied: no change
+                public static var pastedNone: String { Localizer.text("setup.view.windows.pastedNone") }
+                /// Searches for air conditioners on Wi-Fi
+                public static var searchWifiHelp: String { Localizer.text("setup.view.windows.searchWifiHelp") }
+                /// Log and connection are in Settings
+                public static var settingsHelp: String { Localizer.text("setup.view.windows.settingsHelp") }
+            }
         }
     }
     public enum Startup {
@@ -21386,6 +25802,64 @@ public enum L {
             public static var off: String { Localizer.text("timer.title.off") }
             /// Air conditioner turned on
             public static var on: String { Localizer.text("timer.title.on") }
+        }
+    }
+    public enum Tray {
+        public enum Hint {
+            /// The window is closed, but Klimacontrol keeps running in the notification area (possibly behind the …
+            public static var text: String { Localizer.text("tray.hint.text") }
+            /// The window is closed, but Klimacontrol keeps running in the notification area (possibly behind the …
+            public static func textWithHotkey(hotkey: String) -> String { Localizer.text("tray.hint.textWithHotkey", ["hotkey": hotkey]) }
+            /// Klimacontrol keeps running
+            public static var title: String { Localizer.text("tray.hint.title") }
+        }
+        public enum Menu {
+            /// Check for _updates…
+            public static var checkUpdates: String { Localizer.text("tray.menu.checkUpdates") }
+            /// _Close mini window
+            public static var closeMini: String { Localizer.text("tray.menu.closeMini") }
+            /// Delete off ti_mer (off at {time})
+            public static func deleteOffTimer(time: String) -> String { Localizer.text("tray.menu.deleteOffTimer", ["time": time]) }
+            /// _Log
+            public static var log: String { Localizer.text("tray.menu.log") }
+            /// Turn off in _1 hour
+            public static var offInOneHour: String { Localizer.text("tray.menu.offInOneHour") }
+            /// _Open Klimacontrol
+            public static var openApp: String { Localizer.text("tray.menu.openApp") }
+            /// Quick _controls
+            public static var quickControls: String { Localizer.text("tray.menu.quickControls") }
+            /// _Quit
+            public static var quit: String { Localizer.text("tray.menu.quit") }
+            /// _Refresh now
+            public static var refresh: String { Localizer.text("tray.menu.refresh") }
+            /// _Scenes
+            public static var scenes: String { Localizer.text("tray.menu.scenes") }
+            /// Setti_ngs
+            public static var settings: String { Localizer.text("tray.menu.settings") }
+            /// _Turn off
+            public static var turnOff: String { Localizer.text("tray.menu.turnOff") }
+            /// _Turn on
+            public static var turnOn: String { Localizer.text("tray.menu.turnOn") }
+        }
+        public enum Tip {
+            /// connecting…
+            public static var connecting: String { Localizer.text("tray.tip.connecting") }
+            /// signing in to the air conditioner…
+            public static var handshake: String { Localizer.text("tray.tip.handshake") }
+            /// {name}: {text}
+            public static func line(name: String, text: String) -> String { Localizer.text("tray.tip.line", ["name": name, "text": text]) }
+            /// Klimacontrol is not set up
+            public static var notConfigured: String { Localizer.text("tray.tip.notConfigured") }
+            /// reading values…
+            public static var reading: String { Localizer.text("tray.tip.reading") }
+            /// {room} · {target}
+            public static func roomTarget(room: String, target: String) -> String { Localizer.text("tray.tip.roomTarget", ["room": room, "target": target]) }
+            /// finding the air conditioner…
+            public static var searching: String { Localizer.text("tray.tip.searching") }
+            /// {status} · {room}
+            public static func statusRoom(status: String, room: String) -> String { Localizer.text("tray.tip.statusRoom", ["status": status, "room": room]) }
+            /// {status} · {target}
+            public static func statusTarget(status: String, target: String) -> String { Localizer.text("tray.tip.statusTarget", ["status": status, "target": target]) }
         }
     }
     public enum Updates {

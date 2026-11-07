@@ -249,14 +249,18 @@ public struct UserMessage: Equatable, Sendable {
         }
     }
 
-    static func from(_ e: KeychainError) -> UserMessage {
+    static func from(_ e: KeychainError) -> UserMessage { from(e, host: .current) }
+
+    static func from(_ e: KeychainError, host: HostWords) -> UserMessage {
         let raw = e.errorDescription
         switch e {
         case .unavailable(let s):
-            return UserMessage(what: L.Message.Keychain.Unavailable.what, todo: L.Message.Keychain.Unavailable.todo,
+            return UserMessage(what: host.isWindows ? L.Message.Keychain.Windows.Unavailable.what : L.Message.Keychain.Unavailable.what,
+                               todo: host.isWindows ? L.Message.Keychain.Windows.Unavailable.todo : L.Message.Keychain.Unavailable.todo,
                                code: L.Message.Keychain.codeStatus(status: String(s)), detail: raw)
         case .saveFailed(let s):
-            return UserMessage(what: L.Message.Keychain.SaveFailed.what, todo: L.Message.Keychain.SaveFailed.todo,
+            return UserMessage(what: host.isWindows ? L.Message.Keychain.Windows.SaveFailed.what : L.Message.Keychain.SaveFailed.what,
+                               todo: L.Message.Keychain.SaveFailed.todo,
                                code: L.Message.Keychain.codeStatus(status: String(s)), detail: raw)
         case .tooLarge(let n):
             return UserMessage(what: L.Message.Keychain.TooLarge.what, todo: L.Message.Keychain.TooLarge.todo,

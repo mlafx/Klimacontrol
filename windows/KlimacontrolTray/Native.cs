@@ -65,7 +65,7 @@ static class Native
     }
 
     /// Version der C-Schnittstelle (`bridgeAPIVersion` in Bridge.swift); ein Test prüft die Übereinstimmung.
-    public const int ExpectedApi = 2;
+    public const int ExpectedApi = 3;
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     delegate int ApiVersionFn();

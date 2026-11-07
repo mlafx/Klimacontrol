@@ -631,6 +631,37 @@ final class DisplayCatalogTests: CoreTestCase {
         XCTAssertTrue(UIText.accountFooter(signedIn: false, host: .windows).contains("Windows-Anmeldeinformationsverwaltung"))
     }
 
+    func testKeychainMessagesNameTheStoreOfTheHost() {
+        let unavailable = KeychainError.unavailable(-25293)
+        XCTAssertEqual(UserMessage.from(unavailable, host: .mac).text,
+                       "Der Schlüsselbund ist gesperrt oder hat den Zugriff abgelehnt. Mac entsperren bzw. den Zugriff erlauben und erneut versuchen. (Status -25293)")
+        XCTAssertEqual(UserMessage.from(unavailable, host: .windows).text,
+                       "Die Anmeldeinformationsverwaltung ist gesperrt oder hat den Zugriff abgelehnt. Windows entsperren bzw. den Zugriff erlauben und erneut versuchen. (Status -25293)")
+        XCTAssertEqual(UserMessage.from(KeychainError.saveFailed(-1), host: .mac).what,
+                       "Die Zugangsdaten konnten nicht im Schlüsselbund gespeichert werden.")
+        XCTAssertEqual(UserMessage.from(KeychainError.saveFailed(-1), host: .windows).what,
+                       "Die Zugangsdaten konnten nicht in der Anmeldeinformationsverwaltung gespeichert werden.")
+        XCTAssertEqual(keychainLockedText(host: .mac),
+                       "Der Schlüsselbund ist gesperrt. Mac entsperren; Klimacontrol versucht es danach von selbst wieder.")
+        XCTAssertEqual(keychainLockedText(host: .windows),
+                       "Die Anmeldeinformationsverwaltung ist gesperrt. Windows entsperren; Klimacontrol versucht es danach von selbst wieder.")
+        Localizer.withLanguage(.en) {
+            XCTAssertEqual(UserMessage.from(unavailable, host: .windows).what, "Windows Credential Manager is locked or denied access.")
+            XCTAssertEqual(keychainLockedText(host: .windows),
+                           "Windows Credential Manager is locked. Unlock Windows; Klimacontrol will then try again on its own.")
+        }
+    }
+
+    func testNoMacWordsInWindowsVariantsOfKeychainTexts() {
+        let windowsTexts = [
+            L.Message.Keychain.Windows.Unavailable.what, L.Message.Keychain.Windows.Unavailable.todo,
+            L.Message.Keychain.Windows.SaveFailed.what, L.Message.Account.Windows.notSaved, L.Reason.Cloud.Windows.keychainLocked,
+        ]
+        for text in windowsTexts {
+            XCTAssertFalse(text.contains("Schlüsselbund") || text.contains("Mac"), text)
+        }
+    }
+
     // MARK: Hinweise mit Code
 
     func testNoticeKeepsTextAndCodeApart() throws {

@@ -13,16 +13,18 @@ public struct HostWords: Equatable, Sendable {
     public let setAsideDevice: String
     /// Erklärung zu den Updates (Mac installiert still, Windows fragt vor der Installation).
     public let updatesHelp: String
+    /// Windows statt Mac: wählt Texte, die den Schlüsselbund bzw. die Anmeldeinformationsverwaltung nennen.
+    public let isWindows: Bool
 
     public static var mac: HostWords {
         HostWords(computer: L.Host.Mac.computer, credentialStoreDative: L.Host.Mac.credentialStore,
                   passwordStorage: L.Host.Mac.passwordStorage, setAsideDevice: L.Host.Mac.setAsideDevice,
-                  updatesHelp: L.Host.Mac.updatesHelp)
+                  updatesHelp: L.Host.Mac.updatesHelp, isWindows: false)
     }
     public static var windows: HostWords {
         HostWords(computer: L.Host.Windows.computer, credentialStoreDative: L.Host.Windows.credentialStore,
                   passwordStorage: L.Host.Windows.passwordStorage, setAsideDevice: L.Host.Windows.setAsideDevice,
-                  updatesHelp: L.Host.Windows.updatesHelp)
+                  updatesHelp: L.Host.Windows.updatesHelp, isWindows: true)
     }
 
     public static var current: HostWords {

@@ -15,9 +15,9 @@ import KlimacontrolCore
 
 /// Version der C-Schnittstelle. Erhöhen bei jeder Änderung an Funktionen, Befehlen oder Feldern des Schnappschusses,
 /// auf die sich die Oberfläche verlässt. 1 = ohne kc_api_version, 2 = Pflichtparameter,
-/// `apiVersion`/`jsonError` im Schnappschuss, `manual` nur im Weg „Zugangsdaten“ gefüllt. Die Funktionen
-/// `kc_set_locale`/`kc_strings_json` und die Felder `language`/`currency` kamen additiv hinzu (Version bleibt 2).
-let bridgeAPIVersion: Int32 = 2
+/// `apiVersion`/`jsonError` im Schnappschuss, `manual` nur im Weg „Zugangsdaten“ gefüllt, 3 = die Oberfläche ruft
+/// `kc_set_locale` und `kc_strings_json` (Sprache und Texte aus dem Katalog); `language`/`currency` im Schnappschuss.
+let bridgeAPIVersion: Int32 = 3
 
 @MainActor var controller: ACController?
 

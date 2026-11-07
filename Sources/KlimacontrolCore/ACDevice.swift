@@ -88,7 +88,7 @@ public enum CloudAccountError: Error, LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .notSaved:
-            return L.Message.Account.notSaved
+            return HostWords.current.isWindows ? L.Message.Account.Windows.notSaved : L.Message.Account.notSaved
         }
     }
 }

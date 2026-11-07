@@ -7,7 +7,7 @@
     "nextRefreshLine": "Live aus der Anlage · alle 30 s · nächste Abfrage in 12 s"
   },
   "snapshot": {
-    "apiVersion": 2,
+    "apiVersion": 3,
     "beep": true,
     "cloudAccount": "ma***@example.com",
     "cloudLoginRunning": false,

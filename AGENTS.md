@@ -624,7 +624,7 @@ zuerst dort anlegen und in `DisplayCatalogTests` w√∂rtlich festschreiben, dann √
 
 | Funktion | Zweck |
 |---|---|
-| `kc_api_version()` | Version der Schnittstelle (heute **2**) |
+| `kc_api_version()` | Version der Schnittstelle (heute **3**) |
 | `kc_init(version)` | Kern starten (mehrfach harmlos) |
 | `kc_pump()` | Main-Queue einmal leeren |
 | `kc_stop()` | Abfrage, Timer, Verbindung beenden |
