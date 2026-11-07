@@ -63,8 +63,8 @@ public struct FormatProfile: Codable, Equatable, Sendable {
             decimalSeparator: locale.decimalSeparator ?? ".",
             groupingSeparator: locale.groupingSeparator ?? "",
             uses24HourClock: !template.contains("a"),
-            amSymbol: formatter.amSymbol ?? "AM",
-            pmSymbol: formatter.pmSymbol ?? "PM",
+            amSymbol: Optional(formatter.amSymbol) ?? "AM",
+            pmSymbol: Optional(formatter.pmSymbol) ?? "PM",
             dayMonthPattern: pattern.flatMap { isValid(dayMonthPattern: $0) ? $0 : nil } ?? "dd.MM.")
     }
 
