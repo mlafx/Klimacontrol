@@ -38,7 +38,7 @@ final class PromptEnglishTests: XCTestCase {
         XCTAssertEqual(en { HostWords.mac.credentialStoreDative }, "the Keychain")
         XCTAssertEqual(en { HostWords.windows.credentialStoreDative }, "Windows Credential Manager")
         XCTAssertEqual(en { HostWords.windows.computer }, "computer")
-        XCTAssertEqual(en { HostWords.mac.updatesHelp }, "Updates are downloaded and installed automatically. Klimacontrol then restarts briefly.")
+        XCTAssertEqual(en { HostWords.mac.updatesHelp }, "Updates are downloaded automatically. Klimacontrol then asks whether to restart right away; otherwise the update is installed when the app quits.")
         XCTAssertEqual(en { HostWords.windows.updatesHelp }, "Klimacontrol checks for updates daily and asks before installing.")
         XCTAssertEqual(en { UIText.accountRemovePrompt(host: .windows).message },
                        "The account and password are deleted from Windows Credential Manager, so the air conditioner can no longer be reached while away. You can sign in again at any time.")

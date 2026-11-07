@@ -153,11 +153,11 @@ struct MoreSection<Content: View>: View {
             VStack(alignment: .leading, spacing: 14) { content() }
                 .padding(.top, 6)
         } label: {
-            Text(expanded ? "Weniger" : "Mehr …").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+            Text(expanded ? L.Main.More.less : L.Main.More.more).font(.caption.weight(.semibold)).foregroundStyle(.secondary)
                 .frame(minHeight: 22)
                 .contentShape(Rectangle())
         }
-        .accessibilityHint("Zeigt Kennzahlen, Komfort und Szenen")
+        .accessibilityHint(L.Main.More.hint)
     }
 }
 

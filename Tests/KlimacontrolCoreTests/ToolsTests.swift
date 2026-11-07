@@ -34,4 +34,14 @@ final class ToolsTests: XCTestCase {
         XCTAssertTrue(settings.contains("\"Klimacontrol.app\": (160, 210)"))
         XCTAssertTrue(settings.contains("\"Programme\": (480, 210)"))
     }
+
+    /// `--beta` und `--out` gibt es; aufgeräumt werden nur Pakete derselben Version, nie alle Versionen.
+    func testBuildScriptOptions() throws {
+        let script = try text("tools/build_app.sh")
+        XCTAssertTrue(script.contains("--beta)") && script.contains("--out)"))
+        XCTAssertTrue(script.contains("rm -f \"$OUT/$ZIPNAME.zip\""))
+        XCTAssertTrue(script.contains("rm -f \"$OUT/$DMGNAME.dmg\""))
+        XCTAssertTrue(script.contains("DMGNAME=\"Klimacontrol-$VERSION_SHOWN-mac\""))
+        XCTAssertFalse(script.contains("Klimacontrol-*-mac"), "keine Wildcard über alle Versionen")
+    }
 }

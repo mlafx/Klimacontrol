@@ -72,4 +72,15 @@ final class AppUpdateTests: XCTestCase {
         XCTAssertEqual(Data(base64Encoded: key)?.count, 32, "tools/UPDATE_PUBLIC_KEY")
         XCTAssertFalse(key.contains("\n"))
     }
+
+    func testMacBuildScriptHardensUpdates() throws {
+        let script = try String(contentsOf: root.appendingPathComponent("tools/build_app.sh"), encoding: .utf8)
+        for needle in ["<key>SUVerifyUpdateBeforeExtraction</key><true/>", "<key>SURequireSignedFeed</key><true/>",
+                       "<key>CFBundleDevelopmentRegion</key><string>en</string>",
+                       "<key>CFBundleLocalizations</key><array><string>de</string><string>en</string></array>",
+                       "de.lproj/InfoPlist.strings", "en.lproj/InfoPlist.strings",
+                       "<key>SUFeedURL</key><string>\(AppUpdate.feedMac)</string>"] {
+            XCTAssertTrue(script.contains(needle), needle)
+        }
+    }
 }

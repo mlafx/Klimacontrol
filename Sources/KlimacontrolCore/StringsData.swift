@@ -77,6 +77,60 @@ extension StringsData {
         }
       }
     },
+    "app.restartNow" : {
+      "comment" : "Knopf: App neu starten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt neu starten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart now"
+          }
+        }
+      }
+    },
+    "app.window.main" : {
+      "comment" : "Fenstertitel Hauptfenster (Mac)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol"
+          }
+        }
+      }
+    },
+    "app.window.mini" : {
+      "comment" : "Fenstertitel Mini-Fenster (Mac)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini-Fenster"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini window"
+          }
+        }
+      }
+    },
     "appearance.accent.byMode" : {
       "comment" : "Darstellung: Name einer Auswahl",
       "extractionState" : "manual",
@@ -869,6 +923,492 @@ extension StringsData {
         }
       }
     },
+    "bridge.badCommand" : {
+      "comment" : "Bridge-Meldung: Befehl nicht lesbar (bad-command)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Befehl nicht lesbar."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Command not readable."
+          }
+        }
+      }
+    },
+    "bridge.coreNotReady" : {
+      "comment" : "Bridge-Meldung: Kern nicht gestartet (core-not-started)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol ist noch nicht bereit."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol is not ready yet."
+          }
+        }
+      }
+    },
+    "bridge.deviceUnknown" : {
+      "comment" : "Bridge-Meldung: Anlage nicht in der Liste (device-unknown)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Anlage ist nicht mehr in der Liste."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This air conditioner is no longer in the list."
+          }
+        }
+      }
+    },
+    "bridge.deviceUnknownTodo" : {
+      "comment" : "Bridge-Meldung: Rat zu device-unknown",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte erneut suchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search again."
+          }
+        }
+      }
+    },
+    "bridge.energyCountInvalid" : {
+      "comment" : "Bridge: kc_energy_json, ungültige Anzahl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anzahl der Zeiträume muss zwischen 1 und {max} liegen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The number of periods must be between 1 and {max}."
+          }
+        }
+      }
+    },
+    "bridge.energyKindUnknown" : {
+      "comment" : "Bridge: kc_energy_json, unbekannte Art; kinds = erlaubte Namen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unbekannte Art des Verbrauchs ({kinds})."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown type of consumption ({kinds})."
+          }
+        }
+      }
+    },
+    "bridge.expect.bool" : {
+      "comment" : "Bridge: erwarteter Typ eines Parameters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "an/aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "on/off"
+          }
+        }
+      }
+    },
+    "bridge.expect.integer" : {
+      "comment" : "Bridge: erwarteter Typ eines Parameters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ganze Zahl"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "whole number"
+          }
+        }
+      }
+    },
+    "bridge.expect.number" : {
+      "comment" : "Bridge: erwarteter Typ eines Parameters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zahl"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "number"
+          }
+        }
+      }
+    },
+    "bridge.expect.object" : {
+      "comment" : "Bridge: erwarteter Typ eines Parameters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objekt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "object"
+          }
+        }
+      }
+    },
+    "bridge.expect.text" : {
+      "comment" : "Bridge: erwarteter Typ eines Parameters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "text"
+          }
+        }
+      }
+    },
+    "bridge.expect.theme" : {
+      "comment" : "Bridge: erwarteter Typ eines Parameters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thema"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "theme"
+          }
+        }
+      }
+    },
+    "bridge.expect.uiName" : {
+      "comment" : "Bridge: erwarteter Typ eines Parameters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name der Oberfläche"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "name of the window"
+          }
+        }
+      }
+    },
+    "bridge.exportFailed" : {
+      "comment" : "Bridge-Meldung: Verlaufsexport gescheitert",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Verlauf ließ sich nicht speichern."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The history could not be saved."
+          }
+        }
+      }
+    },
+    "bridge.fanUnknown" : {
+      "comment" : "Bridge-Meldung: Lüfterstufe unbekannt (fan-…)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Lüfterstufe gibt es nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This fan level does not exist."
+          }
+        }
+      }
+    },
+    "bridge.fanUnknownTodo" : {
+      "comment" : "Bridge-Meldung: Rat zu fan-…",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte 1–100 % oder Auto wählen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose 1–100 % or Auto."
+          }
+        }
+      }
+    },
+    "bridge.file.badName" : {
+      "comment" : "Bridge-Meldung: Dateiname ungültig",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Dateiname ist ungültig."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file name is invalid."
+          }
+        }
+      }
+    },
+    "bridge.file.badNameTodo" : {
+      "comment" : "Bridge-Meldung: Rat zu Dateiname ungültig",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte einen anderen Namen wählen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a different name."
+          }
+        }
+      }
+    },
+    "bridge.file.corrupt" : {
+      "comment" : "Bridge-Meldung: Datei beschädigt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei ist beschädigt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file is damaged."
+          }
+        }
+      }
+    },
+    "bridge.file.format" : {
+      "comment" : "Bridge-Meldung: Datei (file-format)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei ist keine Klimacontrol-Sicherung oder beschädigt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file is not a Klimacontrol backup or is damaged."
+          }
+        }
+      }
+    },
+    "bridge.file.noAccess" : {
+      "comment" : "Bridge-Meldung: Datei ohne Zugriff",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Zugriff auf diese Datei."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No access to this file."
+          }
+        }
+      }
+    },
+    "bridge.file.noAccessTodo" : {
+      "comment" : "Bridge-Meldung: Rat zu Datei ohne Zugriff",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte einen anderen Ordner wählen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a different folder."
+          }
+        }
+      }
+    },
+    "bridge.file.noSpace" : {
+      "comment" : "Bridge-Meldung: Datei, Speicher voll",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Speicherplatz mehr frei."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No storage space left."
+          }
+        }
+      }
+    },
+    "bridge.file.noSpaceTodo" : {
+      "comment" : "Bridge-Meldung: Rat zu Speicher voll",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte Platz schaffen oder einen anderen Ort wählen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free up space or choose a different location."
+          }
+        }
+      }
+    },
+    "bridge.file.notFound" : {
+      "comment" : "Bridge-Meldung: Datei (file-4)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei wurde nicht gefunden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file was not found."
+          }
+        }
+      }
+    },
+    "bridge.file.notFoundTodo" : {
+      "comment" : "Bridge-Meldung: Rat zu Datei nicht gefunden",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte Ort und Namen prüfen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check the location and name."
+          }
+        }
+      }
+    },
+    "bridge.file.unreadable" : {
+      "comment" : "Bridge-Meldung: Datei nicht les- oder speicherbar",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei ließ sich nicht lesen oder speichern."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file could not be read or saved."
+          }
+        }
+      }
+    },
     "bridge.formatInvalid" : {
       "comment" : "Windows: kc_set_locale mit unvollständigem Format",
       "extractionState" : "manual",
@@ -901,6 +1441,1248 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "The language and format settings could not be read. Please restart the app. (bad-locale)"
+          }
+        }
+      }
+    },
+    "bridge.modeUnknown" : {
+      "comment" : "Bridge-Meldung: Modus unbekannt (mode-…)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diesen Modus kennt Klimacontrol nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol does not know this mode."
+          }
+        }
+      }
+    },
+    "bridge.noDevice" : {
+      "comment" : "Bridge-Meldung: keine Anlage (no-device)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine Anlage eingerichtet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No air conditioner set up yet."
+          }
+        }
+      }
+    },
+    "bridge.noDeviceTodo" : {
+      "comment" : "Bridge-Meldung: Rat zu no-device",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte zuerst die Einrichtung abschließen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complete the setup first."
+          }
+        }
+      }
+    },
+    "bridge.noState" : {
+      "comment" : "Bridge-Meldung: kein Zustand (no-state)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine Werte der Anlage."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No values from the air conditioner yet."
+          }
+        }
+      }
+    },
+    "bridge.noStateTodo" : {
+      "comment" : "Bridge-Meldung: Rat zu no-state",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte kurz warten und erneut speichern."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wait a moment and save again."
+          }
+        }
+      }
+    },
+    "bridge.notStarted" : {
+      "comment" : "Bridge: kc_energy_json vor dem Start",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht gestartet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not started."
+          }
+        }
+      }
+    },
+    "bridge.paramInvalid" : {
+      "comment" : "Bridge-Meldung: Parameter fehlt oder falscher Typ (param-…)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Befehl „{cmd}“ unvollständig: Angabe „{name}“ fehlt oder passt nicht (erwartet: {expected})."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Command “{cmd}” incomplete: value “{name}” is missing or does not fit (expected: {expected})."
+          }
+        }
+      }
+    },
+    "bridge.pasteEmpty" : {
+      "comment" : "Bridge-Meldung: Einfügen ohne Treffer (paste-empty)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im eingefügten Text war nichts Passendes."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The pasted text contained nothing usable."
+          }
+        }
+      }
+    },
+    "bridge.pasteEmptyTodo" : {
+      "comment" : "Bridge-Meldung: Rat zu paste-empty",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte Token und Schlüssel kopieren."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy the token and key."
+          }
+        }
+      }
+    },
+    "bridge.pathMissing" : {
+      "comment" : "Bridge-Meldung: Dateiname fehlt (path-missing)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Dateiname angegeben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No file name given."
+          }
+        }
+      }
+    },
+    "bridge.pathMissingTodo" : {
+      "comment" : "Bridge-Meldung: Rat zu path-missing",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte eine Datei auswählen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a file."
+          }
+        }
+      }
+    },
+    "bridge.pathUnknown" : {
+      "comment" : "Bridge-Meldung: Verbindungsweg unbekannt (path-…)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diesen Verbindungsweg kennt Klimacontrol nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol does not know this connection method."
+          }
+        }
+      }
+    },
+    "bridge.rateUnknown" : {
+      "comment" : "Bridge-Meldung: Leistungsgrenze unbekannt (rate-…)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Leistungsgrenze gibt es nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This power limit does not exist."
+          }
+        }
+      }
+    },
+    "bridge.rateUnknownTodo" : {
+      "comment" : "Bridge-Meldung: Rat zu rate-…",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte 50, 75 oder 100 % wählen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose 50, 75, or 100 %."
+          }
+        }
+      }
+    },
+    "bridge.sceneName" : {
+      "comment" : "Bridge-Meldung: Szenenname fehlt (scene-name)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Szene braucht einen Namen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The scene needs a name."
+          }
+        }
+      }
+    },
+    "bridge.sceneNameTodo" : {
+      "comment" : "Bridge-Meldung: Rat zu scene-name",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte einen eingeben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter one."
+          }
+        }
+      }
+    },
+    "bridge.sceneUnknown" : {
+      "comment" : "Bridge-Meldung: Szene unbekannt (scene-unknown)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Szene gibt es nicht mehr."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This scene no longer exists."
+          }
+        }
+      }
+    },
+    "bridge.sceneUnknownTodo" : {
+      "comment" : "Bridge-Meldung: Rat zu scene-unknown",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte die Liste neu öffnen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reopen the list."
+          }
+        }
+      }
+    },
+    "bridge.setupIncomplete" : {
+      "comment" : "Bridge-Meldung: Einrichtung unvollständig (setup-incomplete)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage wählen, Konto und Passwort eingeben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select an air conditioner and enter account and password."
+          }
+        }
+      }
+    },
+    "bridge.setupPathUnknown" : {
+      "comment" : "Bridge-Meldung: Einrichtungsweg unbekannt (setup-path-…)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diesen Einrichtungsweg kennt Klimacontrol nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol does not know this setup method."
+          }
+        }
+      }
+    },
+    "bridge.setupPathUnknownTodo" : {
+      "comment" : "Bridge-Meldung: Rat zu setup-path-…",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte neu wählen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose again."
+          }
+        }
+      }
+    },
+    "bridge.timeInvalid" : {
+      "comment" : "Bridge-Meldung: Uhrzeit ungültig (time)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Uhrzeit gibt es nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This time does not exist."
+          }
+        }
+      }
+    },
+    "bridge.timeInvalidTodo" : {
+      "comment" : "Bridge-Meldung: Rat zu time",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte 00:00 bis 23:59 wählen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose 00:00 to 23:59."
+          }
+        }
+      }
+    },
+    "bridge.todo.chooseOther" : {
+      "comment" : "Bridge-Meldung: Rat",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte einen anderen wählen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a different one."
+          }
+        }
+      }
+    },
+    "bridge.todo.otherFile" : {
+      "comment" : "Bridge-Meldung: Rat",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte eine andere Datei wählen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a different file."
+          }
+        }
+      }
+    },
+    "bridge.todo.otherPlace" : {
+      "comment" : "Bridge-Meldung: Rat",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte einen anderen Ort wählen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a different location."
+          }
+        }
+      }
+    },
+    "bridge.todo.restart" : {
+      "comment" : "Bridge-Meldung: Rat",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte die App neu starten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart the app."
+          }
+        }
+      }
+    },
+    "bridge.todo.restartOrUpdate" : {
+      "comment" : "Bridge-Meldung: Rat",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte die App neu starten; bleibt es, die aktuelle Version installieren."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart the app; if it persists, install the current version."
+          }
+        }
+      }
+    },
+    "bridge.unexpected" : {
+      "comment" : "Bridge-Meldung: unbekannter Fehler",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unerwarteter Fehler."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unexpected error."
+          }
+        }
+      }
+    },
+    "bridge.unexpectedTodo" : {
+      "comment" : "Bridge-Meldung: Rat zu unerwartetem Fehler",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try again."
+          }
+        }
+      }
+    },
+    "bridge.unknownCommand" : {
+      "comment" : "Bridge-Meldung: unbekannter Befehl (unknown-command); cmd = Befehlsname",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unbekannter Befehl „{cmd}“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown command “{cmd}”."
+          }
+        }
+      }
+    },
+    "charts.approxMarker" : {
+      "comment" : "Verbrauch: Zeichen über einem Balken aus Messwerten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ca."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "approx."
+          }
+        }
+      }
+    },
+    "charts.axis.segment" : {
+      "comment" : "Graphen: Reihenname",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abschnitt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Segment"
+          }
+        }
+      }
+    },
+    "charts.axis.series" : {
+      "comment" : "Graphen: Reihenname",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reihe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Series"
+          }
+        }
+      }
+    },
+    "charts.axis.time" : {
+      "comment" : "Graphen: Achse (auch VoiceOver-Name)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time"
+          }
+        }
+      }
+    },
+    "charts.axis.watt" : {
+      "comment" : "Graphen: Achse (auch VoiceOver-Name)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Watt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Watts"
+          }
+        }
+      }
+    },
+    "charts.hide" : {
+      "comment" : "Graphen: VoiceOver Schließen-Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf ausblenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide history"
+          }
+        }
+      }
+    },
+    "charts.hideHelp" : {
+      "comment" : "Graphen: Kurzinfo Schließen-Knopf (Mac)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf ausblenden (⌘G)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide history (⌘G)"
+          }
+        }
+      }
+    },
+    "charts.hoverTarget" : {
+      "comment" : "Graphen: Zeile unter dem Mauszeiger",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soll {target}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target {target}"
+          }
+        }
+      }
+    },
+    "charts.outdoor" : {
+      "comment" : "Graphen: Überschrift und VoiceOver",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außentemperatur"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outdoor temperature"
+          }
+        }
+      }
+    },
+    "charts.power" : {
+      "comment" : "Graphen: Überschrift und VoiceOver",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power"
+          }
+        }
+      }
+    },
+    "charts.range" : {
+      "comment" : "Graphen: Auswahl des Zeitraums",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitraum"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Period"
+          }
+        }
+      }
+    },
+    "charts.series.room" : {
+      "comment" : "Graphen: Reihe Raumtemperatur",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raum"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room"
+          }
+        }
+      }
+    },
+    "charts.series.target" : {
+      "comment" : "Graphen: Reihe Solltemperatur",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soll"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target"
+          }
+        }
+      }
+    },
+    "charts.summary" : {
+      "comment" : "Graphen: VoiceOver-Zusammenfassung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "zuletzt {last}, niedrigster {low}, höchster {high}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "latest {last}, lowest {low}, highest {high}"
+          }
+        }
+      }
+    },
+    "charts.summaryNone" : {
+      "comment" : "Graphen: VoiceOver-Zusammenfassung ohne Werte",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "keine Daten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no data"
+          }
+        }
+      }
+    },
+    "charts.temperature" : {
+      "comment" : "Graphen: Überschrift",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temperatur"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temperature"
+          }
+        }
+      }
+    },
+    "charts.tile.avg" : {
+      "comment" : "Graphen: Kennzahl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mittel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average"
+          }
+        }
+      }
+    },
+    "charts.tile.avgHelp" : {
+      "comment" : "Graphen: Kurzinfo Kennzahl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mittlere Leistung im gewählten Zeitraum"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average power in the selected period"
+          }
+        }
+      }
+    },
+    "charts.tile.consumptionHelp" : {
+      "comment" : "Graphen: Kurzinfo Verbrauch",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus den Messwerten des Zeitraums berechnet. Zeiten ohne Messung (App oder Rechner aus) fehlen – darum kann der Wert vom Zähler der Anlage („Kosten heute“ in der Übersicht) abweichen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calculated from the measurements of the period. Times without measurement (app or computer off) are missing, so the value can differ from the meter of the air conditioner (“Cost today” in the overview)."
+          }
+        }
+      }
+    },
+    "charts.tile.cost" : {
+      "comment" : "Graphen: Kennzahl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kosten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cost"
+          }
+        }
+      }
+    },
+    "charts.tile.costHelp" : {
+      "comment" : "Graphen: Kurzinfo Kosten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbrauch des Zeitraums mal heutigem Strompreis ({price} {currency} je kWh) – auch für ältere Tage."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consumption of the period times today’s electricity price ({price} {currency} per kWh), also for earlier days."
+          }
+        }
+      }
+    },
+    "charts.tile.peak" : {
+      "comment" : "Graphen: Kennzahl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spitze"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peak"
+          }
+        }
+      }
+    },
+    "charts.tile.peakHelp" : {
+      "comment" : "Graphen: Kurzinfo Kennzahl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Höchste gemessene Leistung im gewählten Zeitraum"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Highest measured power in the selected period"
+          }
+        }
+      }
+    },
+    "charts.title" : {
+      "comment" : "Graphen: Überschrift",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History"
+          }
+        }
+      }
+    },
+    "charts.tooFew" : {
+      "comment" : "Graphen: zu wenige Daten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch zu wenig Daten – der Verlauf füllt sich mit jeder Abfrage der Anlage."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not enough data yet. The history fills with every refresh of the air conditioner."
+          }
+        }
+      }
+    },
+    "commands.alwaysOnTop" : {
+      "comment" : "Menü: Darstellung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Immer im Vordergrund"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Always on top"
+          }
+        }
+      }
+    },
+    "commands.checkUpdates" : {
+      "comment" : "Menü: Klimacontrol",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach Updates suchen …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check for updates…"
+          }
+        }
+      }
+    },
+    "commands.cooler" : {
+      "comment" : "Menü: Anlage",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kälter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cooler"
+          }
+        }
+      }
+    },
+    "commands.deviceMenu" : {
+      "comment" : "Menü: Titel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner"
+          }
+        }
+      }
+    },
+    "commands.hideDiagnostics" : {
+      "comment" : "Menü: Darstellung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnose ausblenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide diagnostics"
+          }
+        }
+      }
+    },
+    "commands.hideHistory" : {
+      "comment" : "Menü: Darstellung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf ausblenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide history"
+          }
+        }
+      }
+    },
+    "commands.miniWindow" : {
+      "comment" : "Menü: Darstellung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini-Fenster"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini window"
+          }
+        }
+      }
+    },
+    "commands.powerOff" : {
+      "comment" : "Menü: Anlage",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausschalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn off"
+          }
+        }
+      }
+    },
+    "commands.powerOn" : {
+      "comment" : "Menü: Anlage",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einschalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on"
+          }
+        }
+      }
+    },
+    "commands.refreshNow" : {
+      "comment" : "Menü: Anlage",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt aktualisieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh now"
+          }
+        }
+      }
+    },
+    "commands.showDiagnostics" : {
+      "comment" : "Menü: Darstellung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnose einblenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show diagnostics"
+          }
+        }
+      }
+    },
+    "commands.showHistory" : {
+      "comment" : "Menü: Darstellung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf einblenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show history"
+          }
+        }
+      }
+    },
+    "commands.warmer" : {
+      "comment" : "Menü: Anlage",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wärmer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warmer"
           }
         }
       }
@@ -2347,6 +4129,672 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clean the filter: The air conditioner asks for a filter cleaning (see the user manual)."
+          }
+        }
+      }
+    },
+    "diagnostics.panel.condensatePump" : {
+      "comment" : "Diagnose: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kondensatpumpe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Condensate pump"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.condenser" : {
+      "comment" : "Diagnose: Rolle des Registers",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verflüssiger"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "condenser"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.currentHelp" : {
+      "comment" : "Diagnose: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage meldet den Strom nur in ganzen Ampere."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner reports the current in whole amperes only."
+          }
+        }
+      }
+    },
+    "diagnostics.panel.currentVoltage" : {
+      "comment" : "Diagnose: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strom · Spannung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current · voltage"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.defrost" : {
+      "comment" : "Diagnose: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abtauen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Defrost"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.eev" : {
+      "comment" : "Diagnose: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EEV-Öffnung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EEV opening"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.eevHelp" : {
+      "comment" : "Diagnose: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnung des elektronischen Expansionsventils"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opening of the electronic expansion valve"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.errorCode" : {
+      "comment" : "Diagnose: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehlercode"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error code"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.errorCodeHelp" : {
+      "comment" : "Diagnose: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nummer, wie die Anlage sie meldet. Die Bedeutung steht in der Bedienungsanleitung der Anlage."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Number as reported by the air conditioner. The meaning is in the air conditioner’s user manual."
+          }
+        }
+      }
+    },
+    "diagnostics.panel.evaporator" : {
+      "comment" : "Diagnose: Rolle des Registers",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdampfer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "evaporator"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.filter" : {
+      "comment" : "Diagnose: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.frequency" : {
+      "comment" : "Diagnose: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frequenz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frequency"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.hide" : {
+      "comment" : "Diagnose: VoiceOver Schließen-Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnose ausblenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide diagnostics"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.hideHelp" : {
+      "comment" : "Diagnose: Kurzinfo Schließen-Knopf (Mac)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnose ausblenden (⌘D)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide diagnostics (⌘D)"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.historyFile" : {
+      "comment" : "Diagnose: Fußzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf in verlauf.sqlite"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History in verlauf.sqlite"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.indoorFan" : {
+      "comment" : "Diagnose: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüfter innen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indoor fan"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.indoorSensor2" : {
+      "comment" : "Diagnose: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Innenfühler 2"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indoor sensor 2"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.indoorSensor2Help" : {
+      "comment" : "Diagnose: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zweiter Innenfühler (Eigenschaft 0x00E0)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Second indoor sensor (property 0x00E0)"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.loading" : {
+      "comment" : "Diagnose: Platzhalter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnosedaten werden geladen …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading diagnostic data…"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.mac.showInFinder" : {
+      "comment" : "Diagnose: Knopf (Mac)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Finder zeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show in Finder"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.meter" : {
+      "comment" : "Diagnose: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zählerstand"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meter reading"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.no" : {
+      "comment" : "Diagnose: Wert",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.outdoorFan" : {
+      "comment" : "Diagnose: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüfter außen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outdoor fan"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.power" : {
+      "comment" : "Diagnose: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistungsaufnahme"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power draw"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.running" : {
+      "comment" : "Diagnose: Wert",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "läuft"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "running"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.sectionCircuit" : {
+      "comment" : "Diagnose: Abschnitt (wird in Großbuchstaben gezeigt)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kältekreis"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refrigerant circuit"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.sectionCompressor" : {
+      "comment" : "Diagnose: Abschnitt (wird in Großbuchstaben gezeigt)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdichter · Außengerät"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compressor · outdoor unit"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.sectionIndoor" : {
+      "comment" : "Diagnose: Abschnitt (wird in Großbuchstaben gezeigt)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Innengerät"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indoor unit"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.t1" : {
+      "comment" : "Diagnose: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T1 · Innenluft"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T1 · Indoor air"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.t2" : {
+      "comment" : "Diagnose: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T2 · Innenregister ({role})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T2 · Indoor coil ({role})"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.t3" : {
+      "comment" : "Diagnose: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T3 · Außenregister ({role})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T3 · Outdoor coil ({role})"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.t4" : {
+      "comment" : "Diagnose: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T4 · Außenluft"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T4 · Outdoor air"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.title" : {
+      "comment" : "Diagnose: Überschrift",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnose"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnostics"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.tp" : {
+      "comment" : "Diagnose: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TP · Heißgasleitung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TP · Discharge line"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.unitRpm" : {
+      "comment" : "Diagnose: Einheit",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "U/min"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "rpm"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.unitSteps" : {
+      "comment" : "Diagnose: Einheit",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schritte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "steps"
+          }
+        }
+      }
+    },
+    "diagnostics.panel.withTarget" : {
+      "comment" : "Diagnose: Wert mit Sollwert",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{value}  (Soll {target})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{value}  (target {target})"
           }
         }
       }
@@ -3834,13 +6282,13 @@ extension StringsData {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Updates werden automatisch geladen und installiert. Klimacontrol startet danach kurz neu."
+            "value" : "Updates werden automatisch geladen. Danach fragt Klimacontrol, ob es gleich neu starten soll; sonst wird beim Beenden installiert."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Updates are downloaded and installed automatically. Klimacontrol then restarts briefly."
+            "value" : "Updates are downloaded automatically. Klimacontrol then asks whether to restart right away; otherwise the update is installed when the app quits."
           }
         }
       }
@@ -3931,6 +6379,1554 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Klimacontrol checks for updates daily and asks before installing."
+          }
+        }
+      }
+    },
+    "main.comfort.display" : {
+      "comment" : "Funktion weitere Funktionen (Anzeige am Gerät)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzeige"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display"
+          }
+        }
+      }
+    },
+    "main.comfort.eco" : {
+      "comment" : "Kachel Komfort",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eco"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eco"
+          }
+        }
+      }
+    },
+    "main.comfort.frostProtection" : {
+      "comment" : "Funktion weitere Funktionen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frostschutz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frost protection"
+          }
+        }
+      }
+    },
+    "main.comfort.ieco" : {
+      "comment" : "Funktion weitere Funktionen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iECO"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iECO"
+          }
+        }
+      }
+    },
+    "main.comfort.ionizer" : {
+      "comment" : "Funktion weitere Funktionen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ionisierer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ionizer"
+          }
+        }
+      }
+    },
+    "main.comfort.limitPower" : {
+      "comment" : "Zeile und Auswahl Leistung begrenzen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistung begrenzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limit power"
+          }
+        }
+      }
+    },
+    "main.comfort.percentChoice" : {
+      "comment" : "Auswahl Leistung begrenzen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{value} %"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{value} %"
+          }
+        }
+      }
+    },
+    "main.comfort.selfClean" : {
+      "comment" : "Funktion weitere Funktionen (kurze Kachel)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reinigung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Self-clean"
+          }
+        }
+      }
+    },
+    "main.comfort.swing" : {
+      "comment" : "Kachel Komfort",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schwenken"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swing"
+          }
+        }
+      }
+    },
+    "main.comfort.unknownSuffix" : {
+      "comment" : "Kurzinfo eines Schalters ohne gemeldeten Zustand",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{text} – Zustand unbekannt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{text}; state unknown"
+          }
+        }
+      }
+    },
+    "main.fan.percentLabel" : {
+      "comment" : "VoiceOver: Lüfterregler",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüfter in Prozent"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fan speed in percent"
+          }
+        }
+      }
+    },
+    "main.fan.percentWord" : {
+      "comment" : "VoiceOver: Wort für % im Lüfterwert",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prozent"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "percent"
+          }
+        }
+      }
+    },
+    "main.footer.diagnostics" : {
+      "comment" : "Fußzeile: Diagnose",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnose"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnostics"
+          }
+        }
+      }
+    },
+    "main.footer.diagnosticsHide" : {
+      "comment" : "Kurzinfo Fußzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnose ausblenden (⌘D)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide diagnostics (⌘D)"
+          }
+        }
+      }
+    },
+    "main.footer.diagnosticsShow" : {
+      "comment" : "Kurzinfo Fußzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnose rechts einblenden (⌘D)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show diagnostics on the right (⌘D)"
+          }
+        }
+      }
+    },
+    "main.footer.history" : {
+      "comment" : "Fußzeile: Verlauf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History"
+          }
+        }
+      }
+    },
+    "main.footer.historyHide" : {
+      "comment" : "Kurzinfo Fußzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf ausblenden (⌘G)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide history (⌘G)"
+          }
+        }
+      }
+    },
+    "main.footer.historyShow" : {
+      "comment" : "Kurzinfo Fußzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf links einblenden (⌘G)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show history on the left (⌘G)"
+          }
+        }
+      }
+    },
+    "main.footer.refresh" : {
+      "comment" : "VoiceOver Fußzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt aktualisieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh now"
+          }
+        }
+      }
+    },
+    "main.footer.refreshHelp" : {
+      "comment" : "Kurzinfo Fußzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt aktualisieren – probiert alle Wege neu (⌘R)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh now; tries every connection again (⌘R)"
+          }
+        }
+      }
+    },
+    "main.footer.settings" : {
+      "comment" : "VoiceOver Fußzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        }
+      }
+    },
+    "main.footer.settingsHelp" : {
+      "comment" : "Kurzinfo Fußzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen (⌘,)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings (⌘,)"
+          }
+        }
+      }
+    },
+    "main.hero.a11yRoomTarget" : {
+      "comment" : "VoiceOver: große Zahl (Raum groß)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raumtemperatur {room}, Solltemperatur {target}, {goal}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room temperature {room}, target temperature {target}, {goal}"
+          }
+        }
+      }
+    },
+    "main.hero.a11yTarget" : {
+      "comment" : "VoiceOver: große Zahl (Soll)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solltemperatur {target}, {goal}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target temperature {target}, {goal}"
+          }
+        }
+      }
+    },
+    "main.hero.degrees" : {
+      "comment" : "VoiceOver-Wert Solltemperatur",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{value} Grad"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{value} degrees"
+          }
+        }
+      }
+    },
+    "main.hero.targetTemperature" : {
+      "comment" : "VoiceOver: Regler Solltemperatur",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solltemperatur"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target temperature"
+          }
+        }
+      }
+    },
+    "main.message.codeLabel" : {
+      "comment" : "Fehlercode klein am Ende einer Meldung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code {code}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code {code}"
+          }
+        }
+      }
+    },
+    "main.message.refreshHelp" : {
+      "comment" : "Kurzinfo: Erneut versuchen im Banner",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sofort neu abfragen (⌘R)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh right away (⌘R)"
+          }
+        }
+      }
+    },
+    "main.mini.open" : {
+      "comment" : "Kurzinfo und VoiceOver: Mini-Fenster",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini-Fenster öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open mini window"
+          }
+        }
+      }
+    },
+    "main.mode.active" : {
+      "comment" : "Kurzinfo Modusknopf, Modus aktiv",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{mode} ist aktiv"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{mode} is active"
+          }
+        }
+      }
+    },
+    "main.mode.activeValue" : {
+      "comment" : "VoiceOver-Wert Modusknopf, Modus aktiv",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "aktiv"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "active"
+          }
+        }
+      }
+    },
+    "main.mode.switchTo" : {
+      "comment" : "Kurzinfo Modusknopf, Anlage an",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zu {mode} wechseln"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch to {mode}"
+          }
+        }
+      }
+    },
+    "main.mode.switchToHint" : {
+      "comment" : "VoiceOver-Hinweis Modusknopf, Anlage an",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wechselt zu {mode}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switches to {mode}"
+          }
+        }
+      }
+    },
+    "main.mode.turnOnWith" : {
+      "comment" : "Kurzinfo Modusknopf, Anlage aus",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit {mode} einschalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on with {mode}"
+          }
+        }
+      }
+    },
+    "main.mode.turnOnWithHint" : {
+      "comment" : "VoiceOver-Hinweis Modusknopf, Anlage aus",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schaltet mit {mode} ein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turns on with {mode}"
+          }
+        }
+      }
+    },
+    "main.more.hint" : {
+      "comment" : "VoiceOver-Hinweis: Bereich „Mehr“",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt Kennzahlen, Komfort und Szenen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shows readings, comfort and scenes"
+          }
+        }
+      }
+    },
+    "main.more.less" : {
+      "comment" : "Beschriftung: Bereich „Mehr“ zuklappen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weniger"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Less"
+          }
+        }
+      }
+    },
+    "main.more.more" : {
+      "comment" : "Beschriftung: Bereich unter „Mehr“ aufklappen (Umfang Einfach)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More…"
+          }
+        }
+      }
+    },
+    "main.power.turnOff" : {
+      "comment" : "VoiceOver: Ein/Aus-Knopf, Anlage an",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausschalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn off"
+          }
+        }
+      }
+    },
+    "main.power.turnOffHelp" : {
+      "comment" : "Kurzinfo Ein/Aus-Knopf, Anlage an",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausschalten (⌘P)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn off (⌘P)"
+          }
+        }
+      }
+    },
+    "main.power.turnOn" : {
+      "comment" : "VoiceOver: Ein/Aus-Knopf, Anlage aus",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einschalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on"
+          }
+        }
+      }
+    },
+    "main.power.turnOnHelp" : {
+      "comment" : "Kurzinfo Ein/Aus-Knopf, Anlage aus",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einschalten (⌘P)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on (⌘P)"
+          }
+        }
+      }
+    },
+    "main.reading.outdoor" : {
+      "comment" : "Kennzahl im Kopf: Außentemperatur",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outdoor"
+          }
+        }
+      }
+    },
+    "main.reading.power" : {
+      "comment" : "Kennzahl im Kopf: Leistung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power"
+          }
+        }
+      }
+    },
+    "main.reading.room" : {
+      "comment" : "Kennzahl im Kopf: Raumtemperatur",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raum"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room"
+          }
+        }
+      }
+    },
+    "main.relocate.help" : {
+      "comment" : "Kurzinfo Adresse neu suchen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sucht die Anlage im WLAN neu, z. B. nach einem Router-Wechsel. Zugangsdaten bleiben erhalten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Searches for the air conditioner on Wi-Fi again, for example after changing routers. Credentials are kept."
+          }
+        }
+      }
+    },
+    "main.relocate.hint" : {
+      "comment" : "Hinweistext vor der Suche",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neuer Router oder neue Adresse? Die Zugangsdaten bleiben erhalten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New router or new address? Credentials are kept."
+          }
+        }
+      }
+    },
+    "main.relocate.search" : {
+      "comment" : "Knopf im Hinweis bei Verbindungsfehler",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adresse neu suchen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find address again"
+          }
+        }
+      }
+    },
+    "main.relocate.searching" : {
+      "comment" : "Knopf während der Suche",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Searching…"
+          }
+        }
+      }
+    },
+    "main.scene.activeHelp" : {
+      "comment" : "Kurzinfo einer aktiven Szene",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{name} ist eingestellt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{name} is set"
+          }
+        }
+      }
+    },
+    "main.scene.applyHelp" : {
+      "comment" : "Kurzinfo einer Szene",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{name} anwenden – Rechtsklick zum Löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apply {name}; right-click to delete"
+          }
+        }
+      }
+    },
+    "main.scene.deleteAction" : {
+      "comment" : "VoiceOver-Aktion einer Szene",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Szene löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete scene"
+          }
+        }
+      }
+    },
+    "main.scene.deleteConfirm" : {
+      "comment" : "Knopf in der Rückfrage Szene löschen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        }
+      }
+    },
+    "main.scene.deleteMenu" : {
+      "comment" : "Kontextmenü einer Szene",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Szene löschen …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete scene…"
+          }
+        }
+      }
+    },
+    "main.scene.deleteMessage" : {
+      "comment" : "Text der Rückfrage Szene löschen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Szene lässt sich danach nicht wiederherstellen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The scene cannot be restored afterwards."
+          }
+        }
+      }
+    },
+    "main.scene.deleteTitle" : {
+      "comment" : "Rückfrage Szene löschen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Szene „{name}“ löschen?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete scene “{name}”?"
+          }
+        }
+      }
+    },
+    "main.scene.empty" : {
+      "comment" : "Leerer Szenen-Bereich",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine Szenen – stelle die Anlage ein und sichere den Zustand mit +."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No scenes yet. Set up the air conditioner and save its state with +."
+          }
+        }
+      }
+    },
+    "main.scene.name" : {
+      "comment" : "Textfeld-Platzhalter im Dialog Szene sichern",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        }
+      }
+    },
+    "main.scene.save" : {
+      "comment" : "Knopf und Titel: Szene sichern",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Szene sichern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save scene"
+          }
+        }
+      }
+    },
+    "main.scene.saveConfirm" : {
+      "comment" : "Knopf im Dialog Szene sichern",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sichern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        }
+      }
+    },
+    "main.scene.saveHelp" : {
+      "comment" : "Kurzinfo: Szene sichern",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuellen Zustand als Szene sichern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save the current state as a scene"
+          }
+        }
+      }
+    },
+    "main.scene.saveMessage" : {
+      "comment" : "Text im Dialog Szene sichern",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speichert Ein/Aus, Modus, Temperatur, Lüfter, Schwenken, Eco, Ionisierer und „Außengerät leise“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saves on/off, mode, temperature, fan, swing, Eco, ionizer and “Quiet outdoor unit”."
+          }
+        }
+      }
+    },
+    "main.section.comfort" : {
+      "comment" : "Abschnittstitel (Großbuchstaben)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KOMFORT"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "COMFORT"
+          }
+        }
+      }
+    },
+    "main.section.fan" : {
+      "comment" : "Abschnittstitel (Großbuchstaben)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LÜFTER"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FAN"
+          }
+        }
+      }
+    },
+    "main.section.moreFeatures" : {
+      "comment" : "Abschnittstitel (Großbuchstaben)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WEITERE FUNKTIONEN"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MORE FEATURES"
+          }
+        }
+      }
+    },
+    "main.section.scenes" : {
+      "comment" : "Abschnittstitel Szenen (Großbuchstaben)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SZENEN"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SCENES"
+          }
+        }
+      }
+    },
+    "main.section.scenesActive" : {
+      "comment" : "Abschnittstitel Szenen mit aktiver Szene",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SZENEN · {name} aktiv"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SCENES · {name} active"
+          }
+        }
+      }
+    },
+    "main.startup.placeholder" : {
+      "comment" : "Platzhalter (verdeckt) der Startanzeige ohne Verlauf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raumtemperatur · Anlage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room temperature · air conditioner"
+          }
+        }
+      }
+    },
+    "main.state.off" : {
+      "comment" : "VoiceOver-Wert eines Schalters, aus",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "off"
+          }
+        }
+      }
+    },
+    "main.state.on" : {
+      "comment" : "VoiceOver-Wert eines Schalters, an",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "on"
+          }
+        }
+      }
+    },
+    "main.step.cooler" : {
+      "comment" : "VoiceOver: Temperatur senken",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kälter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cooler"
+          }
+        }
+      }
+    },
+    "main.step.coolerHelp" : {
+      "comment" : "Kurzinfo: Temperatur senken",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kälter (⌘↓)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cooler (⌘↓)"
+          }
+        }
+      }
+    },
+    "main.step.warmer" : {
+      "comment" : "VoiceOver: Temperatur erhöhen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wärmer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warmer"
+          }
+        }
+      }
+    },
+    "main.step.warmerHelp" : {
+      "comment" : "Kurzinfo: Temperatur erhöhen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wärmer (⌘↑)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warmer (⌘↑)"
+          }
+        }
+      }
+    },
+    "main.timer.delete" : {
+      "comment" : "Kurzinfo und VoiceOver: Timer löschen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete timer"
+          }
+        }
+      }
+    },
+    "main.timer.offHelp" : {
+      "comment" : "Kurzinfo Ausschalt-Timer",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schaltet die Anlage nach der gewählten Zeit aus. {requirement}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turns the air conditioner off after the chosen time. {requirement}"
+          }
+        }
+      }
+    },
+    "main.timer.offMenu" : {
+      "comment" : "Menü Ausschalt-Timer",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausschalten in …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn off in…"
+          }
+        }
+      }
+    },
+    "main.timer.onButton" : {
+      "comment" : "Knopf Einschalt-Timer",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einschalten um …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on at…"
+          }
+        }
+      }
+    },
+    "main.timer.onNote" : {
+      "comment" : "Hinweis im Einschalt-Timer-Popover",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit den zuletzt benutzten Einstellungen. {requirement} Klimacontrol hält den Mac bis dahin wach; ob es geklappt hat, meldet eine Mitteilung."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uses the most recent settings. {requirement} Klimacontrol keeps the Mac awake until then; a notification reports whether it worked."
+          }
+        }
+      }
+    },
+    "main.timer.set" : {
+      "comment" : "Knopf im Einschalt-Timer-Popover",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer setzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set timer"
+          }
+        }
+      }
+    },
+    "main.timer.switchesOn" : {
+      "comment" : "Einschalt-Timer: Zeitpunkt im Popover",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schaltet {day} um {time} ein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turns on {day} at {time}"
+          }
+        }
+      }
+    },
+    "main.timer.time" : {
+      "comment" : "Beschriftung Zeitfeld Einschalt-Timer",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uhrzeit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time"
+          }
+        }
+      }
+    },
+    "menu.mac.openApp" : {
+      "comment" : "Menüleisten-Fenster: Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Klimacontrol"
+          }
+        }
+      }
+    },
+    "menu.noDevice" : {
+      "comment" : "Menüleisten-Fenster: ohne Anlage",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine Anlage eingerichtet – das geht im Hauptfenster („Klimacontrol öffnen“)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No air conditioner set up yet. You can do this in the main window (“Open Klimacontrol”)."
+          }
+        }
+      }
+    },
+    "menu.quit" : {
+      "comment" : "Menüleisten-Fenster: Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit"
+          }
+        }
+      }
+    },
+    "menu.target" : {
+      "comment" : "Menüleisten-Fenster: Solltemperatur unter der Raumtemperatur",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soll {target}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target {target}"
           }
         }
       }
@@ -5551,6 +9547,42 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Heating"
+          }
+        }
+      }
+    },
+    "notices.intro" : {
+      "comment" : "Lizenzen: Einleitung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol baut auf den folgenden Open-Source-Projekten auf. Ihre Lizenzen verlangen, Urheberrechtsvermerk und Lizenztext mitzugeben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol is built on the following open-source projects. Their licenses require the copyright notice and license text to be included."
+          }
+        }
+      }
+    },
+    "notices.licenseText" : {
+      "comment" : "Lizenzen: Aufklapper",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lizenztext"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "License text"
           }
         }
       }
@@ -7271,6 +11303,1380 @@ extension StringsData {
         }
       }
     },
+    "settings.appearance.accent.help" : {
+      "comment" : "Darstellung: Kurzinfo Farben",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach Modus: Blau beim Kühlen, Orange beim Heizen usw."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "By mode: blue when cooling, orange when heating, and so on."
+          }
+        }
+      }
+    },
+    "settings.appearance.accessibility.percent" : {
+      "comment" : "VoiceOver: Wert eines Prozent-Reglers",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{value} Prozent"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{value} percent"
+          }
+        }
+      }
+    },
+    "settings.appearance.accessibility.points" : {
+      "comment" : "VoiceOver: Wert der Unschärfe",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "{count} Punkt"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "{count} Punkte"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "{count} point"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "{count} points"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "settings.appearance.alwaysOnTop.help" : {
+      "comment" : "Darstellung: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Hauptfenster bleibt über anderen Fenstern."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The main window stays above other windows."
+          }
+        }
+      }
+    },
+    "settings.appearance.alwaysOnTop.title" : {
+      "comment" : "Darstellung: Schalter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Immer im Vordergrund"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Always on top"
+          }
+        }
+      }
+    },
+    "settings.appearance.background.help" : {
+      "comment" : "Darstellung: Kurzinfo Hintergrund",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glas lässt den Schreibtisch durchscheinen, Matt ist ruhig und deckend."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glass lets the desktop show through; matte is calm and opaque."
+          }
+        }
+      }
+    },
+    "settings.appearance.background.title" : {
+      "comment" : "Darstellung: Abschnitt und Zeile Hintergrund",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hintergrund"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Background"
+          }
+        }
+      }
+    },
+    "settings.appearance.blur.help" : {
+      "comment" : "Darstellung: Kurzinfo Unschärfe",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie weich der Hintergrund hinter den Karten verschwimmt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How softly the background blurs behind the cards."
+          }
+        }
+      }
+    },
+    "settings.appearance.blur.title" : {
+      "comment" : "Darstellung: Regler",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unschärfe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blur"
+          }
+        }
+      }
+    },
+    "settings.appearance.colors.title" : {
+      "comment" : "Darstellung: Abschnitt und Zeile Farben",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farben"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colors"
+          }
+        }
+      }
+    },
+    "settings.appearance.customColor.help" : {
+      "comment" : "Darstellung: Kurzinfo eigene Farbe",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gilt für alle Modi."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applies to all modes."
+          }
+        }
+      }
+    },
+    "settings.appearance.customColor.title" : {
+      "comment" : "Darstellung: eigene Farbe",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigene Farbe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom color"
+          }
+        }
+      }
+    },
+    "settings.appearance.digits.help" : {
+      "comment" : "Darstellung: Kurzinfo Ziffernstil",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Form der großen Zahl."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Style of the large number."
+          }
+        }
+      }
+    },
+    "settings.appearance.digits.title" : {
+      "comment" : "Darstellung: Auswahl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ziffernstil"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digit style"
+          }
+        }
+      }
+    },
+    "settings.appearance.glow.help" : {
+      "comment" : "Darstellung: Kurzinfo Leuchten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schein in der Modusfarbe um die große Zahl."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A glow in the mode color around the large number."
+          }
+        }
+      }
+    },
+    "settings.appearance.glow.title" : {
+      "comment" : "Darstellung: Regler",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leuchten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glow"
+          }
+        }
+      }
+    },
+    "settings.appearance.hero.section" : {
+      "comment" : "Darstellung: Abschnitt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Große Temperatur"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Large temperature"
+          }
+        }
+      }
+    },
+    "settings.appearance.heroValue.help" : {
+      "comment" : "Darstellung: Kurzinfo Groß angezeigt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welche Temperatur groß steht; die andere steht klein darunter."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Which temperature is shown large; the other one appears small below it."
+          }
+        }
+      }
+    },
+    "settings.appearance.heroValue.title" : {
+      "comment" : "Darstellung: Auswahl Soll/Raum",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groß angezeigt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shown large"
+          }
+        }
+      }
+    },
+    "settings.appearance.lively.help" : {
+      "comment" : "Darstellung: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Langsam fließende Farben, solange die Anlage arbeitet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slowly flowing colors while the air conditioner is running."
+          }
+        }
+      }
+    },
+    "settings.appearance.lively.title" : {
+      "comment" : "Darstellung: Schalter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lebendiger Hintergrund"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animated background"
+          }
+        }
+      }
+    },
+    "settings.appearance.mac.menuBarSection" : {
+      "comment" : "Darstellung Mac: Abschnitt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menüleiste"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menu bar"
+          }
+        }
+      }
+    },
+    "settings.appearance.mac.miniHelp" : {
+      "comment" : "Darstellung Mac: Kurzinfo Mini-Fenster mit Tastenkürzel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kleines schwebendes Fenster mit Temperatur und Ein/Aus (⇧⌘M)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Small floating window with temperature and on/off (⇧⌘M)."
+          }
+        }
+      }
+    },
+    "settings.appearance.mac.reduceMotionSystem" : {
+      "comment" : "Darstellung Mac: Fußnote, wenn das System Bewegung reduziert",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„Bewegung reduzieren“ ist in den Systemeinstellungen eingeschaltet – Effekte bleiben aus."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Reduce motion” is turned on in System Settings; effects stay off."
+          }
+        }
+      }
+    },
+    "settings.appearance.menuBar.accessibility" : {
+      "comment" : "VoiceOver: Auswahl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzeige in der Menüleiste"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menu bar display"
+          }
+        }
+      }
+    },
+    "settings.appearance.menuBar.help" : {
+      "comment" : "Darstellung: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Was neben dem Symbol in der Menüleiste steht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What appears next to the icon in the menu bar."
+          }
+        }
+      }
+    },
+    "settings.appearance.menuBar.title" : {
+      "comment" : "Darstellung: Auswahl, was neben dem Menüleisten-Symbol steht",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzeige"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show"
+          }
+        }
+      }
+    },
+    "settings.appearance.menuBarAnimated.help" : {
+      "comment" : "Darstellung: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Lüfter dreht sich, solange die Anlage läuft."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The fan spins while the air conditioner is running."
+          }
+        }
+      }
+    },
+    "settings.appearance.menuBarAnimated.title" : {
+      "comment" : "Darstellung: Schalter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbol animiert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animated icon"
+          }
+        }
+      }
+    },
+    "settings.appearance.menuBarColored.help" : {
+      "comment" : "Darstellung: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbol in der Modusfarbe statt einfarbig."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icon in the mode color instead of a single color."
+          }
+        }
+      }
+    },
+    "settings.appearance.menuBarColored.title" : {
+      "comment" : "Darstellung: Schalter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbol farbig"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colored icon"
+          }
+        }
+      }
+    },
+    "settings.appearance.mini.close" : {
+      "comment" : "Mini-Fenster: Schließen-Knopf und Menüeintrag",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini-Fenster schließen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close mini window"
+          }
+        }
+      }
+    },
+    "settings.appearance.mini.open" : {
+      "comment" : "Darstellung: Knopf Mini-Fenster öffnen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open"
+          }
+        }
+      }
+    },
+    "settings.appearance.mini.openApp" : {
+      "comment" : "Mini-Fenster: Kontextmenü",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Klimacontrol"
+          }
+        }
+      }
+    },
+    "settings.appearance.mini.title" : {
+      "comment" : "Darstellung: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini-Fenster"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini window"
+          }
+        }
+      }
+    },
+    "settings.appearance.mini.turnOff" : {
+      "comment" : "Mini-Fenster: VoiceOver-Beschriftung des Ein/Aus-Knopfs",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausschalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn off"
+          }
+        }
+      }
+    },
+    "settings.appearance.mini.turnOn" : {
+      "comment" : "Mini-Fenster: VoiceOver-Beschriftung des Ein/Aus-Knopfs",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einschalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on"
+          }
+        }
+      }
+    },
+    "settings.appearance.motion.section" : {
+      "comment" : "Darstellung: Abschnitt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bewegung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Motion"
+          }
+        }
+      }
+    },
+    "settings.appearance.preview.accessibility" : {
+      "comment" : "VoiceOver: Vorschau-Kachel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorschau der Darstellung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appearance preview"
+          }
+        }
+      }
+    },
+    "settings.appearance.preview.modePicker" : {
+      "comment" : "VoiceOver: Auswahl Kühlen/Heizen in der Vorschau",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorschau als"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preview as"
+          }
+        }
+      }
+    },
+    "settings.appearance.preview.room" : {
+      "comment" : "Vorschau: kleine Zeile unter der Solltemperatur",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raum {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room {value}"
+          }
+        }
+      }
+    },
+    "settings.appearance.preview.target" : {
+      "comment" : "Vorschau: kleine Zeile unter der Raumtemperatur",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soll {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target {value}"
+          }
+        }
+      }
+    },
+    "settings.appearance.preview.title" : {
+      "comment" : "Darstellung: Vorschau-Kachel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorschau"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preview"
+          }
+        }
+      }
+    },
+    "settings.appearance.reduceMotion.help" : {
+      "comment" : "Darstellung: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schaltet lebendigen Hintergrund und Wetter-Effekte immer ab."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Always turns off the animated background and weather effects."
+          }
+        }
+      }
+    },
+    "settings.appearance.reduceMotion.title" : {
+      "comment" : "Darstellung: Schalter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animationen reduzieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reduce animations"
+          }
+        }
+      }
+    },
+    "settings.appearance.reset.button" : {
+      "comment" : "Darstellung: Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf Standard zurücksetzen …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset to default…"
+          }
+        }
+      }
+    },
+    "settings.appearance.reset.confirm" : {
+      "comment" : "Darstellung: Rückfrage Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurücksetzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset"
+          }
+        }
+      }
+    },
+    "settings.appearance.reset.message" : {
+      "comment" : "Darstellung: Rückfrage Text",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Werte dieses Reiters kommen auf das gewohnte Aussehen zurück."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All values on this tab return to the usual look."
+          }
+        }
+      }
+    },
+    "settings.appearance.reset.title" : {
+      "comment" : "Darstellung: Rückfrage Titel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Darstellung zurücksetzen?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset appearance?"
+          }
+        }
+      }
+    },
+    "settings.appearance.scheme.help" : {
+      "comment" : "Darstellung: Kurzinfo hell/dunkel; computer = Mac bzw. Rechner",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hell, dunkel oder wie der {computer}."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Light, dark, or same as the {computer}."
+          }
+        }
+      }
+    },
+    "settings.appearance.scheme.title" : {
+      "comment" : "Darstellung: hell/dunkel/System",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Color scheme"
+          }
+        }
+      }
+    },
+    "settings.appearance.scope.help" : {
+      "comment" : "Darstellung: Kurzinfo Umfang",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einfach: nur Ein/Aus, Modus, Temperatur, Lüfter und Timer, der Rest unter „Mehr …“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Simple: only on/off, mode, temperature, fan, and timer; the rest is under “More…”."
+          }
+        }
+      }
+    },
+    "settings.appearance.scope.title" : {
+      "comment" : "Darstellung: Auswahl Einfach/Alles",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Umfang"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scope"
+          }
+        }
+      }
+    },
+    "settings.appearance.size.help" : {
+      "comment" : "Darstellung: Kurzinfo Größe",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Größe der großen Zahl und der Bedienelemente."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Size of the large number and the controls."
+          }
+        }
+      }
+    },
+    "settings.appearance.size.title" : {
+      "comment" : "Darstellung: Auswahl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Größe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Size"
+          }
+        }
+      }
+    },
+    "settings.appearance.theme.help" : {
+      "comment" : "Darstellung: Kurzinfo Thema",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setzt alle Werte darunter auf einmal; danach lässt sich jeder einzeln ändern."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sets all values below at once; you can then change each one separately."
+          }
+        }
+      }
+    },
+    "settings.appearance.theme.title" : {
+      "comment" : "Einstellungen Darstellung: Thema (Abschnitt und Zeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thema"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Theme"
+          }
+        }
+      }
+    },
+    "settings.appearance.transparency.help" : {
+      "comment" : "Darstellung: Kurzinfo Transparenz",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie stark Karten und Fenster durchscheinen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How much cards and windows show through."
+          }
+        }
+      }
+    },
+    "settings.appearance.transparency.title" : {
+      "comment" : "Darstellung: Regler",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transparenz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transparency"
+          }
+        }
+      }
+    },
+    "settings.appearance.unit.percent" : {
+      "comment" : "Darstellung: Prozentwert neben dem Regler",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{value} %"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{value}%"
+          }
+        }
+      }
+    },
+    "settings.appearance.unit.points" : {
+      "comment" : "Darstellung: Wert Unschärfe neben dem Regler",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{value} pt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{value} pt"
+          }
+        }
+      }
+    },
+    "settings.appearance.weather.help" : {
+      "comment" : "Darstellung: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schneeflocken beim Kühlen, aufsteigende Wärme beim Heizen – dezent."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snowflakes when cooling, rising warmth when heating; subtle."
+          }
+        }
+      }
+    },
+    "settings.appearance.weather.title" : {
+      "comment" : "Darstellung: Schalter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wetter-Effekte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weather effects"
+          }
+        }
+      }
+    },
+    "settings.appearance.window.section" : {
+      "comment" : "Darstellung: Abschnitt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenster"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Window"
+          }
+        }
+      }
+    },
+    "settings.connection.accountHeader" : {
+      "comment" : "Abschnittstitel Midea-Konto",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midea-Konto – Steuerung von unterwegs"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midea account: control from anywhere"
+          }
+        }
+      }
+    },
+    "settings.connection.accountRemove" : {
+      "comment" : "Knopf: Konto entfernen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midea-Konto entfernen …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Midea account…"
+          }
+        }
+      }
+    },
+    "settings.connection.accountTitle" : {
+      "comment" : "Einstellungen Verbindung: Konto",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midea-Konto"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midea account"
+          }
+        }
+      }
+    },
+    "settings.connection.emailPlaceholder" : {
+      "comment" : "Platzhalter E-Mail",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-Mail (wie in der App MSmartHome)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email (as in the MSmartHome app)"
+          }
+        }
+      }
+    },
+    "settings.connection.needsDevice" : {
+      "comment" : "Einstellungen Verbindung: ohne Anlage, Konto",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erst eine Anlage einrichten – für das Midea-Konto braucht es die Anlagen-ID."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set up an air conditioner first; the Midea account needs the air conditioner ID."
+          }
+        }
+      }
+    },
+    "settings.connection.noDevice" : {
+      "comment" : "Einstellungen Verbindung: ohne Anlage",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine Anlage eingerichtet – das geht im Hauptfenster."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No air conditioner set up yet. You can do that in the main window."
+          }
+        }
+      }
+    },
+    "settings.connection.passwordPlaceholder" : {
+      "comment" : "Platzhalter Passwort",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passwort"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password"
+          }
+        }
+      }
+    },
+    "settings.connection.signIn" : {
+      "comment" : "Knopf Anmelden",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anmelden und speichern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in and save"
+          }
+        }
+      }
+    },
+    "settings.connection.signingIn" : {
+      "comment" : "Knopf während der Anmeldung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde an …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signing in…"
+          }
+        }
+      }
+    },
+    "settings.connection.status" : {
+      "comment" : "Einstellungen Verbindung: Status",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status"
+          }
+        }
+      }
+    },
+    "settings.connection.wayTitle" : {
+      "comment" : "Einstellungen Verbindung: Weg",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weg zur Anlage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection to the air conditioner"
+          }
+        }
+      }
+    },
     "settings.currency.invalid" : {
       "comment" : "Meldung bei ungültiger Währung",
       "extractionState" : "manual",
@@ -7303,6 +12709,978 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Currency"
+          }
+        }
+      }
+    },
+    "settings.device.backup.export" : {
+      "comment" : "Einstellungen Anlage: Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugangsdaten sichern …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back up credentials…"
+          }
+        }
+      }
+    },
+    "settings.device.backup.footer" : {
+      "comment" : "Einstellungen Anlage: Fußnote",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Sicherung enthält Token, Schlüssel, Adresse und Szenen – damit lässt sich die Anlage auf einem anderen Rechner ohne Midea-Konto einrichten. Nicht in Cloud-Ordnern (iCloud, OneDrive, Dropbox) ablegen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The backup contains token, key, address, and scenes; with it you can set up the air conditioner on another computer without a Midea account. Do not store it in cloud folders (iCloud, OneDrive, Dropbox)."
+          }
+        }
+      }
+    },
+    "settings.device.backup.header" : {
+      "comment" : "Einstellungen Anlage: Abschnitt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sichern und übertragen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back up and transfer"
+          }
+        }
+      }
+    },
+    "settings.device.backup.import" : {
+      "comment" : "Einstellungen Anlage: Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sicherung einlesen …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore backup…"
+          }
+        }
+      }
+    },
+    "settings.device.credentials.none" : {
+      "comment" : "Einstellungen Anlage: keine WLAN-Zugangsdaten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "keine – Steuerung über das Midea-Konto"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "none; controlled through the Midea account"
+          }
+        }
+      }
+    },
+    "settings.device.credentials.stored" : {
+      "comment" : "Einstellungen Anlage: WLAN-Zugangsdaten vorhanden",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gespeichert, nur für dich lesbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "stored, readable only by you"
+          }
+        }
+      }
+    },
+    "settings.device.credentials.title" : {
+      "comment" : "Einstellungen Anlage: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WLAN-Zugangsdaten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wi-Fi credentials"
+          }
+        }
+      }
+    },
+    "settings.device.details.title" : {
+      "comment" : "Einstellungen Anlage: ausklappbarer Bereich",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Technische Angaben"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Technical details"
+          }
+        }
+      }
+    },
+    "settings.device.forget.button" : {
+      "comment" : "Einstellungen Anlage: Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage neu einrichten …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set up air conditioner again…"
+          }
+        }
+      }
+    },
+    "settings.device.forget.footer" : {
+      "comment" : "Einstellungen Anlage: Fußnote",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur für eine andere Anlage. Nach einem Router-Wechsel oder bei neuer Adresse reicht „Adresse neu suchen“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only for a different air conditioner. After changing routers or when the address changes, “Find address again” is enough."
+          }
+        }
+      }
+    },
+    "settings.device.identifier.help" : {
+      "comment" : "Einstellungen Anlage: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigenschaft 0x00AB der Anlage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Property 0x00AB of the air conditioner"
+          }
+        }
+      }
+    },
+    "settings.device.identifier.title" : {
+      "comment" : "Einstellungen Anlage: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kennung der Anlage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner identifier"
+          }
+        }
+      }
+    },
+    "settings.device.name.help" : {
+      "comment" : "Einstellungen Anlage: Hilfetext unter dem Namen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Von Midea vergeben. Der Anzeigename steht unter „Allgemein“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assigned by Midea. The display name is under “General”."
+          }
+        }
+      }
+    },
+    "settings.device.name.title" : {
+      "comment" : "Einstellungen Anlage: Zeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name der Anlage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner name"
+          }
+        }
+      }
+    },
+    "settings.device.noDevice" : {
+      "comment" : "Einstellungen Anlage: ohne Einrichtung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine Anlage eingerichtet – das geht im Hauptfenster."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No air conditioner set up yet. You can do this in the main window."
+          }
+        }
+      }
+    },
+    "settings.device.relocate.button" : {
+      "comment" : "Einstellungen Anlage: Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adresse neu suchen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find address again"
+          }
+        }
+      }
+    },
+    "settings.device.relocate.help" : {
+      "comment" : "Einstellungen Anlage: Hilfetext",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach einem Router-Wechsel oder wenn die Anlage eine neue Adresse hat. Token und Schlüssel bleiben erhalten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "After changing routers, or when the air conditioner has a new address. Token and key are kept."
+          }
+        }
+      }
+    },
+    "settings.device.section" : {
+      "comment" : "Einstellungen Anlage: Abschnitt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner"
+          }
+        }
+      }
+    },
+    "settings.device.viaAccount" : {
+      "comment" : "Einstellungen Anlage: Adresse, wenn nur über das Konto eingerichtet",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "über Midea-Konto"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "via Midea account"
+          }
+        }
+      }
+    },
+    "settings.general.csvHelp" : {
+      "comment" : "Einstellungen Allgemein: CSV, Hilfe",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Verlauf liegt immer in verlauf.sqlite. Auf Wunsch zusätzlich alle 30 s eine Zeile in verlauf.csv."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The history is always stored in verlauf.sqlite. Optionally, a line is also written to verlauf.csv every 30 s."
+          }
+        }
+      }
+    },
+    "settings.general.csvTitle" : {
+      "comment" : "Einstellungen Allgemein: CSV",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zusätzlich als CSV schreiben"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Also write as CSV"
+          }
+        }
+      }
+    },
+    "settings.general.currencyAccessibility" : {
+      "comment" : "VoiceOver: Währungsfeld",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Währung des Strompreises"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Currency of the electricity price"
+          }
+        }
+      }
+    },
+    "settings.general.currencyHelp" : {
+      "comment" : "Einstellungen Allgemein: Währung, Hilfe",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steht hinter dem Preis und bei allen Kosten. Ein bis drei Zeichen, z. B. €, CHF oder USD."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shown after the price and with all costs. One to three characters, e.g. €, CHF or USD."
+          }
+        }
+      }
+    },
+    "settings.general.customAccessibility" : {
+      "comment" : "VoiceOver: eigener Takt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigener Wert in Sekunden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom value in seconds"
+          }
+        }
+      }
+    },
+    "settings.general.customTitle" : {
+      "comment" : "Einstellungen Allgemein: eigener Takt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigener Wert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom value"
+          }
+        }
+      }
+    },
+    "settings.general.exportButton" : {
+      "comment" : "Knopf Verlauf exportieren",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportieren …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export…"
+          }
+        }
+      }
+    },
+    "settings.general.exportHelp" : {
+      "comment" : "Einstellungen Allgemein: Export, Hilfe",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als CSV-Datei mit Ortszeit und Spaltennamen in der Sprache der App, z. B. für Numbers oder Excel."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As a CSV file with local time and column names in the app language, e.g. for Numbers or Excel."
+          }
+        }
+      }
+    },
+    "settings.general.exportTitle" : {
+      "comment" : "Einstellungen Allgemein: Export",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ganzen Verlauf exportieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export the entire history"
+          }
+        }
+      }
+    },
+    "settings.general.languageAccessibility" : {
+      "comment" : "VoiceOver: Sprachauswahl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprache der App"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App language"
+          }
+        }
+      }
+    },
+    "settings.general.mac.loginAddFailed" : {
+      "comment" : "Meldung (Mac)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol ließ sich nicht als Anmeldeobjekt eintragen. In Systemeinstellungen → Allgemein → Anmeldeobjekte von Hand hinzufügen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol could not be added as a login item. Add it manually in System Settings → General → Login Items."
+          }
+        }
+      }
+    },
+    "settings.general.mac.loginApproval" : {
+      "comment" : "Hinweis (Mac): Zustimmung nötig",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS wartet auf deine Zustimmung unter Systemeinstellungen → Allgemein → Anmeldeobjekte."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS is waiting for your approval in System Settings → General → Login Items."
+          }
+        }
+      }
+    },
+    "settings.general.mac.loginHelp" : {
+      "comment" : "Einstellungen Allgemein (Mac): Anmeldeobjekt, Hilfe",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer und Verlauf laufen nur, solange Klimacontrol geöffnet ist – so startet es mit dem Mac."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timers and history run only while Klimacontrol is open, so this starts it with the Mac."
+          }
+        }
+      }
+    },
+    "settings.general.mac.loginRemoveFailed" : {
+      "comment" : "Meldung (Mac)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol ließ sich nicht austragen. In Systemeinstellungen → Allgemein → Anmeldeobjekte von Hand entfernen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol could not be removed as a login item. Remove it manually in System Settings → General → Login Items."
+          }
+        }
+      }
+    },
+    "settings.general.mac.loginTitle" : {
+      "comment" : "Einstellungen Allgemein (Mac): Anmeldeobjekt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beim Anmelden starten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start at login"
+          }
+        }
+      }
+    },
+    "settings.general.mac.openSettings" : {
+      "comment" : "Knopf (Mac): Systemeinstellungen öffnen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open"
+          }
+        }
+      }
+    },
+    "settings.general.mac.showInFinder" : {
+      "comment" : "Knopf (Mac): Ablageordner im Finder",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Finder zeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show in Finder"
+          }
+        }
+      }
+    },
+    "settings.general.nameAccessibility" : {
+      "comment" : "VoiceOver: Namensfeld",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name der Anlage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner name"
+          }
+        }
+      }
+    },
+    "settings.general.nameHelp" : {
+      "comment" : "Einstellungen Allgemein: Name, Hilfe",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steht im Fenster und in der Menüleiste."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shown in the window and in the menu bar."
+          }
+        }
+      }
+    },
+    "settings.general.nameTitle" : {
+      "comment" : "Einstellungen Allgemein: Name",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        }
+      }
+    },
+    "settings.general.priceAccessibility" : {
+      "comment" : "VoiceOver: Strompreis-Feld",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strompreis in {currency} je Kilowattstunde"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Electricity price in {currency} per kilowatt-hour"
+          }
+        }
+      }
+    },
+    "settings.general.priceHelp" : {
+      "comment" : "Einstellungen Allgemein: Strompreis, Hilfe",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für die Kosten in der Übersicht und im Verlauf (gilt auch rückwirkend für den Verlauf)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Used for the costs in the overview and in the history (also applies retroactively to the history)."
+          }
+        }
+      }
+    },
+    "settings.general.pricePerKWh" : {
+      "comment" : "Einheit neben dem Strompreis-Feld",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{currency} je kWh"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{currency} per kWh"
+          }
+        }
+      }
+    },
+    "settings.general.priceTitle" : {
+      "comment" : "Einstellungen Allgemein: Strompreis",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strompreis"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Electricity price"
+          }
+        }
+      }
+    },
+    "settings.general.refreshHelp" : {
+      "comment" : "Einstellungen Allgemein: Takt, Hilfe",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kürzer = aktueller, aber mehr Verkehr zur Anlage."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shorter = more current, but more traffic to the air conditioner."
+          }
+        }
+      }
+    },
+    "settings.general.refreshTitle" : {
+      "comment" : "Einstellungen Allgemein: Takt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage abfragen alle"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read air conditioner every"
+          }
+        }
+      }
+    },
+    "settings.general.secondsUnit" : {
+      "comment" : "Einheit Sekunden neben dem Takt-Feld",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "s"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "s"
+          }
+        }
+      }
+    },
+    "settings.general.sectionDisplay" : {
+      "comment" : "Einstellungen Allgemein: Abschnitt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzeige"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display"
+          }
+        }
+      }
+    },
+    "settings.general.sectionHistory" : {
+      "comment" : "Einstellungen Allgemein: Abschnitt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History"
+          }
+        }
+      }
+    },
+    "settings.general.sectionRefresh" : {
+      "comment" : "Einstellungen Allgemein: Abschnitt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualisierung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh"
+          }
+        }
+      }
+    },
+    "settings.general.sectionStart" : {
+      "comment" : "Einstellungen Allgemein: Abschnitt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Startup"
+          }
+        }
+      }
+    },
+    "settings.general.soundHelp" : {
+      "comment" : "Einstellungen: Signalton, Hilfe",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piepen der Anlage bei Befehlen aus dieser App."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner beeps when this app sends commands."
+          }
+        }
+      }
+    },
+    "settings.general.soundTitle" : {
+      "comment" : "Einstellungen: Signalton der Anlage",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signalton"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beep"
+          }
+        }
+      }
+    },
+    "settings.general.updatesSection" : {
+      "comment" : "Einstellungen Allgemein: Abschnitt Updates",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates"
+          }
+        }
+      }
+    },
+    "settings.general.versionTitle" : {
+      "comment" : "Einstellungen Allgemein: Version der App",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version {version}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version {version}"
           }
         }
       }
@@ -7415,6 +13793,240 @@ extension StringsData {
         }
       }
     },
+    "settings.log.clear.button" : {
+      "comment" : "Protokoll: Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leeren …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear…"
+          }
+        }
+      }
+    },
+    "settings.log.clear.confirm" : {
+      "comment" : "Protokoll: Rückfrage Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leeren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear"
+          }
+        }
+      }
+    },
+    "settings.log.clear.message" : {
+      "comment" : "Protokoll: Rückfrage Text",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Einträge werden gelöscht – auch die, die bei einer Fehlersuche helfen könnten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All entries will be deleted, including those that could help with troubleshooting."
+          }
+        }
+      }
+    },
+    "settings.log.clear.title" : {
+      "comment" : "Protokoll: Rückfrage Titel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protokoll leeren?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear the log?"
+          }
+        }
+      }
+    },
+    "settings.log.detailed.off" : {
+      "comment" : "Protokoll: Erklärung bei ausgeschaltetem ausführlichem Protokoll",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus (Standard): Start, Verbindungsweg, Befehle, Fehler und Timer stehen trotzdem im Protokoll."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off (default): start, connection path, commands, errors, and timers are still in the log."
+          }
+        }
+      }
+    },
+    "settings.log.detailed.on" : {
+      "comment" : "Protokoll: Erklärung bei eingeschaltetem ausführlichem Protokoll",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An: zusätzlich jede Nachricht an die Anlage und an Midea – groß, die Datei wird alle paar Stunden neu begonnen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On: also records every message to the air conditioner and to Midea. Large; the file starts over every few hours."
+          }
+        }
+      }
+    },
+    "settings.log.detailed.title" : {
+      "comment" : "Protokoll: Schalter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausführliches Protokoll"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detailed log"
+          }
+        }
+      }
+    },
+    "settings.log.empty" : {
+      "comment" : "Protokoll: leere Anzeige",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine Einträge."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No entries yet."
+          }
+        }
+      }
+    },
+    "settings.log.eventsOnly.help" : {
+      "comment" : "Protokoll: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blendet DEBUG-Zeilen (Rahmen, Anfragen an Midea) in der Anzeige aus – die Datei bleibt vollständig"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hides DEBUG lines (frames, requests to Midea) in the view; the file stays complete"
+          }
+        }
+      }
+    },
+    "settings.log.eventsOnly.title" : {
+      "comment" : "Protokoll: Schalter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur Ereignisse"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Events only"
+          }
+        }
+      }
+    },
+    "settings.log.legend" : {
+      "comment" : "Protokoll: Legende rechts neben den Schaltern",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ortszeit · Passwort, Token, Schlüssel geschwärzt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Local time · password, token, and key redacted"
+          }
+        }
+      }
+    },
+    "settings.log.mac.showInFinder" : {
+      "comment" : "Protokoll Mac: Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protokoll im Finder zeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show log in Finder"
+          }
+        }
+      }
+    },
+    "settings.log.refresh" : {
+      "comment" : "Protokoll: Knopf, liest die Datei neu",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualisieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh"
+          }
+        }
+      }
+    },
     "settings.price.invalid" : {
       "comment" : "Meldung bei ungültigem Strompreis",
       "extractionState" : "manual",
@@ -7429,6 +14041,114 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "The electricity price must be between 0 and 1000 per kWh. Please correct it. (price)"
+          }
+        }
+      }
+    },
+    "settings.tabs.appearance" : {
+      "comment" : "Reiter der Einstellungen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Darstellung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appearance"
+          }
+        }
+      }
+    },
+    "settings.tabs.connection" : {
+      "comment" : "Reiter der Einstellungen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbindung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection"
+          }
+        }
+      }
+    },
+    "settings.tabs.device" : {
+      "comment" : "Reiter der Einstellungen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner"
+          }
+        }
+      }
+    },
+    "settings.tabs.general" : {
+      "comment" : "Reiter der Einstellungen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allgemein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "General"
+          }
+        }
+      }
+    },
+    "settings.tabs.log" : {
+      "comment" : "Reiter der Einstellungen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protokoll"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log"
+          }
+        }
+      }
+    },
+    "settings.tabs.notices" : {
+      "comment" : "Reiter der Einstellungen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lizenzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Licenses"
           }
         }
       }
@@ -8311,6 +15031,960 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "The air conditioner does not accept these credentials. Check that the token and key belong to this air conditioner (air conditioner ID), or get them again."
+          }
+        }
+      }
+    },
+    "setup.view.account.detail" : {
+      "comment" : "Einrichtung Konto: Einleitung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol holt Token und Schlüssel einmalig über dein Midea-Konto. Gesteuert wird danach im WLAN; unterwegs springt das Konto ein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol gets the token and key once through your Midea account. After that it controls the air conditioner over Wi-Fi; when you are away, the account takes over."
+          }
+        }
+      }
+    },
+    "setup.view.account.hint" : {
+      "comment" : "Einrichtung Konto: Hinweis; storage = Satz zum Passwort (host.*.passwordStorage)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Konto der App MSmartHome. {storage}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The account of the MSmartHome app. {storage}"
+          }
+        }
+      }
+    },
+    "setup.view.account.title" : {
+      "comment" : "Einrichtung Konto: Titel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Midea-Konto verbinden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connect with Midea account"
+          }
+        }
+      }
+    },
+    "setup.view.back" : {
+      "comment" : "Einrichtung: Knopf zurück zur Startseite",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurück"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back"
+          }
+        }
+      }
+    },
+    "setup.view.choice.account.detail" : {
+      "comment" : "Einrichtung: Wahl Beschreibung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Holt Token und Schlüssel automatisch. Findet die Anlage auch, wenn sie ausgeschaltet ist. Konto und Passwort gehen zur Anmeldung an Midea."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gets token and key automatically. Finds the air conditioner even when it is off. Account and password are sent to Midea for sign-in."
+          }
+        }
+      }
+    },
+    "setup.view.choice.account.title" : {
+      "comment" : "Einrichtung: Wahl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Midea-Konto"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "With Midea account"
+          }
+        }
+      }
+    },
+    "setup.view.choice.backup.detail" : {
+      "comment" : "Einrichtung: Wahl Beschreibung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sicherungsdatei mit den Zugangsdaten, z. B. von einem anderen Rechner. Keine Verbindung zu Midea."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A backup file with the credentials, for example from another computer. No connection to Midea."
+          }
+        }
+      }
+    },
+    "setup.view.choice.backup.title" : {
+      "comment" : "Einrichtung: Wahl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sicherung einlesen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore backup"
+          }
+        }
+      }
+    },
+    "setup.view.choice.manual.detail" : {
+      "comment" : "Einrichtung: Wahl Beschreibung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token und Schlüssel liegen dir schon vor. Keine Verbindung zu Midea, kein Internet nötig."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You already have the token and key. No connection to Midea and no internet needed."
+          }
+        }
+      }
+    },
+    "setup.view.choice.manual.title" : {
+      "comment" : "Einrichtung: Wahl und Titel des Ablaufs",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugangsdaten eingeben"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter credentials"
+          }
+        }
+      }
+    },
+    "setup.view.cloud.help" : {
+      "comment" : "Einrichtung: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlagen des Midea-Kontos auflisten – auch ausgeschaltet oder in einem anderen WLAN"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "List the air conditioners of the Midea account, even if off or on another Wi-Fi network"
+          }
+        }
+      }
+    },
+    "setup.view.cloud.needAccount" : {
+      "comment" : "Einrichtung: Kurzinfo, warum der Knopf aus ist",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erst Schritt 1 ausfüllen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fill in step 1 first"
+          }
+        }
+      }
+    },
+    "setup.view.cloud.search" : {
+      "comment" : "Einrichtung: Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In der Cloud suchen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Cloud"
+          }
+        }
+      }
+    },
+    "setup.view.cloud.searching" : {
+      "comment" : "Einrichtung: Knopf während der Suche",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Suche …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Searching Cloud…"
+          }
+        }
+      }
+    },
+    "setup.view.connect" : {
+      "comment" : "Einrichtung: Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbinden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connect"
+          }
+        }
+      }
+    },
+    "setup.view.connectHintAccount" : {
+      "comment" : "Einrichtung Konto: Hinweis neben dem Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Holt Token und Schlüssel über das Konto"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gets token and key through the account"
+          }
+        }
+      }
+    },
+    "setup.view.connectHintCloudOnly" : {
+      "comment" : "Einrichtung Konto: Hinweis neben dem Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Richtet die Steuerung über das Konto ein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sets up control through the account"
+          }
+        }
+      }
+    },
+    "setup.view.connecting" : {
+      "comment" : "Einrichtung: Knopf während des Verbindens",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbinde …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecting…"
+          }
+        }
+      }
+    },
+    "setup.view.email" : {
+      "comment" : "Einrichtung: Feld",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-Mail"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email"
+          }
+        }
+      }
+    },
+    "setup.view.found.cloudOff" : {
+      "comment" : "Einrichtung: Fundliste, Anlage nur im Konto, aus",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "über Midea-Konto · ausgeschaltet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "via Midea account · off"
+          }
+        }
+      }
+    },
+    "setup.view.found.cloudOnline" : {
+      "comment" : "Einrichtung: Fundliste, Anlage nur im Konto, online",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "über Midea-Konto · online"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "via Midea account · online"
+          }
+        }
+      }
+    },
+    "setup.view.found.lan" : {
+      "comment" : "Einrichtung: Fundliste, Anlage im WLAN",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{ip} · Protokoll V{version} · SN …{serial}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{ip} · Protocol V{version} · SN …{serial}"
+          }
+        }
+      }
+    },
+    "setup.view.mac.networkHint" : {
+      "comment" : "Einrichtung Mac: Hinweis zur Freigabe Lokales Netzwerk",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nichts gefunden? Prüfe, ob Klimacontrol auf das lokale Netzwerk zugreifen darf, und ob der Mac im selben WLAN wie die Anlage ist (nicht im Gast-WLAN)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing found? Check that Klimacontrol is allowed to access the local network and that the Mac is on the same Wi-Fi as the air conditioner (not a guest network)."
+          }
+        }
+      }
+    },
+    "setup.view.mac.openPermission" : {
+      "comment" : "Einrichtung Mac: Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freigabe öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open permission"
+          }
+        }
+      }
+    },
+    "setup.view.mac.openPermissionHelp" : {
+      "comment" : "Einrichtung Mac: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnet Systemeinstellungen → Datenschutz & Sicherheit → Lokales Netzwerk"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens System Settings → Privacy & Security → Local Network"
+          }
+        }
+      }
+    },
+    "setup.view.mac.settingsHelp" : {
+      "comment" : "Einrichtung Mac: Kurzinfo des Links zu den Einstellungen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protokoll und Verbindung in den Einstellungen (⌘,)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log and connection are in Settings (⌘,)"
+          }
+        }
+      }
+    },
+    "setup.view.manual.accepted" : {
+      "comment" : "Einrichtung Zugangsdaten: Ergebnis des Tests",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage nimmt die Zugangsdaten an"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner accepts the credentials"
+          }
+        }
+      }
+    },
+    "setup.view.manual.applianceIdPlaceholder" : {
+      "comment" : "Einrichtung Zugangsdaten: Platzhalter Anlagen-ID",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "aus der Suche (nur Ziffern)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "from the search (digits only)"
+          }
+        }
+      }
+    },
+    "setup.view.manual.charsComplete" : {
+      "comment" : "Einrichtung Zugangsdaten: Zähler, vollständig",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{total} Zeichen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{total} characters"
+          }
+        }
+      }
+    },
+    "setup.view.manual.charsPartial" : {
+      "comment" : "Einrichtung Zugangsdaten: Zähler, unvollständig",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{count} von {total} Zeichen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{count} of {total} characters"
+          }
+        }
+      }
+    },
+    "setup.view.manual.detail" : {
+      "comment" : "Einrichtung Zugangsdaten: Einleitung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token und Schlüssel der Anlage liegen dir vor – dann braucht es kein Midea-Konto. Für die Cloud unterwegs lässt sich ein Konto später unter Einstellungen → Verbindung nachtragen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You have the air conditioner’s token and key, so no Midea account is needed. For Cloud access when away, you can add an account later under Settings → Connection."
+          }
+        }
+      }
+    },
+    "setup.view.manual.paste" : {
+      "comment" : "Einrichtung Zugangsdaten: Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus Zwischenablage einfügen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paste from clipboard"
+          }
+        }
+      }
+    },
+    "setup.view.manual.pasteHelp" : {
+      "comment" : "Einrichtung Zugangsdaten: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erkennt Token und Schlüssel – auch den ganzen Inhalt einer Sicherungsdatei"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recognizes token and key, including the whole contents of a backup file"
+          }
+        }
+      }
+    },
+    "setup.view.manual.pasted" : {
+      "comment" : "Einrichtung Zugangsdaten: Bestätigung nach dem Einfügen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übernommen: {what}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applied: {what}"
+          }
+        }
+      }
+    },
+    "setup.view.manual.test" : {
+      "comment" : "Einrichtung Zugangsdaten: Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Testen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test"
+          }
+        }
+      }
+    },
+    "setup.view.manual.testHelp" : {
+      "comment" : "Einrichtung Zugangsdaten: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet sich mit diesen Zugangsdaten bei der Anlage an, ohne etwas zu speichern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signs in to the air conditioner with these credentials without saving anything"
+          }
+        }
+      }
+    },
+    "setup.view.password" : {
+      "comment" : "Einrichtung: Feld",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passwort"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password"
+          }
+        }
+      }
+    },
+    "setup.view.recommended" : {
+      "comment" : "Einrichtung: Marke an der empfohlenen Wahl",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "empfohlen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "recommended"
+          }
+        }
+      }
+    },
+    "setup.view.search.button" : {
+      "comment" : "Einrichtung: Knopf neben dem Adressfeld",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suchen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
+          }
+        }
+      }
+    },
+    "setup.view.search.subnet" : {
+      "comment" : "Einrichtung: Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netz durchsuchen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan network"
+          }
+        }
+      }
+    },
+    "setup.view.search.subnetBusy" : {
+      "comment" : "Einrichtung: Knopf, Fortschritt noch unbekannt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netz …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Network…"
+          }
+        }
+      }
+    },
+    "setup.view.search.subnetHelp" : {
+      "comment" : "Einrichtung: Kurzinfo",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fragt jede Adresse deines Netzes einzeln – hilft, wenn die normale Suche nichts findet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asks every address on your network one by one; helps when the normal search finds nothing"
+          }
+        }
+      }
+    },
+    "setup.view.search.subnetProgress" : {
+      "comment" : "Einrichtung: Fortschritt im Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{done} von {total}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{done} of {total}"
+          }
+        }
+      }
+    },
+    "setup.view.search.wifi" : {
+      "comment" : "Einrichtung: Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im WLAN suchen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Wi-Fi"
+          }
+        }
+      }
+    },
+    "setup.view.searching" : {
+      "comment" : "Einrichtung: Knopf während der Suche",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Searching…"
+          }
+        }
+      }
+    },
+    "setup.view.settings.link" : {
+      "comment" : "Einrichtung: Link",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings…"
+          }
+        }
+      }
+    },
+    "setup.view.start.intro" : {
+      "comment" : "Einrichtung Startseite: Einleitung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol steuert die Anlage direkt im WLAN. Dafür braucht es einmalig Token und Schlüssel der Anlage."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol controls the air conditioner directly over Wi-Fi. This needs the air conditioner’s token and key once."
+          }
+        }
+      }
+    },
+    "setup.view.start.title" : {
+      "comment" : "Einrichtung Startseite: Titel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie möchtest du verbinden?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How do you want to connect?"
+          }
+        }
+      }
+    },
+    "setup.view.step.account" : {
+      "comment" : "Einrichtung: Schritt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midea-Konto"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midea account"
+          }
+        }
+      }
+    },
+    "setup.view.step.connect" : {
+      "comment" : "Einrichtung: Schritt und Knopf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbinden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connect"
+          }
+        }
+      }
+    },
+    "setup.view.step.credentials" : {
+      "comment" : "Einrichtung Zugangsdaten: Schritt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token und Schlüssel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token and key"
+          }
+        }
+      }
+    },
+    "setup.view.step.device" : {
+      "comment" : "Einrichtung Zugangsdaten: Schritt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner"
+          }
+        }
+      }
+    },
+    "setup.view.step.find" : {
+      "comment" : "Einrichtung: Schritt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage finden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find the air conditioner"
           }
         }
       }
@@ -9269,6 +16943,114 @@ extension StringsData {
         }
       }
     },
+    "updates.mac.betaHelp" : {
+      "comment" : "Kurzinfo/Hilfe zum Beta-Schalter (Mac)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorabversionen können Fehler enthalten. Beim Ausschalten bleibt die installierte Vorabversion, bis eine neuere stabile Fassung erscheint."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pre-release versions may contain bugs. When you turn this off, the installed pre-release stays until a newer stable version is released."
+          }
+        }
+      }
+    },
+    "updates.mac.downloading" : {
+      "comment" : "Status (Mac): Update gefunden",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version {version} wird geladen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloading version {version}."
+          }
+        }
+      }
+    },
+    "updates.mac.onlyInBundle" : {
+      "comment" : "Hinweis (Mac) ohne App-Paket",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates gibt es nur in der fertig gebauten App (tools/build_app.sh)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates are only available in the finished app (tools/build_app.sh)."
+          }
+        }
+      }
+    },
+    "updates.mac.promptMessage" : {
+      "comment" : "Hinweisfenster (Mac): Update geladen, Text",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} ist geladen. Zum Installieren startet die App kurz neu. Mit „Später“ wird beim Beenden installiert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} has been downloaded. The app restarts briefly to install it. With “Later”, it is installed when the app quits."
+          }
+        }
+      }
+    },
+    "updates.mac.promptTitle" : {
+      "comment" : "Hinweisfenster (Mac): Update geladen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update bereit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update ready"
+          }
+        }
+      }
+    },
+    "updates.mac.ready" : {
+      "comment" : "Status (Mac): Update geladen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version {version} ist bereit und wird beim Beenden installiert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version {version} is ready and will be installed when the app quits."
+          }
+        }
+      }
+    },
     "way.auto" : {
       "comment" : "Hilfe zur Verbindungsart Automatisch",
       "extractionState" : "manual",
@@ -9405,6 +17187,9 @@ extension StringsData {
         "account.footerSignedOut",
         "account.removed",
         "account.signedIn",
+        "app.restartNow",
+        "app.window.main",
+        "app.window.mini",
         "appearance.accent.byMode",
         "appearance.accent.custom",
         "appearance.accent.system",
@@ -9449,8 +17234,104 @@ extension StringsData {
         "availability.swing",
         "availability.turboOff",
         "availability.turboOn",
+        "bridge.badCommand",
+        "bridge.coreNotReady",
+        "bridge.deviceUnknown",
+        "bridge.deviceUnknownTodo",
+        "bridge.energyCountInvalid",
+        "bridge.energyKindUnknown",
+        "bridge.expect.bool",
+        "bridge.expect.integer",
+        "bridge.expect.number",
+        "bridge.expect.object",
+        "bridge.expect.text",
+        "bridge.expect.theme",
+        "bridge.expect.uiName",
+        "bridge.exportFailed",
+        "bridge.fanUnknown",
+        "bridge.fanUnknownTodo",
+        "bridge.file.badName",
+        "bridge.file.badNameTodo",
+        "bridge.file.corrupt",
+        "bridge.file.format",
+        "bridge.file.noAccess",
+        "bridge.file.noAccessTodo",
+        "bridge.file.noSpace",
+        "bridge.file.noSpaceTodo",
+        "bridge.file.notFound",
+        "bridge.file.notFoundTodo",
+        "bridge.file.unreadable",
         "bridge.formatInvalid",
         "bridge.localeUnreadable",
+        "bridge.modeUnknown",
+        "bridge.noDevice",
+        "bridge.noDeviceTodo",
+        "bridge.noState",
+        "bridge.noStateTodo",
+        "bridge.notStarted",
+        "bridge.paramInvalid",
+        "bridge.pasteEmpty",
+        "bridge.pasteEmptyTodo",
+        "bridge.pathMissing",
+        "bridge.pathMissingTodo",
+        "bridge.pathUnknown",
+        "bridge.rateUnknown",
+        "bridge.rateUnknownTodo",
+        "bridge.sceneName",
+        "bridge.sceneNameTodo",
+        "bridge.sceneUnknown",
+        "bridge.sceneUnknownTodo",
+        "bridge.setupIncomplete",
+        "bridge.setupPathUnknown",
+        "bridge.setupPathUnknownTodo",
+        "bridge.timeInvalid",
+        "bridge.timeInvalidTodo",
+        "bridge.todo.chooseOther",
+        "bridge.todo.otherFile",
+        "bridge.todo.otherPlace",
+        "bridge.todo.restart",
+        "bridge.todo.restartOrUpdate",
+        "bridge.unexpected",
+        "bridge.unexpectedTodo",
+        "bridge.unknownCommand",
+        "charts.approxMarker",
+        "charts.axis.segment",
+        "charts.axis.series",
+        "charts.axis.time",
+        "charts.axis.watt",
+        "charts.hide",
+        "charts.hideHelp",
+        "charts.hoverTarget",
+        "charts.outdoor",
+        "charts.power",
+        "charts.range",
+        "charts.series.room",
+        "charts.series.target",
+        "charts.summary",
+        "charts.summaryNone",
+        "charts.temperature",
+        "charts.tile.avg",
+        "charts.tile.avgHelp",
+        "charts.tile.consumptionHelp",
+        "charts.tile.cost",
+        "charts.tile.costHelp",
+        "charts.tile.peak",
+        "charts.tile.peakHelp",
+        "charts.title",
+        "charts.tooFew",
+        "commands.alwaysOnTop",
+        "commands.checkUpdates",
+        "commands.cooler",
+        "commands.deviceMenu",
+        "commands.hideDiagnostics",
+        "commands.hideHistory",
+        "commands.miniWindow",
+        "commands.powerOff",
+        "commands.powerOn",
+        "commands.refreshNow",
+        "commands.showDiagnostics",
+        "commands.showHistory",
+        "commands.warmer",
         "common.asOf",
         "common.asOfDay",
         "common.cancel",
@@ -9526,6 +17407,43 @@ extension StringsData {
         "diagnostics.filterOk",
         "diagnostics.hintFault",
         "diagnostics.hintFilter",
+        "diagnostics.panel.condensatePump",
+        "diagnostics.panel.condenser",
+        "diagnostics.panel.currentHelp",
+        "diagnostics.panel.currentVoltage",
+        "diagnostics.panel.defrost",
+        "diagnostics.panel.eev",
+        "diagnostics.panel.eevHelp",
+        "diagnostics.panel.errorCode",
+        "diagnostics.panel.errorCodeHelp",
+        "diagnostics.panel.evaporator",
+        "diagnostics.panel.filter",
+        "diagnostics.panel.frequency",
+        "diagnostics.panel.hide",
+        "diagnostics.panel.hideHelp",
+        "diagnostics.panel.historyFile",
+        "diagnostics.panel.indoorFan",
+        "diagnostics.panel.indoorSensor2",
+        "diagnostics.panel.indoorSensor2Help",
+        "diagnostics.panel.loading",
+        "diagnostics.panel.mac.showInFinder",
+        "diagnostics.panel.meter",
+        "diagnostics.panel.no",
+        "diagnostics.panel.outdoorFan",
+        "diagnostics.panel.power",
+        "diagnostics.panel.running",
+        "diagnostics.panel.sectionCircuit",
+        "diagnostics.panel.sectionCompressor",
+        "diagnostics.panel.sectionIndoor",
+        "diagnostics.panel.t1",
+        "diagnostics.panel.t2",
+        "diagnostics.panel.t3",
+        "diagnostics.panel.t4",
+        "diagnostics.panel.title",
+        "diagnostics.panel.tp",
+        "diagnostics.panel.unitRpm",
+        "diagnostics.panel.unitSteps",
+        "diagnostics.panel.withTarget",
         "energy.cost.approx",
         "energy.help",
         "energy.kind.day",
@@ -9614,6 +17532,92 @@ extension StringsData {
         "host.windows.passwordStorage",
         "host.windows.setAsideDevice",
         "host.windows.updatesHelp",
+        "main.comfort.display",
+        "main.comfort.eco",
+        "main.comfort.frostProtection",
+        "main.comfort.ieco",
+        "main.comfort.ionizer",
+        "main.comfort.limitPower",
+        "main.comfort.percentChoice",
+        "main.comfort.selfClean",
+        "main.comfort.swing",
+        "main.comfort.unknownSuffix",
+        "main.fan.percentLabel",
+        "main.fan.percentWord",
+        "main.footer.diagnostics",
+        "main.footer.diagnosticsHide",
+        "main.footer.diagnosticsShow",
+        "main.footer.history",
+        "main.footer.historyHide",
+        "main.footer.historyShow",
+        "main.footer.refresh",
+        "main.footer.refreshHelp",
+        "main.footer.settings",
+        "main.footer.settingsHelp",
+        "main.hero.a11yRoomTarget",
+        "main.hero.a11yTarget",
+        "main.hero.degrees",
+        "main.hero.targetTemperature",
+        "main.message.codeLabel",
+        "main.message.refreshHelp",
+        "main.mini.open",
+        "main.mode.active",
+        "main.mode.activeValue",
+        "main.mode.switchTo",
+        "main.mode.switchToHint",
+        "main.mode.turnOnWith",
+        "main.mode.turnOnWithHint",
+        "main.more.hint",
+        "main.more.less",
+        "main.more.more",
+        "main.power.turnOff",
+        "main.power.turnOffHelp",
+        "main.power.turnOn",
+        "main.power.turnOnHelp",
+        "main.reading.outdoor",
+        "main.reading.power",
+        "main.reading.room",
+        "main.relocate.help",
+        "main.relocate.hint",
+        "main.relocate.search",
+        "main.relocate.searching",
+        "main.scene.activeHelp",
+        "main.scene.applyHelp",
+        "main.scene.deleteAction",
+        "main.scene.deleteConfirm",
+        "main.scene.deleteMenu",
+        "main.scene.deleteMessage",
+        "main.scene.deleteTitle",
+        "main.scene.empty",
+        "main.scene.name",
+        "main.scene.save",
+        "main.scene.saveConfirm",
+        "main.scene.saveHelp",
+        "main.scene.saveMessage",
+        "main.section.comfort",
+        "main.section.fan",
+        "main.section.moreFeatures",
+        "main.section.scenes",
+        "main.section.scenesActive",
+        "main.startup.placeholder",
+        "main.state.off",
+        "main.state.on",
+        "main.step.cooler",
+        "main.step.coolerHelp",
+        "main.step.warmer",
+        "main.step.warmerHelp",
+        "main.timer.delete",
+        "main.timer.offHelp",
+        "main.timer.offMenu",
+        "main.timer.onButton",
+        "main.timer.onNote",
+        "main.timer.set",
+        "main.timer.switchesOn",
+        "main.timer.time",
+        "menu.mac.openApp",
+        "menu.noDevice",
+        "menu.quit",
+        "menu.target",
         "message.account.missingInput",
         "message.account.noId",
         "message.account.notSaved",
@@ -9704,6 +17708,8 @@ extension StringsData {
         "mode.verb.dry",
         "mode.verb.fan",
         "mode.verb.heat",
+        "notices.intro",
+        "notices.licenseText",
         "options.address.example",
         "options.address.orHost",
         "options.fan.autoCaption",
@@ -9798,15 +17804,163 @@ extension StringsData {
         "result.scenesImported",
         "result.scenesKept",
         "scene.summary",
+        "settings.appearance.accent.help",
+        "settings.appearance.accessibility.percent",
+        "settings.appearance.accessibility.points",
+        "settings.appearance.alwaysOnTop.help",
+        "settings.appearance.alwaysOnTop.title",
+        "settings.appearance.background.help",
+        "settings.appearance.background.title",
+        "settings.appearance.blur.help",
+        "settings.appearance.blur.title",
+        "settings.appearance.colors.title",
+        "settings.appearance.customColor.help",
+        "settings.appearance.customColor.title",
+        "settings.appearance.digits.help",
+        "settings.appearance.digits.title",
+        "settings.appearance.glow.help",
+        "settings.appearance.glow.title",
+        "settings.appearance.hero.section",
+        "settings.appearance.heroValue.help",
+        "settings.appearance.heroValue.title",
+        "settings.appearance.lively.help",
+        "settings.appearance.lively.title",
+        "settings.appearance.mac.menuBarSection",
+        "settings.appearance.mac.miniHelp",
+        "settings.appearance.mac.reduceMotionSystem",
+        "settings.appearance.menuBar.accessibility",
+        "settings.appearance.menuBar.help",
+        "settings.appearance.menuBar.title",
+        "settings.appearance.menuBarAnimated.help",
+        "settings.appearance.menuBarAnimated.title",
+        "settings.appearance.menuBarColored.help",
+        "settings.appearance.menuBarColored.title",
+        "settings.appearance.mini.close",
+        "settings.appearance.mini.open",
+        "settings.appearance.mini.openApp",
+        "settings.appearance.mini.title",
+        "settings.appearance.mini.turnOff",
+        "settings.appearance.mini.turnOn",
+        "settings.appearance.motion.section",
+        "settings.appearance.preview.accessibility",
+        "settings.appearance.preview.modePicker",
+        "settings.appearance.preview.room",
+        "settings.appearance.preview.target",
+        "settings.appearance.preview.title",
+        "settings.appearance.reduceMotion.help",
+        "settings.appearance.reduceMotion.title",
+        "settings.appearance.reset.button",
+        "settings.appearance.reset.confirm",
+        "settings.appearance.reset.message",
+        "settings.appearance.reset.title",
+        "settings.appearance.scheme.help",
+        "settings.appearance.scheme.title",
+        "settings.appearance.scope.help",
+        "settings.appearance.scope.title",
+        "settings.appearance.size.help",
+        "settings.appearance.size.title",
+        "settings.appearance.theme.help",
+        "settings.appearance.theme.title",
+        "settings.appearance.transparency.help",
+        "settings.appearance.transparency.title",
+        "settings.appearance.unit.percent",
+        "settings.appearance.unit.points",
+        "settings.appearance.weather.help",
+        "settings.appearance.weather.title",
+        "settings.appearance.window.section",
+        "settings.connection.accountHeader",
+        "settings.connection.accountRemove",
+        "settings.connection.accountTitle",
+        "settings.connection.emailPlaceholder",
+        "settings.connection.needsDevice",
+        "settings.connection.noDevice",
+        "settings.connection.passwordPlaceholder",
+        "settings.connection.signIn",
+        "settings.connection.signingIn",
+        "settings.connection.status",
+        "settings.connection.wayTitle",
         "settings.currency.invalid",
         "settings.currency.title",
+        "settings.device.backup.export",
+        "settings.device.backup.footer",
+        "settings.device.backup.header",
+        "settings.device.backup.import",
+        "settings.device.credentials.none",
+        "settings.device.credentials.stored",
+        "settings.device.credentials.title",
+        "settings.device.details.title",
+        "settings.device.forget.button",
+        "settings.device.forget.footer",
+        "settings.device.identifier.help",
+        "settings.device.identifier.title",
+        "settings.device.name.help",
+        "settings.device.name.title",
+        "settings.device.noDevice",
+        "settings.device.relocate.button",
+        "settings.device.relocate.help",
+        "settings.device.section",
+        "settings.device.viaAccount",
+        "settings.general.csvHelp",
+        "settings.general.csvTitle",
+        "settings.general.currencyAccessibility",
+        "settings.general.currencyHelp",
+        "settings.general.customAccessibility",
+        "settings.general.customTitle",
+        "settings.general.exportButton",
+        "settings.general.exportHelp",
+        "settings.general.exportTitle",
+        "settings.general.languageAccessibility",
+        "settings.general.mac.loginAddFailed",
+        "settings.general.mac.loginApproval",
+        "settings.general.mac.loginHelp",
+        "settings.general.mac.loginRemoveFailed",
+        "settings.general.mac.loginTitle",
+        "settings.general.mac.openSettings",
+        "settings.general.mac.showInFinder",
+        "settings.general.nameAccessibility",
+        "settings.general.nameHelp",
+        "settings.general.nameTitle",
+        "settings.general.priceAccessibility",
+        "settings.general.priceHelp",
+        "settings.general.pricePerKWh",
+        "settings.general.priceTitle",
+        "settings.general.refreshHelp",
+        "settings.general.refreshTitle",
+        "settings.general.secondsUnit",
+        "settings.general.sectionDisplay",
+        "settings.general.sectionHistory",
+        "settings.general.sectionRefresh",
+        "settings.general.sectionStart",
+        "settings.general.soundHelp",
+        "settings.general.soundTitle",
+        "settings.general.updatesSection",
+        "settings.general.versionTitle",
         "settings.language.english",
         "settings.language.german",
         "settings.language.restartHint",
         "settings.language.system",
         "settings.language.title",
         "settings.language.unknown",
+        "settings.log.clear.button",
+        "settings.log.clear.confirm",
+        "settings.log.clear.message",
+        "settings.log.clear.title",
+        "settings.log.detailed.off",
+        "settings.log.detailed.on",
+        "settings.log.detailed.title",
+        "settings.log.empty",
+        "settings.log.eventsOnly.help",
+        "settings.log.eventsOnly.title",
+        "settings.log.legend",
+        "settings.log.mac.showInFinder",
+        "settings.log.refresh",
         "settings.price.invalid",
+        "settings.tabs.appearance",
+        "settings.tabs.connection",
+        "settings.tabs.device",
+        "settings.tabs.general",
+        "settings.tabs.log",
+        "settings.tabs.notices",
         "settings.updates.betaChannel",
         "setup.busy",
         "setup.cloud.applianceOffline",
@@ -9856,6 +18010,59 @@ extension StringsData {
         "setup.problem.lengthChars",
         "setup.problem.port",
         "setup.rejectedManual",
+        "setup.view.account.detail",
+        "setup.view.account.hint",
+        "setup.view.account.title",
+        "setup.view.back",
+        "setup.view.choice.account.detail",
+        "setup.view.choice.account.title",
+        "setup.view.choice.backup.detail",
+        "setup.view.choice.backup.title",
+        "setup.view.choice.manual.detail",
+        "setup.view.choice.manual.title",
+        "setup.view.cloud.help",
+        "setup.view.cloud.needAccount",
+        "setup.view.cloud.search",
+        "setup.view.cloud.searching",
+        "setup.view.connect",
+        "setup.view.connectHintAccount",
+        "setup.view.connectHintCloudOnly",
+        "setup.view.connecting",
+        "setup.view.email",
+        "setup.view.found.cloudOff",
+        "setup.view.found.cloudOnline",
+        "setup.view.found.lan",
+        "setup.view.mac.networkHint",
+        "setup.view.mac.openPermission",
+        "setup.view.mac.openPermissionHelp",
+        "setup.view.mac.settingsHelp",
+        "setup.view.manual.accepted",
+        "setup.view.manual.applianceIdPlaceholder",
+        "setup.view.manual.charsComplete",
+        "setup.view.manual.charsPartial",
+        "setup.view.manual.detail",
+        "setup.view.manual.paste",
+        "setup.view.manual.pasteHelp",
+        "setup.view.manual.pasted",
+        "setup.view.manual.test",
+        "setup.view.manual.testHelp",
+        "setup.view.password",
+        "setup.view.recommended",
+        "setup.view.search.button",
+        "setup.view.search.subnet",
+        "setup.view.search.subnetBusy",
+        "setup.view.search.subnetHelp",
+        "setup.view.search.subnetProgress",
+        "setup.view.search.wifi",
+        "setup.view.searching",
+        "setup.view.settings.link",
+        "setup.view.start.intro",
+        "setup.view.start.title",
+        "setup.view.step.account",
+        "setup.view.step.connect",
+        "setup.view.step.credentials",
+        "setup.view.step.device",
+        "setup.view.step.find",
         "startup.handshake",
         "startup.reading",
         "startup.retry",
@@ -9909,6 +18116,12 @@ extension StringsData {
         "updates.current",
         "updates.failed",
         "updates.installing",
+        "updates.mac.betaHelp",
+        "updates.mac.downloading",
+        "updates.mac.onlyInBundle",
+        "updates.mac.promptMessage",
+        "updates.mac.promptTitle",
+        "updates.mac.ready",
         "way.auto",
         "way.cloud",
         "way.lan",
@@ -9924,6 +18137,9 @@ extension StringsData {
         "account.footerSignedOut": ["storage"],
         "account.removed": [],
         "account.signedIn": [],
+        "app.restartNow": [],
+        "app.window.main": [],
+        "app.window.mini": [],
         "appearance.accent.byMode": [],
         "appearance.accent.custom": [],
         "appearance.accent.system": [],
@@ -9968,8 +18184,104 @@ extension StringsData {
         "availability.swing": [],
         "availability.turboOff": [],
         "availability.turboOn": [],
+        "bridge.badCommand": [],
+        "bridge.coreNotReady": [],
+        "bridge.deviceUnknown": [],
+        "bridge.deviceUnknownTodo": [],
+        "bridge.energyCountInvalid": ["max"],
+        "bridge.energyKindUnknown": ["kinds"],
+        "bridge.expect.bool": [],
+        "bridge.expect.integer": [],
+        "bridge.expect.number": [],
+        "bridge.expect.object": [],
+        "bridge.expect.text": [],
+        "bridge.expect.theme": [],
+        "bridge.expect.uiName": [],
+        "bridge.exportFailed": [],
+        "bridge.fanUnknown": [],
+        "bridge.fanUnknownTodo": [],
+        "bridge.file.badName": [],
+        "bridge.file.badNameTodo": [],
+        "bridge.file.corrupt": [],
+        "bridge.file.format": [],
+        "bridge.file.noAccess": [],
+        "bridge.file.noAccessTodo": [],
+        "bridge.file.noSpace": [],
+        "bridge.file.noSpaceTodo": [],
+        "bridge.file.notFound": [],
+        "bridge.file.notFoundTodo": [],
+        "bridge.file.unreadable": [],
         "bridge.formatInvalid": [],
         "bridge.localeUnreadable": [],
+        "bridge.modeUnknown": [],
+        "bridge.noDevice": [],
+        "bridge.noDeviceTodo": [],
+        "bridge.noState": [],
+        "bridge.noStateTodo": [],
+        "bridge.notStarted": [],
+        "bridge.paramInvalid": ["cmd", "name", "expected"],
+        "bridge.pasteEmpty": [],
+        "bridge.pasteEmptyTodo": [],
+        "bridge.pathMissing": [],
+        "bridge.pathMissingTodo": [],
+        "bridge.pathUnknown": [],
+        "bridge.rateUnknown": [],
+        "bridge.rateUnknownTodo": [],
+        "bridge.sceneName": [],
+        "bridge.sceneNameTodo": [],
+        "bridge.sceneUnknown": [],
+        "bridge.sceneUnknownTodo": [],
+        "bridge.setupIncomplete": [],
+        "bridge.setupPathUnknown": [],
+        "bridge.setupPathUnknownTodo": [],
+        "bridge.timeInvalid": [],
+        "bridge.timeInvalidTodo": [],
+        "bridge.todo.chooseOther": [],
+        "bridge.todo.otherFile": [],
+        "bridge.todo.otherPlace": [],
+        "bridge.todo.restart": [],
+        "bridge.todo.restartOrUpdate": [],
+        "bridge.unexpected": [],
+        "bridge.unexpectedTodo": [],
+        "bridge.unknownCommand": ["cmd"],
+        "charts.approxMarker": [],
+        "charts.axis.segment": [],
+        "charts.axis.series": [],
+        "charts.axis.time": [],
+        "charts.axis.watt": [],
+        "charts.hide": [],
+        "charts.hideHelp": [],
+        "charts.hoverTarget": ["target"],
+        "charts.outdoor": [],
+        "charts.power": [],
+        "charts.range": [],
+        "charts.series.room": [],
+        "charts.series.target": [],
+        "charts.summary": ["last", "low", "high"],
+        "charts.summaryNone": [],
+        "charts.temperature": [],
+        "charts.tile.avg": [],
+        "charts.tile.avgHelp": [],
+        "charts.tile.consumptionHelp": [],
+        "charts.tile.cost": [],
+        "charts.tile.costHelp": ["price", "currency"],
+        "charts.tile.peak": [],
+        "charts.tile.peakHelp": [],
+        "charts.title": [],
+        "charts.tooFew": [],
+        "commands.alwaysOnTop": [],
+        "commands.checkUpdates": [],
+        "commands.cooler": [],
+        "commands.deviceMenu": [],
+        "commands.hideDiagnostics": [],
+        "commands.hideHistory": [],
+        "commands.miniWindow": [],
+        "commands.powerOff": [],
+        "commands.powerOn": [],
+        "commands.refreshNow": [],
+        "commands.showDiagnostics": [],
+        "commands.showHistory": [],
+        "commands.warmer": [],
         "common.asOf": ["time"],
         "common.asOfDay": ["date", "time"],
         "common.cancel": [],
@@ -10045,6 +18357,43 @@ extension StringsData {
         "diagnostics.filterOk": [],
         "diagnostics.hintFault": ["code"],
         "diagnostics.hintFilter": [],
+        "diagnostics.panel.condensatePump": [],
+        "diagnostics.panel.condenser": [],
+        "diagnostics.panel.currentHelp": [],
+        "diagnostics.panel.currentVoltage": [],
+        "diagnostics.panel.defrost": [],
+        "diagnostics.panel.eev": [],
+        "diagnostics.panel.eevHelp": [],
+        "diagnostics.panel.errorCode": [],
+        "diagnostics.panel.errorCodeHelp": [],
+        "diagnostics.panel.evaporator": [],
+        "diagnostics.panel.filter": [],
+        "diagnostics.panel.frequency": [],
+        "diagnostics.panel.hide": [],
+        "diagnostics.panel.hideHelp": [],
+        "diagnostics.panel.historyFile": [],
+        "diagnostics.panel.indoorFan": [],
+        "diagnostics.panel.indoorSensor2": [],
+        "diagnostics.panel.indoorSensor2Help": [],
+        "diagnostics.panel.loading": [],
+        "diagnostics.panel.mac.showInFinder": [],
+        "diagnostics.panel.meter": [],
+        "diagnostics.panel.no": [],
+        "diagnostics.panel.outdoorFan": [],
+        "diagnostics.panel.power": [],
+        "diagnostics.panel.running": [],
+        "diagnostics.panel.sectionCircuit": [],
+        "diagnostics.panel.sectionCompressor": [],
+        "diagnostics.panel.sectionIndoor": [],
+        "diagnostics.panel.t1": [],
+        "diagnostics.panel.t2": ["role"],
+        "diagnostics.panel.t3": ["role"],
+        "diagnostics.panel.t4": [],
+        "diagnostics.panel.title": [],
+        "diagnostics.panel.tp": [],
+        "diagnostics.panel.unitRpm": [],
+        "diagnostics.panel.unitSteps": [],
+        "diagnostics.panel.withTarget": ["value", "target"],
         "energy.cost.approx": ["cost"],
         "energy.help": [],
         "energy.kind.day": [],
@@ -10133,6 +18482,92 @@ extension StringsData {
         "host.windows.passwordStorage": [],
         "host.windows.setAsideDevice": [],
         "host.windows.updatesHelp": [],
+        "main.comfort.display": [],
+        "main.comfort.eco": [],
+        "main.comfort.frostProtection": [],
+        "main.comfort.ieco": [],
+        "main.comfort.ionizer": [],
+        "main.comfort.limitPower": [],
+        "main.comfort.percentChoice": ["value"],
+        "main.comfort.selfClean": [],
+        "main.comfort.swing": [],
+        "main.comfort.unknownSuffix": ["text"],
+        "main.fan.percentLabel": [],
+        "main.fan.percentWord": [],
+        "main.footer.diagnostics": [],
+        "main.footer.diagnosticsHide": [],
+        "main.footer.diagnosticsShow": [],
+        "main.footer.history": [],
+        "main.footer.historyHide": [],
+        "main.footer.historyShow": [],
+        "main.footer.refresh": [],
+        "main.footer.refreshHelp": [],
+        "main.footer.settings": [],
+        "main.footer.settingsHelp": [],
+        "main.hero.a11yRoomTarget": ["room", "target", "goal"],
+        "main.hero.a11yTarget": ["target", "goal"],
+        "main.hero.degrees": ["value"],
+        "main.hero.targetTemperature": [],
+        "main.message.codeLabel": ["code"],
+        "main.message.refreshHelp": [],
+        "main.mini.open": [],
+        "main.mode.active": ["mode"],
+        "main.mode.activeValue": [],
+        "main.mode.switchTo": ["mode"],
+        "main.mode.switchToHint": ["mode"],
+        "main.mode.turnOnWith": ["mode"],
+        "main.mode.turnOnWithHint": ["mode"],
+        "main.more.hint": [],
+        "main.more.less": [],
+        "main.more.more": [],
+        "main.power.turnOff": [],
+        "main.power.turnOffHelp": [],
+        "main.power.turnOn": [],
+        "main.power.turnOnHelp": [],
+        "main.reading.outdoor": [],
+        "main.reading.power": [],
+        "main.reading.room": [],
+        "main.relocate.help": [],
+        "main.relocate.hint": [],
+        "main.relocate.search": [],
+        "main.relocate.searching": [],
+        "main.scene.activeHelp": ["name"],
+        "main.scene.applyHelp": ["name"],
+        "main.scene.deleteAction": [],
+        "main.scene.deleteConfirm": [],
+        "main.scene.deleteMenu": [],
+        "main.scene.deleteMessage": [],
+        "main.scene.deleteTitle": ["name"],
+        "main.scene.empty": [],
+        "main.scene.name": [],
+        "main.scene.save": [],
+        "main.scene.saveConfirm": [],
+        "main.scene.saveHelp": [],
+        "main.scene.saveMessage": [],
+        "main.section.comfort": [],
+        "main.section.fan": [],
+        "main.section.moreFeatures": [],
+        "main.section.scenes": [],
+        "main.section.scenesActive": ["name"],
+        "main.startup.placeholder": [],
+        "main.state.off": [],
+        "main.state.on": [],
+        "main.step.cooler": [],
+        "main.step.coolerHelp": [],
+        "main.step.warmer": [],
+        "main.step.warmerHelp": [],
+        "main.timer.delete": [],
+        "main.timer.offHelp": ["requirement"],
+        "main.timer.offMenu": [],
+        "main.timer.onButton": [],
+        "main.timer.onNote": ["requirement"],
+        "main.timer.set": [],
+        "main.timer.switchesOn": ["day", "time"],
+        "main.timer.time": [],
+        "menu.mac.openApp": [],
+        "menu.noDevice": [],
+        "menu.quit": [],
+        "menu.target": ["target"],
         "message.account.missingInput": [],
         "message.account.noId": [],
         "message.account.notSaved": [],
@@ -10223,6 +18658,8 @@ extension StringsData {
         "mode.verb.dry": [],
         "mode.verb.fan": [],
         "mode.verb.heat": [],
+        "notices.intro": [],
+        "notices.licenseText": [],
         "options.address.example": [],
         "options.address.orHost": [],
         "options.fan.autoCaption": [],
@@ -10317,15 +18754,163 @@ extension StringsData {
         "result.scenesImported": ["count"],
         "result.scenesKept": [],
         "scene.summary": ["mode", "temp", "fan"],
+        "settings.appearance.accent.help": [],
+        "settings.appearance.accessibility.percent": ["value"],
+        "settings.appearance.accessibility.points": ["count"],
+        "settings.appearance.alwaysOnTop.help": [],
+        "settings.appearance.alwaysOnTop.title": [],
+        "settings.appearance.background.help": [],
+        "settings.appearance.background.title": [],
+        "settings.appearance.blur.help": [],
+        "settings.appearance.blur.title": [],
+        "settings.appearance.colors.title": [],
+        "settings.appearance.customColor.help": [],
+        "settings.appearance.customColor.title": [],
+        "settings.appearance.digits.help": [],
+        "settings.appearance.digits.title": [],
+        "settings.appearance.glow.help": [],
+        "settings.appearance.glow.title": [],
+        "settings.appearance.hero.section": [],
+        "settings.appearance.heroValue.help": [],
+        "settings.appearance.heroValue.title": [],
+        "settings.appearance.lively.help": [],
+        "settings.appearance.lively.title": [],
+        "settings.appearance.mac.menuBarSection": [],
+        "settings.appearance.mac.miniHelp": [],
+        "settings.appearance.mac.reduceMotionSystem": [],
+        "settings.appearance.menuBar.accessibility": [],
+        "settings.appearance.menuBar.help": [],
+        "settings.appearance.menuBar.title": [],
+        "settings.appearance.menuBarAnimated.help": [],
+        "settings.appearance.menuBarAnimated.title": [],
+        "settings.appearance.menuBarColored.help": [],
+        "settings.appearance.menuBarColored.title": [],
+        "settings.appearance.mini.close": [],
+        "settings.appearance.mini.open": [],
+        "settings.appearance.mini.openApp": [],
+        "settings.appearance.mini.title": [],
+        "settings.appearance.mini.turnOff": [],
+        "settings.appearance.mini.turnOn": [],
+        "settings.appearance.motion.section": [],
+        "settings.appearance.preview.accessibility": [],
+        "settings.appearance.preview.modePicker": [],
+        "settings.appearance.preview.room": ["value"],
+        "settings.appearance.preview.target": ["value"],
+        "settings.appearance.preview.title": [],
+        "settings.appearance.reduceMotion.help": [],
+        "settings.appearance.reduceMotion.title": [],
+        "settings.appearance.reset.button": [],
+        "settings.appearance.reset.confirm": [],
+        "settings.appearance.reset.message": [],
+        "settings.appearance.reset.title": [],
+        "settings.appearance.scheme.help": ["computer"],
+        "settings.appearance.scheme.title": [],
+        "settings.appearance.scope.help": [],
+        "settings.appearance.scope.title": [],
+        "settings.appearance.size.help": [],
+        "settings.appearance.size.title": [],
+        "settings.appearance.theme.help": [],
+        "settings.appearance.theme.title": [],
+        "settings.appearance.transparency.help": [],
+        "settings.appearance.transparency.title": [],
+        "settings.appearance.unit.percent": ["value"],
+        "settings.appearance.unit.points": ["value"],
+        "settings.appearance.weather.help": [],
+        "settings.appearance.weather.title": [],
+        "settings.appearance.window.section": [],
+        "settings.connection.accountHeader": [],
+        "settings.connection.accountRemove": [],
+        "settings.connection.accountTitle": [],
+        "settings.connection.emailPlaceholder": [],
+        "settings.connection.needsDevice": [],
+        "settings.connection.noDevice": [],
+        "settings.connection.passwordPlaceholder": [],
+        "settings.connection.signIn": [],
+        "settings.connection.signingIn": [],
+        "settings.connection.status": [],
+        "settings.connection.wayTitle": [],
         "settings.currency.invalid": [],
         "settings.currency.title": [],
+        "settings.device.backup.export": [],
+        "settings.device.backup.footer": [],
+        "settings.device.backup.header": [],
+        "settings.device.backup.import": [],
+        "settings.device.credentials.none": [],
+        "settings.device.credentials.stored": [],
+        "settings.device.credentials.title": [],
+        "settings.device.details.title": [],
+        "settings.device.forget.button": [],
+        "settings.device.forget.footer": [],
+        "settings.device.identifier.help": [],
+        "settings.device.identifier.title": [],
+        "settings.device.name.help": [],
+        "settings.device.name.title": [],
+        "settings.device.noDevice": [],
+        "settings.device.relocate.button": [],
+        "settings.device.relocate.help": [],
+        "settings.device.section": [],
+        "settings.device.viaAccount": [],
+        "settings.general.csvHelp": [],
+        "settings.general.csvTitle": [],
+        "settings.general.currencyAccessibility": [],
+        "settings.general.currencyHelp": [],
+        "settings.general.customAccessibility": [],
+        "settings.general.customTitle": [],
+        "settings.general.exportButton": [],
+        "settings.general.exportHelp": [],
+        "settings.general.exportTitle": [],
+        "settings.general.languageAccessibility": [],
+        "settings.general.mac.loginAddFailed": [],
+        "settings.general.mac.loginApproval": [],
+        "settings.general.mac.loginHelp": [],
+        "settings.general.mac.loginRemoveFailed": [],
+        "settings.general.mac.loginTitle": [],
+        "settings.general.mac.openSettings": [],
+        "settings.general.mac.showInFinder": [],
+        "settings.general.nameAccessibility": [],
+        "settings.general.nameHelp": [],
+        "settings.general.nameTitle": [],
+        "settings.general.priceAccessibility": ["currency"],
+        "settings.general.priceHelp": [],
+        "settings.general.pricePerKWh": ["currency"],
+        "settings.general.priceTitle": [],
+        "settings.general.refreshHelp": [],
+        "settings.general.refreshTitle": [],
+        "settings.general.secondsUnit": [],
+        "settings.general.sectionDisplay": [],
+        "settings.general.sectionHistory": [],
+        "settings.general.sectionRefresh": [],
+        "settings.general.sectionStart": [],
+        "settings.general.soundHelp": [],
+        "settings.general.soundTitle": [],
+        "settings.general.updatesSection": [],
+        "settings.general.versionTitle": ["version"],
         "settings.language.english": [],
         "settings.language.german": [],
         "settings.language.restartHint": [],
         "settings.language.system": [],
         "settings.language.title": [],
         "settings.language.unknown": ["value"],
+        "settings.log.clear.button": [],
+        "settings.log.clear.confirm": [],
+        "settings.log.clear.message": [],
+        "settings.log.clear.title": [],
+        "settings.log.detailed.off": [],
+        "settings.log.detailed.on": [],
+        "settings.log.detailed.title": [],
+        "settings.log.empty": [],
+        "settings.log.eventsOnly.help": [],
+        "settings.log.eventsOnly.title": [],
+        "settings.log.legend": [],
+        "settings.log.mac.showInFinder": [],
+        "settings.log.refresh": [],
         "settings.price.invalid": [],
+        "settings.tabs.appearance": [],
+        "settings.tabs.connection": [],
+        "settings.tabs.device": [],
+        "settings.tabs.general": [],
+        "settings.tabs.log": [],
+        "settings.tabs.notices": [],
         "settings.updates.betaChannel": [],
         "setup.busy": [],
         "setup.cloud.applianceOffline": [],
@@ -10375,6 +18960,59 @@ extension StringsData {
         "setup.problem.lengthChars": ["count", "total"],
         "setup.problem.port": [],
         "setup.rejectedManual": [],
+        "setup.view.account.detail": [],
+        "setup.view.account.hint": ["storage"],
+        "setup.view.account.title": [],
+        "setup.view.back": [],
+        "setup.view.choice.account.detail": [],
+        "setup.view.choice.account.title": [],
+        "setup.view.choice.backup.detail": [],
+        "setup.view.choice.backup.title": [],
+        "setup.view.choice.manual.detail": [],
+        "setup.view.choice.manual.title": [],
+        "setup.view.cloud.help": [],
+        "setup.view.cloud.needAccount": [],
+        "setup.view.cloud.search": [],
+        "setup.view.cloud.searching": [],
+        "setup.view.connect": [],
+        "setup.view.connectHintAccount": [],
+        "setup.view.connectHintCloudOnly": [],
+        "setup.view.connecting": [],
+        "setup.view.email": [],
+        "setup.view.found.cloudOff": [],
+        "setup.view.found.cloudOnline": [],
+        "setup.view.found.lan": ["ip", "version", "serial"],
+        "setup.view.mac.networkHint": [],
+        "setup.view.mac.openPermission": [],
+        "setup.view.mac.openPermissionHelp": [],
+        "setup.view.mac.settingsHelp": [],
+        "setup.view.manual.accepted": [],
+        "setup.view.manual.applianceIdPlaceholder": [],
+        "setup.view.manual.charsComplete": ["total"],
+        "setup.view.manual.charsPartial": ["count", "total"],
+        "setup.view.manual.detail": [],
+        "setup.view.manual.paste": [],
+        "setup.view.manual.pasteHelp": [],
+        "setup.view.manual.pasted": ["what"],
+        "setup.view.manual.test": [],
+        "setup.view.manual.testHelp": [],
+        "setup.view.password": [],
+        "setup.view.recommended": [],
+        "setup.view.search.button": [],
+        "setup.view.search.subnet": [],
+        "setup.view.search.subnetBusy": [],
+        "setup.view.search.subnetHelp": [],
+        "setup.view.search.subnetProgress": ["done", "total"],
+        "setup.view.search.wifi": [],
+        "setup.view.searching": [],
+        "setup.view.settings.link": [],
+        "setup.view.start.intro": [],
+        "setup.view.start.title": [],
+        "setup.view.step.account": [],
+        "setup.view.step.connect": [],
+        "setup.view.step.credentials": [],
+        "setup.view.step.device": [],
+        "setup.view.step.find": [],
         "startup.handshake": [],
         "startup.reading": [],
         "startup.retry": [],
@@ -10428,6 +19066,12 @@ extension StringsData {
         "updates.current": [],
         "updates.failed": [],
         "updates.installing": ["version"],
+        "updates.mac.betaHelp": [],
+        "updates.mac.downloading": ["version"],
+        "updates.mac.onlyInBundle": [],
+        "updates.mac.promptMessage": ["version"],
+        "updates.mac.promptTitle": [],
+        "updates.mac.ready": ["version"],
         "way.auto": [],
         "way.cloud": [],
         "way.lan": [],
@@ -10449,6 +19093,16 @@ public enum L {
         public static var removed: String { Localizer.text("account.removed") }
         /// Signed in and saved.
         public static var signedIn: String { Localizer.text("account.signedIn") }
+    }
+    public enum App {
+        /// Restart now
+        public static var restartNow: String { Localizer.text("app.restartNow") }
+        public enum Window {
+            /// Klimacontrol
+            public static var main: String { Localizer.text("app.window.main") }
+            /// Mini window
+            public static var mini: String { Localizer.text("app.window.mini") }
+        }
     }
     public enum Appearance {
         public enum Accent {
@@ -10563,10 +19217,218 @@ public enum L {
         public static var turboOn: String { Localizer.text("availability.turboOn") }
     }
     public enum Bridge {
+        /// Command not readable.
+        public static var badCommand: String { Localizer.text("bridge.badCommand") }
+        /// Klimacontrol is not ready yet.
+        public static var coreNotReady: String { Localizer.text("bridge.coreNotReady") }
+        /// This air conditioner is no longer in the list.
+        public static var deviceUnknown: String { Localizer.text("bridge.deviceUnknown") }
+        /// Search again.
+        public static var deviceUnknownTodo: String { Localizer.text("bridge.deviceUnknownTodo") }
+        /// The number of periods must be between 1 and {max}.
+        public static func energyCountInvalid(max: String) -> String { Localizer.text("bridge.energyCountInvalid", ["max": max]) }
+        /// Unknown type of consumption ({kinds}).
+        public static func energyKindUnknown(kinds: String) -> String { Localizer.text("bridge.energyKindUnknown", ["kinds": kinds]) }
+        public enum Expect {
+            /// on/off
+            public static var bool: String { Localizer.text("bridge.expect.bool") }
+            /// whole number
+            public static var integer: String { Localizer.text("bridge.expect.integer") }
+            /// number
+            public static var number: String { Localizer.text("bridge.expect.number") }
+            /// object
+            public static var object: String { Localizer.text("bridge.expect.object") }
+            /// text
+            public static var text: String { Localizer.text("bridge.expect.text") }
+            /// theme
+            public static var theme: String { Localizer.text("bridge.expect.theme") }
+            /// name of the window
+            public static var uiName: String { Localizer.text("bridge.expect.uiName") }
+        }
+        /// The history could not be saved.
+        public static var exportFailed: String { Localizer.text("bridge.exportFailed") }
+        /// This fan level does not exist.
+        public static var fanUnknown: String { Localizer.text("bridge.fanUnknown") }
+        /// Choose 1–100 % or Auto.
+        public static var fanUnknownTodo: String { Localizer.text("bridge.fanUnknownTodo") }
+        public enum File {
+            /// The file name is invalid.
+            public static var badName: String { Localizer.text("bridge.file.badName") }
+            /// Choose a different name.
+            public static var badNameTodo: String { Localizer.text("bridge.file.badNameTodo") }
+            /// The file is damaged.
+            public static var corrupt: String { Localizer.text("bridge.file.corrupt") }
+            /// The file is not a Klimacontrol backup or is damaged.
+            public static var format: String { Localizer.text("bridge.file.format") }
+            /// No access to this file.
+            public static var noAccess: String { Localizer.text("bridge.file.noAccess") }
+            /// Choose a different folder.
+            public static var noAccessTodo: String { Localizer.text("bridge.file.noAccessTodo") }
+            /// No storage space left.
+            public static var noSpace: String { Localizer.text("bridge.file.noSpace") }
+            /// Free up space or choose a different location.
+            public static var noSpaceTodo: String { Localizer.text("bridge.file.noSpaceTodo") }
+            /// The file was not found.
+            public static var notFound: String { Localizer.text("bridge.file.notFound") }
+            /// Check the location and name.
+            public static var notFoundTodo: String { Localizer.text("bridge.file.notFoundTodo") }
+            /// The file could not be read or saved.
+            public static var unreadable: String { Localizer.text("bridge.file.unreadable") }
+        }
         /// The Windows format settings are incomplete. Numbers and times appear in German format. (bad-format)
         public static var formatInvalid: String { Localizer.text("bridge.formatInvalid") }
         /// The language and format settings could not be read. Please restart the app. (bad-locale)
         public static var localeUnreadable: String { Localizer.text("bridge.localeUnreadable") }
+        /// Klimacontrol does not know this mode.
+        public static var modeUnknown: String { Localizer.text("bridge.modeUnknown") }
+        /// No air conditioner set up yet.
+        public static var noDevice: String { Localizer.text("bridge.noDevice") }
+        /// Complete the setup first.
+        public static var noDeviceTodo: String { Localizer.text("bridge.noDeviceTodo") }
+        /// No values from the air conditioner yet.
+        public static var noState: String { Localizer.text("bridge.noState") }
+        /// Wait a moment and save again.
+        public static var noStateTodo: String { Localizer.text("bridge.noStateTodo") }
+        /// Not started.
+        public static var notStarted: String { Localizer.text("bridge.notStarted") }
+        /// Command “{cmd}” incomplete: value “{name}” is missing or does not fit (expected: {expected}).
+        public static func paramInvalid(cmd: String, name: String, expected: String) -> String { Localizer.text("bridge.paramInvalid", ["cmd": cmd, "name": name, "expected": expected]) }
+        /// The pasted text contained nothing usable.
+        public static var pasteEmpty: String { Localizer.text("bridge.pasteEmpty") }
+        /// Copy the token and key.
+        public static var pasteEmptyTodo: String { Localizer.text("bridge.pasteEmptyTodo") }
+        /// No file name given.
+        public static var pathMissing: String { Localizer.text("bridge.pathMissing") }
+        /// Choose a file.
+        public static var pathMissingTodo: String { Localizer.text("bridge.pathMissingTodo") }
+        /// Klimacontrol does not know this connection method.
+        public static var pathUnknown: String { Localizer.text("bridge.pathUnknown") }
+        /// This power limit does not exist.
+        public static var rateUnknown: String { Localizer.text("bridge.rateUnknown") }
+        /// Choose 50, 75, or 100 %.
+        public static var rateUnknownTodo: String { Localizer.text("bridge.rateUnknownTodo") }
+        /// The scene needs a name.
+        public static var sceneName: String { Localizer.text("bridge.sceneName") }
+        /// Enter one.
+        public static var sceneNameTodo: String { Localizer.text("bridge.sceneNameTodo") }
+        /// This scene no longer exists.
+        public static var sceneUnknown: String { Localizer.text("bridge.sceneUnknown") }
+        /// Reopen the list.
+        public static var sceneUnknownTodo: String { Localizer.text("bridge.sceneUnknownTodo") }
+        /// Select an air conditioner and enter account and password.
+        public static var setupIncomplete: String { Localizer.text("bridge.setupIncomplete") }
+        /// Klimacontrol does not know this setup method.
+        public static var setupPathUnknown: String { Localizer.text("bridge.setupPathUnknown") }
+        /// Choose again.
+        public static var setupPathUnknownTodo: String { Localizer.text("bridge.setupPathUnknownTodo") }
+        /// This time does not exist.
+        public static var timeInvalid: String { Localizer.text("bridge.timeInvalid") }
+        /// Choose 00:00 to 23:59.
+        public static var timeInvalidTodo: String { Localizer.text("bridge.timeInvalidTodo") }
+        public enum Todo {
+            /// Choose a different one.
+            public static var chooseOther: String { Localizer.text("bridge.todo.chooseOther") }
+            /// Choose a different file.
+            public static var otherFile: String { Localizer.text("bridge.todo.otherFile") }
+            /// Choose a different location.
+            public static var otherPlace: String { Localizer.text("bridge.todo.otherPlace") }
+            /// Restart the app.
+            public static var restart: String { Localizer.text("bridge.todo.restart") }
+            /// Restart the app; if it persists, install the current version.
+            public static var restartOrUpdate: String { Localizer.text("bridge.todo.restartOrUpdate") }
+        }
+        /// Unexpected error.
+        public static var unexpected: String { Localizer.text("bridge.unexpected") }
+        /// Try again.
+        public static var unexpectedTodo: String { Localizer.text("bridge.unexpectedTodo") }
+        /// Unknown command “{cmd}”.
+        public static func unknownCommand(cmd: String) -> String { Localizer.text("bridge.unknownCommand", ["cmd": cmd]) }
+    }
+    public enum Charts {
+        /// approx.
+        public static var approxMarker: String { Localizer.text("charts.approxMarker") }
+        public enum Axis {
+            /// Segment
+            public static var segment: String { Localizer.text("charts.axis.segment") }
+            /// Series
+            public static var series: String { Localizer.text("charts.axis.series") }
+            /// Time
+            public static var time: String { Localizer.text("charts.axis.time") }
+            /// Watts
+            public static var watt: String { Localizer.text("charts.axis.watt") }
+        }
+        /// Hide history
+        public static var hide: String { Localizer.text("charts.hide") }
+        /// Hide history (⌘G)
+        public static var hideHelp: String { Localizer.text("charts.hideHelp") }
+        /// Target {target}
+        public static func hoverTarget(target: String) -> String { Localizer.text("charts.hoverTarget", ["target": target]) }
+        /// Outdoor temperature
+        public static var outdoor: String { Localizer.text("charts.outdoor") }
+        /// Power
+        public static var power: String { Localizer.text("charts.power") }
+        /// Period
+        public static var range: String { Localizer.text("charts.range") }
+        public enum Series {
+            /// Room
+            public static var room: String { Localizer.text("charts.series.room") }
+            /// Target
+            public static var target: String { Localizer.text("charts.series.target") }
+        }
+        /// latest {last}, lowest {low}, highest {high}
+        public static func summary(last: String, low: String, high: String) -> String { Localizer.text("charts.summary", ["last": last, "low": low, "high": high]) }
+        /// no data
+        public static var summaryNone: String { Localizer.text("charts.summaryNone") }
+        /// Temperature
+        public static var temperature: String { Localizer.text("charts.temperature") }
+        public enum Tile {
+            /// Average
+            public static var avg: String { Localizer.text("charts.tile.avg") }
+            /// Average power in the selected period
+            public static var avgHelp: String { Localizer.text("charts.tile.avgHelp") }
+            /// Calculated from the measurements of the period. Times without measurement (app or computer off) are…
+            public static var consumptionHelp: String { Localizer.text("charts.tile.consumptionHelp") }
+            /// Cost
+            public static var cost: String { Localizer.text("charts.tile.cost") }
+            /// Consumption of the period times today’s electricity price ({price} {currency} per kWh), also for ea…
+            public static func costHelp(price: String, currency: String) -> String { Localizer.text("charts.tile.costHelp", ["price": price, "currency": currency]) }
+            /// Peak
+            public static var peak: String { Localizer.text("charts.tile.peak") }
+            /// Highest measured power in the selected period
+            public static var peakHelp: String { Localizer.text("charts.tile.peakHelp") }
+        }
+        /// History
+        public static var title: String { Localizer.text("charts.title") }
+        /// Not enough data yet. The history fills with every refresh of the air conditioner.
+        public static var tooFew: String { Localizer.text("charts.tooFew") }
+    }
+    public enum Commands {
+        /// Always on top
+        public static var alwaysOnTop: String { Localizer.text("commands.alwaysOnTop") }
+        /// Check for updates…
+        public static var checkUpdates: String { Localizer.text("commands.checkUpdates") }
+        /// Cooler
+        public static var cooler: String { Localizer.text("commands.cooler") }
+        /// Air conditioner
+        public static var deviceMenu: String { Localizer.text("commands.deviceMenu") }
+        /// Hide diagnostics
+        public static var hideDiagnostics: String { Localizer.text("commands.hideDiagnostics") }
+        /// Hide history
+        public static var hideHistory: String { Localizer.text("commands.hideHistory") }
+        /// Mini window
+        public static var miniWindow: String { Localizer.text("commands.miniWindow") }
+        /// Turn off
+        public static var powerOff: String { Localizer.text("commands.powerOff") }
+        /// Turn on
+        public static var powerOn: String { Localizer.text("commands.powerOn") }
+        /// Refresh now
+        public static var refreshNow: String { Localizer.text("commands.refreshNow") }
+        /// Show diagnostics
+        public static var showDiagnostics: String { Localizer.text("commands.showDiagnostics") }
+        /// Show history
+        public static var showHistory: String { Localizer.text("commands.showHistory") }
+        /// Warmer
+        public static var warmer: String { Localizer.text("commands.warmer") }
     }
     public enum Common {
         /// As of {time}
@@ -10739,6 +19601,84 @@ public enum L {
         public static func hintFault(code: String) -> String { Localizer.text("diagnostics.hintFault", ["code": code]) }
         /// Clean the filter: The air conditioner asks for a filter cleaning (see the user manual).
         public static var hintFilter: String { Localizer.text("diagnostics.hintFilter") }
+        public enum Panel {
+            /// Condensate pump
+            public static var condensatePump: String { Localizer.text("diagnostics.panel.condensatePump") }
+            /// condenser
+            public static var condenser: String { Localizer.text("diagnostics.panel.condenser") }
+            /// The air conditioner reports the current in whole amperes only.
+            public static var currentHelp: String { Localizer.text("diagnostics.panel.currentHelp") }
+            /// Current · voltage
+            public static var currentVoltage: String { Localizer.text("diagnostics.panel.currentVoltage") }
+            /// Defrost
+            public static var defrost: String { Localizer.text("diagnostics.panel.defrost") }
+            /// EEV opening
+            public static var eev: String { Localizer.text("diagnostics.panel.eev") }
+            /// Opening of the electronic expansion valve
+            public static var eevHelp: String { Localizer.text("diagnostics.panel.eevHelp") }
+            /// Error code
+            public static var errorCode: String { Localizer.text("diagnostics.panel.errorCode") }
+            /// Number as reported by the air conditioner. The meaning is in the air conditioner’s user manual.
+            public static var errorCodeHelp: String { Localizer.text("diagnostics.panel.errorCodeHelp") }
+            /// evaporator
+            public static var evaporator: String { Localizer.text("diagnostics.panel.evaporator") }
+            /// Filter
+            public static var filter: String { Localizer.text("diagnostics.panel.filter") }
+            /// Frequency
+            public static var frequency: String { Localizer.text("diagnostics.panel.frequency") }
+            /// Hide diagnostics
+            public static var hide: String { Localizer.text("diagnostics.panel.hide") }
+            /// Hide diagnostics (⌘D)
+            public static var hideHelp: String { Localizer.text("diagnostics.panel.hideHelp") }
+            /// History in verlauf.sqlite
+            public static var historyFile: String { Localizer.text("diagnostics.panel.historyFile") }
+            /// Indoor fan
+            public static var indoorFan: String { Localizer.text("diagnostics.panel.indoorFan") }
+            /// Indoor sensor 2
+            public static var indoorSensor2: String { Localizer.text("diagnostics.panel.indoorSensor2") }
+            /// Second indoor sensor (property 0x00E0)
+            public static var indoorSensor2Help: String { Localizer.text("diagnostics.panel.indoorSensor2Help") }
+            /// Loading diagnostic data…
+            public static var loading: String { Localizer.text("diagnostics.panel.loading") }
+            public enum Mac {
+                /// Show in Finder
+                public static var showInFinder: String { Localizer.text("diagnostics.panel.mac.showInFinder") }
+            }
+            /// Meter reading
+            public static var meter: String { Localizer.text("diagnostics.panel.meter") }
+            /// no
+            public static var no: String { Localizer.text("diagnostics.panel.no") }
+            /// Outdoor fan
+            public static var outdoorFan: String { Localizer.text("diagnostics.panel.outdoorFan") }
+            /// Power draw
+            public static var power: String { Localizer.text("diagnostics.panel.power") }
+            /// running
+            public static var running: String { Localizer.text("diagnostics.panel.running") }
+            /// Refrigerant circuit
+            public static var sectionCircuit: String { Localizer.text("diagnostics.panel.sectionCircuit") }
+            /// Compressor · outdoor unit
+            public static var sectionCompressor: String { Localizer.text("diagnostics.panel.sectionCompressor") }
+            /// Indoor unit
+            public static var sectionIndoor: String { Localizer.text("diagnostics.panel.sectionIndoor") }
+            /// T1 · Indoor air
+            public static var t1: String { Localizer.text("diagnostics.panel.t1") }
+            /// T2 · Indoor coil ({role})
+            public static func t2(role: String) -> String { Localizer.text("diagnostics.panel.t2", ["role": role]) }
+            /// T3 · Outdoor coil ({role})
+            public static func t3(role: String) -> String { Localizer.text("diagnostics.panel.t3", ["role": role]) }
+            /// T4 · Outdoor air
+            public static var t4: String { Localizer.text("diagnostics.panel.t4") }
+            /// Diagnostics
+            public static var title: String { Localizer.text("diagnostics.panel.title") }
+            /// TP · Discharge line
+            public static var tp: String { Localizer.text("diagnostics.panel.tp") }
+            /// rpm
+            public static var unitRpm: String { Localizer.text("diagnostics.panel.unitRpm") }
+            /// steps
+            public static var unitSteps: String { Localizer.text("diagnostics.panel.unitSteps") }
+            /// {value} (target {target})
+            public static func withTarget(value: String, target: String) -> String { Localizer.text("diagnostics.panel.withTarget", ["value": value, "target": target]) }
+        }
     }
     public enum Energy {
         public enum Cost {
@@ -10934,7 +19874,7 @@ public enum L {
             public static var passwordStorage: String { Localizer.text("host.mac.passwordStorage") }
             /// The setup file goes to the Trash unchanged. The token and key are then in the Trash; emptying it de…
             public static var setAsideDevice: String { Localizer.text("host.mac.setAsideDevice") }
-            /// Updates are downloaded and installed automatically. Klimacontrol then restarts briefly.
+            /// Updates are downloaded automatically. Klimacontrol then asks whether to restart right away; otherwi…
             public static var updatesHelp: String { Localizer.text("host.mac.updatesHelp") }
         }
         public enum Windows {
@@ -10949,6 +19889,218 @@ public enum L {
             /// Klimacontrol checks for updates daily and asks before installing.
             public static var updatesHelp: String { Localizer.text("host.windows.updatesHelp") }
         }
+    }
+    public enum Main {
+        public enum Comfort {
+            /// Display
+            public static var display: String { Localizer.text("main.comfort.display") }
+            /// Eco
+            public static var eco: String { Localizer.text("main.comfort.eco") }
+            /// Frost protection
+            public static var frostProtection: String { Localizer.text("main.comfort.frostProtection") }
+            /// iECO
+            public static var ieco: String { Localizer.text("main.comfort.ieco") }
+            /// Ionizer
+            public static var ionizer: String { Localizer.text("main.comfort.ionizer") }
+            /// Limit power
+            public static var limitPower: String { Localizer.text("main.comfort.limitPower") }
+            /// {value} %
+            public static func percentChoice(value: String) -> String { Localizer.text("main.comfort.percentChoice", ["value": value]) }
+            /// Self-clean
+            public static var selfClean: String { Localizer.text("main.comfort.selfClean") }
+            /// Swing
+            public static var swing: String { Localizer.text("main.comfort.swing") }
+            /// {text}; state unknown
+            public static func unknownSuffix(text: String) -> String { Localizer.text("main.comfort.unknownSuffix", ["text": text]) }
+        }
+        public enum Fan {
+            /// Fan speed in percent
+            public static var percentLabel: String { Localizer.text("main.fan.percentLabel") }
+            /// percent
+            public static var percentWord: String { Localizer.text("main.fan.percentWord") }
+        }
+        public enum Footer {
+            /// Diagnostics
+            public static var diagnostics: String { Localizer.text("main.footer.diagnostics") }
+            /// Hide diagnostics (⌘D)
+            public static var diagnosticsHide: String { Localizer.text("main.footer.diagnosticsHide") }
+            /// Show diagnostics on the right (⌘D)
+            public static var diagnosticsShow: String { Localizer.text("main.footer.diagnosticsShow") }
+            /// History
+            public static var history: String { Localizer.text("main.footer.history") }
+            /// Hide history (⌘G)
+            public static var historyHide: String { Localizer.text("main.footer.historyHide") }
+            /// Show history on the left (⌘G)
+            public static var historyShow: String { Localizer.text("main.footer.historyShow") }
+            /// Refresh now
+            public static var refresh: String { Localizer.text("main.footer.refresh") }
+            /// Refresh now; tries every connection again (⌘R)
+            public static var refreshHelp: String { Localizer.text("main.footer.refreshHelp") }
+            /// Settings
+            public static var settings: String { Localizer.text("main.footer.settings") }
+            /// Settings (⌘,)
+            public static var settingsHelp: String { Localizer.text("main.footer.settingsHelp") }
+        }
+        public enum Hero {
+            /// Room temperature {room}, target temperature {target}, {goal}
+            public static func a11yRoomTarget(room: String, target: String, goal: String) -> String { Localizer.text("main.hero.a11yRoomTarget", ["room": room, "target": target, "goal": goal]) }
+            /// Target temperature {target}, {goal}
+            public static func a11yTarget(target: String, goal: String) -> String { Localizer.text("main.hero.a11yTarget", ["target": target, "goal": goal]) }
+            /// {value} degrees
+            public static func degrees(value: String) -> String { Localizer.text("main.hero.degrees", ["value": value]) }
+            /// Target temperature
+            public static var targetTemperature: String { Localizer.text("main.hero.targetTemperature") }
+        }
+        public enum Message {
+            /// Code {code}
+            public static func codeLabel(code: String) -> String { Localizer.text("main.message.codeLabel", ["code": code]) }
+            /// Refresh right away (⌘R)
+            public static var refreshHelp: String { Localizer.text("main.message.refreshHelp") }
+        }
+        public enum Mini {
+            /// Open mini window
+            public static var open: String { Localizer.text("main.mini.open") }
+        }
+        public enum Mode {
+            /// {mode} is active
+            public static func active(mode: String) -> String { Localizer.text("main.mode.active", ["mode": mode]) }
+            /// active
+            public static var activeValue: String { Localizer.text("main.mode.activeValue") }
+            /// Switch to {mode}
+            public static func switchTo(mode: String) -> String { Localizer.text("main.mode.switchTo", ["mode": mode]) }
+            /// Switches to {mode}
+            public static func switchToHint(mode: String) -> String { Localizer.text("main.mode.switchToHint", ["mode": mode]) }
+            /// Turn on with {mode}
+            public static func turnOnWith(mode: String) -> String { Localizer.text("main.mode.turnOnWith", ["mode": mode]) }
+            /// Turns on with {mode}
+            public static func turnOnWithHint(mode: String) -> String { Localizer.text("main.mode.turnOnWithHint", ["mode": mode]) }
+        }
+        public enum More {
+            /// Shows readings, comfort and scenes
+            public static var hint: String { Localizer.text("main.more.hint") }
+            /// Less
+            public static var less: String { Localizer.text("main.more.less") }
+            /// More…
+            public static var more: String { Localizer.text("main.more.more") }
+        }
+        public enum Power {
+            /// Turn off
+            public static var turnOff: String { Localizer.text("main.power.turnOff") }
+            /// Turn off (⌘P)
+            public static var turnOffHelp: String { Localizer.text("main.power.turnOffHelp") }
+            /// Turn on
+            public static var turnOn: String { Localizer.text("main.power.turnOn") }
+            /// Turn on (⌘P)
+            public static var turnOnHelp: String { Localizer.text("main.power.turnOnHelp") }
+        }
+        public enum Reading {
+            /// Outdoor
+            public static var outdoor: String { Localizer.text("main.reading.outdoor") }
+            /// Power
+            public static var power: String { Localizer.text("main.reading.power") }
+            /// Room
+            public static var room: String { Localizer.text("main.reading.room") }
+        }
+        public enum Relocate {
+            /// Searches for the air conditioner on Wi-Fi again, for example after changing routers. Credentials ar…
+            public static var help: String { Localizer.text("main.relocate.help") }
+            /// New router or new address? Credentials are kept.
+            public static var hint: String { Localizer.text("main.relocate.hint") }
+            /// Find address again
+            public static var search: String { Localizer.text("main.relocate.search") }
+            /// Searching…
+            public static var searching: String { Localizer.text("main.relocate.searching") }
+        }
+        public enum Scene {
+            /// {name} is set
+            public static func activeHelp(name: String) -> String { Localizer.text("main.scene.activeHelp", ["name": name]) }
+            /// Apply {name}; right-click to delete
+            public static func applyHelp(name: String) -> String { Localizer.text("main.scene.applyHelp", ["name": name]) }
+            /// Delete scene
+            public static var deleteAction: String { Localizer.text("main.scene.deleteAction") }
+            /// Delete
+            public static var deleteConfirm: String { Localizer.text("main.scene.deleteConfirm") }
+            /// Delete scene…
+            public static var deleteMenu: String { Localizer.text("main.scene.deleteMenu") }
+            /// The scene cannot be restored afterwards.
+            public static var deleteMessage: String { Localizer.text("main.scene.deleteMessage") }
+            /// Delete scene “{name}”?
+            public static func deleteTitle(name: String) -> String { Localizer.text("main.scene.deleteTitle", ["name": name]) }
+            /// No scenes yet. Set up the air conditioner and save its state with +.
+            public static var empty: String { Localizer.text("main.scene.empty") }
+            /// Name
+            public static var name: String { Localizer.text("main.scene.name") }
+            /// Save scene
+            public static var save: String { Localizer.text("main.scene.save") }
+            /// Save
+            public static var saveConfirm: String { Localizer.text("main.scene.saveConfirm") }
+            /// Save the current state as a scene
+            public static var saveHelp: String { Localizer.text("main.scene.saveHelp") }
+            /// Saves on/off, mode, temperature, fan, swing, Eco, ionizer and “Quiet outdoor unit”.
+            public static var saveMessage: String { Localizer.text("main.scene.saveMessage") }
+        }
+        public enum Section {
+            /// COMFORT
+            public static var comfort: String { Localizer.text("main.section.comfort") }
+            /// FAN
+            public static var fan: String { Localizer.text("main.section.fan") }
+            /// MORE FEATURES
+            public static var moreFeatures: String { Localizer.text("main.section.moreFeatures") }
+            /// SCENES
+            public static var scenes: String { Localizer.text("main.section.scenes") }
+            /// SCENES · {name} active
+            public static func scenesActive(name: String) -> String { Localizer.text("main.section.scenesActive", ["name": name]) }
+        }
+        public enum Startup {
+            /// Room temperature · air conditioner
+            public static var placeholder: String { Localizer.text("main.startup.placeholder") }
+        }
+        public enum State {
+            /// off
+            public static var off: String { Localizer.text("main.state.off") }
+            /// on
+            public static var on: String { Localizer.text("main.state.on") }
+        }
+        public enum Step {
+            /// Cooler
+            public static var cooler: String { Localizer.text("main.step.cooler") }
+            /// Cooler (⌘↓)
+            public static var coolerHelp: String { Localizer.text("main.step.coolerHelp") }
+            /// Warmer
+            public static var warmer: String { Localizer.text("main.step.warmer") }
+            /// Warmer (⌘↑)
+            public static var warmerHelp: String { Localizer.text("main.step.warmerHelp") }
+        }
+        public enum Timer {
+            /// Delete timer
+            public static var delete: String { Localizer.text("main.timer.delete") }
+            /// Turns the air conditioner off after the chosen time. {requirement}
+            public static func offHelp(requirement: String) -> String { Localizer.text("main.timer.offHelp", ["requirement": requirement]) }
+            /// Turn off in…
+            public static var offMenu: String { Localizer.text("main.timer.offMenu") }
+            /// Turn on at…
+            public static var onButton: String { Localizer.text("main.timer.onButton") }
+            /// Uses the most recent settings. {requirement} Klimacontrol keeps the Mac awake until then; a notific…
+            public static func onNote(requirement: String) -> String { Localizer.text("main.timer.onNote", ["requirement": requirement]) }
+            /// Set timer
+            public static var set: String { Localizer.text("main.timer.set") }
+            /// Turns on {day} at {time}
+            public static func switchesOn(day: String, time: String) -> String { Localizer.text("main.timer.switchesOn", ["day": day, "time": time]) }
+            /// Time
+            public static var time: String { Localizer.text("main.timer.time") }
+        }
+    }
+    public enum Menu {
+        public enum Mac {
+            /// Open Klimacontrol
+            public static var openApp: String { Localizer.text("menu.mac.openApp") }
+        }
+        /// No air conditioner set up yet. You can do this in the main window (“Open Klimacontrol”).
+        public static var noDevice: String { Localizer.text("menu.noDevice") }
+        /// Quit
+        public static var quit: String { Localizer.text("menu.quit") }
+        /// Target {target}
+        public static func target(target: String) -> String { Localizer.text("menu.target", ["target": target]) }
     }
     public enum Message {
         public enum Account {
@@ -11216,6 +20368,12 @@ public enum L {
             public static var heat: String { Localizer.text("mode.verb.heat") }
         }
     }
+    public enum Notices {
+        /// Klimacontrol is built on the following open-source projects. Their licenses require the copyright n…
+        public static var intro: String { Localizer.text("notices.intro") }
+        /// License text
+        public static var licenseText: String { Localizer.text("notices.licenseText") }
+    }
     public enum Options {
         public enum Address {
             /// e.g. 192.168.1.20
@@ -11451,11 +20609,351 @@ public enum L {
         public static func summary(mode: String, temp: String, fan: String) -> String { Localizer.text("scene.summary", ["mode": mode, "temp": temp, "fan": fan]) }
     }
     public enum Settings {
+        public enum Appearance {
+            public enum Accent {
+                /// By mode: blue when cooling, orange when heating, and so on.
+                public static var help: String { Localizer.text("settings.appearance.accent.help") }
+            }
+            public enum Accessibility {
+                /// {value} percent
+                public static func percent(value: String) -> String { Localizer.text("settings.appearance.accessibility.percent", ["value": value]) }
+                /// {count} points
+                public static func points(count: Int) -> String { Localizer.plural("settings.appearance.accessibility.points", count: count) }
+            }
+            public enum AlwaysOnTop {
+                /// The main window stays above other windows.
+                public static var help: String { Localizer.text("settings.appearance.alwaysOnTop.help") }
+                /// Always on top
+                public static var title: String { Localizer.text("settings.appearance.alwaysOnTop.title") }
+            }
+            public enum Background {
+                /// Glass lets the desktop show through; matte is calm and opaque.
+                public static var help: String { Localizer.text("settings.appearance.background.help") }
+                /// Background
+                public static var title: String { Localizer.text("settings.appearance.background.title") }
+            }
+            public enum Blur {
+                /// How softly the background blurs behind the cards.
+                public static var help: String { Localizer.text("settings.appearance.blur.help") }
+                /// Blur
+                public static var title: String { Localizer.text("settings.appearance.blur.title") }
+            }
+            public enum Colors {
+                /// Colors
+                public static var title: String { Localizer.text("settings.appearance.colors.title") }
+            }
+            public enum CustomColor {
+                /// Applies to all modes.
+                public static var help: String { Localizer.text("settings.appearance.customColor.help") }
+                /// Custom color
+                public static var title: String { Localizer.text("settings.appearance.customColor.title") }
+            }
+            public enum Digits {
+                /// Style of the large number.
+                public static var help: String { Localizer.text("settings.appearance.digits.help") }
+                /// Digit style
+                public static var title: String { Localizer.text("settings.appearance.digits.title") }
+            }
+            public enum Glow {
+                /// A glow in the mode color around the large number.
+                public static var help: String { Localizer.text("settings.appearance.glow.help") }
+                /// Glow
+                public static var title: String { Localizer.text("settings.appearance.glow.title") }
+            }
+            public enum Hero {
+                /// Large temperature
+                public static var section: String { Localizer.text("settings.appearance.hero.section") }
+            }
+            public enum HeroValue {
+                /// Which temperature is shown large; the other one appears small below it.
+                public static var help: String { Localizer.text("settings.appearance.heroValue.help") }
+                /// Shown large
+                public static var title: String { Localizer.text("settings.appearance.heroValue.title") }
+            }
+            public enum Lively {
+                /// Slowly flowing colors while the air conditioner is running.
+                public static var help: String { Localizer.text("settings.appearance.lively.help") }
+                /// Animated background
+                public static var title: String { Localizer.text("settings.appearance.lively.title") }
+            }
+            public enum Mac {
+                /// Menu bar
+                public static var menuBarSection: String { Localizer.text("settings.appearance.mac.menuBarSection") }
+                /// Small floating window with temperature and on/off (⇧⌘M).
+                public static var miniHelp: String { Localizer.text("settings.appearance.mac.miniHelp") }
+                /// “Reduce motion” is turned on in System Settings; effects stay off.
+                public static var reduceMotionSystem: String { Localizer.text("settings.appearance.mac.reduceMotionSystem") }
+            }
+            public enum MenuBar {
+                /// Menu bar display
+                public static var accessibility: String { Localizer.text("settings.appearance.menuBar.accessibility") }
+                /// What appears next to the icon in the menu bar.
+                public static var help: String { Localizer.text("settings.appearance.menuBar.help") }
+                /// Show
+                public static var title: String { Localizer.text("settings.appearance.menuBar.title") }
+            }
+            public enum MenuBarAnimated {
+                /// The fan spins while the air conditioner is running.
+                public static var help: String { Localizer.text("settings.appearance.menuBarAnimated.help") }
+                /// Animated icon
+                public static var title: String { Localizer.text("settings.appearance.menuBarAnimated.title") }
+            }
+            public enum MenuBarColored {
+                /// Icon in the mode color instead of a single color.
+                public static var help: String { Localizer.text("settings.appearance.menuBarColored.help") }
+                /// Colored icon
+                public static var title: String { Localizer.text("settings.appearance.menuBarColored.title") }
+            }
+            public enum Mini {
+                /// Close mini window
+                public static var close: String { Localizer.text("settings.appearance.mini.close") }
+                /// Open
+                public static var open: String { Localizer.text("settings.appearance.mini.open") }
+                /// Open Klimacontrol
+                public static var openApp: String { Localizer.text("settings.appearance.mini.openApp") }
+                /// Mini window
+                public static var title: String { Localizer.text("settings.appearance.mini.title") }
+                /// Turn off
+                public static var turnOff: String { Localizer.text("settings.appearance.mini.turnOff") }
+                /// Turn on
+                public static var turnOn: String { Localizer.text("settings.appearance.mini.turnOn") }
+            }
+            public enum Motion {
+                /// Motion
+                public static var section: String { Localizer.text("settings.appearance.motion.section") }
+            }
+            public enum Preview {
+                /// Appearance preview
+                public static var accessibility: String { Localizer.text("settings.appearance.preview.accessibility") }
+                /// Preview as
+                public static var modePicker: String { Localizer.text("settings.appearance.preview.modePicker") }
+                /// Room {value}
+                public static func room(value: String) -> String { Localizer.text("settings.appearance.preview.room", ["value": value]) }
+                /// Target {value}
+                public static func target(value: String) -> String { Localizer.text("settings.appearance.preview.target", ["value": value]) }
+                /// Preview
+                public static var title: String { Localizer.text("settings.appearance.preview.title") }
+            }
+            public enum ReduceMotion {
+                /// Always turns off the animated background and weather effects.
+                public static var help: String { Localizer.text("settings.appearance.reduceMotion.help") }
+                /// Reduce animations
+                public static var title: String { Localizer.text("settings.appearance.reduceMotion.title") }
+            }
+            public enum Reset {
+                /// Reset to default…
+                public static var button: String { Localizer.text("settings.appearance.reset.button") }
+                /// Reset
+                public static var confirm: String { Localizer.text("settings.appearance.reset.confirm") }
+                /// All values on this tab return to the usual look.
+                public static var message: String { Localizer.text("settings.appearance.reset.message") }
+                /// Reset appearance?
+                public static var title: String { Localizer.text("settings.appearance.reset.title") }
+            }
+            public enum Scheme {
+                /// Light, dark, or same as the {computer}.
+                public static func help(computer: String) -> String { Localizer.text("settings.appearance.scheme.help", ["computer": computer]) }
+                /// Color scheme
+                public static var title: String { Localizer.text("settings.appearance.scheme.title") }
+            }
+            public enum Scope {
+                /// Simple: only on/off, mode, temperature, fan, and timer; the rest is under “More…”.
+                public static var help: String { Localizer.text("settings.appearance.scope.help") }
+                /// Scope
+                public static var title: String { Localizer.text("settings.appearance.scope.title") }
+            }
+            public enum Size {
+                /// Size of the large number and the controls.
+                public static var help: String { Localizer.text("settings.appearance.size.help") }
+                /// Size
+                public static var title: String { Localizer.text("settings.appearance.size.title") }
+            }
+            public enum Theme {
+                /// Sets all values below at once; you can then change each one separately.
+                public static var help: String { Localizer.text("settings.appearance.theme.help") }
+                /// Theme
+                public static var title: String { Localizer.text("settings.appearance.theme.title") }
+            }
+            public enum Transparency {
+                /// How much cards and windows show through.
+                public static var help: String { Localizer.text("settings.appearance.transparency.help") }
+                /// Transparency
+                public static var title: String { Localizer.text("settings.appearance.transparency.title") }
+            }
+            public enum Unit {
+                /// {value}%
+                public static func percent(value: String) -> String { Localizer.text("settings.appearance.unit.percent", ["value": value]) }
+                /// {value} pt
+                public static func points(value: String) -> String { Localizer.text("settings.appearance.unit.points", ["value": value]) }
+            }
+            public enum Weather {
+                /// Snowflakes when cooling, rising warmth when heating; subtle.
+                public static var help: String { Localizer.text("settings.appearance.weather.help") }
+                /// Weather effects
+                public static var title: String { Localizer.text("settings.appearance.weather.title") }
+            }
+            public enum Window {
+                /// Window
+                public static var section: String { Localizer.text("settings.appearance.window.section") }
+            }
+        }
+        public enum Connection {
+            /// Midea account: control from anywhere
+            public static var accountHeader: String { Localizer.text("settings.connection.accountHeader") }
+            /// Remove Midea account…
+            public static var accountRemove: String { Localizer.text("settings.connection.accountRemove") }
+            /// Midea account
+            public static var accountTitle: String { Localizer.text("settings.connection.accountTitle") }
+            /// Email (as in the MSmartHome app)
+            public static var emailPlaceholder: String { Localizer.text("settings.connection.emailPlaceholder") }
+            /// Set up an air conditioner first; the Midea account needs the air conditioner ID.
+            public static var needsDevice: String { Localizer.text("settings.connection.needsDevice") }
+            /// No air conditioner set up yet. You can do that in the main window.
+            public static var noDevice: String { Localizer.text("settings.connection.noDevice") }
+            /// Password
+            public static var passwordPlaceholder: String { Localizer.text("settings.connection.passwordPlaceholder") }
+            /// Sign in and save
+            public static var signIn: String { Localizer.text("settings.connection.signIn") }
+            /// Signing in…
+            public static var signingIn: String { Localizer.text("settings.connection.signingIn") }
+            /// Status
+            public static var status: String { Localizer.text("settings.connection.status") }
+            /// Connection to the air conditioner
+            public static var wayTitle: String { Localizer.text("settings.connection.wayTitle") }
+        }
         public enum Currency {
             /// The currency must have one to three characters: letters or a currency sign, no digits. Please corre…
             public static var invalid: String { Localizer.text("settings.currency.invalid") }
             /// Currency
             public static var title: String { Localizer.text("settings.currency.title") }
+        }
+        public enum Device {
+            public enum Backup {
+                /// Back up credentials…
+                public static var export: String { Localizer.text("settings.device.backup.export") }
+                /// The backup contains token, key, address, and scenes; with it you can set up the air conditioner on …
+                public static var footer: String { Localizer.text("settings.device.backup.footer") }
+                /// Back up and transfer
+                public static var header: String { Localizer.text("settings.device.backup.header") }
+                /// Restore backup…
+                public static var `import`: String { Localizer.text("settings.device.backup.import") }
+            }
+            public enum Credentials {
+                /// none; controlled through the Midea account
+                public static var none: String { Localizer.text("settings.device.credentials.none") }
+                /// stored, readable only by you
+                public static var stored: String { Localizer.text("settings.device.credentials.stored") }
+                /// Wi-Fi credentials
+                public static var title: String { Localizer.text("settings.device.credentials.title") }
+            }
+            public enum Details {
+                /// Technical details
+                public static var title: String { Localizer.text("settings.device.details.title") }
+            }
+            public enum Forget {
+                /// Set up air conditioner again…
+                public static var button: String { Localizer.text("settings.device.forget.button") }
+                /// Only for a different air conditioner. After changing routers or when the address changes, “Find add…
+                public static var footer: String { Localizer.text("settings.device.forget.footer") }
+            }
+            public enum Identifier {
+                /// Property 0x00AB of the air conditioner
+                public static var help: String { Localizer.text("settings.device.identifier.help") }
+                /// Air conditioner identifier
+                public static var title: String { Localizer.text("settings.device.identifier.title") }
+            }
+            public enum Name {
+                /// Assigned by Midea. The display name is under “General”.
+                public static var help: String { Localizer.text("settings.device.name.help") }
+                /// Air conditioner name
+                public static var title: String { Localizer.text("settings.device.name.title") }
+            }
+            /// No air conditioner set up yet. You can do this in the main window.
+            public static var noDevice: String { Localizer.text("settings.device.noDevice") }
+            public enum Relocate {
+                /// Find address again
+                public static var button: String { Localizer.text("settings.device.relocate.button") }
+                /// After changing routers, or when the air conditioner has a new address. Token and key are kept.
+                public static var help: String { Localizer.text("settings.device.relocate.help") }
+            }
+            /// Air conditioner
+            public static var section: String { Localizer.text("settings.device.section") }
+            /// via Midea account
+            public static var viaAccount: String { Localizer.text("settings.device.viaAccount") }
+        }
+        public enum General {
+            /// The history is always stored in verlauf.sqlite. Optionally, a line is also written to verlauf.csv e…
+            public static var csvHelp: String { Localizer.text("settings.general.csvHelp") }
+            /// Also write as CSV
+            public static var csvTitle: String { Localizer.text("settings.general.csvTitle") }
+            /// Currency of the electricity price
+            public static var currencyAccessibility: String { Localizer.text("settings.general.currencyAccessibility") }
+            /// Shown after the price and with all costs. One to three characters, e.g. €, CHF or USD.
+            public static var currencyHelp: String { Localizer.text("settings.general.currencyHelp") }
+            /// Custom value in seconds
+            public static var customAccessibility: String { Localizer.text("settings.general.customAccessibility") }
+            /// Custom value
+            public static var customTitle: String { Localizer.text("settings.general.customTitle") }
+            /// Export…
+            public static var exportButton: String { Localizer.text("settings.general.exportButton") }
+            /// As a CSV file with local time and column names in the app language, e.g. for Numbers or Excel.
+            public static var exportHelp: String { Localizer.text("settings.general.exportHelp") }
+            /// Export the entire history
+            public static var exportTitle: String { Localizer.text("settings.general.exportTitle") }
+            /// App language
+            public static var languageAccessibility: String { Localizer.text("settings.general.languageAccessibility") }
+            public enum Mac {
+                /// Klimacontrol could not be added as a login item. Add it manually in System Settings → General → Log…
+                public static var loginAddFailed: String { Localizer.text("settings.general.mac.loginAddFailed") }
+                /// macOS is waiting for your approval in System Settings → General → Login Items.
+                public static var loginApproval: String { Localizer.text("settings.general.mac.loginApproval") }
+                /// Timers and history run only while Klimacontrol is open, so this starts it with the Mac.
+                public static var loginHelp: String { Localizer.text("settings.general.mac.loginHelp") }
+                /// Klimacontrol could not be removed as a login item. Remove it manually in System Settings → General …
+                public static var loginRemoveFailed: String { Localizer.text("settings.general.mac.loginRemoveFailed") }
+                /// Start at login
+                public static var loginTitle: String { Localizer.text("settings.general.mac.loginTitle") }
+                /// Open
+                public static var openSettings: String { Localizer.text("settings.general.mac.openSettings") }
+                /// Show in Finder
+                public static var showInFinder: String { Localizer.text("settings.general.mac.showInFinder") }
+            }
+            /// Air conditioner name
+            public static var nameAccessibility: String { Localizer.text("settings.general.nameAccessibility") }
+            /// Shown in the window and in the menu bar.
+            public static var nameHelp: String { Localizer.text("settings.general.nameHelp") }
+            /// Name
+            public static var nameTitle: String { Localizer.text("settings.general.nameTitle") }
+            /// Electricity price in {currency} per kilowatt-hour
+            public static func priceAccessibility(currency: String) -> String { Localizer.text("settings.general.priceAccessibility", ["currency": currency]) }
+            /// Used for the costs in the overview and in the history (also applies retroactively to the history).
+            public static var priceHelp: String { Localizer.text("settings.general.priceHelp") }
+            /// {currency} per kWh
+            public static func pricePerKWh(currency: String) -> String { Localizer.text("settings.general.pricePerKWh", ["currency": currency]) }
+            /// Electricity price
+            public static var priceTitle: String { Localizer.text("settings.general.priceTitle") }
+            /// Shorter = more current, but more traffic to the air conditioner.
+            public static var refreshHelp: String { Localizer.text("settings.general.refreshHelp") }
+            /// Read air conditioner every
+            public static var refreshTitle: String { Localizer.text("settings.general.refreshTitle") }
+            /// s
+            public static var secondsUnit: String { Localizer.text("settings.general.secondsUnit") }
+            /// Display
+            public static var sectionDisplay: String { Localizer.text("settings.general.sectionDisplay") }
+            /// History
+            public static var sectionHistory: String { Localizer.text("settings.general.sectionHistory") }
+            /// Refresh
+            public static var sectionRefresh: String { Localizer.text("settings.general.sectionRefresh") }
+            /// Startup
+            public static var sectionStart: String { Localizer.text("settings.general.sectionStart") }
+            /// The air conditioner beeps when this app sends commands.
+            public static var soundHelp: String { Localizer.text("settings.general.soundHelp") }
+            /// Beep
+            public static var soundTitle: String { Localizer.text("settings.general.soundTitle") }
+            /// Updates
+            public static var updatesSection: String { Localizer.text("settings.general.updatesSection") }
+            /// Version {version}
+            public static func versionTitle(version: String) -> String { Localizer.text("settings.general.versionTitle", ["version": version]) }
         }
         public enum Language {
             /// English
@@ -11471,9 +20969,59 @@ public enum L {
             /// Klimacontrol does not know this language. Please choose another one. (language-{value})
             public static func unknown(value: String) -> String { Localizer.text("settings.language.unknown", ["value": value]) }
         }
+        public enum Log {
+            public enum Clear {
+                /// Clear…
+                public static var button: String { Localizer.text("settings.log.clear.button") }
+                /// Clear
+                public static var confirm: String { Localizer.text("settings.log.clear.confirm") }
+                /// All entries will be deleted, including those that could help with troubleshooting.
+                public static var message: String { Localizer.text("settings.log.clear.message") }
+                /// Clear the log?
+                public static var title: String { Localizer.text("settings.log.clear.title") }
+            }
+            public enum Detailed {
+                /// Off (default): start, connection path, commands, errors, and timers are still in the log.
+                public static var off: String { Localizer.text("settings.log.detailed.off") }
+                /// On: also records every message to the air conditioner and to Midea. Large; the file starts over eve…
+                public static var on: String { Localizer.text("settings.log.detailed.on") }
+                /// Detailed log
+                public static var title: String { Localizer.text("settings.log.detailed.title") }
+            }
+            /// No entries yet.
+            public static var empty: String { Localizer.text("settings.log.empty") }
+            public enum EventsOnly {
+                /// Hides DEBUG lines (frames, requests to Midea) in the view; the file stays complete
+                public static var help: String { Localizer.text("settings.log.eventsOnly.help") }
+                /// Events only
+                public static var title: String { Localizer.text("settings.log.eventsOnly.title") }
+            }
+            /// Local time · password, token, and key redacted
+            public static var legend: String { Localizer.text("settings.log.legend") }
+            public enum Mac {
+                /// Show log in Finder
+                public static var showInFinder: String { Localizer.text("settings.log.mac.showInFinder") }
+            }
+            /// Refresh
+            public static var refresh: String { Localizer.text("settings.log.refresh") }
+        }
         public enum Price {
             /// The electricity price must be between 0 and 1000 per kWh. Please correct it. (price)
             public static var invalid: String { Localizer.text("settings.price.invalid") }
+        }
+        public enum Tabs {
+            /// Appearance
+            public static var appearance: String { Localizer.text("settings.tabs.appearance") }
+            /// Connection
+            public static var connection: String { Localizer.text("settings.tabs.connection") }
+            /// Air conditioner
+            public static var device: String { Localizer.text("settings.tabs.device") }
+            /// General
+            public static var general: String { Localizer.text("settings.tabs.general") }
+            /// Log
+            public static var log: String { Localizer.text("settings.tabs.log") }
+            /// Licenses
+            public static var notices: String { Localizer.text("settings.tabs.notices") }
         }
         public enum Updates {
             /// Receive pre-release (beta) versions
@@ -11601,6 +21149,140 @@ public enum L {
         }
         /// The air conditioner does not accept these credentials. Check that the token and key belong to this …
         public static var rejectedManual: String { Localizer.text("setup.rejectedManual") }
+        public enum View {
+            public enum Account {
+                /// Klimacontrol gets the token and key once through your Midea account. After that it controls the air…
+                public static var detail: String { Localizer.text("setup.view.account.detail") }
+                /// The account of the MSmartHome app. {storage}
+                public static func hint(storage: String) -> String { Localizer.text("setup.view.account.hint", ["storage": storage]) }
+                /// Connect with Midea account
+                public static var title: String { Localizer.text("setup.view.account.title") }
+            }
+            /// Back
+            public static var back: String { Localizer.text("setup.view.back") }
+            public enum Choice {
+                public enum Account {
+                    /// Gets token and key automatically. Finds the air conditioner even when it is off. Account and passwo…
+                    public static var detail: String { Localizer.text("setup.view.choice.account.detail") }
+                    /// With Midea account
+                    public static var title: String { Localizer.text("setup.view.choice.account.title") }
+                }
+                public enum Backup {
+                    /// A backup file with the credentials, for example from another computer. No connection to Midea.
+                    public static var detail: String { Localizer.text("setup.view.choice.backup.detail") }
+                    /// Restore backup
+                    public static var title: String { Localizer.text("setup.view.choice.backup.title") }
+                }
+                public enum Manual {
+                    /// You already have the token and key. No connection to Midea and no internet needed.
+                    public static var detail: String { Localizer.text("setup.view.choice.manual.detail") }
+                    /// Enter credentials
+                    public static var title: String { Localizer.text("setup.view.choice.manual.title") }
+                }
+            }
+            public enum Cloud {
+                /// List the air conditioners of the Midea account, even if off or on another Wi-Fi network
+                public static var help: String { Localizer.text("setup.view.cloud.help") }
+                /// Fill in step 1 first
+                public static var needAccount: String { Localizer.text("setup.view.cloud.needAccount") }
+                /// Search Cloud
+                public static var search: String { Localizer.text("setup.view.cloud.search") }
+                /// Searching Cloud…
+                public static var searching: String { Localizer.text("setup.view.cloud.searching") }
+            }
+            /// Connect
+            public static var connect: String { Localizer.text("setup.view.connect") }
+            /// Gets token and key through the account
+            public static var connectHintAccount: String { Localizer.text("setup.view.connectHintAccount") }
+            /// Sets up control through the account
+            public static var connectHintCloudOnly: String { Localizer.text("setup.view.connectHintCloudOnly") }
+            /// Connecting…
+            public static var connecting: String { Localizer.text("setup.view.connecting") }
+            /// Email
+            public static var email: String { Localizer.text("setup.view.email") }
+            public enum Found {
+                /// via Midea account · off
+                public static var cloudOff: String { Localizer.text("setup.view.found.cloudOff") }
+                /// via Midea account · online
+                public static var cloudOnline: String { Localizer.text("setup.view.found.cloudOnline") }
+                /// {ip} · Protocol V{version} · SN …{serial}
+                public static func lan(ip: String, version: String, serial: String) -> String { Localizer.text("setup.view.found.lan", ["ip": ip, "version": version, "serial": serial]) }
+            }
+            public enum Mac {
+                /// Nothing found? Check that Klimacontrol is allowed to access the local network and that the Mac is o…
+                public static var networkHint: String { Localizer.text("setup.view.mac.networkHint") }
+                /// Open permission
+                public static var openPermission: String { Localizer.text("setup.view.mac.openPermission") }
+                /// Opens System Settings → Privacy & Security → Local Network
+                public static var openPermissionHelp: String { Localizer.text("setup.view.mac.openPermissionHelp") }
+                /// Log and connection are in Settings (⌘,)
+                public static var settingsHelp: String { Localizer.text("setup.view.mac.settingsHelp") }
+            }
+            public enum Manual {
+                /// The air conditioner accepts the credentials
+                public static var accepted: String { Localizer.text("setup.view.manual.accepted") }
+                /// from the search (digits only)
+                public static var applianceIdPlaceholder: String { Localizer.text("setup.view.manual.applianceIdPlaceholder") }
+                /// {total} characters
+                public static func charsComplete(total: String) -> String { Localizer.text("setup.view.manual.charsComplete", ["total": total]) }
+                /// {count} of {total} characters
+                public static func charsPartial(count: String, total: String) -> String { Localizer.text("setup.view.manual.charsPartial", ["count": count, "total": total]) }
+                /// You have the air conditioner’s token and key, so no Midea account is needed. For Cloud access when …
+                public static var detail: String { Localizer.text("setup.view.manual.detail") }
+                /// Paste from clipboard
+                public static var paste: String { Localizer.text("setup.view.manual.paste") }
+                /// Recognizes token and key, including the whole contents of a backup file
+                public static var pasteHelp: String { Localizer.text("setup.view.manual.pasteHelp") }
+                /// Applied: {what}
+                public static func pasted(what: String) -> String { Localizer.text("setup.view.manual.pasted", ["what": what]) }
+                /// Test
+                public static var test: String { Localizer.text("setup.view.manual.test") }
+                /// Signs in to the air conditioner with these credentials without saving anything
+                public static var testHelp: String { Localizer.text("setup.view.manual.testHelp") }
+            }
+            /// Password
+            public static var password: String { Localizer.text("setup.view.password") }
+            /// recommended
+            public static var recommended: String { Localizer.text("setup.view.recommended") }
+            public enum Search {
+                /// Search
+                public static var button: String { Localizer.text("setup.view.search.button") }
+                /// Scan network
+                public static var subnet: String { Localizer.text("setup.view.search.subnet") }
+                /// Network…
+                public static var subnetBusy: String { Localizer.text("setup.view.search.subnetBusy") }
+                /// Asks every address on your network one by one; helps when the normal search finds nothing
+                public static var subnetHelp: String { Localizer.text("setup.view.search.subnetHelp") }
+                /// {done} of {total}
+                public static func subnetProgress(done: String, total: String) -> String { Localizer.text("setup.view.search.subnetProgress", ["done": done, "total": total]) }
+                /// Search Wi-Fi
+                public static var wifi: String { Localizer.text("setup.view.search.wifi") }
+            }
+            /// Searching…
+            public static var searching: String { Localizer.text("setup.view.searching") }
+            public enum Settings {
+                /// Settings…
+                public static var link: String { Localizer.text("setup.view.settings.link") }
+            }
+            public enum Start {
+                /// Klimacontrol controls the air conditioner directly over Wi-Fi. This needs the air conditioner’s tok…
+                public static var intro: String { Localizer.text("setup.view.start.intro") }
+                /// How do you want to connect?
+                public static var title: String { Localizer.text("setup.view.start.title") }
+            }
+            public enum Step {
+                /// Midea account
+                public static var account: String { Localizer.text("setup.view.step.account") }
+                /// Connect
+                public static var connect: String { Localizer.text("setup.view.step.connect") }
+                /// Token and key
+                public static var credentials: String { Localizer.text("setup.view.step.credentials") }
+                /// Air conditioner
+                public static var device: String { Localizer.text("setup.view.step.device") }
+                /// Find the air conditioner
+                public static var find: String { Localizer.text("setup.view.step.find") }
+            }
+        }
     }
     public enum Startup {
         /// Signing in
@@ -11717,6 +21399,20 @@ public enum L {
         public static var failed: String { Localizer.text("updates.failed") }
         /// Downloading and installing version {version}. Klimacontrol restarts afterward.
         public static func installing(version: String) -> String { Localizer.text("updates.installing", ["version": version]) }
+        public enum Mac {
+            /// Pre-release versions may contain bugs. When you turn this off, the installed pre-release stays unti…
+            public static var betaHelp: String { Localizer.text("updates.mac.betaHelp") }
+            /// Downloading version {version}.
+            public static func downloading(version: String) -> String { Localizer.text("updates.mac.downloading", ["version": version]) }
+            /// Updates are only available in the finished app (tools/build_app.sh).
+            public static var onlyInBundle: String { Localizer.text("updates.mac.onlyInBundle") }
+            /// Klimacontrol {version} has been downloaded. The app restarts briefly to install it. With “Later”, i…
+            public static func promptMessage(version: String) -> String { Localizer.text("updates.mac.promptMessage", ["version": version]) }
+            /// Update ready
+            public static var promptTitle: String { Localizer.text("updates.mac.promptTitle") }
+            /// Version {version} is ready and will be installed when the app quits.
+            public static func ready(version: String) -> String { Localizer.text("updates.mac.ready", ["version": version]) }
+        }
     }
     public enum Way {
         /// Wi-Fi first, then the Midea account. Recommended.

@@ -653,7 +653,7 @@ final class DisplayCatalogTests: CoreTestCase {
 
     func testUpdateTexts() {
         XCTAssertEqual(UIText.updatesHelp(host: .mac),
-                       "Updates werden automatisch geladen und installiert. Klimacontrol startet danach kurz neu.")
+                       "Updates werden automatisch geladen. Danach fragt Klimacontrol, ob es gleich neu starten soll; sonst wird beim Beenden installiert.")
         XCTAssertEqual(UIText.updatesHelp(host: .windows),
                        "Klimacontrol sucht täglich nach Updates und fragt vor der Installation.")
         XCTAssertEqual(UIText.updatesChecking, "Suche nach Updates …")

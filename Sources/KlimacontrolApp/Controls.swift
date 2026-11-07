@@ -28,7 +28,7 @@ struct ModePicker: View, Equatable {
                 } label: {
                     VStack(spacing: 4) {
                         Image(systemName: m.symbol).font(.system(size: 16, weight: .medium))
-                        Text(m.label).font(.caption)
+                        Text(m.title).font(.caption)
                     }
                     .frame(maxWidth: .infinity, minHeight: 50)
                     .foregroundStyle(selected ? theme.label(on: theme.tint(for: m)) : .primary)
@@ -36,10 +36,12 @@ struct ModePicker: View, Equatable {
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .help(selected ? "\(m.label) ist aktiv" : (power ? "Zu \(m.label) wechseln" : "Mit \(m.label) einschalten"))
+                .help(selected ? L.Main.Mode.active(mode: m.title)
+                      : (power ? L.Main.Mode.switchTo(mode: m.title) : L.Main.Mode.turnOnWith(mode: m.title)))
                 .accessibilityAddTraits(selected ? .isSelected : [])
-                .accessibilityValue(selected ? "aktiv" : "")
-                .accessibilityHint(selected ? "" : (power ? "Wechselt zu \(m.label)" : "Schaltet mit \(m.label) ein"))
+                .accessibilityValue(selected ? L.Main.Mode.activeValue : "")
+                .accessibilityHint(selected ? ""
+                                   : (power ? L.Main.Mode.switchToHint(mode: m.title) : L.Main.Mode.turnOnWithHint(mode: m.title)))
             }
         }
     }
@@ -90,8 +92,8 @@ struct FanControl: View, Equatable {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                SectionTitle(text: "LÜFTER", trailing: current)
-                Toggle("Auto", isOn: Binding(
+                SectionTitle(text: L.Main.Section.fan, trailing: current)
+                Toggle(L.Fan.auto, isOn: Binding(
                     get: { isAuto },
                     set: { on in
                         model.setFan(on ? FanSpeed.auto.rawValue : Int(value.rounded()), now: true)
@@ -110,8 +112,8 @@ struct FanControl: View, Equatable {
             .frame(height: 22)
             .opacity(isAuto ? 0.45 : 1)
             .accessibilityElement()
-            .accessibilityLabel("Lüfter in Prozent")
-            .accessibilityValue(current.replacingOccurrences(of: "%", with: "Prozent"))
+            .accessibilityLabel(L.Main.Fan.percentLabel)
+            .accessibilityValue(current.replacingOccurrences(of: "%", with: L.Main.Fan.percentWord))
             .accessibilityAdjustableAction { dir in
                 let v = Int(value.rounded())
                 model.setFan(min(100, max(1, dir == .increment ? v + 10 : v - 10)), now: true)
@@ -133,10 +135,10 @@ struct FanControl: View, Equatable {
                     }
                 }
                 if zones {
-                    zoneButton("speaker.slash", "Außengerät leise", on: quietOn) { model.setFanQuiet() }
+                    zoneButton("speaker.slash", L.Options.Fan.quietOutdoor, on: quietOn) { model.setFanQuiet() }
                         .help(UIOptions.fanQuietZoneHelp(on: quietOn))
                         .position(x: 12, y: 7)
-                    zoneButton("bolt", "Turbo", on: turboOn) { model.setFanTurbo() }
+                    zoneButton("bolt", L.Options.Fan.turbo, on: turboOn) { model.setFanTurbo() }
                         .help(UIOptions.fanTurboZoneHelp(on: turboOn))
                         .position(x: geo.size.width - 12, y: 7)
                 }
@@ -218,7 +220,7 @@ struct FanControl: View, Equatable {
         .buttonStyle(.plain)
         .accessibilityLabel(name)
         .accessibilityAddTraits(.isToggle)
-        .accessibilityValue(on ? "ein" : "aus")
+        .accessibilityValue(on ? L.Main.State.on : L.Main.State.off)
     }
 
     // MARK: Bedienen

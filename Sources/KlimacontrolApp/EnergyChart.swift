@@ -48,11 +48,11 @@ struct EnergySection: View {
             }
             if let periods {
                 if periods.contains(where: { $0.shownKWh != nil }) {
-                    EnergyBars(bars: periods.map { EnergyBar($0, kind: key.kind, price: price) }, color: SeriesColors(theme).outdoor,
+                    EnergyBars(bars: periods.map { EnergyBar($0, kind: key.kind, price: price, currency: model.currency) }, color: SeriesColors(theme).outdoor,
                                hovered: $hovered)
                         .equatable()
                         .frame(height: 150)
-                    Text(UIText.energySummary(periods, price: price))
+                    Text(UIText.energySummary(periods, price: price, currency: model.currency))
                         .font(.system(.callout, design: .rounded).weight(.semibold).monospacedDigit())
                     Text(hovered ?? UIText.energyLegend).font(.caption).foregroundStyle(.secondary)
                         .frame(minHeight: 32, alignment: .topLeading)
@@ -88,14 +88,14 @@ struct EnergyBar: Equatable, Identifiable {
     let complete: Bool
     let tooltip: String
 
-    init(_ p: EnergyPeriod, kind: EnergyPeriodKind, price: Double) {
+    init(_ p: EnergyPeriod, kind: EnergyPeriodKind, price: Double, currency: String) {
         id = p.start
         label = UIText.energyPeriodLabel(p, kind: kind)
         value = p.shownKWh ?? 0
         fromMeasurement = p.fromMeasurement
         current = p.current
         complete = p.complete
-        tooltip = UIText.energyTooltip(p, kind: kind, price: price)
+        tooltip = UIText.energyTooltip(p, kind: kind, price: price, currency: currency)
     }
 
     /// Nicht nur über die Farbe erkennbar: zusätzlich ein Zeichen über dem Balken (`marker`).
@@ -121,7 +121,7 @@ private struct EnergyBars: View, Equatable {
 
     var body: some View {
         Chart(bars) { b in
-            BarMark(x: .value("Zeitraum", b.label), y: .value("kWh", b.value), width: .ratio(0.7))
+            BarMark(x: .value(L.Charts.range, b.label), y: .value("kWh", b.value), width: .ratio(0.7))
                 .foregroundStyle(color)
                 .opacity(b.opacity)
                 .annotation(position: .top, spacing: 2) { marker(b) }
@@ -157,7 +157,7 @@ private struct EnergyBars: View, Equatable {
         if b.current {
             Image(systemName: "clock").font(.caption2).foregroundStyle(.secondary)
         } else if b.fromMeasurement {
-            Text("ca.").font(.caption2).foregroundStyle(.secondary)
+            Text(L.Charts.approxMarker).font(.caption2).foregroundStyle(.secondary)
         } else if !b.complete {
             Text("…").font(.caption2).foregroundStyle(.secondary)
         }

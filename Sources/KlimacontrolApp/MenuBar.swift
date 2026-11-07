@@ -51,7 +51,7 @@ private struct CompactContent: View {
                 MaintenanceHint(state: s, compact: true)
                 ControlStack(state: s, stale: staleSince != nil, simple: simple)
             } else if model.config == nil {
-                Text("Noch keine Anlage eingerichtet – das geht im Hauptfenster („Klimacontrol öffnen“).")
+                Text(L.Menu.noDevice)
                     .font(.callout).fixedSize(horizontal: false, vertical: true)
             } else {
                 StartupView(compact: true)
@@ -68,7 +68,7 @@ private struct CompactContent: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .fixedSize(horizontal: false, vertical: true)
                         // Rohtext (Fachwörter) nur im Tooltip, nicht im Haupttext.
-                        .help(msg.detail ?? "")
+                        .help(Localizer.language == .de ? msg.detail ?? "" : msg.text)
                     if model.lastRefreshFailed {
                         Button(UIText.retryButton) { Task { await model.refreshNow() } }
                             .buttonStyle(.bordered).controlSize(.mini)
@@ -138,7 +138,7 @@ private struct CompactTarget: View, Equatable {
                     .foregroundStyle(tint)
                     .heroGlow(tint, active: live)
                 if room != nil {
-                    Text("Soll \(Fmt.target(target))").font(.caption).foregroundStyle(.secondary)
+                    Text(L.Menu.target(target: Fmt.target(target))).font(.caption).foregroundStyle(.secondary)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -153,12 +153,12 @@ private struct CompactFooter: View {
 
     var body: some View {
         HStack {
-            Button("Klimacontrol öffnen") {
+            Button(L.Menu.Mac.openApp) {
                 openWindow(id: "main")
                 NSApp.activate(ignoringOtherApps: true)
             }
             Spacer()
-            Button("Beenden") { NSApplication.shared.terminate(nil) }
+            Button(L.Menu.quit) { NSApplication.shared.terminate(nil) }
         }
         .buttonStyle(.borderless).font(.callout)
     }

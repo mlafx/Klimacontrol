@@ -17,39 +17,39 @@ struct AppCommands: Commands {
 
     var body: some Commands {
         CommandGroup(after: .appInfo) {
-            Button("Nach Updates suchen …") { AppUpdater.shared.checkForUpdates() }
+            Button(L.Commands.checkUpdates) { AppUpdater.shared.checkForUpdates() }
                 .disabled(!AppUpdater.shared.canCheck)
         }
-        CommandMenu("Anlage") {
-            Button(model.state?.power == true ? "Ausschalten" : "Einschalten") {
+        CommandMenu(L.Commands.deviceMenu) {
+            Button(model.state?.power == true ? L.Commands.powerOff : L.Commands.powerOn) {
                 guard let on = model.state?.power else { return }
                 model.setPower(!on)
             }
             .keyboardShortcut("p", modifiers: .command)
             .disabled(model.state == nil || controls != true)
             Divider()
-            Button("Wärmer") { model.nudgeTemperature(by: 1) }
+            Button(L.Commands.warmer) { model.nudgeTemperature(by: 1) }
                 .keyboardShortcut(.upArrow, modifiers: .command)
                 .disabled(model.state?.power != true || controls != true)
-            Button("Kälter") { model.nudgeTemperature(by: -1) }
+            Button(L.Commands.cooler) { model.nudgeTemperature(by: -1) }
                 .keyboardShortcut(.downArrow, modifiers: .command)
                 .disabled(model.state?.power != true || controls != true)
             Divider()
-            Button("Jetzt aktualisieren") { Task { await model.refreshNow() } }
+            Button(L.Commands.refreshNow) { Task { await model.refreshNow() } }
                 .keyboardShortcut("r", modifiers: .command)
                 .disabled(model.config == nil)
         }
         CommandGroup(before: .sidebar) {
-            Button(showCharts ? "Verlauf ausblenden" : "Verlauf einblenden") { showCharts.toggle() }
+            Button(showCharts ? L.Commands.hideHistory : L.Commands.showHistory) { showCharts.toggle() }
                 .keyboardShortcut("g", modifiers: .command)
                 .disabled(model.config == nil)
-            Button(showDiagnostics ? "Diagnose ausblenden" : "Diagnose einblenden") { showDiagnostics.toggle() }
+            Button(showDiagnostics ? L.Commands.hideDiagnostics : L.Commands.showDiagnostics) { showDiagnostics.toggle() }
                 .keyboardShortcut("d", modifiers: .command)
                 .disabled(model.state == nil)
             Divider()
-            Button("Mini-Fenster") { openWindow(id: "mini") }
+            Button(L.Commands.miniWindow) { openWindow(id: "mini") }
                 .keyboardShortcut("m", modifiers: [.command, .shift])
-            Toggle("Immer im Vordergrund", isOn: Binding(get: { model.appearance.alwaysOnTop }, set: { on in
+            Toggle(L.Commands.alwaysOnTop, isOn: Binding(get: { model.appearance.alwaysOnTop }, set: { on in
                 var a = model.appearance
                 a.alwaysOnTop = on
                 model.setAppearance(a)

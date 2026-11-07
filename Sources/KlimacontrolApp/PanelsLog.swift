@@ -18,7 +18,7 @@ struct LogSettings: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             ScrollView {
-                Text(text.map { $0.isEmpty ? "Noch keine Einträge." : $0 } ?? "")
+                Text(text.map { $0.isEmpty ? L.Settings.Log.empty : $0 } ?? "")
                     .font(.system(.caption, design: .monospaced))
                     .textSelection(.enabled)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -28,33 +28,33 @@ struct LogSettings: View {
             .background(RoundedRectangle(cornerRadius: 8).fill(.quaternary.opacity(0.4)))
             VStack(alignment: .leading, spacing: 3) {
                 HStack {
-                    Toggle("Ausführliches Protokoll", isOn: $debug)
+                    Toggle(L.Settings.Log.Detailed.title, isOn: $debug)
                         .onChange(of: debug) { _, v in AppLog.debugEnabled = v; AppLog.write("Ausführliches Protokoll \(v ? "an" : "aus")") }
                     // Ohne Debug gibt es keine DEBUG-Zeilen zum Ausblenden.
-                    Toggle("Nur Ereignisse", isOn: $eventsOnly)
+                    Toggle(L.Settings.Log.EventsOnly.title, isOn: $eventsOnly)
                         .disabled(!debug)
-                        .help("Blendet DEBUG-Zeilen (Rahmen, Anfragen an Midea) in der Anzeige aus – die Datei bleibt vollständig")
+                        .help(L.Settings.Log.EventsOnly.help)
                         .onChange(of: eventsOnly) { _, _ in reload(force: true) }
                     Spacer()
-                    Text("Ortszeit · Passwort, Token, Schlüssel geschwärzt").font(.caption).foregroundStyle(.secondary)
+                    Text(L.Settings.Log.legend).font(.caption).foregroundStyle(.secondary)
                 }
                 // Standard aus: Das normale Protokoll reicht für die Fehlersuche über Tage; Debug füllt die 5 MB in
                 // wenigen Stunden und überschreibt dann die älteren Einträge.
                 Text(debug
-                     ? "An: zusätzlich jede Nachricht an die Anlage und an Midea – groß, die Datei wird alle paar Stunden neu begonnen."
-                     : "Aus (Standard): Start, Verbindungsweg, Befehle, Fehler und Timer stehen trotzdem im Protokoll.")
+                     ? L.Settings.Log.Detailed.on
+                     : L.Settings.Log.Detailed.off)
                     .font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
             }
             HStack {
                 Spacer()
-                Button("Aktualisieren") { reload(force: true) }
-                Button("Protokoll im Finder zeigen") { NSWorkspace.shared.activateFileViewerSelecting([AppLog.url]) }
-                Button("Leeren …") { confirmClear = true }
-                    .confirmationDialog("Protokoll leeren?", isPresented: $confirmClear) {
-                        Button("Leeren", role: .destructive) { AppLog.clear(); watch.stamp = nil; raw = ""; text = "" }
-                        Button("Abbrechen", role: .cancel) {}
+                Button(L.Settings.Log.refresh) { reload(force: true) }
+                Button(L.Settings.Log.Mac.showInFinder) { NSWorkspace.shared.activateFileViewerSelecting([AppLog.url]) }
+                Button(L.Settings.Log.Clear.button) { confirmClear = true }
+                    .confirmationDialog(L.Settings.Log.Clear.title, isPresented: $confirmClear) {
+                        Button(L.Settings.Log.Clear.confirm, role: .destructive) { AppLog.clear(); watch.stamp = nil; raw = ""; text = "" }
+                        Button(L.Common.cancel, role: .cancel) {}
                     } message: {
-                        Text("Alle Einträge werden gelöscht – auch die, die bei einer Fehlersuche helfen könnten.")
+                        Text(L.Settings.Log.Clear.message)
                     }
             }
         }
@@ -100,7 +100,7 @@ enum LogRender {
         let utc = ISO8601DateFormatter()
         let local = DateFormatter()
         local.locale = Fmt.locale
-        local.dateFormat = "dd.MM. HH:mm:ss"
+        local.setLocalizedDateFormatFromTemplate("MMddHHmmss")
         var out: [String] = []
         var dropping = false
         for line in raw.split(separator: "\n", omittingEmptySubsequences: false) {

@@ -17,43 +17,43 @@ struct ComfortSection: View, Equatable {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            SectionTitle(text: "KOMFORT")
+            SectionTitle(text: L.Main.Section.comfort)
             HStack(spacing: 6) {
-                tile("Schwenken", "arrow.up.and.down", state.swing == .vertical, .swing) { on in
+                tile(L.Main.Comfort.swing, "arrow.up.and.down", state.swing == .vertical, .swing) { on in
                     model.update { $0.swing = on ? .vertical : .off }
                 }
-                tile("Eco", "leaf", state.eco, .eco) { on in
+                tile(L.Main.Comfort.eco, "leaf", state.eco, .eco) { on in
                     model.setEco(on)
                 }
                 // Gleiche Bedeutung wie das Symbol am Lüfter: die Funktion selbst, Lüfterstufe bleibt.
-                tile("Turbo", "bolt", state.turbo, .turbo) { on in
+                tile(L.Options.Fan.turbo, "bolt", state.turbo, .turbo) { on in
                     model.setTurbo(on)
                 }
-                tile("Außengerät leise", "speaker.slash", state.outSilent, .outdoorSilent) { on in model.setOutdoorSilent(on) }
+                tile(L.Options.Fan.quietOutdoor, "speaker.slash", state.outSilent, .outdoorSilent) { on in model.setOutdoorSilent(on) }
             }
 
-            SectionTitle(text: "WEITERE FUNKTIONEN").padding(.top, 6)
+            SectionTitle(text: L.Main.Section.moreFeatures).padding(.top, 6)
             VStack(alignment: .leading, spacing: 0) {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 3), spacing: 6) {
-                    row("iECO", "gauge.with.dots.needle.33percent", state.ieco, .ieco) { on in model.setIECO(on) }
-                    row("Ionisierer", "sparkles", state.purifier, .purifier) { on in model.update { $0.purifier = on } }
-                    row("Frostschutz", "snowflake.circle", state.freezeProtection, .freezeProtection) { on in
+                    row(L.Main.Comfort.ieco, "gauge.with.dots.needle.33percent", state.ieco, .ieco) { on in model.setIECO(on) }
+                    row(L.Main.Comfort.ionizer, "sparkles", state.purifier, .purifier) { on in model.update { $0.purifier = on } }
+                    row(L.Main.Comfort.frostProtection, "snowflake.circle", state.freezeProtection, .freezeProtection) { on in
                         model.update { $0.freezeProtection = on }
                     }
                     // Nicht drop.triangle – sieht wie ein Warndreieck aus.
-                    row("Reinigung", "bubbles.and.sparkles", state.selfClean, .selfClean) { on in
+                    row(L.Main.Comfort.selfClean, "bubbles.and.sparkles", state.selfClean, .selfClean) { on in
                         if on { confirmSelfClean = true } else { model.setSelfClean(false) }
                     }
-                    row("Anzeige", "rectangle.dashed", state.displayOn, .display) { _ in model.toggleDisplay() }
+                    row(L.Main.Comfort.display, "rectangle.dashed", state.displayOn, .display) { _ in model.toggleDisplay() }
                     // Signalton nur unter Einstellungen › Anlage.
                 }
                 HStack {
-                    Label("Leistung begrenzen", systemImage: "gauge.with.dots.needle.67percent").font(.callout)
+                    Label(L.Main.Comfort.limitPower, systemImage: "gauge.with.dots.needle.67percent").font(.callout)
                     Spacer()
-                    Picker("Leistung begrenzen", selection: Binding(
+                    Picker(L.Main.Comfort.limitPower, selection: Binding(
                         get: { UIOptions.rateShown(state.ratePercent) },
                         set: { model.setRate($0) })) {
-                        ForEach(UIOptions.rateChoices, id: \.self) { Text("\($0) %").tag($0) }
+                        ForEach(UIOptions.rateChoices, id: \.self) { Text(L.Main.Comfort.percentChoice(value: "\($0)")).tag($0) }
                     }
                     .pickerStyle(.segmented).labelsHidden().fixedSize()
                 }
@@ -125,9 +125,9 @@ private struct SwitchLook: ViewModifier {
         content
             .disabled(!enabled)
             .opacity(!enabled ? 0.38 : on == nil ? 0.6 : 1)
-            .help(on == nil && enabled ? "\(why ?? title) – Zustand unbekannt" : (why ?? title))
+            .help(on == nil && enabled ? L.Main.Comfort.unknownSuffix(text: why ?? title) : (why ?? title))
             .accessibilityAddTraits(.isToggle)
-            .accessibilityValue(on == nil ? "unbekannt" : on == true ? "ein" : "aus")
+            .accessibilityValue(on == nil ? L.Common.unknown : on == true ? L.Main.State.on : L.Main.State.off)
             .accessibilityHint(enabled ? "" : (why ?? ""))
     }
 }

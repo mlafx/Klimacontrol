@@ -13,45 +13,45 @@ struct DeviceSettings: View {
     var body: some View {
         Form {
             if let cfg = model.config {
-                Section("Anlage") {
+                Section(L.Settings.Device.section) {
                     // „Name der Anlage“, nicht „Name“: den gibt es unter „Allgemein“ schon (Anzeigename).
                     LabeledContent {
                         Text(cfg.name)
                     } label: {
-                        Text("Name der Anlage")
-                        Text("Von Midea vergeben. Der Anzeigename steht unter „Allgemein“.")
+                        Text(L.Settings.Device.Name.title)
+                        Text(L.Settings.Device.Name.help)
                     }
                     // Über das Konto eingerichtet (ip leer, Anlagen-ID gesetzt): Adresse gibt es keine, die ID schon.
-                    LabeledContent("Adresse", value: cfg.hasLAN ? cfg.ip : "über Midea-Konto")
+                    LabeledContent(L.Setup.Found.address, value: cfg.hasLAN ? cfg.ip : L.Settings.Device.viaAccount)
                     if cfg.deviceId != 0 { relocateRow }
                     SoundSettingRow()
-                    DisclosureGroup("Technische Angaben", isExpanded: $details) {
-                        if cfg.hasLAN { LabeledContent("Port", value: "\(cfg.port)") }
-                        if cfg.deviceId != 0 { LabeledContent("Anlagen-ID", value: "\(cfg.deviceId)") }
-                        LabeledContent("Kennung der Anlage", value: model.deviceIdentifier ?? "–")
-                            .help("Eigenschaft 0x00AB der Anlage")
-                        LabeledContent("WLAN-Zugangsdaten",
-                                       value: cfg.hasLAN ? "gespeichert, nur für dich lesbar" : "keine – Steuerung über das Midea-Konto")
+                    DisclosureGroup(L.Settings.Device.Details.title, isExpanded: $details) {
+                        if cfg.hasLAN { LabeledContent(L.Setup.Found.port, value: "\(cfg.port)") }
+                        if cfg.deviceId != 0 { LabeledContent(L.Setup.Found.applianceId, value: "\(cfg.deviceId)") }
+                        LabeledContent(L.Settings.Device.Identifier.title, value: model.deviceIdentifier ?? "–")
+                            .help(L.Settings.Device.Identifier.help)
+                        LabeledContent(L.Settings.Device.Credentials.title,
+                                       value: cfg.hasLAN ? L.Settings.Device.Credentials.stored : L.Settings.Device.Credentials.none)
                     }
                 }
                 Section {
-                    Button("Zugangsdaten sichern …") { backupResult = model.exportBackup() }
-                    Button("Sicherung einlesen …") { importBackup() }
+                    Button(L.Settings.Device.Backup.export) { backupResult = model.exportBackup() }
+                    Button(L.Settings.Device.Backup.import) { importBackup() }
                     if let backupResult { FeedbackLine(feedback: backupResult) }
                 } header: {
-                    Text("Sichern und übertragen")
+                    Text(L.Settings.Device.Backup.header)
                 } footer: {
-                    Text("Die Sicherung enthält Token, Schlüssel, Adresse und Szenen – damit lässt sich die Anlage auf einem anderen Rechner ohne Midea-Konto einrichten. Nicht in Cloud-Ordnern (iCloud, OneDrive, Dropbox) ablegen.")
+                    Text(L.Settings.Device.Backup.footer)
                         .font(.caption).foregroundStyle(.secondary)
                 }
                 Section {
-                    Button("Anlage neu einrichten …", role: .destructive) { confirmForget = true }
+                    Button(L.Settings.Device.Forget.button, role: .destructive) { confirmForget = true }
                 } footer: {
-                    Text("Nur für eine andere Anlage. Nach einem Router-Wechsel oder bei neuer Adresse reicht „Adresse neu suchen“.")
+                    Text(L.Settings.Device.Forget.footer)
                         .font(.caption).foregroundStyle(.secondary)
                 }
             } else {
-                Text("Noch keine Anlage eingerichtet – das geht im Hauptfenster.").foregroundStyle(.secondary)
+                Text(L.Settings.Device.noDevice).foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)
@@ -74,12 +74,12 @@ struct DeviceSettings: View {
     private var relocateRow: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                Button(relocating ? "Suche …" : "Adresse neu suchen") { relocate() }
+                Button(relocating ? L.Setup.View.searching : L.Settings.Device.Relocate.button) { relocate() }
                     .disabled(relocating)
                 if relocating { ProgressView().controlSize(.small) }
                 Spacer()
             }
-            Text("Nach einem Router-Wechsel oder wenn die Anlage eine neue Adresse hat. Token und Schlüssel bleiben erhalten.")
+            Text(L.Settings.Device.Relocate.help)
                 .font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
             if let relocateResult { FeedbackLine(feedback: relocateResult) }
         }

@@ -10,6 +10,15 @@ struct KlimacontrolApp: App {
     @State private var model: ACController
 
     init() {
+        // Sprache und Formate vor dem Controller, damit schon seine erste Anzeige im richtigen Format steht.
+        _ = AppRestart.startChoice
+        let preferred = Bundle.preferredLocalizations(from: AppLanguage.allCases.map(\.rawValue), forPreferences: nil)
+        Localizer.configure(Localizer.resolve(preferred: preferred))
+        FormatProfile.setCurrent(.from(locale: .autoupdatingCurrent))
+        NotificationCenter.default.addObserver(forName: NSLocale.currentLocaleDidChangeNotification, object: nil,
+                                               queue: .main) { _ in
+            FormatProfile.setCurrent(.from(locale: .autoupdatingCurrent))
+        }
         _model = State(initialValue: ACController(
             appVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"))
         // Früh starten, damit Sparkle den täglichen Takt auch ohne geöffnete Einstellungen einhält.
@@ -19,7 +28,7 @@ struct KlimacontrolApp: App {
     var body: some Scene {
         // Einmalig verknüpfen: Rückfrage beim Beenden (aktive Timer) und Mitteilungen der Timer.
         let _ = appDelegate.attach(model)
-        Window("Klimacontrol", id: "main") {
+        Window(L.App.Window.main, id: "main") {
             MainWindowRoot()
                 .environment(model)
         }
@@ -29,7 +38,7 @@ struct KlimacontrolApp: App {
         .commands { AppCommands(model: model) }
 
         // Mini-Fenster: rahmenlos, schwebt immer (Darstellung → Fenster).
-        Window("Mini-Fenster", id: "mini") {
+        Window(L.App.Window.mini, id: "mini") {
             MiniWindowView()
                 .klimaThemeRoot()
                 .environment(model)
@@ -126,6 +135,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// Ein gestellter Timer würde mit dem Beenden still verfallen – vorher fragen.
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        if AppRestart.skipQuitPrompt { return .terminateNow }
         guard let prompt = model?.quitPrompt() else { return .terminateNow }
         NSApp.activate()
         return runConfirm(prompt) ? .terminateNow : .terminateCancel

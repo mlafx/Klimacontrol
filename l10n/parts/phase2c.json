@@ -530,13 +530,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Updates werden automatisch geladen und installiert. Klimacontrol startet danach kurz neu."
+            "value" : "Updates werden automatisch geladen. Danach fragt Klimacontrol, ob es gleich neu starten soll; sonst wird beim Beenden installiert."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Updates are downloaded and installed automatically. Klimacontrol then restarts briefly."
+            "value" : "Updates are downloaded automatically. Klimacontrol then asks whether to restart right away; otherwise the update is installed when the app quits."
           }
         }
       }

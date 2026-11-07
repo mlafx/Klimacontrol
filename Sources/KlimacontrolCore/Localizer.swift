@@ -35,6 +35,27 @@ public enum LanguageChoice: String, CaseIterable, Sendable {
     }
 }
 
+extension LanguageChoice {
+    /// Wahl aus dem App-eigenen Wert `AppleLanguages` (nur die App-Domäne, nicht die globale Liste):
+    /// nil/leer → `.system`, erstes Element "de…" → `.de`, "en…" → `.en`, anderes → `.system`.
+    public init(appleLanguages: [String]?) {
+        let first = appleLanguages?.first?.lowercased() ?? ""
+        func isLanguage(_ code: String) -> Bool {
+            first == code || first.hasPrefix(code + "-") || first.hasPrefix(code + "_")
+        }
+        if isLanguage("de") { self = .de } else if isLanguage("en") { self = .en } else { self = .system }
+    }
+
+    /// Wert für `AppleLanguages` der App: nil = Schlüssel entfernen (Systemsprache), sonst ["de"] bzw. ["en"].
+    public var appleLanguages: [String]? {
+        switch self {
+        case .system: nil
+        case .de: ["de"]
+        case .en: ["en"]
+        }
+    }
+}
+
 /// Ein Wert des Katalogs: Text oder Mehrzahl-Fälle („one“, „other“ …). JSON: Zeichenkette bzw. Objekt.
 public enum LocalizedValue: Equatable, Sendable, Encodable {
     case text(String)

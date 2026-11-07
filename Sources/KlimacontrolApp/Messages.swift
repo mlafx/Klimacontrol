@@ -41,7 +41,7 @@ struct MessageBanner: View {
             if let retry {
                 Button(UIText.retryButton, action: retry)
                     .buttonStyle(.bordered).controlSize(.small)
-                    .help("Sofort neu abfragen (⌘R)")
+                    .help(L.Main.Message.refreshHelp)
             }
         }
         .padding(10)
@@ -85,7 +85,7 @@ enum MessageText {
     static func text(_ m: UserMessage) -> Text {
         let main = m.todo.isEmpty ? m.what : m.what + " " + m.todo
         guard let code = m.code, !code.isEmpty else { return Text(main) }
-        let label = code.first?.isNumber == true ? "Code \(code)" : code
+        let label = code.first?.isNumber == true ? L.Main.Message.codeLabel(code: code) : code
         return Text(main) + Text("  (\(label))").font(.caption2).foregroundColor(.secondary)
     }
 
@@ -116,7 +116,7 @@ struct RelocateHint: View {
                 Text(resultText).font(.caption).foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .fixedSize(horizontal: false, vertical: true)
-                Button(running ? "Suche …" : "Adresse neu suchen") {
+                Button(running ? L.Main.Relocate.searching : L.Main.Relocate.search) {
                     running = true
                     result = nil
                     Task {
@@ -125,7 +125,7 @@ struct RelocateHint: View {
                     }
                 }
                 .buttonStyle(.bordered).controlSize(.small).disabled(running)
-                .help("Sucht die Anlage im WLAN neu, z. B. nach einem Router-Wechsel. Zugangsdaten bleiben erhalten.")
+                .help(L.Main.Relocate.help)
             }
             .padding(.horizontal, 4)
         }
@@ -133,7 +133,7 @@ struct RelocateHint: View {
 
     private var resultText: String {
         guard result != nil, let text = model.relocateMessage else {
-            return "Neuer Router oder neue Adresse? Die Zugangsdaten bleiben erhalten."
+            return L.Main.Relocate.hint
         }
         return text
     }

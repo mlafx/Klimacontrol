@@ -20,10 +20,10 @@ struct DiagnosticsPanel: View, Equatable {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
                 HStack {
-                    Label("Diagnose", systemImage: "stethoscope").font(.headline)
+                    Label(L.Diagnostics.Panel.title, systemImage: "stethoscope").font(.headline)
                     Spacer()
                     Button(action: close) { Image(systemName: "xmark") }
-                        .buttonStyle(.borderless).help("Diagnose ausblenden (⌘D)").accessibilityLabel("Diagnose ausblenden")
+                        .buttonStyle(.borderless).help(L.Diagnostics.Panel.hideHelp).accessibilityLabel(L.Diagnostics.Panel.hide)
                 }
                 NextRefreshLine()
                 content
@@ -39,44 +39,53 @@ struct DiagnosticsPanel: View, Equatable {
     private var content: some View {
         if let d = model.diagnostics {
             VStack(alignment: .leading, spacing: 14) {
-                section("VERDICHTER · AUSSENGERÄT", [
-                    Row("Leistungsaufnahme", n(d.compressorPowerW, "W")),
-                    Row("Frequenz", n(d.compressorHz, "Hz") + "  (Soll " + n(d.compressorTargetHz, "Hz") + ")"),
-                    Row("Strom · Spannung", n(d.currentA, "A") + " · " + n(d.voltageV, "V"),
-                        help: "Die Anlage meldet den Strom nur in ganzen Ampere."),
-                    Row("Lüfter außen", n(d.outdoorFanRpm, "U/min")),
-                    Row("Abtauen", flag(d.defrost, "läuft", "nein")),
+                section(L.Diagnostics.Panel.sectionCompressor, [
+                    Row(L.Diagnostics.Panel.power, n(d.compressorPowerW, "W")),
+                    Row(L.Diagnostics.Panel.frequency,
+                        withTarget(n(d.compressorHz, "Hz"), n(d.compressorTargetHz, "Hz"))),
+                    Row(L.Diagnostics.Panel.currentVoltage, n(d.currentA, "A") + " · " + n(d.voltageV, "V"),
+                        help: L.Diagnostics.Panel.currentHelp),
+                    Row(L.Diagnostics.Panel.outdoorFan, n(d.outdoorFanRpm, rpm)),
+                    Row(L.Diagnostics.Panel.defrost, flag(d.defrost, L.Diagnostics.Panel.running, L.Diagnostics.Panel.no)),
                 ])
-                section("KÄLTEKREIS", [
-                    Row("T1 · Innenluft", t(d.t1IndoorAir)),
-                    Row("Innenfühler 2", t(d.indoorTemp2), help: "Zweiter Innenfühler (Eigenschaft 0x00E0)"),
-                    Row("T2 · Innenregister (\(heating ? "Verflüssiger" : "Verdampfer"))", t(d.t2IndoorCoil)),
-                    Row("T3 · Außenregister (\(heating ? "Verdampfer" : "Verflüssiger"))", t(d.t3OutdoorCoil)),
-                    Row("T4 · Außenluft", t(d.t4OutdoorAir)),
-                    Row("TP · Heißgasleitung", n(d.tpDischarge, "°C")),
-                    Row("EEV-Öffnung", n(d.eevOpening, "Schritte"), help: "Öffnung des elektronischen Expansionsventils"),
+                section(L.Diagnostics.Panel.sectionCircuit, [
+                    Row(L.Diagnostics.Panel.t1, t(d.t1IndoorAir)),
+                    Row(L.Diagnostics.Panel.indoorSensor2, t(d.indoorTemp2), help: L.Diagnostics.Panel.indoorSensor2Help),
+                    Row(L.Diagnostics.Panel.t2(role: heating ? L.Diagnostics.Panel.condenser : L.Diagnostics.Panel.evaporator),
+                        t(d.t2IndoorCoil)),
+                    Row(L.Diagnostics.Panel.t3(role: heating ? L.Diagnostics.Panel.evaporator : L.Diagnostics.Panel.condenser),
+                        t(d.t3OutdoorCoil)),
+                    Row(L.Diagnostics.Panel.t4, t(d.t4OutdoorAir)),
+                    Row(L.Diagnostics.Panel.tp, n(d.tpDischarge, "°C")),
+                    Row(L.Diagnostics.Panel.eev, n(d.eevOpening, L.Diagnostics.Panel.unitSteps), help: L.Diagnostics.Panel.eevHelp),
                 ])
-                section("INNENGERÄT", [
-                    Row("Lüfter innen", n(d.indoorFanRpm, "U/min") + "  (Soll " + n(d.indoorFanTargetRpm, "U/min") + ")"),
-                    Row("Kondensatpumpe", flag(d.condensatePump, "läuft", "aus")),
-                    Row("Filter", UIText.filterValue(alert: state.filterAlert)),
-                    Row("Fehlercode", UIText.errorCodeValue(state.errorCode),
-                        help: "Nummer, wie die Anlage sie meldet. Die Bedeutung steht in der Bedienungsanleitung der Anlage."),
-                    Row("Zählerstand", Fmt.kwh(state.totalEnergyKWh)),
+                section(L.Diagnostics.Panel.sectionIndoor, [
+                    Row(L.Diagnostics.Panel.indoorFan,
+                        withTarget(n(d.indoorFanRpm, rpm), n(d.indoorFanTargetRpm, rpm))),
+                    Row(L.Diagnostics.Panel.condensatePump, flag(d.condensatePump, L.Diagnostics.Panel.running, L.Common.switchOff)),
+                    Row(L.Diagnostics.Panel.filter, UIText.filterValue(alert: state.filterAlert)),
+                    Row(L.Diagnostics.Panel.errorCode, UIText.errorCodeValue(state.errorCode),
+                        help: L.Diagnostics.Panel.errorCodeHelp),
+                    Row(L.Diagnostics.Panel.meter, Fmt.kwh(state.totalEnergyKWh)),
                 ])
                 HStack {
-                    Text("Verlauf in verlauf.sqlite").font(.caption2).foregroundStyle(.secondary)
+                    Text(L.Diagnostics.Panel.historyFile).font(.caption2).foregroundStyle(.secondary)
                     Spacer()
-                    Button("Im Finder zeigen") { NSWorkspace.shared.activateFileViewerSelecting([model.history.db.url]) }
+                    Button(L.Diagnostics.Panel.Mac.showInFinder) { NSWorkspace.shared.activateFileViewerSelecting([model.history.db.url]) }
                         .buttonStyle(.link).font(.caption2)
                 }
             }
         } else {
-            Text("Diagnosedaten werden geladen …").font(.caption).foregroundStyle(.secondary)
+            Text(L.Diagnostics.Panel.loading).font(.caption).foregroundStyle(.secondary)
         }
     }
 
     private var heating: Bool { state.mode == .heat }
+    private var rpm: String { L.Diagnostics.Panel.unitRpm }
+
+    private func withTarget(_ value: String, _ target: String) -> String {
+        L.Diagnostics.Panel.withTarget(value: value, target: target)
+    }
 
     /// Eine Zeile der Tafel; technische Herkunft (Eigenschaftscodes) nur im Tooltip, nicht im Text.
     private struct Row: Identifiable {
@@ -92,7 +101,7 @@ struct DiagnosticsPanel: View, Equatable {
 
     private func section(_ title: String, _ rows: [Row]) -> some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text(title).font(.caption2.weight(.semibold)).foregroundStyle(.secondary)
+            Text(title).font(.caption2.weight(.semibold)).foregroundStyle(.secondary).textCase(.uppercase)
             ForEach(rows) { row in
                 HStack {
                     Text(row.label)
