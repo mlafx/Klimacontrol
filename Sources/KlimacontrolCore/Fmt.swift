@@ -170,12 +170,12 @@ public struct UserMessage: Equatable, Sendable {
         if let e = error as? MideaError { return from(e) }
         if let e = error as? MideaCloud.CloudError { return from(e) }
         if let e = error as? ConfigError { return from(e) }
+        if let e = error as? KeychainError { return from(e) }
         return UserMessage(what: error.localizedDescription, todo: "")
     }
 
     static func deviceOff(detail: String?) -> UserMessage {
-        UserMessage(what: "Die Anlage ist ausgeschaltet oder ohne Strom (laut Midea-Cloud).",
-                    todo: "Klimacontrol prüft regelmäßig weiter.", code: "3123", detail: detail)
+        UserMessage(what: L.Message.Device.Off.what, todo: L.Message.Device.Off.todo, code: "3123", detail: detail)
     }
 
     static func from(_ e: MideaError) -> UserMessage {
@@ -183,55 +183,86 @@ public struct UserMessage: Equatable, Sendable {
         if isDeviceOff(e) { return deviceOff(detail: raw) }
         switch e {
         case .timeout:
-            return UserMessage(what: "Die Anlage antwortet nicht.",
-                               todo: "Prüfe, ob sie Strom hat und im WLAN ist. Klimacontrol versucht es weiter.", detail: raw)
+            return UserMessage(what: L.Message.Device.Timeout.what, todo: L.Message.Device.Timeout.todo, detail: raw)
         case .outcomeUnknown:
-            return UserMessage(what: "Die Verbindung brach nach dem Senden ab – ob die Änderung angekommen ist, ist unklar.",
-                               todo: "Prüfe die Anzeige nach der nächsten Abfrage.", detail: raw)
+            return UserMessage(what: L.Message.Device.OutcomeUnknown.what, todo: L.Message.Device.OutcomeUnknown.todo, detail: raw)
         case .busy:
-            return UserMessage(what: "Die Anlage ist gerade belegt.",
-                               todo: "Schließe andere Apps (Midea-App, zweites Klimacontrol mit offener Diagnose) oder warte 10 s.",
-                               detail: raw)
+            return UserMessage(what: L.Message.Device.Busy.what, todo: L.Message.Device.Busy.todo, detail: raw)
         case .connectionFailed, .refused, .unreachable, .allPathsFailed:
             var code: String?
             if case .allPathsFailed(let failures) = e { code = failures.compactMap(\.code).last }
-            return UserMessage(what: "Keine Verbindung zur Anlage.",
-                               todo: "Prüfe WLAN und Strom der Anlage. Klimacontrol versucht es weiter.",
+            return UserMessage(what: L.Message.Device.NoConnection.what, todo: L.Message.Device.NoConnection.todo,
                                code: code, detail: raw)
         case .authenticationFailed:
-            return UserMessage(what: "Die Anmeldung an der Anlage ist fehlgeschlagen.",
-                               todo: "Token und Schlüssel passen nicht mehr. Lies eine Sicherung ein oder richte die Anlage neu ein.",
-                               detail: raw)
+            return UserMessage(what: L.Message.Device.AuthFailed.what, todo: L.Message.Device.AuthFailed.todo, detail: raw)
         case .crypto(let c):
-            return UserMessage(what: "Die Antwort der Anlage ließ sich nicht entschlüsseln.",
-                               todo: "Versuche es noch einmal.", code: String(c), detail: raw)
+            return UserMessage(what: L.Message.Device.Crypto.what, todo: L.Message.Device.tryAgain,
+                               code: String(c), detail: raw)
         case .protocolError, .invalidResponse:
-            return UserMessage(what: "Die Anlage hat unerwartet geantwortet.", todo: "Versuche es noch einmal.", detail: raw)
+            return UserMessage(what: L.Message.Device.Unexpected.what, todo: L.Message.Device.tryAgain, detail: raw)
         case .commandNotApplied:
-            return UserMessage(what: "Die Anlage hat die Änderung nicht übernommen.",
-                               todo: "Vielleicht steuert gerade eine andere App. Versuche es noch einmal.", detail: raw)
+            return UserMessage(what: L.Message.Device.CommandNotApplied.what, todo: L.Message.Device.CommandNotApplied.todo,
+                               detail: raw)
         }
     }
 
     static func from(_ e: MideaCloud.CloudError) -> UserMessage {
-        // Text und Code liefert MideaKit (Muster „Was ist passiert. Was tun.“, eigene Fehlerarten ohne Klammer).
-        UserMessage(what: e.what, todo: e.todo, code: e.codeText, detail: e.errorDescription)
+        let (what, todo): (String, String)
+        switch e.kind {
+        case .wrongCredentials: (what, todo) = (L.Message.Cloud.WrongCredentials.what, L.Message.Cloud.WrongCredentials.todo)
+        case .accountLocked: (what, todo) = (L.Message.Cloud.AccountLocked.what, L.Message.Cloud.AccountLocked.todo)
+        case .serviceUnavailable:
+            (what, todo) = (L.Message.Cloud.ServiceUnavailable.what, L.Message.Cloud.ServiceUnavailable.todo)
+        case .sessionExpired: (what, todo) = (L.Message.Cloud.SessionExpired.what, L.Message.Cloud.SessionExpired.todo)
+        case .applianceOffline:
+            (what, todo) = (L.Message.Cloud.ApplianceOffline.what, L.Message.Cloud.ApplianceOffline.todo)
+        case .notInAccount, .noToken:
+            (what, todo) = (L.Message.Cloud.UnknownAppliance.what, L.Message.Cloud.UnknownAppliance.todo)
+        case .tokenRejected: (what, todo) = (L.Message.Cloud.TokenRejected.what, L.Message.Cloud.TokenRejected.todo)
+        case .network: (what, todo) = (L.Message.Cloud.Network.what, L.Message.Cloud.Network.todo)
+        case .badReply: (what, todo) = (L.Message.Cloud.BadReply.what, L.Message.Cloud.retryLater)
+        case .other:
+            if case .api(_, let msg) = e {
+                let text = DeviceConfig.cleanText(msg, fallback: L.Message.Cloud.noText)
+                (what, todo) = (L.Message.Cloud.OtherText.what(text: text), L.Message.Cloud.retryLater)
+            } else {
+                (what, todo) = (L.Message.Cloud.Other.what, L.Message.Cloud.retryLater)
+            }
+        case .paused, .keychainLocked: (what, todo) = (e.displayMessage, "")
+        }
+        return UserMessage(what: what, todo: todo, code: e.codeText, detail: e.errorDescription)
     }
 
     static func from(_ e: ConfigError) -> UserMessage {
         let raw = e.errorDescription
         switch e {
         case .noDevice:
-            return UserMessage(what: "Die Datei enthält keine Anlage.", todo: "Wähle eine Klimacontrol-Sicherung.", detail: raw)
+            return UserMessage(what: L.Message.Config.NoDevice.what, todo: L.Message.Config.NoDevice.todo, detail: raw)
         case .unsupportedVersion(let v):
-            return UserMessage(what: "Diese Anlage wird nicht unterstützt.", todo: "Klimacontrol kann nur Anlagen mit Protokoll V3.",
+            return UserMessage(what: L.Message.Config.Unsupported.what, todo: L.Message.Config.Unsupported.todo,
                                code: "V\(v)", detail: raw)
         case .invalidHex:
-            return UserMessage(what: "Token oder Schlüssel sind unvollständig.",
-                               todo: "Token hat 128, Schlüssel 64 Zeichen (0–9, a–f).", detail: raw)
+            return UserMessage(what: L.Message.Config.InvalidHex.what, todo: L.Message.Config.InvalidHex.todo, detail: raw)
         case .invalidAddress:
-            return UserMessage(what: "Die Adresse der Anlage ist ungültig.", todo: "Gib sie wie 192.168.1.20 an.", detail: raw)
+            return UserMessage(what: L.Message.Config.InvalidAddress.what, todo: L.Message.Config.InvalidAddress.todo,
+                               detail: raw)
         }
     }
 
+    static func from(_ e: KeychainError) -> UserMessage {
+        let raw = e.errorDescription
+        switch e {
+        case .unavailable(let s):
+            return UserMessage(what: L.Message.Keychain.Unavailable.what, todo: L.Message.Keychain.Unavailable.todo,
+                               code: L.Message.Keychain.codeStatus(status: String(s)), detail: raw)
+        case .saveFailed(let s):
+            return UserMessage(what: L.Message.Keychain.SaveFailed.what, todo: L.Message.Keychain.SaveFailed.todo,
+                               code: L.Message.Keychain.codeStatus(status: String(s)), detail: raw)
+        case .tooLarge(let n):
+            return UserMessage(what: L.Message.Keychain.TooLarge.what, todo: L.Message.Keychain.TooLarge.todo,
+                               code: L.Message.Keychain.codeBytes(bytes: String(n)), detail: raw)
+        case .unreadable:
+            return UserMessage(what: L.Message.Keychain.Unreadable.what, todo: L.Message.Keychain.Unreadable.todo, detail: raw)
+        }
+    }
 }

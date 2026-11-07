@@ -27,26 +27,26 @@ public enum TimerOutcome: Equatable, Sendable {
     /// Kurzer Titel für eine Mitteilung.
     public var title: String {
         switch self {
-        case .executed: return powerOn ? "Anlage eingeschaltet" : "Anlage ausgeschaltet"
-        case .missed: return "Timer verpasst"
-        case .failed: return "Timer nicht ausgeführt"
+        case .executed: return powerOn ? L.Timer.Title.on : L.Timer.Title.off
+        case .missed: return L.Timer.Title.missed
+        case .failed: return L.Timer.Title.failed
         }
     }
 
     /// Meldung nach dem Muster „Was ist passiert. Was tun.“
     public var message: String {
-        let name = powerOn ? "„Ein“" : "„Aus“"
+        let name = powerOn ? L.Timer.nameOn : L.Timer.nameOff
         let time = ACController.clock(due)
         switch self {
         case let .executed(_, _, at):
-            return "Timer \(name): Anlage um \(ACController.clock(at)) \(powerOn ? "eingeschaltet" : "ausgeschaltet")."
+            let done = ACController.clock(at)
+            return powerOn ? L.Timer.executedOn(name: name, time: done) : L.Timer.executedOff(name: name, time: done)
         case .missed:
-            return "Timer \(name) für \(time) verpasst. Klimacontrol war geschlossen oder der Rechner schlief – bitte neu stellen."
+            return L.Timer.missed(name: name, time: time)
         case .failed(_, _, .noDevice):
-            return "Timer \(name) für \(time) nicht ausgeführt. Es ist keine Anlage eingerichtet – erst einrichten, dann neu stellen."
+            return L.Timer.failedNoDevice(name: name, time: time)
         case .failed(_, _, .unreachable):
-            return "Timer \(name) für \(time) nicht ausgeführt. Die Anlage war 5 Minuten lang nicht erreichbar – "
-                + "WLAN und Strom der Anlage prüfen."
+            return L.Timer.failedUnreachable(name: name, time: time)
         }
     }
 }
@@ -78,7 +78,7 @@ extension ACController {
     static let timerGrace: TimeInterval = 5 * 60
 
     /// Voraussetzung, die jede Oberfläche beim Timer nennt.
-    public static let timerRequirement = "Der Timer schaltet nur, solange Klimacontrol geöffnet ist und der Rechner wach ist."
+    public static var timerRequirement: String { L.Timer.requirement }
 
     /// Mitteilung der Oberfläche nach jedem Timer-Ergebnis (ausgeführt, verpasst, fehlgeschlagen).
     public var onTimerResult: (@MainActor (TimerOutcome) -> Void)? {
@@ -139,12 +139,11 @@ extension ACController {
         let cal = Calendar.current
         let day: String
         if cal.isDate(date, inSameDayAs: now) {
-            day = "heute"
+            day = DateWords.today
         } else if let tomorrow = cal.date(byAdding: .day, value: 1, to: now), cal.isDate(date, inSameDayAs: tomorrow) {
-            day = "morgen"
+            day = DateWords.tomorrow
         } else {
-            let names = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
-            day = names[(cal.component(.weekday, from: date) - 1 + 7) % 7]
+            day = DateWords.weekdayShort(cal.component(.weekday, from: date))
         }
         return day + " " + clock(date)
     }
@@ -153,10 +152,7 @@ extension ACController {
     public var onTimerLabel: String? { onAt.map { Self.timerLabel($0, now: now()) } }
     public var offTimerLabel: String? { offAt.map { Self.timerLabel($0, now: now()) } }
 
-    nonisolated static func clock(_ date: Date) -> String {
-        let c = Calendar.current.dateComponents([.hour, .minute], from: date)
-        return pad(c.hour ?? 0, 2) + ":" + pad(c.minute ?? 0, 2)
-    }
+    nonisolated static func clock(_ date: Date) -> String { Fmt.clock(date) }
 
     /// Zahl mit führenden Nullen (ohne C-Format, das unter Windows anders breit sein kann).
     nonisolated static func pad(_ v: Int, _ width: Int) -> String {

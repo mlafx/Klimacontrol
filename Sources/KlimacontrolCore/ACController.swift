@@ -210,7 +210,7 @@ public final class ACController {
         loadTimers()
         loadWhatsNew()
         if let aside = loadedScenes.movedAside {
-            showNotice("Die Szenen-Datei war beschädigt und wurde als „\(aside)“ beiseitegelegt. Lesbare Szenen sind übernommen.")
+            showNotice(L.Message.Scenes.movedAside(name: aside))
         }
         guard autostart else { return }
         if let cfg = DeviceConfig.load(from: paths.config) {

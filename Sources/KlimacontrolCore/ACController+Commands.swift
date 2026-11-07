@@ -194,7 +194,7 @@ extension ACController {
         generation += 1
         let outcome = await perform { try await device.setOutdoorSilent(on) }
         if case .notApplied = outcome {
-            showNotice("Die Anlage hat „Außengerät leise“ nicht übernommen. Das geht nur beim Kühlen oder Heizen.")
+            showNotice(L.Message.OutdoorSilent.notApplied)
         }
         return outcome.succeeded
     }

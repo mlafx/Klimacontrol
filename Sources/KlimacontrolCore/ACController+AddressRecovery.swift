@@ -37,8 +37,7 @@ extension ACController {
     @discardableResult
     public func relocate() async -> Bool {
         guard let cfg = config, cfg.deviceId != 0, !cfg.token.isEmpty, !cfg.key.isEmpty else {
-            relocateDone("Für die Suche fehlen die ID der Anlage oder die Zugangsdaten. Richte die Anlage über die Suche "
-                         + "im WLAN ein.")
+            relocateDone(L.Message.Relocate.missingData)
             return false
         }
         guard !relocating else { return false }
@@ -54,16 +53,15 @@ extension ACController {
         }
         guard configGeneration == startConfig, config == cfg else { return false }
         guard let found else {
-            relocateDone("Die Anlage wurde im WLAN nicht gefunden. Prüfe, ob sie Strom hat und mit dem WLAN verbunden ist. "
-                         + "Die Zugangsdaten bleiben unverändert.")
+            relocateDone(L.Message.Relocate.notFound)
             return false
         }
         if found.ip == cfg.ip {
             AppLog.write("Anlage weiter unter \(cfg.ip)")
             await refreshNow()
             relocateDone(lastRefreshFailed
-                ? "Die Anlage ist weiter unter \(cfg.ip), antwortet aber gerade nicht. Versuche es in einer Minute erneut."
-                : "Die Anlage ist weiter unter \(cfg.ip) erreichbar.", notice: lastRefreshFailed)
+                ? L.Message.Relocate.sameNoReply(ip: cfg.ip)
+                : L.Message.Relocate.sameOk(ip: cfg.ip), notice: lastRefreshFailed)
             return !lastRefreshFailed
         }
         var candidate = cfg
@@ -74,12 +72,10 @@ extension ACController {
         if let error = check.error {
             AppLog.error("Anlage unter \(found.ip) gefunden, Anmeldung gescheitert: \(error.localizedDescription)")
             if check.isRejected {
-                relocateDone("Unter der neuen Adresse \(found.ip) antwortet ein Gerät, es nimmt die gespeicherten Zugangsdaten "
-                             + "aber nicht an. Lies eine Sicherung ein oder richte die Anlage neu ein.")
+                relocateDone(L.Message.Relocate.rejected(ip: found.ip))
             } else {
-                relocateDone(UserMessage(what: "Die Anlage ist unter der neuen Adresse \(found.ip), die Anmeldung dort "
-                                       + "klappte gerade nicht.",
-                                       todo: "Versuche es in einer Minute erneut (Einstellungen › Anlage › Adresse neu suchen).",
+                relocateDone(UserMessage(what: L.Message.Relocate.LoginFailed.what(ip: found.ip),
+                                       todo: L.Message.Relocate.LoginFailed.todo,
                                        code: UserMessage.from(error).code).text)
             }
             return false
@@ -87,12 +83,12 @@ extension ACController {
         guard configGeneration == startConfig, config == cfg else { return false }
         do { try checked.save(to: paths.config) } catch {
             AppLog.error("Neue Adresse nicht gespeichert: \(error.localizedDescription)")
-            relocateDone("Die neue Adresse der Anlage konnte nicht gespeichert werden. Details stehen im Protokoll.")
+            relocateDone(L.Message.Relocate.saveFailed)
             return false
         }
         AppLog.write("Anlage jetzt unter \(checked.ip) (vorher \(cfg.ip))")
         use(checked)
-        relocateDone("Die Anlage hat eine neue Adresse (\(checked.ip)) und ist wieder verbunden.")
+        relocateDone(L.Message.Relocate.moved(ip: checked.ip))
         return true
     }
 

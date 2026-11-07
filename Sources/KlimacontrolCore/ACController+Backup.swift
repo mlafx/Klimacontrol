@@ -123,13 +123,11 @@ public enum BackupImportError: Error, LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .otherDevice(let backup, let current):
-            return "Die Sicherung gehört zu einer anderen Anlage („\(backup)“, eingerichtet ist „\(current)“). "
-                + "Wähle die passende Sicherung oder bestätige, dass du die Anlage wechseln willst."
+            return L.Message.Backup.otherDevice(backup: backup, current: current)
         case .rejected:
-            return "Die Anlage hat die Zugangsdaten aus der Sicherung abgelehnt. Die bisherige Einrichtung bleibt. "
-                + "Wähle eine neuere Sicherung."
+            return L.Message.Backup.rejected
         case .nothingToExport:
-            return "Es ist noch keine Anlage eingerichtet. Richte zuerst eine Anlage ein."
+            return L.Message.Backup.nothingToExport
         }
     }
 }

@@ -10,25 +10,25 @@ extension ACController {
     /// Ohne Zustand leer.
     public var goalLine: String {
         guard let s = state else { return "" }
-        if s.selfClean == true { return "Selbstreinigung läuft" }
-        if diagnostics?.defrost == true { return "Taut gerade ab" }
+        if s.selfClean == true { return L.Goal.selfClean }
+        if diagnostics?.defrost == true { return L.Goal.defrost }
         guard let room = s.indoorTemperature else { return s.mode.verb }
         let diff = s.targetTemperature - room
         switch s.mode {
-        case .heat where diff > 0.4: return "Heizt · noch \(Fmt.num(diff, 1))° bis zum Ziel"
-        case .cool where diff < -0.4: return "Kühlt · noch \(Fmt.num(-diff, 1))° bis zum Ziel"
-        case .heat, .cool: return "\(s.mode.verb) · Ziel erreicht"
+        case .heat where diff > 0.4: return L.Goal.heatRemaining(diff: Fmt.num(diff, 1))
+        case .cool where diff < -0.4: return L.Goal.coolRemaining(diff: Fmt.num(-diff, 1))
+        case .heat, .cool: return L.Goal.reached(verb: s.mode.verb)
         // Lüften, Trocknen, Auto: Die Anlage regelt selbst bzw. hat kein Temperaturziel – „Ziel erreicht“ wäre falsch.
-        case .fan, .dry, .auto: return "\(s.mode.verb) · Raum \(Fmt.temp(room))"
+        case .fan, .dry, .auto: return L.Goal.room(verb: s.mode.verb, temp: Fmt.temp(room))
         }
     }
 
     /// Statuszeile fürs Menüleisten-Fenster: „Kühlt · Raum 24,5° · über WLAN“ bzw. „Aus · Raum 24,5°“. Ohne Zustand leer.
     public var statusLine: String {
         guard let s = state else { return "" }
-        let room = "Raum \(Fmt.temp(s.indoorTemperature))"
-        let path = connectionPath.map { " · über \($0.rawValue)" } ?? ""
-        return (s.power ? "\(s.mode.verb) · \(room)" : "Aus · \(room)") + path
+        let room = L.Status.room(temp: Fmt.temp(s.indoorTemperature))
+        let path = connectionPath.map { " · " + L.Status.viaPath(path: $0.title) } ?? ""
+        return (s.power ? "\(s.mode.verb) · \(room)" : "\(L.Common.off) · \(room)") + path
     }
 
     // MARK: Anzeige-Zustand (beide Oberflächen)
@@ -70,12 +70,12 @@ extension ACController {
 
     /// Zeile darunter: „Kühlen · Raum 24,5°“, „Lüften · Raum“, „Aus · Raum“ oder „Stand 14:32“ bei alten Werten.
     public var miniCaption: String {
-        guard config != nil else { return "Nicht eingerichtet" }
-        guard let s = state else { return "Verbinde …" }
+        guard config != nil else { return L.Status.notConfigured }
+        guard let s = state else { return L.Status.connecting }
         if let stale = uiStaleSince { return Fmt.stand(stale) }
-        guard s.power else { return "Aus · Raum" }
-        if s.mode == .fan || appearance.hero == .room { return "\(s.mode.label) · Raum" }
-        return "\(s.mode.label) · Raum \(Fmt.temp(s.indoorTemperature))"
+        guard s.power else { return L.Status.miniOff }
+        if s.mode == .fan || appearance.hero == .room { return L.Status.miniRoomOnly(mode: s.mode.title) }
+        return L.Status.miniRoom(mode: s.mode.title, temp: Fmt.temp(s.indoorTemperature))
     }
 
     // MARK: Lüfter-Zonen

@@ -17,5 +17,5 @@ public enum AppUpdate {
     public static let installsAutomatically = true
     /// Erste Version, die Updates selbst still installiert. Ältere zeigen das Update im Standarddialog; als
     /// „kritisch“ markiert (Appcast) bietet er dort kein Überspringen an.
-    public static let firstAutoInstallVersion = "1.0.1.0"
+    public static let firstAutoInstallVersion = "1.1.0.0"
 }

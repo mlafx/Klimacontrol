@@ -22,8 +22,8 @@ extension ACController {
             }
         } catch {
             device = nil
-            showConnectionError(UserMessage(what: "Die Einrichtung der Anlage ist unvollständig.",
-                                            todo: "Lies eine Sicherung ein oder richte die Anlage neu ein.",
+            showConnectionError(UserMessage(what: L.Message.Session.Incomplete.what,
+                                            todo: L.Message.Session.Incomplete.todo,
                                             code: UserMessage.from(error).code, detail: error.localizedDescription))
             AppLog.error("Anlage nicht nutzbar: \(error.localizedDescription)")
         }

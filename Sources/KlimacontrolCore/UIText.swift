@@ -3,9 +3,9 @@ import MideaKit
 
 /// Wörter, die je Rechnerart wechseln (Mac · Windows); alles andere an den Texten ist gleich.
 public struct HostWords: Equatable, Sendable {
-    /// „Mac“ bzw. „Rechner“ (Einrichtung, Sicherung).
+    /// „Mac“ bzw. „Rechner“ / „computer“ (Einrichtung, Sicherung).
     public let computer: String
-    /// Wo Passwörter liegen, im Dativ: „dem Schlüsselbund“ bzw. „der Anmeldeinformationsverwaltung“.
+    /// Wo Passwörter liegen, im Satz nach „aus“: „dem Schlüsselbund“ bzw. „der Anmeldeinformationsverwaltung“.
     public let credentialStoreDative: String
     /// Satz zum Passwort bei Midea-Konto.
     public let passwordStorage: String
@@ -14,22 +14,16 @@ public struct HostWords: Equatable, Sendable {
     /// Erklärung zu den Updates (Mac installiert still, Windows fragt vor der Installation).
     public let updatesHelp: String
 
-    public static let mac = HostWords(
-        computer: "Mac",
-        credentialStoreDative: "dem Schlüsselbund",
-        passwordStorage: "Das Passwort wird nur im macOS-Schlüsselbund gespeichert, damit sich Klimacontrol neu anmelden kann. "
-            + "Es verlässt den Mac nur zur Anmeldung bei Midea.",
-        setAsideDevice: "Die Einrichtungsdatei kommt unverändert in den Papierkorb – Token und Schlüssel liegen danach im "
-            + "Papierkorb (wer ihn leert, verliert sie).",
-        updatesHelp: "Updates werden automatisch geladen und installiert. Klimacontrol startet danach kurz neu.")
-    public static let windows = HostWords(
-        computer: "Rechner",
-        credentialStoreDative: "der Anmeldeinformationsverwaltung",
-        passwordStorage: "Das Passwort wird nur in der Windows-Anmeldeinformationsverwaltung gespeichert, damit sich "
-            + "Klimacontrol neu anmelden kann. Es verlässt den Rechner nur zur Anmeldung bei Midea.",
-        setAsideDevice: "Die Einrichtungsdatei wird nicht gelöscht, sondern unverändert im Datenordner beiseitegelegt. "
-            + "Token und Schlüssel bleiben in der Datei erhalten, bis du sie selbst löschst.",
-        updatesHelp: "Klimacontrol sucht täglich nach Updates und fragt vor der Installation.")
+    public static var mac: HostWords {
+        HostWords(computer: L.Host.Mac.computer, credentialStoreDative: L.Host.Mac.credentialStore,
+                  passwordStorage: L.Host.Mac.passwordStorage, setAsideDevice: L.Host.Mac.setAsideDevice,
+                  updatesHelp: L.Host.Mac.updatesHelp)
+    }
+    public static var windows: HostWords {
+        HostWords(computer: L.Host.Windows.computer, credentialStoreDative: L.Host.Windows.credentialStore,
+                  passwordStorage: L.Host.Windows.passwordStorage, setAsideDevice: L.Host.Windows.setAsideDevice,
+                  updatesHelp: L.Host.Windows.updatesHelp)
+    }
 
     public static var current: HostWords {
         #if os(Windows)
@@ -86,13 +80,11 @@ public enum UIText {
     // MARK: Updates
 
     public static func updatesHelp(host: HostWords = .current) -> String { host.updatesHelp }
-    public static let updatesChecking = "Suche nach Updates …"
-    public static let updatesCurrent = "Klimacontrol ist auf dem neuesten Stand."
-    public static func updatesInstalling(version: String) -> String {
-        "Version \(version) wird geladen und installiert. Klimacontrol startet danach neu."
-    }
-    public static let updatesFailed = "Die Suche nach Updates hat nicht geklappt. Später erneut versuchen."
-    public static let updatesCheckButton = "Jetzt suchen …"
+    public static var updatesChecking: String { L.Updates.checking }
+    public static var updatesCurrent: String { L.Updates.current }
+    public static func updatesInstalling(version: String) -> String { L.Updates.installing(version: version) }
+    public static var updatesFailed: String { L.Updates.failed }
+    public static var updatesCheckButton: String { L.Updates.checkButton }
 
     // MARK: Neu in dieser Version
 
@@ -103,92 +95,85 @@ public enum UIText {
 
     // MARK: Sicherung einlesen
 
-    public static let importPanelTitle = "Sicherung einlesen"
-    public static let importPanelMessage = "Sicherungsdatei mit Token und Schlüssel der Anlage"
-    public static let exportBackupPanelTitle = "Zugangsdaten sichern"
-    public static let exportBackupPanelMessage = "Enthält Token und Schlüssel deiner Anlage – nicht in Cloud-Ordnern ablegen."
-    public static let exportBackupFileName = "Klimacontrol-Sicherung.json"
-    public static let exportHistoryPanelTitle = "Verlauf exportieren"
-    public static let exportHistoryFileName = "Klimacontrol-Verlauf.csv"
-    public static let importAlertTitle = "Sicherung eingelesen"
-    public static let notBackedUpTitle = "Nicht gesichert"
+    public static var importPanelTitle: String { L.File.importPanelTitle }
+    public static var importPanelMessage: String { L.File.importPanelMessage }
+    public static var exportBackupPanelTitle: String { L.File.exportBackupTitle }
+    public static var exportBackupPanelMessage: String { L.File.exportBackupMessage }
+    public static var exportBackupFileName: String { L.File.backupFileName }
+    public static var exportHistoryPanelTitle: String { L.File.exportHistoryTitle }
+    public static var exportHistoryFileName: String { L.File.historyFileName }
+    public static var importAlertTitle: String { L.File.importAlertTitle }
+    public static var notBackedUpTitle: String { L.File.notBackedUpTitle }
 
-    public static let replaceScenesPrompt = ConfirmPrompt(
-        title: "Szenen ersetzen?",
-        message: "Es gibt schon Szenen. Sollen sie durch die Szenen aus der Sicherung ersetzt werden?",
-        cancel: "Behalten", confirm: "Ersetzen", warning: false)
+    public static var replaceScenesPrompt: ConfirmPrompt {
+        ConfirmPrompt(title: L.Prompt.ReplaceScenes.title, message: L.Prompt.ReplaceScenes.message,
+                      cancel: L.Prompt.ReplaceScenes.cancel, confirm: L.Prompt.ReplaceScenes.confirm, warning: false)
+    }
 
     public static func otherDevicePrompt(backup: String, current: String) -> ConfirmPrompt {
         ConfirmPrompt(
-            title: "Andere Anlage einrichten?",
-            message: "Die Sicherung gehört zu „\(backup)“, eingerichtet ist „\(current)“. "
-                + "Beim Wechsel kommt die bisherige Einrichtung in den Papierkorb.",
-            cancel: "Abbrechen", confirm: "Anlage wechseln", warning: true)
+            title: L.Prompt.OtherDevice.title,
+            message: L.Prompt.OtherDevice.message(backup: backup, current: current),
+            cancel: L.Common.cancel, confirm: L.Prompt.OtherDevice.confirm, warning: true)
     }
 
     /// „Nur Cloud (unterwegs)“ gewählt, ohne dass ein Midea-Konto angemeldet ist.
-    public static let cloudNeedsAccount = NoticeText(
-        title: "Midea-Konto fehlt",
-        message: "Dieser Weg geht nur mit Midea-Konto. Bitte zuerst unten beim Midea-Konto anmelden.")
+    public static var cloudNeedsAccount: NoticeText {
+        NoticeText(title: L.Prompt.CloudNeedsAccount.title, message: L.Prompt.CloudNeedsAccount.message)
+    }
 
     // MARK: Neu einrichten
 
     /// `needsBackup`: Die Anlage hat WLAN-Zugangsdaten, die noch nicht gesichert sind.
     public static func forgetPrompt(needsBackup: Bool, host: HostWords = .current) -> ForgetPrompt {
-        var message = host.setAsideDevice + " Die Sitzung beim Midea-Konto endet. "
-            + "Danach sucht Klimacontrol neu – im WLAN oder über das Midea-Konto."
-        if needsBackup {
-            message += "\n\nDie Zugangsdaten sind noch nicht gesichert. Mit „Erst sichern …“ lässt sich die Anlage später "
-                + "ohne neue Suche wieder einrichten."
-        }
-        return ForgetPrompt(title: "Anlage neu einrichten?", message: message, backup: "Erst sichern …",
-                            confirm: "Neu einrichten", cancel: "Abbrechen", warning: needsBackup)
+        let message = needsBackup
+            ? L.Prompt.Forget.messageNeedsBackup(setAside: host.setAsideDevice)
+            : L.Prompt.Forget.message(setAside: host.setAsideDevice)
+        return ForgetPrompt(title: L.Prompt.Forget.title, message: message, backup: L.Prompt.Forget.backup,
+                            confirm: L.Prompt.Forget.confirm, cancel: L.Common.cancel, warning: needsBackup)
     }
 
     /// Sicherung eingelesen. `verified == false`: die Anlage antwortete nicht – das ist ein Hinweis, kein Erfolg.
     public static func backupImported(_ r: BackupImportResult, ip: String) -> ResultMessage {
         var parts: [String] = []
         switch r.verified {
-        case true?: parts.append("Sicherung eingelesen, die Anlage nimmt die Zugangsdaten an.")
+        case true?: parts.append(L.Result.backupRestoredVerified)
         case false?:
-            return .failed(what: "Sicherung eingelesen, aber die Anlage antwortet nicht\(ip.isEmpty ? "" : " unter \(ip)").",
-                           todo: "Ist sie eingeschaltet? Hat sie eine neue Adresse, hilft „Adresse neu suchen“ unter "
-                               + "Einstellungen → Anlage.")
-        case nil: parts.append("Sicherung eingelesen.")
+            return .failed(what: ip.isEmpty ? L.Result.backupRestoredNoReply : L.Result.backupRestoredNoReplyAt(ip: ip),
+                           todo: L.Result.backupRestoredNoReplyTodo)
+        case nil: parts.append(L.Result.backupRestored)
         }
-        if r.scenesImported > 0 { parts.append("\(r.scenesImported) Szenen übernommen.") }
-        if r.scenesSkipped > 0 { parts.append("Die vorhandenen Szenen bleiben.") }
+        if r.scenesImported > 0 { parts.append(L.Result.scenesImported(count: r.scenesImported)) }
+        if r.scenesSkipped > 0 { parts.append(L.Result.scenesKept) }
         return .ok(parts.joined(separator: " "))
     }
 
     /// Sicherung nicht eingelesen. Fehler der Sicherung selbst tragen ihren Text, alles andere die Rückfrage nach der Datei.
     public static func backupImportFailed(_ error: any Error) -> ResultMessage {
         if let e = error as? BackupImportError, let text = e.errorDescription { return split(text) }
-        return .failed(what: "Die Sicherung ließ sich nicht einlesen.", todo: "Ist es die richtige Datei?",
+        return .failed(what: L.Result.ImportFailed.what, todo: L.Result.ImportFailed.todo,
                        code: error.localizedDescription)
     }
 
     // MARK: Sicherung und Verlauf speichern
 
-    public static func backupExported(fileName: String) -> ResultMessage { .ok("Gesichert als „\(fileName)“.") }
+    public static func backupExported(fileName: String) -> ResultMessage { .ok(L.Result.backupExported(name: fileName)) }
 
     public static func backupExportFailed(_ error: any Error) -> ResultMessage {
-        .failed(what: "Die Sicherung ließ sich nicht speichern.", todo: "Anderen Ort wählen?", code: error.localizedDescription)
+        .failed(what: L.Result.BackupExportFailed.what, todo: L.Result.saveFailedTodo, code: error.localizedDescription)
     }
 
-    public static func historyExported(fileName: String) -> ResultMessage { .ok("Verlauf gespeichert als „\(fileName)“.") }
+    public static func historyExported(fileName: String) -> ResultMessage { .ok(L.Result.historyExported(name: fileName)) }
 
     public static func historyExportFailed(_ error: any Error) -> ResultMessage {
-        .failed(what: "Der Verlauf ließ sich nicht speichern.", todo: "Anderen Ort wählen?", code: error.localizedDescription)
+        .failed(what: L.Result.HistoryExportFailed.what, todo: L.Result.saveFailedTodo, code: error.localizedDescription)
     }
 
     /// Rückfrage vor dem Sichern in einen Cloud-Ordner (`folder` = Name des Ordners).
     public static func cloudFolderPrompt(folder: String) -> ConfirmPrompt {
         ConfirmPrompt(
-            title: "In einem Cloud-Ordner sichern?",
-            message: "„\(folder)“ wird mit einem Cloud-Dienst abgeglichen. Mit Token und Schlüssel lässt sich die Anlage "
-                + "steuern – besser lokal oder auf einem USB-Stick ablegen.",
-            cancel: "Anderen Ort wählen", confirm: "Trotzdem sichern", warning: true)
+            title: L.Prompt.CloudFolder.title, message: L.Prompt.CloudFolder.message(folder: folder),
+            cancel: L.Prompt.CloudFolder.cancel, confirm: L.Prompt.CloudFolder.confirm, warning: true)
     }
 
     /// Pfadteile (mit `/` geschrieben), an denen ein Cloud-Ordner zu erkennen ist.
@@ -201,15 +186,15 @@ public enum UIText {
     }
 
     /// Hinweis, wenn eine Sicherung schon in einem Cloud-Ordner liegt (kein Hinweis zusätzlich zur Rückfrage nötig).
-    public static let cloudFolderNotice = UserMessage(
-        what: "Die Sicherung liegt in einem Cloud-Ordner und enthält Token und Schlüssel der Anlage.",
-        todo: "Lege sie besser in einen Ordner nur auf diesem Rechner.")
+    public static var cloudFolderNotice: UserMessage {
+        UserMessage(what: L.File.CloudFolderNotice.what, todo: L.File.CloudFolderNotice.todo)
+    }
 
     // MARK: Einrichtung abgeschlossen
 
-    public static let setupDoneTitle = "Anlage eingerichtet"
-    public static let setupBackupTitle = "Zugangsdaten jetzt sichern?"
-    public static let setupLANOnlyChoice = "Nur WLAN nutzen (nie über die Midea-Server)"
+    public static var setupDoneTitle: String { L.Prompt.SetupDone.title }
+    public static var setupBackupTitle: String { L.Prompt.SetupDone.backupTitle }
+    public static var setupLANOnlyChoice: String { L.Prompt.SetupDone.lanOnly }
 
     /// Fenster nach gelungener Einrichtung: Titel, Absätze, Knöpfe und das Häkchen „Nur WLAN“. nil = nichts anzubieten.
     public struct SetupDonePrompt: Equatable, Sendable {
@@ -223,33 +208,30 @@ public enum UIText {
     public static func setupDonePrompt(_ c: SetupCompletion, host: HostWords = .current) -> SetupDonePrompt? {
         guard c.offerBackup || c.suggestLANOnly else { return nil }
         var paragraphs = [c.note]
-        if c.offerBackup {
-            paragraphs.append("Ohne Midea-Konto liegen Token und Schlüssel nur auf diesem \(host.computer). "
-                              + "Eine Sicherung braucht es für einen anderen Rechner oder nach „Neu einrichten“.")
-        }
+        if c.offerBackup { paragraphs.append(L.Prompt.SetupDone.backupNote(computer: host.computer)) }
         return SetupDonePrompt(title: c.offerBackup ? setupBackupTitle : setupDoneTitle,
                                paragraphs: paragraphs.filter { !$0.isEmpty },
                                lanOnlyChoice: c.suggestLANOnly ? setupLANOnlyChoice : nil,
-                               primary: c.offerBackup ? "Sichern …" : "OK", secondary: c.offerBackup ? "Später" : nil)
+                               primary: c.offerBackup ? L.Prompt.SetupDone.backupButton : L.Common.ok,
+                               secondary: c.offerBackup ? L.Prompt.SetupDone.later : nil)
     }
 
     // MARK: Konto
 
-    public static let accountSignedIn = "Angemeldet und gespeichert."
-    public static let accountRemoved = "Midea-Konto und Passwort entfernt."
+    public static var accountSignedIn: String { L.Account.signedIn }
+    public static var accountRemoved: String { L.Account.removed }
 
     public static func accountRemovePrompt(host: HostWords = .current) -> ConfirmPrompt {
         ConfirmPrompt(
-            title: "Midea-Konto entfernen?",
-            message: "Konto und Passwort werden aus \(host.credentialStoreDative) gelöscht, unterwegs ist die Anlage dann "
-                + "nicht mehr erreichbar. Das Konto lässt sich jederzeit wieder anmelden.",
-            cancel: "Abbrechen", confirm: "Entfernen", warning: true)
+            title: L.Prompt.AccountRemove.title,
+            message: L.Prompt.AccountRemove.message(store: host.credentialStoreDative),
+            cancel: L.Common.cancel, confirm: L.Prompt.AccountRemove.confirm, warning: true)
     }
 
     public static func accountFooter(signedIn: Bool, host: HostWords = .current) -> String {
         signedIn
-            ? "Angemeldet. Bei „Automatisch“ springt das Midea-Konto ein, wenn WLAN nicht geht. " + host.passwordStorage
-            : "Optional. " + host.passwordStorage
+            ? L.Account.footerSignedIn(storage: host.passwordStorage)
+            : L.Account.footerSignedOut(storage: host.passwordStorage)
     }
 
     /// Wer ein Konto anmeldet, will es auch nutzen: „Nur WLAN“ würde es nie fragen, darum wird daraus „Automatisch“.
@@ -257,42 +239,79 @@ public enum UIText {
 
     // MARK: Selbstreinigung
 
-    public static let selfCleanPrompt = ConfirmPrompt(
-        title: "Selbstreinigung starten?",
-        message: "Dauert etwa 15 Minuten. Die Anlage macht dabei ungewöhnliche Geräusche, es kann Dampf austreten – das ist normal.",
-        cancel: "Abbrechen", confirm: "Starten", warning: false)
+    public static var selfCleanPrompt: ConfirmPrompt {
+        ConfirmPrompt(title: L.Prompt.SelfClean.title, message: L.Prompt.SelfClean.message,
+                      cancel: L.Common.cancel, confirm: L.Prompt.SelfClean.confirm, warning: false)
+    }
 
     // MARK: Beenden mit Timern
 
     /// Rückfrage beim Beenden; nil ohne gestellten Timer. `off`/`on` = Zeitpunkte der Timer.
     public static func quitPrompt(off: Date?, on: Date?, now: Date) -> ConfirmPrompt? {
-        var timers: [String] = []
-        if let off { timers.append("„Aus“ \(dayLabel(off, now: now)) um \(ACController.clock(off))") }
-        if let on { timers.append("„Ein“ \(dayLabel(on, now: now)) um \(ACController.clock(on))") }
-        guard !timers.isEmpty else { return nil }
-        return ConfirmPrompt(
-            title: "Klimacontrol beenden?",
-            message: "Timer \(timers.joined(separator: " und ")) ist gestellt. Er schaltet nur, solange Klimacontrol geöffnet ist.",
-            cancel: "Geöffnet lassen", confirm: "Trotzdem beenden", warning: false)
+        let message: String
+        switch (off, on) {
+        case let (off?, on?):
+            message = L.Prompt.Quit.messageBoth(offDay: dayLabel(off, now: now), offTime: ACController.clock(off),
+                                                onDay: dayLabel(on, now: now), onTime: ACController.clock(on))
+        case let (off?, nil):
+            message = L.Prompt.Quit.messageOff(day: dayLabel(off, now: now), time: ACController.clock(off))
+        case let (nil, on?):
+            message = L.Prompt.Quit.messageOn(day: dayLabel(on, now: now), time: ACController.clock(on))
+        case (nil, nil): return nil
+        }
+        return ConfirmPrompt(title: L.Prompt.Quit.title, message: message, cancel: L.Prompt.Quit.cancel,
+                             confirm: L.Prompt.Quit.confirm, warning: false)
     }
 
-    /// „heute“, „morgen“ oder „am Mi. 6.11.“ (Wochentag mit Punkt, Tag ohne, Monat mit führender Null).
+    /// „heute“, „morgen“ oder „am Mi. 6.11.“ (Deutsch: Tag ohne, Monat mit führender Null) bzw. „on Wed 11/6“.
     static func dayLabel(_ date: Date, now: Date) -> String {
         let cal = Calendar.current
-        if cal.isDate(date, inSameDayAs: now) { return "heute" }
-        if let tomorrow = cal.date(byAdding: .day, value: 1, to: now), cal.isDate(date, inSameDayAs: tomorrow) { return "morgen" }
-        let names = ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."]
-        let c = cal.dateComponents([.weekday, .day, .month], from: date)
-        return "am \(names[((c.weekday ?? 1) - 1 + 7) % 7]) \(c.day ?? 0).\(ACController.pad(c.month ?? 0, 2))."
+        if cal.isDate(date, inSameDayAs: now) { return DateWords.today }
+        if let tomorrow = cal.date(byAdding: .day, value: 1, to: now), cal.isDate(date, inSameDayAs: tomorrow) {
+            return DateWords.tomorrow
+        }
+        return L.Timer.dayOn(weekday: DateWords.weekdayShort(cal.component(.weekday, from: date)),
+                             date: dayMonthUnpaddedDay(date, calendar: cal))
+    }
+
+    /// Tag und Monat nach dem Muster des Profils, der Tag immer ohne führende Null.
+    private static func dayMonthUnpaddedDay(_ d: Date, calendar: Calendar, profile: FormatProfile = .current) -> String {
+        let c = calendar.dateComponents([.day, .month], from: d)
+        let chars = Array(profile.dayMonthPattern)
+        var out = ""
+        var i = 0
+        while i < chars.count {
+            let ch = chars[i]
+            if ch == "'" {
+                i += 1
+                while i < chars.count, chars[i] != "'" {
+                    out.append(chars[i])
+                    i += 1
+                }
+                i += 1
+            } else if ch == "d" || ch == "M" || ch == "L" {
+                var run = 0
+                while i < chars.count, chars[i] == ch {
+                    run += 1
+                    i += 1
+                }
+                let value = ch == "d" ? (c.day ?? 0) : (c.month ?? 0)
+                out += run == 1 || ch == "d" ? "\(value)" : ACController.pad(value, 2)
+            } else {
+                out.append(ch)
+                i += 1
+            }
+        }
+        return out
     }
 
     // MARK: Verbindung (Einstellungen)
 
     public static func wayHelp(_ mode: ConnectionMode) -> String {
         switch mode {
-        case .auto: return "Erst WLAN, dann über das Midea-Konto – empfohlen."
-        case .lan: return "Nur im selben WLAN. Nutzt nie die Midea-Server und braucht kein Internet."
-        case .cloud: return "Über die Midea-Server, auch unterwegs – langsamer."
+        case .auto: return L.Way.auto
+        case .lan: return L.Way.lan
+        case .cloud: return L.Way.cloud
         }
     }
 
@@ -303,44 +322,42 @@ public enum UIText {
         public let name: String
     }
 
-    public static let connectSteps: [ConnectStep] = [
-        ConnectStep(phase: .searching, name: "Anlage suchen"), ConnectStep(phase: .handshake, name: "Anmelden"),
-        ConnectStep(phase: .reading, name: "Werte lesen"),
-    ]
-    public static let connectSlowText = "Dauert länger als üblich."
-    public static let retryButton = "Erneut versuchen"
+    public static var connectSteps: [ConnectStep] {
+        [ConnectStep(phase: .searching, name: L.Startup.searching), ConnectStep(phase: .handshake, name: L.Startup.handshake),
+         ConnectStep(phase: .reading, name: L.Startup.reading)]
+    }
+    public static var connectSlowText: String { L.Startup.slow }
+    public static var retryButton: String { L.Startup.retry }
 
     /// „Anlage suchen ✓ · Anmelden … · Werte lesen“ – erledigte mit Haken, laufender mit „…“; ohne Schritt der erste.
     public static func connectStepsLine(_ phase: ConnectPhase?) -> String {
-        let current = phase.flatMap { p in connectSteps.firstIndex { $0.phase == p } } ?? 0
-        return connectSteps.enumerated().map { i, step in
-            i < current ? "\(step.name) ✓" : i == current ? "\(step.name) …" : step.name
+        let steps = connectSteps
+        let current = phase.flatMap { p in steps.firstIndex { $0.phase == p } } ?? 0
+        return steps.enumerated().map { i, step in
+            i < current ? L.Startup.stepDone(name: step.name)
+                : i == current ? L.Startup.stepCurrent(name: step.name) : step.name
         }.joined(separator: " · ")
     }
 
     // MARK: Diagnose
 
-    public static func errorCodeValue(_ code: Int) -> String { code == 0 ? "keiner" : "Code \(code) – siehe Bedienungsanleitung" }
-    public static func filterValue(alert: Bool) -> String { alert ? "reinigen" : "in Ordnung" }
+    public static func errorCodeValue(_ code: Int) -> String { code == 0 ? L.Diagnostics.errorNone : L.Diagnostics.errorCode(code: "\(code)") }
+    public static func filterValue(alert: Bool) -> String { alert ? L.Diagnostics.filterClean : L.Diagnostics.filterOk }
 
     /// Ruhige Hinweise zu Störung und Filter (leer, solange alles in Ordnung ist).
     public static func maintenanceHints(filterAlert: Bool, errorCode: Int) -> [String] {
         var out: [String] = []
-        if errorCode != 0 {
-            out.append("Die Anlage meldet eine Störung. Bedeutung und Abhilfe stehen in der Bedienungsanleitung (Code \(errorCode)).")
-        }
-        if filterAlert {
-            out.append("Filter reinigen: Die Anlage bittet um eine Filterreinigung (siehe Bedienungsanleitung).")
-        }
+        if errorCode != 0 { out.append(L.Diagnostics.hintFault(code: "\(errorCode)")) }
+        if filterAlert { out.append(L.Diagnostics.hintFilter) }
         return out
     }
 
     // MARK: Aus und Lüften (große Zahl)
 
-    public static let offCaption = "Raumtemperatur · Anlage aus"
-    public static let offHint = "Einschalten mit dem Knopf oben oder direkt einen Modus bzw. eine Szene wählen."
-    public static let fanModeCaption = "Raumtemperatur · Lüften ohne Zieltemperatur"
-    public static let notConfiguredCaption = "Nicht eingerichtet"
+    public static var offCaption: String { L.Hero.offCaption }
+    public static var offHint: String { L.Hero.offHint }
+    public static var fanModeCaption: String { L.Hero.fanModeCaption }
+    public static var notConfiguredCaption: String { L.Hero.notConfiguredCaption }
 
     // MARK: Hilfsfunktionen
 

@@ -15,7 +15,7 @@ public struct TodayEnergy: Equatable, Sendable {
     /// „seit 08:14“, wenn nicht ab Mitternacht gezählt wird; sonst nil.
     public var sinceLabel: String? {
         guard !fromMidnight else { return nil }
-        return since.map { "seit " + ACController.clock($0) }
+        return since.map { L.Cost.since(time: ACController.clock($0)) }
     }
 }
 

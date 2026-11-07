@@ -3,7 +3,7 @@ import MideaKit
 
 /// Einstellungen: gespeichert über `SettingsStore` (Schlüssel in `SettingsKey`), Grenzen prüfen die Setter.
 extension ACController {
-    static let defaultDisplayName = "Klimaanlage"
+    static var defaultDisplayName: String { L.Message.defaultName }
     public static let backgroundRefreshSeconds = 30
 
     /// Anzeigename statt der technischen Kennung der Anlage.

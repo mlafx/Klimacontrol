@@ -16,11 +16,11 @@ public struct Appearance: Codable, Equatable, Sendable {
         case standard, night, neon, minimal, contrast
         public var label: String {
             switch self {
-            case .standard: "Standard"
-            case .night: "Nacht"
-            case .neon: "Neon"
-            case .minimal: "Minimal"
-            case .contrast: "Kontrast"
+            case .standard: L.Appearance.Theme.standard
+            case .night: L.Appearance.Theme.night
+            case .neon: L.Appearance.Theme.neon
+            case .minimal: L.Appearance.Theme.minimal
+            case .contrast: L.Appearance.Theme.contrast
             }
         }
     }
@@ -30,9 +30,9 @@ public struct Appearance: Codable, Equatable, Sendable {
         case system, light, dark
         public var label: String {
             switch self {
-            case .system: "System"
-            case .light: "Hell"
-            case .dark: "Dunkel"
+            case .system: L.Appearance.Scheme.system
+            case .light: L.Appearance.Scheme.light
+            case .dark: L.Appearance.Scheme.dark
             }
         }
     }
@@ -42,9 +42,9 @@ public struct Appearance: Codable, Equatable, Sendable {
         case byMode, system, custom
         public var label: String {
             switch self {
-            case .byMode: "Nach Modus"
-            case .system: "Systemfarbe"
-            case .custom: "Eigene"
+            case .byMode: L.Appearance.Accent.byMode
+            case .system: L.Appearance.Accent.system
+            case .custom: L.Appearance.Accent.custom
             }
         }
     }
@@ -53,11 +53,11 @@ public struct Appearance: Codable, Equatable, Sendable {
         case orange, blue, green, purple, gray
         public var label: String {
             switch self {
-            case .orange: "Orange"
-            case .blue: "Blau"
-            case .green: "Grün"
-            case .purple: "Lila"
-            case .gray: "Grau"
+            case .orange: L.Appearance.Color.orange
+            case .blue: L.Appearance.Color.blue
+            case .green: L.Appearance.Color.green
+            case .purple: L.Appearance.Color.purple
+            case .gray: L.Appearance.Color.gray
             }
         }
     }
@@ -66,9 +66,9 @@ public struct Appearance: Codable, Equatable, Sendable {
         case glass, glassStrong, matte
         public var label: String {
             switch self {
-            case .glass: "Glas"
-            case .glassStrong: "Glas kräftig"
-            case .matte: "Matt"
+            case .glass: L.Appearance.Background.glass
+            case .glassStrong: L.Appearance.Background.glassStrong
+            case .matte: L.Appearance.Background.matte
             }
         }
     }
@@ -77,9 +77,9 @@ public struct Appearance: Codable, Equatable, Sendable {
         case compact, normal, large
         public var label: String {
             switch self {
-            case .compact: "Kompakt"
-            case .normal: "Normal"
-            case .large: "Groß"
+            case .compact: L.Appearance.Size.compact
+            case .normal: L.Appearance.Size.normal
+            case .large: L.Appearance.Size.large
             }
         }
     }
@@ -88,10 +88,10 @@ public struct Appearance: Codable, Equatable, Sendable {
         case thin, normal, bold, rounded
         public var label: String {
             switch self {
-            case .thin: "Dünn"
-            case .normal: "Normal"
-            case .bold: "Fett"
-            case .rounded: "Abgerundet"
+            case .thin: L.Appearance.Digits.thin
+            case .normal: L.Appearance.Digits.normal
+            case .bold: L.Appearance.Digits.bold
+            case .rounded: L.Appearance.Digits.rounded
             }
         }
     }
@@ -101,8 +101,8 @@ public struct Appearance: Codable, Equatable, Sendable {
         case target, room
         public var label: String {
             switch self {
-            case .target: "Solltemperatur"
-            case .room: "Raumtemperatur"
+            case .target: L.Appearance.Hero.target
+            case .room: L.Appearance.Hero.room
             }
         }
     }
@@ -112,8 +112,8 @@ public struct Appearance: Codable, Equatable, Sendable {
         case simple, all
         public var label: String {
             switch self {
-            case .simple: "Einfach"
-            case .all: "Alles"
+            case .simple: L.Appearance.Scope.simple
+            case .all: L.Appearance.Scope.all
             }
         }
     }
@@ -123,10 +123,10 @@ public struct Appearance: Codable, Equatable, Sendable {
         case iconOnly, iconTarget, iconRoom, roomTarget
         public var label: String {
             switch self {
-            case .iconOnly: "Nur Symbol"
-            case .iconTarget: "Symbol + Soll"
-            case .iconRoom: "Symbol + Raum"
-            case .roomTarget: "Raum + Soll"
+            case .iconOnly: L.Appearance.MenuBar.iconOnly
+            case .iconTarget: L.Appearance.MenuBar.iconTarget
+            case .iconRoom: L.Appearance.MenuBar.iconRoom
+            case .roomTarget: L.Appearance.MenuBar.roomTarget
             }
         }
     }
