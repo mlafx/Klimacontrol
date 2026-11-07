@@ -7,14 +7,28 @@
 # Voraussetzungen: macOS 15+, Xcode 27 oder neuer mit Swift 6.4 oder neuer. Build-Ordner überschreibbar mit
 # KLIMACONTROL_SCRATCH=<Pfad> (parallele Builds); Standard ~/Library/Caches/Klimacontrol-build.
 # Vor dem Bauen laufen alle Tests (wie tools\build_windows.ps1); --no-test überspringt sie (z. B. direkt nach test.sh).
+# Weitere Angaben:
+#   --beta <n>      Vorabfassung: Version <VERSION>b<n> (Info.plist, Dateinamen, LIESMICH), n ganze Zahl ab 1.
+#   --out <Ordner>  Ausgabe statt dist/mac (Probebauten); absolut oder relativ zum Aufruf, wird angelegt.
+# Beim Aufräumen werden nur Pakete derselben Version ersetzt, ältere bleiben liegen.
 set -e -o pipefail
+CALL_DIR="$PWD"
 cd "$(dirname "$0")/.."
 RUN_TESTS=1
-for arg in "$@"; do
-  case "$arg" in
+BETA=""
+OUT_ARG=""
+while [ $# -gt 0 ]; do
+  case "$1" in
     --no-test) RUN_TESTS=0 ;;
-    *) echo "Unbekannte Angabe: $arg (erlaubt: --no-test)" >&2; exit 2 ;;
+    --beta)
+      [ $# -ge 2 ] && [[ "$2" =~ ^[1-9][0-9]*$ ]] || { echo "--beta braucht eine ganze Zahl ab 1." >&2; exit 2; }
+      BETA="$2"; shift ;;
+    --out)
+      [ $# -ge 2 ] && [ -n "$2" ] || { echo "--out braucht einen Ordner." >&2; exit 2; }
+      OUT_ARG="$2"; shift ;;
+    *) echo "Unbekannte Angabe: $1 (erlaubt: --no-test, --beta <n>, --out <Ordner>)" >&2; exit 2 ;;
   esac
+  shift
 done
 
 # OneDrive-Ordner wird mit Windows geteilt: ein echter .build-Ordner (statt Symlink) stammt von einem nackten
@@ -55,6 +69,8 @@ if [ "$RUN_TESTS" = 1 ]; then
 fi
 
 VERSION=$(tr -d '[:space:]' < tools/VERSION)
+VERSION_SHOWN="$VERSION"
+[ -n "$BETA" ] && VERSION_SHOWN="${VERSION}b${BETA}"
 UPDATE_KEY=$(tr -d '[:space:]' < tools/UPDATE_PUBLIC_KEY)
 # Build nach ~/Library/Caches: im OneDrive-Ordner scheitert das Schreiben der SPM-Metadaten.
 SCRATCH="${KLIMACONTROL_SCRATCH:-$HOME/Library/Caches/Klimacontrol-build}"
@@ -73,6 +89,12 @@ for exe in "$BIN/KlimacontrolApp"; do
 done
 
 OUT=dist/mac
+if [ -n "$OUT_ARG" ]; then
+  case "$OUT_ARG" in
+    /*) OUT="$OUT_ARG" ;;
+    *) OUT="$CALL_DIR/$OUT_ARG" ;;
+  esac
+fi
 # Zusammensetzen und Signieren außerhalb des Projekts: OneDrive hängt Dateiattribute an, an denen codesign scheitert
 # („resource fork, Finder information, or similar detritus“).
 APP="$SCRATCH/app/Klimacontrol.app"
@@ -160,21 +182,34 @@ cat > "$APP/Contents/Info.plist" <<PLIST
   <key>CFBundleIdentifier</key><string>de.mlafx.klimacontrol</string>
   <key>CFBundleExecutable</key><string>Klimacontrol</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>$VERSION</string>
-  <key>CFBundleVersion</key><string>$VERSION</string>
+  <key>CFBundleShortVersionString</key><string>$VERSION_SHOWN</string>
+  <key>CFBundleVersion</key><string>$VERSION_SHOWN</string>
   <key>CFBundleIconFile</key><string>AppIcon</string>
   <key>LSMinimumSystemVersion</key><string>15.0</string>
-  <key>CFBundleDevelopmentRegion</key><string>de</string>
-  <key>NSLocalNetworkUsageDescription</key><string>Klimacontrol steuert deine Klimaanlage direkt im WLAN – ohne Cloud.</string>
+  <key>CFBundleDevelopmentRegion</key><string>en</string>
+  <key>CFBundleLocalizations</key><array><string>de</string><string>en</string></array>
+  <key>NSLocalNetworkUsageDescription</key><string>Klimacontrol controls your air conditioner directly over Wi-Fi, without the cloud.</string>
   <key>NSHighResolutionCapable</key><true/>
   <key>SUFeedURL</key><string>https://github.com/mlafx/Klimacontrol/releases/latest/download/updateinfo-mac.xml</string>
   <key>SUPublicEDKey</key><string>$UPDATE_KEY</string>
+  <key>SUVerifyUpdateBeforeExtraction</key><true/>
+  <key>SURequireSignedFeed</key><true/>
   <key>SUEnableAutomaticChecks</key><true/>
   <key>SUAutomaticallyUpdate</key><true/>
   <key>SUAllowsAutomaticUpdates</key><true/>
   <key>SUScheduledCheckInterval</key><integer>86400</integer>
 </dict></plist>
 PLIST
+plutil -lint "$APP/Contents/Info.plist" >/dev/null
+# Erst die .lproj-Ordner machen die Sprachen für macOS sichtbar (Systemeinstellungen, Standardmenüs, preferredLocalizations).
+mkdir -p "$APP/Contents/Resources/de.lproj" "$APP/Contents/Resources/en.lproj"
+cat > "$APP/Contents/Resources/de.lproj/InfoPlist.strings" <<'STRINGS'
+"NSLocalNetworkUsageDescription" = "Klimacontrol steuert deine Klimaanlage direkt im WLAN – ohne Cloud.";
+STRINGS
+cat > "$APP/Contents/Resources/en.lproj/InfoPlist.strings" <<'STRINGS'
+"NSLocalNetworkUsageDescription" = "Klimacontrol controls your air conditioner directly over Wi-Fi, without the cloud.";
+STRINGS
+plutil -lint "$APP/Contents/Resources/de.lproj/InfoPlist.strings" "$APP/Contents/Resources/en.lproj/InfoPlist.strings" >/dev/null
 if [ -f tools/AppIcon.icns ]; then cp tools/AppIcon.icns "$APP/Contents/Resources/"; fi
 # Lizenzhinweise der Quellen (MIT/Apache 2.0 verlangen, sie mitzugeben) – auch in der App unter Einstellungen.
 cp docs/THIRD_PARTY_NOTICES.md LICENSE "$APP/Contents/Resources/"
@@ -214,12 +249,12 @@ else
    Systemeinstellungen → Datenschutz & Sicherheit → ganz unten bei Klimacontrol auf „Dennoch öffnen“."
 fi
 cat > "$OUT/LIESMICH.txt" <<LIESMICH
-Klimacontrol $VERSION für macOS
+Klimacontrol $VERSION_SHOWN für macOS
 
 Voraussetzungen: Mac mit macOS 15 oder neuer (Apple Silicon oder Intel), Midea-PortaSplit-Klimaanlage im selben WLAN.
 
-1. Klimacontrol-$VERSION-mac.dmg öffnen und Klimacontrol.app auf „Programme“ ziehen
-   (oder Klimacontrol-$VERSION-mac.zip entpacken und Klimacontrol.app in den Ordner „Programme“ legen).
+1. Klimacontrol-$VERSION_SHOWN-mac.dmg öffnen und Klimacontrol.app auf „Programme“ ziehen
+   (oder Klimacontrol-$VERSION_SHOWN-mac.zip entpacken und Klimacontrol.app in den Ordner „Programme“ legen).
 $GATEKEEPER
 3. Zugriff auf das lokale Netzwerk erlauben.
 4. Einrichtung – einen der drei Wege wählen:
@@ -230,8 +265,9 @@ $GATEKEEPER
    - Sicherung einlesen: eine zuvor mit „Zugangsdaten sichern …“ gespeicherte Datei.
 5. Danach unter Einstellungen → Anlage „Zugangsdaten sichern …“ wählen und die Datei gut aufheben.
 
-Updates: Klimacontrol sucht einmal am Tag nach einer neuen Version und fragt, bevor es sie installiert
-(Einstellungen → Allgemein → Updates, oder im Menü Klimacontrol → „Nach Updates suchen …“).
+Updates: Klimacontrol sucht einmal am Tag nach einer neuen Version und lädt sie still. Danach fragt die App, ob sie
+gleich neu starten soll; sonst wird beim Beenden installiert. (Einstellungen → Allgemein → Updates, oder im Menü
+Klimacontrol → „Nach Updates suchen …“.)
 
 
 Klimacontrol baut auf Open-Source-Projekten auf (msmart-ng, midea-beautiful-air, midea_ac_lan; MIT). Lizenzen und
@@ -239,14 +275,14 @@ Quellen: in der App unter Einstellungen → „Lizenzen“ und in THIRD_PARTY_NO
 LIESMICH
 
 # ZIP aus einem sauberen Zwischenordner (ditto: keine __MACOSX-/._-Dateien, Rechte und Signatur bleiben erhalten).
-ZIPNAME="Klimacontrol-$VERSION-mac"
+ZIPNAME="Klimacontrol-$VERSION_SHOWN-mac"
 STAGE="$SCRATCH/zip/$ZIPNAME"
 rm -rf "$SCRATCH/zip"
 mkdir -p "$STAGE"
 ditto "$APP" "$STAGE/Klimacontrol.app"
 cp "$OUT/LIESMICH.txt" "$OUT/THIRD_PARTY_NOTICES.md" "$OUT/LICENSE" "$STAGE/"
 chmod 644 "$STAGE/LIESMICH.txt" "$STAGE/THIRD_PARTY_NOTICES.md" "$STAGE/LICENSE"
-rm -f "$OUT"/Klimacontrol-*-mac.zip(N)
+rm -f "$OUT/$ZIPNAME.zip"
 ditto -c -k --keepParent "$STAGE" "$OUT/$ZIPNAME.zip"
 check_traces "$OUT/$ZIPNAME.zip"
 # Notarisieren (nur mit „Developer ID Application“ und einem gespeicherten notarytool-Profil, siehe README):
@@ -268,8 +304,8 @@ rm -rf "$SCRATCH/zip"
 
 # DMG zum Installieren, zugleich das Archiv für Sparkle-Updates: nur App und „Programme“ mit Anleitung
 # (tools/make_dmg.sh). Erst nach dem Anheften des Tickets an die App bauen, damit die App im DMG schon notarisiert ist.
-DMGNAME="Klimacontrol-$VERSION-mac"
-rm -f "$OUT"/Klimacontrol-*-mac.dmg(N)
+DMGNAME="Klimacontrol-$VERSION_SHOWN-mac"
+rm -f "$OUT/$DMGNAME.dmg"
 zsh tools/make_dmg.sh "$APP" "$OUT/$DMGNAME.dmg" "$SCRATCH/dmg"
 if [ "$IDENTITY" != "-" ]; then
   codesign --force --timestamp --sign "$IDENTITY" "$OUT/$DMGNAME.dmg"
@@ -280,9 +316,7 @@ if [ -n "${KLIMACONTROL_NOTARY_PROFILE:-}" ]; then
   xcrun stapler staple "$OUT/$DMGNAME.dmg"
   spctl --assess --type open --context context:primary-signature --verbose "$OUT/$DMGNAME.dmg"
 fi
-# Ältere Fassungen legten die App selbst nach dist/mac; die würde dort nur veralten.
-rm -rf "$OUT/Klimacontrol.app"
 echo "Fertig: $APP"
-echo "        $PWD/$OUT/$DMGNAME.dmg"
-echo "        $PWD/$OUT/$ZIPNAME.zip"
+echo "        ${OUT:A}/$DMGNAME.dmg"
+echo "        ${OUT:A}/$ZIPNAME.zip"
 echo "Release-Ordner (Appcasts, Prüfsummen, Text): python3 tools/make_release.py"
