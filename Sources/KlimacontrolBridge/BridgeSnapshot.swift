@@ -139,6 +139,9 @@ struct Snapshot: Encodable {
     var costPerHour, todayKWh: Double?
     var refreshSeconds: Int
     var price: Double
+    /// Gespeicherte Sprachwahl ("system", "de", "en"; wirkt nach Neustart) und Währung des Strompreises.
+    var language: String
+    var currency: String
     var beep: Bool
     var debugLog: Bool
     var historyCSV: Bool
@@ -317,6 +320,7 @@ func phaseName(_ p: ConnectPhase) -> String {
         scenes: c.scenes.map { SceneDTO(id: $0.id, name: $0.name, summary: $0.summary, active: c.isActive($0), mode: $0.mode) },
         offAt: c.offAt?.timeIntervalSince1970, onAt: c.onAt?.timeIntervalSince1970,
         costPerHour: c.costPerHour, todayKWh: c.todayKWh, refreshSeconds: c.refreshSeconds, price: c.pricePerKWh,
+        language: c.languageChoice.rawValue, currency: c.currency,
         beep: c.beep, debugLog: results.debugLog, historyCSV: c.historyCSV, historyRevision: c.history.revision,
         setup: SetupDTO(scanning: setup.scanning, cloudScanning: setup.cloudScanning, busy: setup.busy,
                         subnetScanning: setup.subnetScanning,

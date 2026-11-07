@@ -57,6 +57,8 @@
     "path": "WLAN",
     "port": 6444,
     "price": 0.35,
+    "language": "system",
+    "currency": "€",
     "refreshSeconds": 30,
     "scenes": [
         {"active": true, "id": "A1B2", "mode": 2, "name": "Abends", "summary": "Kühlen · 24° · Auto"}

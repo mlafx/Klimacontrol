@@ -183,6 +183,18 @@ private let settingsCommands: [BridgeCommand] = [
         guard ACController.validPrice(p) != nil else { throw CommandError(ACController.priceHint) }
         c.pricePerKWh = p
     },
+    // Sprachwahl "system" | "de" | "en"; wirkt nach Neustart der App.
+    .always("language") { a, c in
+        let v = try a.string("value")
+        guard let choice = LanguageChoice(rawValue: v) else { throw CommandError(L.Settings.Language.unknown(value: v)) }
+        c.languageChoice = choice
+    },
+    // Währung des Strompreises (1-3 Zeichen, keine Ziffern).
+    .always("currency") { a, c in
+        let v = try a.string("value")
+        guard ACController.validCurrency(v) != nil else { throw CommandError(ACController.currencyHint) }
+        c.currency = v
+    },
     // Wie am Mac (LogSettings): Umschalten selbst ins Protokoll schreiben.
     .always("debugLog") { a, _ in
         let on = try a.bool("on")

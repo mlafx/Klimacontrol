@@ -76,7 +76,7 @@ gehören in den Kern, damit Mac und Windows sich gleich verhalten. Die Mac-App s
 | Windows-App + Tests | `windows/KlimacontrolTray/`, `windows/KlimacontrolTray.Tests/` | C# / .NET 10 / WPF |
 | Swift-Tests | `Tests/MideaKitTests/`, `Tests/KlimacontrolCoreTests/` | XCTest |
 | Bau- und Hilfsskripte, `VERSION`, App-Symbol | `tools/` | zsh, PowerShell, Python, Swift |
-| Text-Katalog (Deutsch, Englisch), daraus `StringsData.swift` | `l10n/Localizable.xcstrings` | JSON (String Catalog), alle Plattformen (in Arbeit) |
+| Text-Katalog (Deutsch, Englisch), daraus `StringsData.swift` | `l10n/Localizable.xcstrings` | JSON (String Catalog), alle Plattformen |
 | Versionshinweise, Sicherheitshinweise | `CHANGELOG.md`, `CHANGELOG.en.md` (in Arbeit), `SECURITY.md` | Markdown |
 | Lizenzhinweise, Screenshots fürs README | `docs/THIRD_PARTY_NOTICES.md`, `docs/screenshots/` | – |
 | Bauausgaben | `dist/mac/`, `dist/windows/` (gitignoriert) | – |
@@ -155,10 +155,10 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 | `LoginItemDefault.swift` | Regel „Beim Anmelden starten“ als Standard: einmalig beim ersten Start aus einem Programme-Ordner (auch nach Updates), nie aus DMG/Build-Ordner |
 | `ReleaseNotes.swift`, `ReleaseNotesData.swift`, `ACController+WhatsNew.swift` | „Neu in dieser Version“: eingebetteter CHANGELOG (`ReleaseNotesData.swift`, erzeugt von `tools/sync_release_notes.py`), Zerlegen und Plattformfilter, Regel `WhatsNew.pending`, Merker `lastSeenVersion`; deutsch und englisch (`CHANGELOG.en.md`, Rückfall deutsch mit Hinweis) |
 | `AppUpdate.swift` | Updates: Repository, Appcast-Adressen für Mac und Windows, Standard-Suchintervall (täglich) |
-| `Localizer.swift` | Sprache des Prozesses (`AppLanguage`, `LanguageChoice`), einmal festgelegt; Texte, Platzhalter, Mehrzahl, Rückfall Englisch, Pseudo-Sprache, Test-Haken (in Arbeit) |
-| `StringsData.swift` | erzeugt von `tools/sync_strings.py`: eingebetteter Katalog und typisierte Schlüssel `L.…` – nicht von Hand ändern (in Arbeit) |
-| `FormatProfile.swift` | Zahlen- und Zeitformate (Dezimal-/Tausenderzeichen, 12/24 h, Tag/Monat) aus den Regionseinstellungen; Standard de-DE (in Arbeit) |
-| `AppVersion.swift` | Versionsnummer mit Beta-Kennung (`1.2.0.0b1`), Vergleich für „Neu in …“ und Tests (in Arbeit) |
+| `Localizer.swift` | Sprache des Prozesses (`AppLanguage`, `LanguageChoice`), einmal festgelegt; Texte, Platzhalter, Mehrzahl, Rückfall Englisch, Pseudo-Sprache, Test-Haken |
+| `StringsData.swift` | erzeugt von `tools/sync_strings.py`: eingebetteter Katalog und typisierte Schlüssel `L.…` – nicht von Hand ändern |
+| `FormatProfile.swift` | Zahlen- und Zeitformate (Dezimal-/Tausenderzeichen, 12/24 h, Tag/Monat) aus den Regionseinstellungen; Standard de-DE |
+| `AppVersion.swift` | Versionsnummer mit Beta-Kennung (`1.2.0.0b1`), Vergleich für „Neu in …“ und Tests |
 
 ### 2.3 `Sources/KlimacontrolApp/` (nur macOS)
 
@@ -194,7 +194,7 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 
 | Datei | Inhalt |
 |---|---|
-| `Bridge.swift` | C-Einstiege `kc_*`, globale Zustände, Kodieren, `kc_set_locale`, `kc_strings_json` (in Arbeit) |
+| `Bridge.swift` | C-Einstiege `kc_*`, globale Zustände, Kodieren, `kc_set_locale`, `kc_strings_json` |
 | `BridgeSnapshot.swift` | Schnappschuss-Datenobjekte, Abbildung aus dem Kern, Beobachtung (`kc_state_rev`) |
 | `BridgeCommands.swift` | Befehlstabelle (`.device` braucht eine eingerichtete Anlage, `.always` nicht), gruppiert wie 8.3 |
 | `BridgeArgs.swift` | Parameter (`JSONValue`, `CommandArgs`, strenge Typen), Meldungen |
@@ -241,8 +241,8 @@ Vertrag in Abschnitt 8.
 | `make_icon.swift`, `AppIcon.icns` | App-Symbol erzeugen bzw. fertiges Symbol |
 | `make_dmg.sh`, `dmg_settings.py`, `make_dmg_background.swift` | Installations-DMG (`build_app.sh` ruft `make_dmg.sh`): Hintergrund mit Titel, Anleitung und Pfeil zeichnen, Finder-Ansicht mit **dmgbuild** schreiben; `dmg_requirements.txt` legt Versionen und Prüfsummen fest (pip `--require-hashes`) |
 | `check_traces.py` | Spurensuche im fertigen Paket (Benutzer-, Rechnernamen, Pfade), von `build_app.sh` aufgerufen |
-| `sync_strings.py` | prüft `l10n/Localizable.xcstrings`, schreibt ihn sortiert zurück und erzeugt `StringsData.swift` (in Arbeit) |
-| `sync_release_notes.py` | bettet `CHANGELOG.md` (und `CHANGELOG.en.md`, falls vorhanden) in `ReleaseNotesData.swift` ein (englisch: in Arbeit) |
+| `sync_strings.py` | prüft `l10n/Localizable.xcstrings`, schreibt ihn sortiert zurück und erzeugt `StringsData.swift` |
+| `sync_release_notes.py` | bettet `CHANGELOG.md` (und `CHANGELOG.en.md`, falls vorhanden) in `ReleaseNotesData.swift` ein |
 
 ---
 
@@ -299,7 +299,7 @@ baut es trotzdem. Keine `.swiftpm/`-, `*.xcodeproj`- oder sonstigen Werkzeug-Ord
 | `KLIMACONTROL_LIVE_SCAN=1` | Live-Suche im echten WLAN in den Tests – **nur bewusst**, nie dauerhaft setzen |
 | `KLIMACONTROL_SIGN_IDENTITY` | Signatur-Identität für `build_app.sh` (`-` = ad hoc) |
 | `KLIMACONTROL_NOTARY_PROFILE` | notarytool-Profil im Schlüsselbund → `build_app.sh` notarisiert und heftet das Ticket an |
-| `KLIMACONTROL_PSEUDO=1` | Pseudo-Sprache (Testsprache, 13.2) statt Deutsch/Englisch – nur zum Prüfen der Oberfläche (in Arbeit) |
+| `KLIMACONTROL_PSEUDO=1` | Pseudo-Sprache (Testsprache, 13.2) statt Deutsch/Englisch – nur zum Prüfen der Oberfläche |
 
 ---
 
@@ -552,7 +552,7 @@ sobald sie im selben Netz antwortet.
 
 ### 7.7 Einstellungen (`SettingsKey`)
 
-`displayName`, `refreshSeconds`, `pricePerKWh` (0–10 €), `connectionMode`, `beep`, `timerOffAt`, `timerOnAt`,
+`displayName`, `refreshSeconds`, `pricePerKWh` (0–1000), `currency`, `language` (Windows; Mac: Systemsprache), `updateBetaChannel` (Mac), `connectionMode`, `beep`, `timerOffAt`, `timerOnAt`,
 `energyDayStart`, `showDiagnosticsPanel`, `historyCSV`, `credentialsBackedUp`, `appearance` (JSON),
 `loginItemDefaultOn` (Mac: „Beim Anmelden starten“ schon einmal eingetragen). Mac: in
 `UserDefaults` (Domäne `de.mlafx.klimacontrol`), Windows: über die Bridge im Kern gespeichert. Neue Schlüssel immer
@@ -603,6 +603,7 @@ zuerst dort anlegen und in `DisplayCatalogTests` wörtlich festschreiben, dann �
 ### 8.1 Regeln für den Aufrufer
 
 - Alle `kc_*`-Funktionen auf dem **Hauptthread** aufrufen (WPF-UI-Thread = Hauptthread des Prozesses).
+- `kc_set_locale` vor `kc_init` aufrufen (Windows: in `Core.Init` vor `Native.Init`).
 - `kc_pump()` regelmäßig (~alle 30 ms) aufrufen: leert die Main-Queue, auf der der MainActor läuft.
 - Zurückgegebene Zeichenketten (UTF-8) mit `kc_free` freigeben.
 - Beim Start `kc_api_version()` mit der eigenen Erwartung (`Native.ExpectedApi`) vergleichen; passt sie nicht,
@@ -621,6 +622,8 @@ zuerst dort anlegen und in `DisplayCatalogTests` wörtlich festschreiben, dann �
 | `kc_live_json()` | kleiner, häufig gelesener Teil (`busy`, `nextRefresh` …) |
 | `kc_command(json)` | Befehl ausführen; Antwort JSON mit Erfolg oder fertigem Fehlertext |
 | `kc_history_json(…)`, `kc_history_stats_json(…)` | Verlauf und Statistik für die Graphen |
+| `kc_set_locale(json)` | vor `kc_init`: Sprache und Formate; nil = übernommen, sonst Meldung, mit `kc_free` freigeben |
+| `kc_strings_json()` | Texte der aktiven Sprache, `{language, pseudo, strings}` |
 | `kc_energy_json(kind, count)` | Verbrauch je Zeitraum (`day`/`week`/`month`, 1–60): `{kind, periods, summary}` bzw. `{error}`; Zeiten in Unix-Sekunden |
 | `kc_log_tail()` | Ende des Protokolls (Reiter „Protokoll“) |
 | `kc_third_party_json()` | Lizenzhinweise |
@@ -641,7 +644,7 @@ gleichen beide ab.
 | Schalter | `swing(on)`, `eco(on)`, `turbo(on)`, `purifier(on)`, `freezeProtection(on)`, `outdoorSilent(on)`, `selfClean(on)`, `ieco(on)`, `display`, `rate(value)`, `sound(on)` |
 | Szenen | `applyScene(id)`, `deleteScene(id)`, `saveScene(name)` |
 | Timer | `offTimer(minutes?)`, `onTimer(hour, minute)` bzw. `onTimer(at?)` |
-| Einstellungen | `connectionMode(value)`, `displayName(value)`, `refreshSeconds(value)`, `price(value)`, `debugLog(on)`, `historyCSV(on)`, `diagnosticsVisible(on)`, `uiVisible(id, visible)` |
+| Einstellungen | `connectionMode(value)`, `displayName(value)`, `refreshSeconds(value)`, `price(value)`, `language(value)`, `currency(value)`, `debugLog(on)`, `historyCSV(on)`, `diagnosticsVisible(on)`, `uiVisible(id, visible)` |
 | Darstellung | `appearance(value: Objekt)`, `appearanceTheme(theme)`, `appearanceReset` |
 | Daten | `exportHistory(path, from?, until?, readable?)`, `exportHistoryStart(path, from?, until?, readable?)` (im Hintergrund, `readable` Standard an; Ergebnis `exportSeq`/`exportError`), `clearLog`, `importBackup(path, replaceScenes?, allowOtherDevice?)`, `exportBackup(path)` |
 | Konto | `cloudLogin(account, password)`, `cloudLogout` |
@@ -822,13 +825,13 @@ MideaKit-Tests als am Mac (zuletzt 125 statt 132), weil einige nur auf Darwin ü
 | Ziel | Dateien (Auswahl) |
 |---|---|
 | `MideaKitTests` | `TestSupport` (Vektoren, `Locked`, `TestClock`, `TestFrames`, `FakeTransport`), `MideaKitTests` (Rahmen, Antworten), `TransportTests` (Wegwahl, Sperren), `PortaSplitDeviceTests` (Gerät mit Fake-Transport), `CloudTests`, `RobustnessTests` (kaputte Rahmen), `PlatformTests` (Krypto-Vektoren, Schlüsselbund), `ConcurrencyTests`, `LANLoopbackTests` (echter TCP-Weg gegen 127.0.0.1, nur Darwin), `TestIsolationTests`, `vectors.json` |
-| `KlimacontrolCoreTests` | `TestSupport` (`CoreTestCase`, `FakeDevice`, `SpyPlatform`, `MemorySettings`, `waitUntil`, `AsyncGate`), `KlimacontrolCoreTests`, `ControllerTests`, `HistoryTests` (Spalten, Kopfzeilen wörtlich, Rundläufe), `DisplayCatalogTests` (Anzeige-Katalog wörtlich), `ACControllerUITests`, `SetupTests`, `SetupFlowTests`, `TimerEnergyTests`, `EnergyPeriodTests` (Verbrauch je Zeitraum, Sommerzeit, Zählerwechsel), `AppearanceTests`, `VersionTests` (CHANGELOG-Kopf = `tools/VERSION`), `ThirdPartyNoticesTests` (Swift-Texte = `docs/THIRD_PARTY_NOTICES.md`), `AppUpdateTests` (Feed, Intervall und Schlüssel passen zu `build_app.sh`) |
-| `KlimacontrolBridgeTests` | `BridgeDisplayTests` (Katalog-Felder), `BridgeContractTests`: jedes Feld des echten Schnappschusses steht in `bridge-muster.json` (Gegenrichtung zu `VertragTests`); `BridgeCommandTests`: Parametertypen, Meldungen, Befehlsnamen gegen `Cmd` in C#; `BridgeEnergyTests` (`kc_energy_json`) |
+| `KlimacontrolCoreTests` | `TestSupport` (`CoreTestCase`, `FakeDevice`, `SpyPlatform`, `MemorySettings`, `waitUntil`, `AsyncGate`), `KlimacontrolCoreTests`, `ControllerTests`, `HistoryTests` (Spalten, Kopfzeilen wörtlich, Rundläufe), `DisplayCatalogTests` (Anzeige-Katalog wörtlich), `ACControllerUITests`, `SetupTests`, `SetupFlowTests`, `TimerEnergyTests`, `EnergyPeriodTests` (Verbrauch je Zeitraum, Sommerzeit, Zählerwechsel), `AppearanceTests`, `VersionTests` (CHANGELOG-Kopf = `tools/VERSION`), `ThirdPartyNoticesTests` (Swift-Texte = `docs/THIRD_PARTY_NOTICES.md`), `AppUpdateTests` (Feed, Intervall und Schlüssel passen zu `build_app.sh`), `LocalizerTests`, `StringsCatalogTests`, `FormatProfileTests`, `AppVersionTests`, `ChangelogParityTests`, `SettingsLocaleTests` |
+| `KlimacontrolBridgeTests` | `BridgeDisplayTests` (Katalog-Felder), `BridgeContractTests`: jedes Feld des echten Schnappschusses steht in `bridge-muster.json` (Gegenrichtung zu `VertragTests`); `BridgeCommandTests`: Parametertypen, Meldungen, Befehlsnamen gegen `Cmd` in C#; `BridgeEnergyTests` (`kc_energy_json`), `BridgeLocaleTests` (`kc_set_locale`, `kc_strings_json`, Befehle `language`/`currency`) |
 | Windows (C#) | `CoreTests`, `LayoutTests`, `ThemeTests`, `AppearanceTextTests` (Darstellung wie am Mac), `VertragTests` (Schnappschuss, Befehlsnamen, Anzeige-Katalog, keine eigenen Listen/Grenzen in der Oberfläche) |
 
-Stand zuletzt: Mac 401 Tests (MideaKit 132, Kern 242, Bridge 27; 2 bewusst übersprungen: Live-Scan, echter
-Schlüsselbund, dazu der Rundlauf-Test zur Sommerzeit in Zonen ohne Sommerzeit), Windows zuletzt 382 Swift + 146 C#
-(MideaKit 125, Kern 229, Bridge 28 mit `WindowsTimeZoneTests`). Zeitzonen-Tests nehmen eine feste Zone
+Stand zuletzt: Mac 456 Tests (MideaKit 132, Kern 289, Bridge 35; 5 übersprungen, davon 2 bewusst: Live-Scan, echter
+Schlüsselbund, dazu der Rundlauf-Test zur Sommerzeit in Zonen ohne Sommerzeit; Rest: englischer CHANGELOG, der erst ab 1.2.0.0 existiert), Windows zuletzt 382 Swift + 146 C#
+(MideaKit 125, Kern 229, Bridge 28 mit `WindowsTimeZoneTests`; Windows noch nicht neu gezählt). Zeitzonen-Tests nehmen eine feste Zone
 (`TimeZone(identifier:)`) oder die Ortszeit über `Calendar.current.timeZone`.
 
 ### 11.2 Isolation – Tests fassen nichts Echtes an

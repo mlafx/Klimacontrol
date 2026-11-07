@@ -52,6 +52,10 @@ public sealed class Snapshot
     public double? TodayKWh { get; set; }
     public int RefreshSeconds { get; set; }
     public double Price { get; set; }
+    /// Gespeicherte Sprachwahl: "system", "de" oder "en" (wirkt nach Neustart).
+    public string Language { get; set; } = "system";
+    /// Währung des Strompreises (1–3 Zeichen).
+    public string Currency { get; set; } = "€";
     public bool Beep { get; set; }
     public bool DebugLog { get; set; }
     public bool HistoryCSV { get; set; }
