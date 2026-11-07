@@ -39,6 +39,7 @@ public struct ACState: Equatable, Sendable {
 
     public init() {}
 
+    /// Protokoll und Datenbank (deutsch); Anzeige über `fanTitle` im Kern (`DisplayNames.swift`).
     public var fanLabel: String {
         FanSpeed(rawValue: fanSpeed)?.label ?? "\(fanSpeed) %"
     }

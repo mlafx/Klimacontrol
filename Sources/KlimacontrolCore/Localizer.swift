@@ -96,6 +96,16 @@ public enum Localizer {
         }
     }
 
+    /// Text in einer bestimmten Sprache, unabhängig von der Sprache des Prozesses (z. B. CSV-Import beider Sprachen).
+    /// Rückfall Englisch, dann der Schlüssel; keine Pseudo-Sprache.
+    public static func text(_ key: String, language: AppLanguage, _ args: [String: String] = [:]) -> String {
+        switch catalog.value(key, language) {
+        case .text(let s): return fill(s, args)
+        case .plural(let cases): return fill(cases["other"] ?? cases.values.sorted().first ?? key, args)
+        case nil: return key
+        }
+    }
+
     /// Mehrzahl: Fall `one` bei count == 1, sonst `other` (fehlt `one`: `other`); `{count}` = `Fmt.num(Double(count), 0)`.
     public static func plural(_ key: String, count: Int, _ args: [String: String] = [:]) -> String {
         let (lang, pseudo) = current

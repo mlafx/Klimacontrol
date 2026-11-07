@@ -5,12 +5,23 @@ Sources/KlimacontrolCore/StringsData.swift (eingebetteter Katalog plus Zugriffe 
   python3 tools/sync_strings.py            prüfen, Katalog normalisieren, StringsData.swift erzeugen
   python3 tools/sync_strings.py --check    nur prüfen (Exit 1 bei Regelverstoß oder veraltetem Stand), schreibt nichts
   --catalog <Pfad> --output <Pfad>         andere Dateien (für Proben)
+  --parts-dir <Ordner>                     Teil-Dateien (Standard l10n/parts, *.json, alphabetisch)
+  --add <teil.json> <schlüssel> <de> <en> <kommentar>
+                                           einfachen Text (ohne Mehrzahl) in einer Teil-Datei anlegen, dann erzeugen
+  --merge-parts                            alle Teile in den Hauptkatalog führen, Teil-Dateien beiseitelegen
+                                           (Mac: Papierkorb, sonst Umbenennen), dann erzeugen
+
+Während Phase 2/3 arbeiten parallele Agenten je in einer eigenen Teil-Datei unter l10n/parts/; StringsData.swift
+entsteht aus Hauptkatalog und allen Teilen zusammen. Jede Ausgabe wird atomar geschrieben (Temp-Datei, os.replace).
 """
 import argparse
 import json
+import os
 import pathlib
 import re
+import shutil
 import sys
+import time
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 KEY_RE = re.compile(r"^[a-z][A-Za-z0-9]*(\.[a-z][A-Za-z0-9]*)+$")
@@ -244,49 +255,180 @@ def generate(catalog, normalized, sigs, docs):
     return "\n".join(out)
 
 
+def write_atomic(path, text):
+    tmp = path.with_name(f"{path.name}.tmp-{os.getpid()}")
+    with open(tmp, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+    os.replace(tmp, path)
+
+
+def shown(path):
+    return str(path.relative_to(ROOT)) if path.is_relative_to(ROOT) else str(path)
+
+
+def load_json(path):
+    raw = path.read_text(encoding="utf-8")
+    return raw, json.loads(raw)
+
+
+def part_files(parts_dir):
+    return sorted(parts_dir.glob("*.json")) if parts_dir.is_dir() else []
+
+
+def read_all(catalog_path, parts_dir):
+    """Liest Hauptkatalog und Teile. Gibt (Dateien, Fehler) zurück; Dateien: Liste (Pfad, roh, Katalog)."""
+    files, errors = [], []
+    for path in [catalog_path] + part_files(parts_dir):
+        try:
+            raw, data = load_json(path)
+        except (OSError, ValueError) as e:
+            errors.append(f"{shown(path)}: nicht lesbar: {e}")
+            continue
+        files.append((path, raw, data))
+    return files, errors
+
+
+def check_files(files):
+    """Prüft jede Datei einzeln, dann Doppelte und Präfixe über alle zusammen. Gibt (Fehler, zusammengeführter Katalog)."""
+    errors = []
+    owner = {}
+    merged = None
+    for path, _raw, data in files:
+        errs, _s, _d = validate(data)
+        errors += [f"{shown(path)}: {e}" for e in errs]
+        if not isinstance(data, dict) or not isinstance(data.get("strings"), dict):
+            continue
+        if merged is None:
+            merged = {k: v for k, v in data.items() if k != "strings"}
+            merged["strings"] = {}
+        for key, entry in data["strings"].items():
+            if key in owner:
+                errors.append(f"{key}: doppelt in {shown(owner[key])} und {shown(path)}")
+                continue
+            owner[key] = path
+            merged["strings"][key] = entry
+    if merged is not None and len(files) > 1:
+        per_file = " | ".join(errors)
+        for e in validate(merged)[0]:
+            if e not in per_file:
+                errors.append(e)
+    return errors, merged
+
+
+def add_text(catalog_path, parts_dir, target, key, de, en, comment):
+    target = target.resolve()
+    if target.parent != parts_dir.resolve() or target.suffix != ".json":
+        return None, f"--add: nur Teil-Dateien unter {shown(parts_dir)} sind erlaubt"
+    files, errors = read_all(catalog_path, parts_dir)
+    if errors:
+        return None, "; ".join(errors)
+    for path, _raw, data in files:
+        if isinstance(data, dict) and key in data.get("strings", {}):
+            return None, f"{key}: existiert schon in {shown(path)}"
+    if target.exists():
+        try:
+            _raw, data = load_json(target)
+        except (OSError, ValueError) as e:
+            return None, f"{shown(target)}: nicht lesbar: {e}"
+    else:
+        data = {"sourceLanguage": "en", "strings": {}, "version": "1.0"}
+    unit = lambda v: {"stringUnit": {"state": "translated", "value": v}}
+    data["strings"][key] = {"comment": comment, "localizations": {"de": unit(de), "en": unit(en)}}
+    parts_dir.mkdir(parents=True, exist_ok=True)
+    return (target, data), None
+
+
+def set_aside(path):
+    """Legt eine Teil-Datei beiseite, ohne zu löschen: Mac Papierkorb, sonst Umbenennen (vom Glob *.json nicht gelesen)."""
+    stamp = int(time.time())
+    trash = pathlib.Path.home() / ".Trash"
+    if sys.platform == "darwin" and trash.is_dir():
+        dest = trash / f"{path.stem}-{stamp}.json"
+        shutil.move(str(path), str(dest))
+        return dest
+    dest = path.with_name(f"{path.name}.zusammengefuehrt-{stamp}")
+    os.replace(path, dest)
+    return dest
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--catalog", type=pathlib.Path, default=ROOT / "l10n/Localizable.xcstrings")
+    ap.add_argument("--parts-dir", type=pathlib.Path, default=ROOT / "l10n/parts")
     ap.add_argument("--output", type=pathlib.Path, default=ROOT / "Sources/KlimacontrolCore/StringsData.swift")
+    ap.add_argument("--add", nargs=5, metavar=("TEIL", "SCHLUESSEL", "DE", "EN", "KOMMENTAR"))
+    ap.add_argument("--merge-parts", action="store_true")
     args = ap.parse_args()
 
-    try:
-        raw = args.catalog.read_text(encoding="utf-8")
-        catalog = json.loads(raw)
-    except (OSError, ValueError) as e:
-        print(f"Fehler: Katalog nicht lesbar: {e}", file=sys.stderr)
-        return 1
-    errors, sigs, docs = validate(catalog)
+    pending = {}
+    if args.add:
+        target, key, de, en, comment = args.add
+        found, err = add_text(args.catalog, args.parts_dir, pathlib.Path(target), key, de, en, comment)
+        if err:
+            print(f"Fehler: {err}", file=sys.stderr)
+            return 1
+        pending[found[0].resolve()] = found[1]
+
+    files, errors = read_all(args.catalog, args.parts_dir)
+    # --add: die neue Fassung der Teil-Datei prüfen und später schreiben
+    if pending:
+        files = [(p, r, pending.get(p.resolve(), d)) for p, r, d in files]
+        known = {p.resolve() for p, _r, _d in files}
+        for p, d in pending.items():
+            if p not in known:
+                files.append((p, "", d))
     if errors:
         for e in errors:
             print(f"Fehler: {e}", file=sys.stderr)
         return 1
+    errors, merged = check_files(files)
+    if errors or merged is None:
+        for e in errors or ["Katalog nicht lesbar"]:
+            print(f"Fehler: {e}", file=sys.stderr)
+        return 1
+    _e, sigs, docs = validate(merged)
+    merged_text = normalize(merged)
+    swift = generate(json.loads(merged_text), merged_text, sigs, docs)
 
-    normalized = normalize(catalog)
-    swift = generate(catalog, normalized, sigs, docs)
     if args.check:
         stale = []
-        if raw.replace("\r\n", "\n") != normalized:
-            stale.append(str(args.catalog))
+        for path, raw, data in files:
+            if raw.replace("\r\n", "\n") != normalize(data):
+                stale.append(shown(path))
         try:
             current = args.output.read_text(encoding="utf-8")
         except OSError:
             current = None
         if current != swift:
-            stale.append(str(args.output))
+            stale.append(shown(args.output))
         if stale:
             print("Fehler: nicht auf dem erzeugten Stand: " + ", ".join(stale) + ". Neu erzeugen: python3 tools/sync_strings.py",
                   file=sys.stderr)
             return 1
         return 0
 
-    with open(args.catalog, "w", encoding="utf-8", newline="\n") as f:
-        f.write(normalized)
-    with open(args.output, "w", encoding="utf-8", newline="\n") as f:
-        f.write(swift)
-    print(f"{args.catalog.relative_to(ROOT) if args.catalog.is_relative_to(ROOT) else args.catalog}: {len(sigs)} Texte")
-    print(f"{args.output.relative_to(ROOT) if args.output.is_relative_to(ROOT) else args.output} geschrieben")
+    main_data = next(d for p, _r, d in files if p == args.catalog)
+    if args.merge_parts:
+        parts = [(p, d) for p, _r, d in files if p != args.catalog]
+        for _p, d in parts:
+            main_data["strings"].update(d["strings"])
+        write_atomic(args.catalog, normalize(main_data))
+        write_atomic(args.output, swift)
+        for p, _d in parts:
+            if p.exists():
+                print(f"{shown(p)} beiseitegelegt: {set_aside(p)}")
+        print(f"{shown(args.catalog)}: {len(sigs)} Texte (Teile zusammengeführt)")
+        print(f"{shown(args.output)} geschrieben")
+        return 0
+
+    for path, raw, data in files:
+        text = normalize(data)
+        if raw.replace("\r\n", "\n") != text:
+            write_atomic(path, text)
+    write_atomic(args.output, swift)
+    print(f"{shown(args.catalog)}: {len(sigs)} Texte ({len(files) - 1} Teil-Dateien)")
+    print(f"{shown(args.output)} geschrieben")
     return 0
 
 

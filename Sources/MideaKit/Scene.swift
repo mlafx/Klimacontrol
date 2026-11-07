@@ -92,6 +92,7 @@ public struct ACScene: Codable, Equatable, Identifiable, Sendable {
         try DeviceConfig.writePrivate(enc.encode(scenes), to: url)
     }
 
+    /// Protokoll und Datenbank (deutsch); Anzeige über `summaryText` im Kern (`DisplayNames.swift`).
     public var summary: String {
         guard powerOn else { return "Aus" }
         let m = OperationalMode(rawValue: mode)?.label ?? "Modus \(mode)"

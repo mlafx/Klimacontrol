@@ -75,6 +75,7 @@ private final class BlockingResult<T>: @unchecked Sendable {
 public enum ConnectionMode: String, CaseIterable, Sendable {
     case auto, lan, cloud
 
+    /// Protokoll und Datenbank (deutsch); Anzeige über `title` im Kern (`DisplayNames.swift`).
     public var label: String {
         switch self {
         case .auto: return "Automatisch (WLAN zuerst)"
@@ -89,7 +90,7 @@ public enum ConnectionMode: String, CaseIterable, Sendable {
     }
 }
 
-/// Tatsächlich genutzter Weg (für die Anzeige).
+/// Tatsächlich genutzter Weg. `rawValue` ist deutsch für Protokoll und Datenbank; Anzeige über `title` im Kern (`DisplayNames.swift`).
 public enum ConnectionPath: String, Sendable {
     case lan = "WLAN", cloud = "Cloud"
 }

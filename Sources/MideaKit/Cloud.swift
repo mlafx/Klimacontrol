@@ -58,7 +58,7 @@ public enum MideaCloud {
             }
         }
 
-        /// Text des Fehlers für Protokoll und Kurzgrund (bei `.api` der Text von Midea).
+        /// Text des Fehlers für Protokoll und Kurzgrund (bei `.api` der Text von Midea). Deutsch; Anzeige über `displayMessage` im Kern (`DisplayNames.swift`).
         public var message: String {
             switch self {
             case .api(_, let msg), .network(let msg), .badReply(let msg), .sessionKeys(let msg), .incompleteLogin(let msg):
@@ -90,7 +90,7 @@ public enum MideaCloud {
             }
         }
 
-        /// Was ist passiert (ein Satz, ohne Fachwörter).
+        /// Was ist passiert (ein Satz, ohne Fachwörter). Deutsch für Protokoll; die Anzeige-Texte stehen im Katalog des Kerns.
         public var what: String {
             switch kind {
             case .wrongCredentials: return "E-Mail oder Passwort des Midea-Kontos stimmen nicht."

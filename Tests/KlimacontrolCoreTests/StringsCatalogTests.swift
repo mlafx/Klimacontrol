@@ -19,11 +19,38 @@ final class StringsCatalogTests: XCTestCase {
         return seen
     }
 
+    private func strings(_ url: URL) throws -> [String: Any] {
+        let object = try JSONSerialization.jsonObject(with: Data(contentsOf: url))
+        return try XCTUnwrap((object as? [String: Any])?["strings"] as? [String: Any], url.lastPathComponent)
+    }
+
+    private func partFiles() throws -> [URL] {
+        let dir = root.appendingPathComponent("l10n/parts")
+        let all = (try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil)) ?? []
+        return all.filter { $0.pathExtension == "json" }.sorted { $0.lastPathComponent < $1.lastPathComponent }
+    }
+
     func testEmbeddedCatalogMatchesFile() throws {
-        let file = try String(contentsOf: root.appendingPathComponent("l10n/Localizable.xcstrings"), encoding: .utf8)
-            .replacingOccurrences(of: "\r\n", with: "\n").trimmingCharacters(in: .newlines)
-        XCTAssertEqual(StringsData.catalog, file,
-                       "Der eingebettete Katalog weicht von l10n/Localizable.xcstrings ab. Neu erzeugen: python3 tools/sync_strings.py")
+        var expected = try strings(root.appendingPathComponent("l10n/Localizable.xcstrings"))
+        for part in try partFiles() { expected.merge(try strings(part)) { first, _ in first } }
+        let embedded = try XCTUnwrap(
+            (try JSONSerialization.jsonObject(with: Data(StringsData.catalog.utf8)) as? [String: Any])?["strings"] as? [String: Any])
+        XCTAssertTrue(NSDictionary(dictionary: embedded).isEqual(to: expected),
+                      "Der eingebettete Katalog weicht vom Hauptkatalog und den Teilen unter l10n/parts ab. Neu erzeugen: python3 tools/sync_strings.py")
+    }
+
+    func testNoDuplicateKeysAcrossParts() throws {
+        var owner: [String: String] = [:]
+        let files = [root.appendingPathComponent("l10n/Localizable.xcstrings")] + (try partFiles())
+        for file in files {
+            for key in try strings(file).keys {
+                if let first = owner[key] {
+                    XCTFail("\(key): doppelt in \(first) und \(file.lastPathComponent)")
+                } else {
+                    owner[key] = file.lastPathComponent
+                }
+            }
+        }
     }
 
     func testCatalogDecodesWithAllKeys() throws {

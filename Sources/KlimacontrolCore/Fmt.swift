@@ -94,19 +94,19 @@ public enum Fmt {
     public static func stand(_ d: Date, now: Date = Date(), calendar: Calendar = .current,
                              profile: FormatProfile = .current) -> String {
         let time = clock(d, calendar: calendar, profile: profile)
-        guard !calendar.isDate(d, inSameDayAs: now) else { return "Stand " + time }
-        return "Stand " + dayMonth(d, calendar: calendar, profile: profile) + ", " + time
+        guard !calendar.isDate(d, inSameDayAs: now) else { return L.Common.asOf(time: time) }
+        return L.Common.asOfDay(date: dayMonth(d, calendar: calendar, profile: profile), time: time)
     }
 
     private static func pad(_ v: Int) -> String { v < 10 ? "0\(v)" : "\(v)" }
 
-    /// Was sich zwischen zwei Zuständen geändert hat, fürs Protokoll („ein, Modus Kühlen, Soll 22°“).
+    /// Was sich zwischen zwei Zuständen geändert hat, fürs Protokoll, immer deutsch mit deutschem Zahlenformat („ein, Modus Kühlen, Soll 22°“).
     public static func change(from a: ACState, to b: ACState) -> String {
         func onOff(_ v: Bool) -> String { v ? "an" : "aus" }
         var parts: [String] = []
         if a.power != b.power { parts.append(b.power ? "ein" : "aus") }
         if a.mode != b.mode { parts.append("Modus \(b.mode.label)") }
-        if a.targetTemperature != b.targetTemperature { parts.append("Soll \(target(b.targetTemperature))") }
+        if a.targetTemperature != b.targetTemperature { parts.append("Soll \(target(b.targetTemperature, profile: .germany))") }
         if a.fanSpeed != b.fanSpeed { parts.append("Lüfter \(b.fanLabel)") }
         if a.swing != b.swing { parts.append("Schwenken \(onOff(b.swing == .vertical))") }
         if a.eco != b.eco { parts.append("Eco \(onOff(b.eco))") }
@@ -118,8 +118,10 @@ public enum Fmt {
 
     /// Eine Zeile Zustand fürs Ausführliches Protokoll.
     public static func stateLine(_ s: ACState) -> String {
-        "\(s.power ? "ein" : "aus"), \(s.mode.label), Soll \(target(s.targetTemperature)), innen \(temp(s.indoorTemperature)), "
-            + "außen \(temp(s.outdoorTemperature)), Lüfter \(s.fanLabel), \(watts(s.powerWatts)), "
+        "\(s.power ? "ein" : "aus"), \(s.mode.label), Soll \(target(s.targetTemperature, profile: .germany)), "
+            + "innen \(temp(s.indoorTemperature, profile: .germany)), "
+            + "außen \(temp(s.outdoorTemperature, profile: .germany)), Lüfter \(s.fanLabel), "
+            + "\(watts(s.powerWatts, profile: .germany)), "
             + "Begrenzung \(s.ratePercent.map { "\($0) %" } ?? "–")"
     }
 
@@ -129,19 +131,6 @@ public enum Fmt {
             + "\(d.currentA ?? -1) A, \(d.voltageV ?? -1) V, T1–T4 \(d.t1IndoorAir ?? .nan)/\(d.t2IndoorCoil ?? .nan)/"
             + "\(d.t3OutdoorCoil ?? .nan)/\(d.t4OutdoorAir ?? .nan), TP \(d.tpDischarge ?? -1), EEV \(d.eevOpening ?? -1), "
             + "Lüfter \(d.indoorFanRpm ?? -1)/\(d.outdoorFanRpm ?? -1) U/min"
-    }
-}
-
-extension OperationalMode {
-    /// Tätigkeit im Satz („Kühlt“, „Heizt“ …).
-    public var verb: String {
-        switch self {
-        case .cool: return "Kühlt"
-        case .heat: return "Heizt"
-        case .dry: return "Entfeuchtet"
-        case .fan: return "Lüftet"
-        case .auto: return "Regelt automatisch"
-        }
     }
 }
 

@@ -199,6 +199,7 @@ public enum MideaError: Error, LocalizedError, Equatable {
     /// „Automatisch“: alle Wege gescheitert, je Weg mit Grund.
     case allPathsFailed([PathFailure])
 
+    /// Deutsch, für Protokoll; Anzeige über `UserMessage` und `connectionDetailText` im Kern (`DisplayNames.swift`).
     public var errorDescription: String? {
         switch self {
         case .crypto(let code): return "Verschlüsselungsfehler (\(code))"
