@@ -9,7 +9,6 @@ final class PromptEnglishTests: XCTestCase {
     override func tearDown() async throws {
         Localizer.resetForTesting()
         FormatProfile.setCurrent(.germany)
-        try await super.tearDown()
     }
 
     private func en<T>(_ body: () -> T) -> T { Localizer.withLanguage(.en) { FormatProfile.withProfile(.unitedStates, body) } }
