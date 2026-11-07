@@ -559,8 +559,9 @@ public final class HistoryDB: @unchecked Sendable {
         try exportCSV(to: target, from: nil, until: nil, readable: false)
     }
 
-    /// CSV-Export eines Zeitraums. `readable`: deutsche Spaltennamen mit Einheit, Zeit „JJJJ-MM-TT HH:MM:SS“
-    /// (Ortszeit) und Dezimalkomma – so öffnen Excel und Numbers die Datei richtig; der Import liest beide Formen.
+    /// CSV-Export eines Zeitraums. `readable`: Spaltennamen mit Einheit und Modus in der Sprache der Oberfläche, Zeit
+    /// „JJJJ-MM-TT HH:MM:SS“ (Ortszeit) und Dezimalzeichen des Formats – so öffnen Excel und Numbers die Datei richtig;
+    /// der Import liest beide Formen und beide Sprachen.
     /// Liest über eine eigene Verbindung und schreibt zeilenweise in eine Zwischendatei, die am Ende das Ziel ersetzt:
     /// blockiert weder Graphen noch neue Punkte. Fehler als `CocoaError` (Lesen: `.fileReadUnknown`), damit die
     /// Oberflächen dieselben Meldungen zeigen.
@@ -595,9 +596,10 @@ public final class HistoryDB: @unchecked Sendable {
         #endif
         guard created, let h = try? FileHandle(forWritingTo: tmp) else { throw CocoaError(.fileWriteNoPermission) }
         do {
+            let style = readable ? HistoryColumn.ReadableStyle() : nil
             var buffer = readable ? HistoryLog.readableHeader : HistoryLog.header
             try stmt.forEachRow { s in
-                buffer += exportLine(s, readable: readable)
+                buffer += exportLine(s, style: style)
                 if buffer.utf8.count >= 1 << 16 {
                     try h.write(contentsOf: Data(buffer.utf8))
                     buffer = ""
@@ -614,12 +616,12 @@ public final class HistoryDB: @unchecked Sendable {
     }
 
     /// Eine Ergebniszeile als CSV-Zeile: Zeit technisch (ISO 8601) oder lesbar (Ortszeit), Werte wie SQLite sie
-    /// ausgibt, lesbar mit Dezimalkomma.
-    private static func exportLine(_ s: SQLStatement, readable: Bool) -> String {
+    /// ausgibt, lesbar mit Dezimalzeichen des Formats und Modus in der Sprache der Oberfläche.
+    private static func exportLine(_ s: SQLStatement, style: HistoryColumn.ReadableStyle?) -> String {
         let t = s.date(0)
-        var fields = [readable ? HistoryLog.readableTime(t) : HistoryLog.isoString(t)]
+        var fields = [style != nil ? HistoryLog.readableTime(t) : HistoryLog.isoString(t)]
         for (i, column) in HistoryColumn.data.enumerated() {
-            fields.append(column.exportField(s.text(Int32(i + 1)), readable: readable))
+            fields.append(column.exportField(s.text(Int32(i + 1)), style: style))
         }
         return fields.joined(separator: ";") + "\n"
     }

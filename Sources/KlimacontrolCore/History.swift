@@ -205,7 +205,7 @@ public final class HistoryStore {
     /// Ganzen Verlauf als CSV exportieren (Zeit in Ortszeit mit Abstand zu UTC).
     public func exportCSV(to url: URL) throws { try db.exportCSV(to: url) }
 
-    /// Zeitraum exportieren; `readable` = deutsche Spaltennamen, Ortszeit, Dezimalkomma (für Excel/Numbers).
+    /// Zeitraum exportieren; `readable` = Spaltennamen und Modus in der App-Sprache, Ortszeit, Dezimalzeichen des Formats (für Excel/Numbers).
     /// Kann im Hintergrund laufen (liest über eine eigene Verbindung): `Task.detached { try store.db.exportCSV(…) }`.
     public func exportCSV(to url: URL, from: Date?, until: Date?, readable: Bool) throws {
         try db.exportCSV(to: url, from: from, until: until, readable: readable)

@@ -1,0 +1,510 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "history.column.abtauen" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abtauen (1/0)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Defrost (1/0)"
+          }
+        }
+      }
+    },
+    "history.column.aussenC" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außen (°C)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outdoor (°C)"
+          }
+        }
+      }
+    },
+    "history.column.aussenLeise" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außen leise (1/0)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quiet outdoor (1/0)"
+          }
+        }
+      }
+    },
+    "history.column.eco" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eco (1/0)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eco (1/0)"
+          }
+        }
+      }
+    },
+    "history.column.eev" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Expansionsventil (Schritte)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Expansion valve (steps)"
+          }
+        }
+      }
+    },
+    "history.column.ein" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eingeschaltet (1/0)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power on (1/0)"
+          }
+        }
+      }
+    },
+    "history.column.gesamtKwh" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zähler gesamt (kWh)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meter total (kWh)"
+          }
+        }
+      }
+    },
+    "history.column.innenC" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Innen (°C)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indoor (°C)"
+          }
+        }
+      }
+    },
+    "history.column.kondensatpumpe" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kondensatpumpe (1/0)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Condensate pump (1/0)"
+          }
+        }
+      }
+    },
+    "history.column.leistungW" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistung (W)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power (W)"
+          }
+        }
+      }
+    },
+    "history.column.luefter" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüfter (%)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fan (%)"
+          }
+        }
+      }
+    },
+    "history.column.luefterAussenUpm" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüfter außen (U/min)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outdoor fan (rpm)"
+          }
+        }
+      }
+    },
+    "history.column.luefterInnenUpm" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüfter innen (U/min)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indoor fan (rpm)"
+          }
+        }
+      }
+    },
+    "history.column.modus" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode"
+          }
+        }
+      }
+    },
+    "history.column.sollC" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soll (°C)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target (°C)"
+          }
+        }
+      }
+    },
+    "history.column.spannungV" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spannung (V)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voltage (V)"
+          }
+        }
+      }
+    },
+    "history.column.stromA" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strom (A)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current (A)"
+          }
+        }
+      }
+    },
+    "history.column.t1" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T1 Innenluft (°C)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T1 indoor air (°C)"
+          }
+        }
+      }
+    },
+    "history.column.t2" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T2 Wärmetauscher innen (°C)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T2 indoor coil (°C)"
+          }
+        }
+      }
+    },
+    "history.column.t3" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T3 Wärmetauscher außen (°C)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T3 outdoor coil (°C)"
+          }
+        }
+      }
+    },
+    "history.column.t4" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T4 Außenluft (°C)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T4 outdoor air (°C)"
+          }
+        }
+      }
+    },
+    "history.column.tp" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tp Heißgas (°C)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tp discharge (°C)"
+          }
+        }
+      }
+    },
+    "history.column.turbo" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turbo (1/0)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turbo (1/0)"
+          }
+        }
+      }
+    },
+    "history.column.verdichterHz" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdichter (Hz)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compressor (Hz)"
+          }
+        }
+      }
+    },
+    "history.column.verdichterSollHz" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdichter Soll (Hz)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compressor target (Hz)"
+          }
+        }
+      }
+    },
+    "history.column.verdichterW" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdichter (W)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compressor (W)"
+          }
+        }
+      }
+    },
+    "history.column.zaehlerRoh" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zähler roh"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meter raw"
+          }
+        }
+      }
+    },
+    "history.column.zeit" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeit (Ortszeit)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time (local time)"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

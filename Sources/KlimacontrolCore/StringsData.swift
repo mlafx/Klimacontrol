@@ -3251,6 +3251,510 @@ extension StringsData {
         }
       }
     },
+    "history.column.abtauen" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abtauen (1/0)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Defrost (1/0)"
+          }
+        }
+      }
+    },
+    "history.column.aussenC" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außen (°C)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outdoor (°C)"
+          }
+        }
+      }
+    },
+    "history.column.aussenLeise" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außen leise (1/0)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quiet outdoor (1/0)"
+          }
+        }
+      }
+    },
+    "history.column.eco" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eco (1/0)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eco (1/0)"
+          }
+        }
+      }
+    },
+    "history.column.eev" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Expansionsventil (Schritte)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Expansion valve (steps)"
+          }
+        }
+      }
+    },
+    "history.column.ein" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eingeschaltet (1/0)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power on (1/0)"
+          }
+        }
+      }
+    },
+    "history.column.gesamtKwh" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zähler gesamt (kWh)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meter total (kWh)"
+          }
+        }
+      }
+    },
+    "history.column.innenC" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Innen (°C)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indoor (°C)"
+          }
+        }
+      }
+    },
+    "history.column.kondensatpumpe" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kondensatpumpe (1/0)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Condensate pump (1/0)"
+          }
+        }
+      }
+    },
+    "history.column.leistungW" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistung (W)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power (W)"
+          }
+        }
+      }
+    },
+    "history.column.luefter" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüfter (%)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fan (%)"
+          }
+        }
+      }
+    },
+    "history.column.luefterAussenUpm" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüfter außen (U/min)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outdoor fan (rpm)"
+          }
+        }
+      }
+    },
+    "history.column.luefterInnenUpm" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüfter innen (U/min)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indoor fan (rpm)"
+          }
+        }
+      }
+    },
+    "history.column.modus" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode"
+          }
+        }
+      }
+    },
+    "history.column.sollC" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soll (°C)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target (°C)"
+          }
+        }
+      }
+    },
+    "history.column.spannungV" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spannung (V)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voltage (V)"
+          }
+        }
+      }
+    },
+    "history.column.stromA" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strom (A)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current (A)"
+          }
+        }
+      }
+    },
+    "history.column.t1" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T1 Innenluft (°C)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T1 indoor air (°C)"
+          }
+        }
+      }
+    },
+    "history.column.t2" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T2 Wärmetauscher innen (°C)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T2 indoor coil (°C)"
+          }
+        }
+      }
+    },
+    "history.column.t3" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T3 Wärmetauscher außen (°C)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T3 outdoor coil (°C)"
+          }
+        }
+      }
+    },
+    "history.column.t4" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T4 Außenluft (°C)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T4 outdoor air (°C)"
+          }
+        }
+      }
+    },
+    "history.column.tp" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tp Heißgas (°C)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tp discharge (°C)"
+          }
+        }
+      }
+    },
+    "history.column.turbo" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turbo (1/0)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turbo (1/0)"
+          }
+        }
+      }
+    },
+    "history.column.verdichterHz" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdichter (Hz)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compressor (Hz)"
+          }
+        }
+      }
+    },
+    "history.column.verdichterSollHz" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdichter Soll (Hz)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compressor target (Hz)"
+          }
+        }
+      }
+    },
+    "history.column.verdichterW" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdichter (W)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compressor (W)"
+          }
+        }
+      }
+    },
+    "history.column.zaehlerRoh" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zähler roh"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meter raw"
+          }
+        }
+      }
+    },
+    "history.column.zeit" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeit (Ortszeit)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time (local time)"
+          }
+        }
+      }
+    },
     "host.mac.computer" : {
       "comment" : "Rechnerart Mac: Wort für den Rechner",
       "extractionState" : "manual",
@@ -6947,6 +7451,870 @@ extension StringsData {
         }
       }
     },
+    "setup.busy" : {
+      "comment" : "Einrichtung: Anlage belegt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage ist gerade belegt – vermutlich durch die Midea-App oder ein offenes Diagnosefenster von Klimacontrol. Die andere App schließen und in einer Minute erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner is busy right now, probably because of the Midea app or an open diagnostics window in Klimacontrol. Close the other app and try again in a minute."
+          }
+        }
+      }
+    },
+    "setup.cloud.applianceOffline" : {
+      "comment" : "Einrichtung: Anlage offline (3123)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midea meldet die Anlage als offline. Ist sie eingeschaltet und mit dem WLAN verbunden? (Code 3123)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midea reports the air conditioner as offline. Is it on and connected to Wi-Fi? (Code 3123)"
+          }
+        }
+      }
+    },
+    "setup.cloud.error" : {
+      "comment" : "Einrichtung: Fehler der Cloud",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midea meldet einen Fehler: {message}. Später erneut versuchen. (Code {code})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midea reports an error: {message}. Try again later. (Code {code})"
+          }
+        }
+      }
+    },
+    "setup.cloud.network" : {
+      "comment" : "Einrichtung: Midea nicht erreichbar",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midea ist gerade nicht erreichbar. Bitte die Internetverbindung prüfen und erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midea is not reachable right now. Check your internet connection and try again."
+          }
+        }
+      }
+    },
+    "setup.cloud.noToken" : {
+      "comment" : "Einrichtung: Anlage nicht im Konto",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midea kennt diese Anlage nicht. Ist sie in diesem MSmartHome-Konto eingerichtet?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midea does not know this air conditioner. Is it set up in this MSmartHome account?"
+          }
+        }
+      }
+    },
+    "setup.cloud.noTokenSearch" : {
+      "comment" : "Einrichtung: Konto ohne Anlage (Fehler)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In diesem Midea-Konto ist keine Anlage eingerichtet. Bitte das Konto der MSmartHome-App verwenden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No air conditioner is set up in this Midea account. Use the account of the MSmartHome app."
+          }
+        }
+      }
+    },
+    "setup.cloud.serviceUnavailable" : {
+      "comment" : "Einrichtung: Midea-Dienst gesperrt (9999)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midea gibt über diesen Zugang gerade keine Zugangsdaten aus. Später erneut versuchen oder den Weg „Zugangsdaten“ nehmen. (Code 9999)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midea is not issuing credentials through this access right now. Try again later or use the “Credentials” option. (Code 9999)"
+          }
+        }
+      }
+    },
+    "setup.cloud.tokenRejected" : {
+      "comment" : "Einrichtung: Konto-Zugangsdaten abgelehnt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage nimmt die Zugangsdaten aus dem Konto nicht an. Ist sie in genau diesem Konto eingerichtet?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner does not accept the credentials from the account. Is it set up in exactly this account?"
+          }
+        }
+      }
+    },
+    "setup.cloud.unknownError" : {
+      "comment" : "Ersatztext, wenn Midea keinen Fehlertext liefert",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "unbekannter Fehler"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "unknown error"
+          }
+        }
+      }
+    },
+    "setup.cloud.wrongCredentials" : {
+      "comment" : "Einrichtung: Konto-Anmeldung abgelehnt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-Mail oder Passwort stimmen nicht. Bitte die Anmeldedaten der MSmartHome-App verwenden. (Code {code})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The email or password is incorrect. Use the sign-in details of the MSmartHome app. (Code {code})"
+          }
+        }
+      }
+    },
+    "setup.completion.account" : {
+      "comment" : "Abschluss der Einrichtung mit Konto",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eingerichtet über das Midea-Konto: Gesteuert wird im WLAN, solange die Anlage dort antwortet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set up via the Midea account: commands go over Wi-Fi as long as the air conditioner responds there."
+          }
+        }
+      }
+    },
+    "setup.completion.cloudOnly" : {
+      "comment" : "Abschluss der Einrichtung, nur Cloud",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eingerichtet über die Midea-Cloud: Befehle gehen über Midea, bis die Anlage im WLAN antwortet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set up via the Midea Cloud: commands go through Midea until the air conditioner responds on Wi-Fi."
+          }
+        }
+      }
+    },
+    "setup.completion.manual" : {
+      "comment" : "Abschluss der Einrichtung ohne Konto",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eingerichtet ohne Midea-Konto: Klimacontrol spricht nur im WLAN mit der Anlage, nichts geht an Midea. Token und Schlüssel liegen nur auf diesem Rechner – am besten jetzt sichern. Empfohlener Verbindungsweg: „Nur WLAN“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set up without a Midea account: Klimacontrol talks to the air conditioner over Wi-Fi only, nothing goes to Midea. The token and key are stored only on this computer, so back them up now. Recommended connection: “Wi-Fi only”."
+          }
+        }
+      }
+    },
+    "setup.config.invalidAddress" : {
+      "comment" : "Fehler: Adresse ungültig",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Adresse ist keine IP-Adresse. Bitte z. B. 192.168.1.40 eingeben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The address is not an IP address. Enter one such as 192.168.1.40."
+          }
+        }
+      }
+    },
+    "setup.config.invalidHex" : {
+      "comment" : "Fehler: Token/Schlüssel ungültig",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token oder Schlüssel sind unvollständig. Bitte 128 bzw. 64 Zeichen (0–9, a–f) eingeben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The token or key is incomplete. Enter 128 and 64 characters (0–9, a–f)."
+          }
+        }
+      }
+    },
+    "setup.config.noDevice" : {
+      "comment" : "Fehler: Sicherung ohne Anlage",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei enthält keine Anlage. Bitte die Eingaben prüfen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file contains no air conditioner. Check your entries."
+          }
+        }
+      }
+    },
+    "setup.config.unsupportedVersion" : {
+      "comment" : "Fehler: Protokollversion",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protokollversion V{version} wird nicht unterstützt (nur V3). Bitte die Eingaben prüfen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protocol version V{version} is not supported (V3 only). Check your entries."
+          }
+        }
+      }
+    },
+    "setup.device.crypto" : {
+      "comment" : "Einrichtung: Entschlüsselung scheitert",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Antwort der Anlage ließ sich nicht lesen. Bitte erneut versuchen; bleibt es so, Token und Schlüssel neu holen. (Code {code})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The response from the air conditioner could not be read. Try again; if it persists, get the token and key again. (Code {code})"
+          }
+        }
+      }
+    },
+    "setup.device.noConnection" : {
+      "comment" : "Einrichtung: keine Verbindung; detail ist leer oder „ (Grund)“",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Verbindung zur Anlage{detail}. Ist der Rechner im selben WLAN wie die Anlage? Dann erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No connection to the air conditioner{detail}. Is this computer on the same Wi-Fi as the air conditioner? Then try again."
+          }
+        }
+      }
+    },
+    "setup.device.rejected" : {
+      "comment" : "Einrichtung: Zugangsdaten abgelehnt (Konto)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage nimmt Token und Schlüssel nicht an. Ist sie in genau diesem Konto eingerichtet?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner does not accept the token and key. Is it set up in exactly this account?"
+          }
+        }
+      }
+    },
+    "setup.device.searchFailed" : {
+      "comment" : "Einrichtung: Netzsuche scheitert; detail ist leer oder „ (Grund)“",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Suche im Netz klappt nicht{detail}. Ist der Rechner mit dem WLAN verbunden? {hint}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The network search failed{detail}. Is this computer connected to Wi-Fi? {hint}"
+          }
+        }
+      }
+    },
+    "setup.device.timeout" : {
+      "comment" : "Einrichtung: Zeitüberschreitung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage antwortet nicht. Ist sie eingeschaltet und im selben WLAN? Dann erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner is not responding. Is it on and connected to the same Wi-Fi? Then try again."
+          }
+        }
+      }
+    },
+    "setup.device.unexpected" : {
+      "comment" : "Einrichtung: unerwartete Antwort",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage hat unerwartet geantwortet. Bitte erneut versuchen; bleibt es so, steht mehr im Protokoll."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner sent an unexpected response. Try again; if it persists, the log has more details."
+          }
+        }
+      }
+    },
+    "setup.found.address" : {
+      "comment" : "Erkannter Teil beim Einfügen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adresse"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Address"
+          }
+        }
+      }
+    },
+    "setup.found.applianceId" : {
+      "comment" : "Erkannter Teil beim Einfügen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlagen-ID"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner ID"
+          }
+        }
+      }
+    },
+    "setup.found.key" : {
+      "comment" : "Erkannter Teil beim Einfügen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlüssel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Key"
+          }
+        }
+      }
+    },
+    "setup.found.port" : {
+      "comment" : "Erkannter Teil beim Einfügen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Port"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Port"
+          }
+        }
+      }
+    },
+    "setup.found.separator" : {
+      "comment" : "Trenner der erkannten Teile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", "
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", "
+          }
+        }
+      }
+    },
+    "setup.found.token" : {
+      "comment" : "Erkannter Teil beim Einfügen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token"
+          }
+        }
+      }
+    },
+    "setup.invalidIp" : {
+      "comment" : "Einrichtung: Eingabe ist keine IPv4-Adresse",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„{target}“ ist keine IP-Adresse. Bitte vier Zahlen mit Punkten eingeben (Beispiel: 192.168.1.40)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“{target}” is not an IP address. Enter four numbers separated by dots (example: 192.168.1.40)."
+          }
+        }
+      }
+    },
+    "setup.networkHint.mac" : {
+      "comment" : "Hinweis bei erfolgloser Suche (Mac)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Darf Klimacontrol ins lokale Netzwerk (Systemeinstellungen › Datenschutz & Sicherheit › Lokales Netzwerk)? Ein Gast-WLAN trennt Geräte oft voneinander."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Is Klimacontrol allowed on the local network (System Settings › Privacy & Security › Local Network)? A guest Wi-Fi often isolates devices from each other."
+          }
+        }
+      }
+    },
+    "setup.networkHint.windows" : {
+      "comment" : "Hinweis bei erfolgloser Suche (Windows)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lässt die Windows-Firewall Klimacontrol zu, und ist das Netzwerk als „Privat“ eingestellt? Ein Gast-WLAN trennt Geräte oft voneinander."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Does Windows Firewall allow Klimacontrol, and is the network set to “Private”? A guest Wi-Fi often isolates devices from each other."
+          }
+        }
+      }
+    },
+    "setup.noApplianceInAccount" : {
+      "comment" : "Einrichtung: Konto ohne Anlage (Suche, Ergebnis)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In diesem Midea-Konto ist keine Anlage eingerichtet. Bitte das Konto verwenden, mit dem die Anlage in der MSmartHome-App eingerichtet ist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No air conditioner is set up in this Midea account. Use the account with which the air conditioner is set up in the MSmartHome app."
+          }
+        }
+      }
+    },
+    "setup.notAirConditioner.account" : {
+      "comment" : "Einrichtung: im Konto nur andere Geräte",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Midea-Konto ist keine Klimaanlage, nur: {names}. Bitte das Konto verwenden, in dem die Klimaanlage eingerichtet ist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There is no air conditioner in this Midea account, only: {names}. Use the account in which the air conditioner is set up."
+          }
+        }
+      }
+    },
+    "setup.notAirConditioner.lan" : {
+      "comment" : "Einrichtung: im WLAN nur andere Geräte gefunden",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gefunden, aber keine Klimaanlage: {names}. Klimacontrol richtet nur Klimaanlagen ein – ist die Klimaanlage eingeschaltet und im selben WLAN?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Found, but not an air conditioner: {names}. Klimacontrol only sets up air conditioners. Is the air conditioner on and connected to the same Wi-Fi?"
+          }
+        }
+      }
+    },
+    "setup.nothingFound.asked.account" : {
+      "comment" : "Netzsuche ohne Fund, Weg Konto",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Anlage im Netz gefunden ({asked} Adressen gefragt). Ist die Anlage eingeschaltet und im selben WLAN? {hint} Sonst mit dem Konto aus Schritt 1 in der Cloud suchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No air conditioner found on the network ({asked} addresses queried). Is the air conditioner on and connected to the same Wi-Fi? {hint} Otherwise search the Cloud with the account from step 1."
+          }
+        }
+      }
+    },
+    "setup.nothingFound.asked.manual" : {
+      "comment" : "Netzsuche ohne Fund, Weg Zugangsdaten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Anlage im Netz gefunden ({asked} Adressen gefragt). Ist die Anlage eingeschaltet und im selben WLAN? {hint} Sonst die IP-Adresse der Anlage eingeben (steht in der Übersicht des Routers)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No air conditioner found on the network ({asked} addresses queried). Is the air conditioner on and connected to the same Wi-Fi? {hint} Otherwise enter the IP address of the air conditioner (shown in your router’s device list)."
+          }
+        }
+      }
+    },
+    "setup.nothingFound.none.account" : {
+      "comment" : "WLAN-Suche ohne Fund, Weg Konto",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Anlage im WLAN gefunden. Ist die Anlage eingeschaltet und der Rechner im selben WLAN? {hint} Sonst „Netz durchsuchen“, mit dem Konto aus Schritt 1 in der Cloud suchen oder die IP-Adresse eingeben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No air conditioner found on Wi-Fi. Is the air conditioner on and this computer connected to the same Wi-Fi? {hint} Otherwise choose “Search network”, search the Cloud with the account from step 1, or enter the IP address."
+          }
+        }
+      }
+    },
+    "setup.nothingFound.none.manual" : {
+      "comment" : "WLAN-Suche ohne Fund, Weg Zugangsdaten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Anlage im WLAN gefunden. Ist die Anlage eingeschaltet und der Rechner im selben WLAN? {hint} Sonst „Netz durchsuchen“ oder die IP-Adresse eingeben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No air conditioner found on Wi-Fi. Is the air conditioner on and this computer connected to the same Wi-Fi? {hint} Otherwise choose “Search network” or enter the IP address."
+          }
+        }
+      }
+    },
+    "setup.nothingFound.target.account" : {
+      "comment" : "Suche ohne Fund an einer Adresse, Weg Konto",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An der Adresse {target} antwortet keine Anlage. Stimmt die Adresse, und ist die Anlage eingeschaltet? Sonst „Netz durchsuchen“ oder mit dem Konto aus Schritt 1 in der Cloud suchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No air conditioner responds at {target}. Is the address correct, and is the air conditioner on? Otherwise choose “Search network” or search the Cloud with the account from step 1."
+          }
+        }
+      }
+    },
+    "setup.nothingFound.target.manual" : {
+      "comment" : "Suche ohne Fund an einer Adresse, Weg Zugangsdaten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An der Adresse {target} antwortet keine Anlage. Stimmt die Adresse, und ist die Anlage eingeschaltet? Sonst „Netz durchsuchen“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No air conditioner responds at {target}. Is the address correct, and is the air conditioner on? Otherwise choose “Search network”."
+          }
+        }
+      }
+    },
+    "setup.pasteEmpty" : {
+      "comment" : "Einrichtung: Zwischenablage ohne Zugangsdaten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In der Zwischenablage stehen keine Zugangsdaten. Bitte Token (128 Zeichen) und Schlüssel (64 Zeichen) kopieren und erneut einfügen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The clipboard contains no credentials. Copy the token (128 characters) and key (64 characters) and paste again."
+          }
+        }
+      }
+    },
+    "setup.problem.deviceId" : {
+      "comment" : "Feldhinweis: Anlagen-ID",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlagen-ID als Zahl (steht nach der Suche schon da)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner ID as a number (already filled in after the search)."
+          }
+        }
+      }
+    },
+    "setup.problem.ip" : {
+      "comment" : "Feldhinweis: Adresse",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine IPv4-Adresse (Beispiel: 192.168.1.40)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not an IPv4 address (example: 192.168.1.40)."
+          }
+        }
+      }
+    },
+    "setup.problem.length" : {
+      "comment" : "Feldhinweis: Länge von Token/Schlüssel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{count} von {total} Zeichen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{count} of {total} characters."
+          }
+        }
+      }
+    },
+    "setup.problem.lengthChars" : {
+      "comment" : "Feldhinweis: Länge und falsche Zeichen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{count} von {total} Zeichen – erlaubt sind nur 0–9 und a–f."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{count} of {total} characters. Only 0–9 and a–f are allowed."
+          }
+        }
+      }
+    },
+    "setup.problem.port" : {
+      "comment" : "Feldhinweis: Port",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Port 1–65535 (meist 6444)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Port 1–65535 (usually 6444)."
+          }
+        }
+      }
+    },
+    "setup.rejectedManual" : {
+      "comment" : "Einrichtung: Zugangsdaten abgelehnt (Weg Zugangsdaten)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage nimmt diese Zugangsdaten nicht an. Bitte prüfen, ob Token und Schlüssel zu dieser Anlage (Anlagen-ID) gehören, oder sie neu holen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner does not accept these credentials. Check that the token and key belong to this air conditioner (air conditioner ID), or get them again."
+          }
+        }
+      }
+    },
     "startup.handshake" : {
       "comment" : "Startanzeige: Schritt 2",
       "extractionState" : "manual",
@@ -8208,6 +9576,34 @@ extension StringsData {
         "hero.notConfiguredCaption",
         "hero.offCaption",
         "hero.offHint",
+        "history.column.abtauen",
+        "history.column.aussenC",
+        "history.column.aussenLeise",
+        "history.column.eco",
+        "history.column.eev",
+        "history.column.ein",
+        "history.column.gesamtKwh",
+        "history.column.innenC",
+        "history.column.kondensatpumpe",
+        "history.column.leistungW",
+        "history.column.luefter",
+        "history.column.luefterAussenUpm",
+        "history.column.luefterInnenUpm",
+        "history.column.modus",
+        "history.column.sollC",
+        "history.column.spannungV",
+        "history.column.stromA",
+        "history.column.t1",
+        "history.column.t2",
+        "history.column.t3",
+        "history.column.t4",
+        "history.column.tp",
+        "history.column.turbo",
+        "history.column.verdichterHz",
+        "history.column.verdichterSollHz",
+        "history.column.verdichterW",
+        "history.column.zaehlerRoh",
+        "history.column.zeit",
         "host.mac.computer",
         "host.mac.credentialStore",
         "host.mac.passwordStorage",
@@ -8412,6 +9808,54 @@ extension StringsData {
         "settings.language.unknown",
         "settings.price.invalid",
         "settings.updates.betaChannel",
+        "setup.busy",
+        "setup.cloud.applianceOffline",
+        "setup.cloud.error",
+        "setup.cloud.network",
+        "setup.cloud.noToken",
+        "setup.cloud.noTokenSearch",
+        "setup.cloud.serviceUnavailable",
+        "setup.cloud.tokenRejected",
+        "setup.cloud.unknownError",
+        "setup.cloud.wrongCredentials",
+        "setup.completion.account",
+        "setup.completion.cloudOnly",
+        "setup.completion.manual",
+        "setup.config.invalidAddress",
+        "setup.config.invalidHex",
+        "setup.config.noDevice",
+        "setup.config.unsupportedVersion",
+        "setup.device.crypto",
+        "setup.device.noConnection",
+        "setup.device.rejected",
+        "setup.device.searchFailed",
+        "setup.device.timeout",
+        "setup.device.unexpected",
+        "setup.found.address",
+        "setup.found.applianceId",
+        "setup.found.key",
+        "setup.found.port",
+        "setup.found.separator",
+        "setup.found.token",
+        "setup.invalidIp",
+        "setup.networkHint.mac",
+        "setup.networkHint.windows",
+        "setup.noApplianceInAccount",
+        "setup.notAirConditioner.account",
+        "setup.notAirConditioner.lan",
+        "setup.nothingFound.asked.account",
+        "setup.nothingFound.asked.manual",
+        "setup.nothingFound.none.account",
+        "setup.nothingFound.none.manual",
+        "setup.nothingFound.target.account",
+        "setup.nothingFound.target.manual",
+        "setup.pasteEmpty",
+        "setup.problem.deviceId",
+        "setup.problem.ip",
+        "setup.problem.length",
+        "setup.problem.lengthChars",
+        "setup.problem.port",
+        "setup.rejectedManual",
         "startup.handshake",
         "startup.reading",
         "startup.retry",
@@ -8651,6 +10095,34 @@ extension StringsData {
         "hero.notConfiguredCaption": [],
         "hero.offCaption": [],
         "hero.offHint": [],
+        "history.column.abtauen": [],
+        "history.column.aussenC": [],
+        "history.column.aussenLeise": [],
+        "history.column.eco": [],
+        "history.column.eev": [],
+        "history.column.ein": [],
+        "history.column.gesamtKwh": [],
+        "history.column.innenC": [],
+        "history.column.kondensatpumpe": [],
+        "history.column.leistungW": [],
+        "history.column.luefter": [],
+        "history.column.luefterAussenUpm": [],
+        "history.column.luefterInnenUpm": [],
+        "history.column.modus": [],
+        "history.column.sollC": [],
+        "history.column.spannungV": [],
+        "history.column.stromA": [],
+        "history.column.t1": [],
+        "history.column.t2": [],
+        "history.column.t3": [],
+        "history.column.t4": [],
+        "history.column.tp": [],
+        "history.column.turbo": [],
+        "history.column.verdichterHz": [],
+        "history.column.verdichterSollHz": [],
+        "history.column.verdichterW": [],
+        "history.column.zaehlerRoh": [],
+        "history.column.zeit": [],
         "host.mac.computer": [],
         "host.mac.credentialStore": [],
         "host.mac.passwordStorage": [],
@@ -8855,6 +10327,54 @@ extension StringsData {
         "settings.language.unknown": ["value"],
         "settings.price.invalid": [],
         "settings.updates.betaChannel": [],
+        "setup.busy": [],
+        "setup.cloud.applianceOffline": [],
+        "setup.cloud.error": ["message", "code"],
+        "setup.cloud.network": [],
+        "setup.cloud.noToken": [],
+        "setup.cloud.noTokenSearch": [],
+        "setup.cloud.serviceUnavailable": [],
+        "setup.cloud.tokenRejected": [],
+        "setup.cloud.unknownError": [],
+        "setup.cloud.wrongCredentials": ["code"],
+        "setup.completion.account": [],
+        "setup.completion.cloudOnly": [],
+        "setup.completion.manual": [],
+        "setup.config.invalidAddress": [],
+        "setup.config.invalidHex": [],
+        "setup.config.noDevice": [],
+        "setup.config.unsupportedVersion": ["version"],
+        "setup.device.crypto": ["code"],
+        "setup.device.noConnection": ["detail"],
+        "setup.device.rejected": [],
+        "setup.device.searchFailed": ["detail", "hint"],
+        "setup.device.timeout": [],
+        "setup.device.unexpected": [],
+        "setup.found.address": [],
+        "setup.found.applianceId": [],
+        "setup.found.key": [],
+        "setup.found.port": [],
+        "setup.found.separator": [],
+        "setup.found.token": [],
+        "setup.invalidIp": ["target"],
+        "setup.networkHint.mac": [],
+        "setup.networkHint.windows": [],
+        "setup.noApplianceInAccount": [],
+        "setup.notAirConditioner.account": ["names"],
+        "setup.notAirConditioner.lan": ["names"],
+        "setup.nothingFound.asked.account": ["asked", "hint"],
+        "setup.nothingFound.asked.manual": ["asked", "hint"],
+        "setup.nothingFound.none.account": ["hint"],
+        "setup.nothingFound.none.manual": ["hint"],
+        "setup.nothingFound.target.account": ["target"],
+        "setup.nothingFound.target.manual": ["target"],
+        "setup.pasteEmpty": [],
+        "setup.problem.deviceId": [],
+        "setup.problem.ip": [],
+        "setup.problem.length": ["count", "total"],
+        "setup.problem.lengthChars": ["count", "total"],
+        "setup.problem.port": [],
+        "setup.rejectedManual": [],
         "startup.handshake": [],
         "startup.reading": [],
         "startup.retry": [],
@@ -9343,6 +10863,66 @@ public enum L {
         public static var offCaption: String { Localizer.text("hero.offCaption") }
         /// Turn on with the button above, or choose a mode or scene directly.
         public static var offHint: String { Localizer.text("hero.offHint") }
+    }
+    public enum History {
+        public enum Column {
+            /// Defrost (1/0)
+            public static var abtauen: String { Localizer.text("history.column.abtauen") }
+            /// Outdoor (°C)
+            public static var aussenC: String { Localizer.text("history.column.aussenC") }
+            /// Quiet outdoor (1/0)
+            public static var aussenLeise: String { Localizer.text("history.column.aussenLeise") }
+            /// Eco (1/0)
+            public static var eco: String { Localizer.text("history.column.eco") }
+            /// Expansion valve (steps)
+            public static var eev: String { Localizer.text("history.column.eev") }
+            /// Power on (1/0)
+            public static var ein: String { Localizer.text("history.column.ein") }
+            /// Meter total (kWh)
+            public static var gesamtKwh: String { Localizer.text("history.column.gesamtKwh") }
+            /// Indoor (°C)
+            public static var innenC: String { Localizer.text("history.column.innenC") }
+            /// Condensate pump (1/0)
+            public static var kondensatpumpe: String { Localizer.text("history.column.kondensatpumpe") }
+            /// Power (W)
+            public static var leistungW: String { Localizer.text("history.column.leistungW") }
+            /// Fan (%)
+            public static var luefter: String { Localizer.text("history.column.luefter") }
+            /// Outdoor fan (rpm)
+            public static var luefterAussenUpm: String { Localizer.text("history.column.luefterAussenUpm") }
+            /// Indoor fan (rpm)
+            public static var luefterInnenUpm: String { Localizer.text("history.column.luefterInnenUpm") }
+            /// Mode
+            public static var modus: String { Localizer.text("history.column.modus") }
+            /// Target (°C)
+            public static var sollC: String { Localizer.text("history.column.sollC") }
+            /// Voltage (V)
+            public static var spannungV: String { Localizer.text("history.column.spannungV") }
+            /// Current (A)
+            public static var stromA: String { Localizer.text("history.column.stromA") }
+            /// T1 indoor air (°C)
+            public static var t1: String { Localizer.text("history.column.t1") }
+            /// T2 indoor coil (°C)
+            public static var t2: String { Localizer.text("history.column.t2") }
+            /// T3 outdoor coil (°C)
+            public static var t3: String { Localizer.text("history.column.t3") }
+            /// T4 outdoor air (°C)
+            public static var t4: String { Localizer.text("history.column.t4") }
+            /// Tp discharge (°C)
+            public static var tp: String { Localizer.text("history.column.tp") }
+            /// Turbo (1/0)
+            public static var turbo: String { Localizer.text("history.column.turbo") }
+            /// Compressor (Hz)
+            public static var verdichterHz: String { Localizer.text("history.column.verdichterHz") }
+            /// Compressor target (Hz)
+            public static var verdichterSollHz: String { Localizer.text("history.column.verdichterSollHz") }
+            /// Compressor (W)
+            public static var verdichterW: String { Localizer.text("history.column.verdichterW") }
+            /// Meter raw
+            public static var zaehlerRoh: String { Localizer.text("history.column.zaehlerRoh") }
+            /// Time (local time)
+            public static var zeit: String { Localizer.text("history.column.zeit") }
+        }
     }
     public enum Host {
         public enum Mac {
@@ -9899,6 +11479,128 @@ public enum L {
             /// Receive pre-release (beta) versions
             public static var betaChannel: String { Localizer.text("settings.updates.betaChannel") }
         }
+    }
+    public enum Setup {
+        /// The air conditioner is busy right now, probably because of the Midea app or an open diagnostics win…
+        public static var busy: String { Localizer.text("setup.busy") }
+        public enum Cloud {
+            /// Midea reports the air conditioner as offline. Is it on and connected to Wi-Fi? (Code 3123)
+            public static var applianceOffline: String { Localizer.text("setup.cloud.applianceOffline") }
+            /// Midea reports an error: {message}. Try again later. (Code {code})
+            public static func error(message: String, code: String) -> String { Localizer.text("setup.cloud.error", ["message": message, "code": code]) }
+            /// Midea is not reachable right now. Check your internet connection and try again.
+            public static var network: String { Localizer.text("setup.cloud.network") }
+            /// Midea does not know this air conditioner. Is it set up in this MSmartHome account?
+            public static var noToken: String { Localizer.text("setup.cloud.noToken") }
+            /// No air conditioner is set up in this Midea account. Use the account of the MSmartHome app.
+            public static var noTokenSearch: String { Localizer.text("setup.cloud.noTokenSearch") }
+            /// Midea is not issuing credentials through this access right now. Try again later or use the “Credent…
+            public static var serviceUnavailable: String { Localizer.text("setup.cloud.serviceUnavailable") }
+            /// The air conditioner does not accept the credentials from the account. Is it set up in exactly this …
+            public static var tokenRejected: String { Localizer.text("setup.cloud.tokenRejected") }
+            /// unknown error
+            public static var unknownError: String { Localizer.text("setup.cloud.unknownError") }
+            /// The email or password is incorrect. Use the sign-in details of the MSmartHome app. (Code {code})
+            public static func wrongCredentials(code: String) -> String { Localizer.text("setup.cloud.wrongCredentials", ["code": code]) }
+        }
+        public enum Completion {
+            /// Set up via the Midea account: commands go over Wi-Fi as long as the air conditioner responds there.
+            public static var account: String { Localizer.text("setup.completion.account") }
+            /// Set up via the Midea Cloud: commands go through Midea until the air conditioner responds on Wi-Fi.
+            public static var cloudOnly: String { Localizer.text("setup.completion.cloudOnly") }
+            /// Set up without a Midea account: Klimacontrol talks to the air conditioner over Wi-Fi only, nothing …
+            public static var manual: String { Localizer.text("setup.completion.manual") }
+        }
+        public enum Config {
+            /// The address is not an IP address. Enter one such as 192.168.1.40.
+            public static var invalidAddress: String { Localizer.text("setup.config.invalidAddress") }
+            /// The token or key is incomplete. Enter 128 and 64 characters (0–9, a–f).
+            public static var invalidHex: String { Localizer.text("setup.config.invalidHex") }
+            /// The file contains no air conditioner. Check your entries.
+            public static var noDevice: String { Localizer.text("setup.config.noDevice") }
+            /// Protocol version V{version} is not supported (V3 only). Check your entries.
+            public static func unsupportedVersion(version: String) -> String { Localizer.text("setup.config.unsupportedVersion", ["version": version]) }
+        }
+        public enum Device {
+            /// The response from the air conditioner could not be read. Try again; if it persists, get the token a…
+            public static func crypto(code: String) -> String { Localizer.text("setup.device.crypto", ["code": code]) }
+            /// No connection to the air conditioner{detail}. Is this computer on the same Wi-Fi as the air conditi…
+            public static func noConnection(detail: String) -> String { Localizer.text("setup.device.noConnection", ["detail": detail]) }
+            /// The air conditioner does not accept the token and key. Is it set up in exactly this account?
+            public static var rejected: String { Localizer.text("setup.device.rejected") }
+            /// The network search failed{detail}. Is this computer connected to Wi-Fi? {hint}
+            public static func searchFailed(detail: String, hint: String) -> String { Localizer.text("setup.device.searchFailed", ["detail": detail, "hint": hint]) }
+            /// The air conditioner is not responding. Is it on and connected to the same Wi-Fi? Then try again.
+            public static var timeout: String { Localizer.text("setup.device.timeout") }
+            /// The air conditioner sent an unexpected response. Try again; if it persists, the log has more detail…
+            public static var unexpected: String { Localizer.text("setup.device.unexpected") }
+        }
+        public enum Found {
+            /// Address
+            public static var address: String { Localizer.text("setup.found.address") }
+            /// Air conditioner ID
+            public static var applianceId: String { Localizer.text("setup.found.applianceId") }
+            /// Key
+            public static var key: String { Localizer.text("setup.found.key") }
+            /// Port
+            public static var port: String { Localizer.text("setup.found.port") }
+            /// ,
+            public static var separator: String { Localizer.text("setup.found.separator") }
+            /// Token
+            public static var token: String { Localizer.text("setup.found.token") }
+        }
+        /// “{target}” is not an IP address. Enter four numbers separated by dots (example: 192.168.1.40).
+        public static func invalidIp(target: String) -> String { Localizer.text("setup.invalidIp", ["target": target]) }
+        public enum NetworkHint {
+            /// Is Klimacontrol allowed on the local network (System Settings › Privacy & Security › Local Network)…
+            public static var mac: String { Localizer.text("setup.networkHint.mac") }
+            /// Does Windows Firewall allow Klimacontrol, and is the network set to “Private”? A guest Wi-Fi often …
+            public static var windows: String { Localizer.text("setup.networkHint.windows") }
+        }
+        /// No air conditioner is set up in this Midea account. Use the account with which the air conditioner …
+        public static var noApplianceInAccount: String { Localizer.text("setup.noApplianceInAccount") }
+        public enum NotAirConditioner {
+            /// There is no air conditioner in this Midea account, only: {names}. Use the account in which the air …
+            public static func account(names: String) -> String { Localizer.text("setup.notAirConditioner.account", ["names": names]) }
+            /// Found, but not an air conditioner: {names}. Klimacontrol only sets up air conditioners. Is the air …
+            public static func lan(names: String) -> String { Localizer.text("setup.notAirConditioner.lan", ["names": names]) }
+        }
+        public enum NothingFound {
+            public enum Asked {
+                /// No air conditioner found on the network ({asked} addresses queried). Is the air conditioner on and …
+                public static func account(asked: String, hint: String) -> String { Localizer.text("setup.nothingFound.asked.account", ["asked": asked, "hint": hint]) }
+                /// No air conditioner found on the network ({asked} addresses queried). Is the air conditioner on and …
+                public static func manual(asked: String, hint: String) -> String { Localizer.text("setup.nothingFound.asked.manual", ["asked": asked, "hint": hint]) }
+            }
+            public enum None {
+                /// No air conditioner found on Wi-Fi. Is the air conditioner on and this computer connected to the sam…
+                public static func account(hint: String) -> String { Localizer.text("setup.nothingFound.none.account", ["hint": hint]) }
+                /// No air conditioner found on Wi-Fi. Is the air conditioner on and this computer connected to the sam…
+                public static func manual(hint: String) -> String { Localizer.text("setup.nothingFound.none.manual", ["hint": hint]) }
+            }
+            public enum Target {
+                /// No air conditioner responds at {target}. Is the address correct, and is the air conditioner on? Oth…
+                public static func account(target: String) -> String { Localizer.text("setup.nothingFound.target.account", ["target": target]) }
+                /// No air conditioner responds at {target}. Is the address correct, and is the air conditioner on? Oth…
+                public static func manual(target: String) -> String { Localizer.text("setup.nothingFound.target.manual", ["target": target]) }
+            }
+        }
+        /// The clipboard contains no credentials. Copy the token (128 characters) and key (64 characters) and …
+        public static var pasteEmpty: String { Localizer.text("setup.pasteEmpty") }
+        public enum Problem {
+            /// Air conditioner ID as a number (already filled in after the search).
+            public static var deviceId: String { Localizer.text("setup.problem.deviceId") }
+            /// Not an IPv4 address (example: 192.168.1.40).
+            public static var ip: String { Localizer.text("setup.problem.ip") }
+            /// {count} of {total} characters.
+            public static func length(count: String, total: String) -> String { Localizer.text("setup.problem.length", ["count": count, "total": total]) }
+            /// {count} of {total} characters. Only 0–9 and a–f are allowed.
+            public static func lengthChars(count: String, total: String) -> String { Localizer.text("setup.problem.lengthChars", ["count": count, "total": total]) }
+            /// Port 1–65535 (usually 6444).
+            public static var port: String { Localizer.text("setup.problem.port") }
+        }
+        /// The air conditioner does not accept these credentials. Check that the token and key belong to this …
+        public static var rejectedManual: String { Localizer.text("setup.rejectedManual") }
     }
     public enum Startup {
         /// Signing in
