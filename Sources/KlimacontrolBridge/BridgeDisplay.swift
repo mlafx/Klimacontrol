@@ -68,7 +68,8 @@ struct RangeDTO: Encodable {
     var min, max: Double
 }
 
-/// Statische Auswahllisten, Grenzen, Standardwerte und feste Rückfragen. Ändert sich während der Laufzeit nicht.
+/// Auswahllisten, Grenzen, Standardwerte und feste Rückfragen. Wird je Schnappschuss neu gebaut, weil die Texte der
+/// Sprache folgen (kein `static let`, das die erste Sprache festhielte).
 struct OptionsDTO: Encodable {
     struct Refresh: Encodable {
         var choices: [ChoiceDTO]
@@ -154,7 +155,7 @@ struct OptionsDTO: Encodable {
     var prompts: Prompts
     var texts: Texts
 
-    static let current: OptionsDTO = {
+    static var current: OptionsDTO {
         let folder = UIText.cloudFolderPrompt(folder: "{folder}")
         return OptionsDTO(
             temperature: RangeDTO(min: UIOptions.temperatureMin, max: UIOptions.temperatureMax),
@@ -183,7 +184,7 @@ struct OptionsDTO: Encodable {
                            defaultKind: UIOptions.energyKindDefault.rawValue, title: UIText.energyTitle,
                            help: UIText.energyHelp, legend: UIText.energyLegend, noData: UIText.energyNoData),
             connectionModes: ConnectionMode.allCases.map {
-                ModeOptionDTO(id: $0.rawValue, label: $0.label, help: UIText.wayHelp($0))
+                ModeOptionDTO(id: $0.rawValue, label: $0.title, help: UIText.wayHelp($0))
             },
             connectSteps: UIText.connectSteps.map { StepDTO(phase: phaseName($0.phase), name: $0.name) },
             cloudFolder: CloudFolder(markers: UIText.cloudFolderMarkers, title: folder.title, messageTemplate: folder.message,
@@ -206,7 +207,7 @@ struct OptionsDTO: Encodable {
                          updatesCurrent: UIText.updatesCurrent,
                          updatesInstallingTemplate: UIText.updatesInstalling(version: "{version}"),
                          updatesFailed: UIText.updatesFailed, updatesCheckButton: UIText.updatesCheckButton))
-    }()
+    }
 }
 
 struct AvailabilityDTO: Encodable {

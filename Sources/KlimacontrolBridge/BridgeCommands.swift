@@ -30,9 +30,9 @@ let bridgeCommands: [String: BridgeCommand] = Dictionary(
 
 /// Liest und führt einen Befehl aus; nil = angenommen, sonst fertiger Meldungstext.
 @MainActor func handleCommand(_ text: String?, on c: ACController?) -> String? {
-    guard let c else { return "Klimacontrol ist noch nicht bereit. Bitte die App neu starten. (core-not-started)" }
+    guard let c else { return UserMessage(what: L.Bridge.coreNotReady, todo: L.Bridge.Todo.restart, code: "core-not-started").text }
     guard let text, let args = CommandArgs(json: text) else {
-        return "Befehl nicht lesbar. Bitte die App neu starten. (bad-command)"
+        return UserMessage(what: L.Bridge.badCommand, todo: L.Bridge.Todo.restart, code: "bad-command").text
     }
     do {
         try runCommand(args, c)
@@ -44,11 +44,10 @@ let bridgeCommands: [String: BridgeCommand] = Dictionary(
 
 @MainActor func runCommand(_ a: CommandArgs, _ c: ACController) throws {
     guard let command = bridgeCommands[a.cmd] else {
-        throw CommandError("Unbekannter Befehl „\(a.cmd)“. Bitte die App neu starten; bleibt es, die aktuelle Version "
-                           + "installieren. (unknown-command)")
+        throw CommandError(UserMessage(what: L.Bridge.unknownCommand(cmd: a.cmd), todo: L.Bridge.Todo.restartOrUpdate, code: "unknown-command"))
     }
     if command.needsDevice, c.config == nil {
-        throw CommandError("Noch keine Anlage eingerichtet. Bitte zuerst die Einrichtung abschließen. (no-device)")
+        throw CommandError(UserMessage(what: L.Bridge.noDevice, todo: L.Bridge.noDeviceTodo, code: "no-device"))
     }
     try command.run(a, c)
 }
@@ -56,7 +55,7 @@ let bridgeCommands: [String: BridgeCommand] = Dictionary(
 @MainActor private func scene(_ a: CommandArgs, _ c: ACController) throws -> ACScene {
     let id = try a.string("id")
     guard let s = c.scenes.first(where: { $0.id == id }) else {
-        throw CommandError("Diese Szene gibt es nicht mehr. Bitte die Liste neu öffnen. (scene-unknown)")
+        throw CommandError(UserMessage(what: L.Bridge.sceneUnknown, todo: L.Bridge.sceneUnknownTodo, code: "scene-unknown"))
     }
     return s
 }
@@ -64,7 +63,7 @@ let bridgeCommands: [String: BridgeCommand] = Dictionary(
 @MainActor private func found(_ a: CommandArgs, _ c: ACController) throws -> DiscoveredDevice {
     let id = try a.string("id")
     guard let d = c.setup.discovered.first(where: { String($0.deviceId) == id }) else {
-        throw CommandError("Diese Anlage ist nicht mehr in der Liste. Bitte erneut suchen. (device-unknown)")
+        throw CommandError(UserMessage(what: L.Bridge.deviceUnknown, todo: L.Bridge.deviceUnknownTodo, code: "device-unknown"))
     }
     return d
 }
@@ -79,7 +78,7 @@ private let operationCommands: [BridgeCommand] = [
     .device("mode") { a, c in
         let v = try a.int("value")
         guard let m = OperationalMode(rawValue: v) else {
-            throw CommandError("Diesen Modus kennt Klimacontrol nicht. Bitte einen anderen wählen. (mode-\(v))")
+            throw CommandError(UserMessage(what: L.Bridge.modeUnknown, todo: L.Bridge.Todo.chooseOther, code: "mode-\(v)"))
         }
         c.setMode(m)
     },
@@ -90,7 +89,7 @@ private let operationCommands: [BridgeCommand] = [
     .device("fan") { a, c in
         let f = try a.int("value")
         guard (1...100).contains(f) || f == FanSpeed.auto.rawValue else {
-            throw CommandError("Diese Lüfterstufe gibt es nicht. Bitte 1–100 % oder Auto wählen. (fan-\(f))")
+            throw CommandError(UserMessage(what: L.Bridge.fanUnknown, todo: L.Bridge.fanUnknownTodo, code: "fan-\(f)"))
         }
         c.setFan(f, now: try a.flag("now"))
     },
@@ -125,7 +124,7 @@ private let switchCommands: [BridgeCommand] = [
     .device("rate") { a, c in
         let v = try a.int("value")
         guard [50, 75, 100].contains(v) else {
-            throw CommandError("Diese Leistungsgrenze gibt es nicht. Bitte 50, 75 oder 100 % wählen. (rate-\(v))")
+            throw CommandError(UserMessage(what: L.Bridge.rateUnknown, todo: L.Bridge.rateUnknownTodo, code: "rate-\(v)"))
         }
         c.setRate(v)
     },
@@ -139,9 +138,9 @@ private let sceneCommands: [BridgeCommand] = [
     .always("deleteScene") { a, c in c.deleteScene(try scene(a, c)) },
     .device("saveScene") { a, c in
         let name = DeviceConfig.cleanText(try a.string("name"), fallback: "")
-        guard !name.isEmpty else { throw CommandError("Die Szene braucht einen Namen. Bitte einen eingeben. (scene-name)") }
+        guard !name.isEmpty else { throw CommandError(UserMessage(what: L.Bridge.sceneName, todo: L.Bridge.sceneNameTodo, code: "scene-name")) }
         guard c.state != nil else {
-            throw CommandError("Noch keine Werte der Anlage. Bitte kurz warten und erneut speichern. (no-state)")
+            throw CommandError(UserMessage(what: L.Bridge.noState, todo: L.Bridge.noStateTodo, code: "no-state"))
         }
         c.saveCurrentAsScene(named: name)
     },
@@ -157,7 +156,7 @@ private let timerCommands: [BridgeCommand] = [
         if !a.absent("hour") || !a.absent("minute") {
             let h = try a.int("hour"), m = try a.int("minute")
             guard (0...23).contains(h), (0...59).contains(m) else {
-                throw CommandError("Diese Uhrzeit gibt es nicht. Bitte 00:00 bis 23:59 wählen. (time)")
+                throw CommandError(UserMessage(what: L.Bridge.timeInvalid, todo: L.Bridge.timeInvalidTodo, code: "time"))
             }
             c.setOnTimer(hour: h, minute: m)
         } else {
@@ -172,7 +171,7 @@ private let settingsCommands: [BridgeCommand] = [
     .always("connectionMode") { a, c in
         let v = try a.string("value")
         guard ConnectionMode(rawValue: v) != nil else {
-            throw CommandError("Diesen Verbindungsweg kennt Klimacontrol nicht. Bitte einen anderen wählen. (path-\(v))")
+            throw CommandError(UserMessage(what: L.Bridge.pathUnknown, todo: L.Bridge.Todo.chooseOther, code: "path-\(v)"))
         }
         c.connectionMode = ConnectionMode(stored: v)
     },
@@ -207,7 +206,7 @@ private let settingsCommands: [BridgeCommand] = [
     // Sichtbare Oberflächen ("main", "flyout", "settings"); ohne sichtbare fragt der Kern höchstens alle 30 s ab.
     .always("uiVisible") { a, c in
         let id = try a.string("id")
-        guard !id.isEmpty else { throw a.invalid("id", "Name der Oberfläche") }
+        guard !id.isEmpty else { throw a.invalid("id", L.Bridge.Expect.uiName) }
         c.setUIVisible(id, try a.bool("visible"))
     },
 ]
@@ -219,7 +218,7 @@ private let appearanceCommands: [BridgeCommand] = [
     .always("appearance") { a, c in c.setAppearance(Appearance.decode(try a.object("value"), base: c.appearance)) },
     .always("appearanceTheme") { a, c in
         let name = try a.string("theme")
-        guard let theme = Appearance.Theme(rawValue: name) else { throw a.invalid("theme", "Thema") }
+        guard let theme = Appearance.Theme(rawValue: name) else { throw a.invalid("theme", L.Bridge.Expect.theme) }
         c.applyTheme(theme)
     },
     .always("appearanceReset") { _, c in c.resetAppearance() },
@@ -310,7 +309,7 @@ private let setupCommands: [BridgeCommand] = [
     .always("setupPath") { a, c in
         if let v = try a.optionalString("value") {
             guard let p = SetupPath(rawValue: v) else {
-                throw CommandError("Diesen Einrichtungsweg kennt Klimacontrol nicht. Bitte neu wählen. (setup-path-\(v))")
+                throw CommandError(UserMessage(what: L.Bridge.setupPathUnknown, todo: L.Bridge.setupPathUnknownTodo, code: "setup-path-\(v)"))
             }
             c.setup.choose(p)
         } else {
@@ -326,7 +325,7 @@ private let setupCommands: [BridgeCommand] = [
     .always("setupConnect") { a, c in
         let account = try a.string("account"), password = try a.string("password")
         guard c.setup.canConnect(account: account, password: password) else {
-            throw CommandError("Anlage wählen, Konto und Passwort eingeben. (setup-incomplete)")
+            throw CommandError(UserMessage(what: L.Bridge.setupIncomplete, todo: "", code: "setup-incomplete"))
         }
         results.setup.run { await c.setup.connect(account: account, password: password) }
     },
@@ -345,7 +344,7 @@ private let setupCommands: [BridgeCommand] = [
     .always("manualPaste") { a, c in
         if c.setup.pasteCredentials(try a.string("text")) == nil {
             throw CommandError(c.setup.error
-                               ?? "Im eingefügten Text war nichts Passendes. Bitte Token und Schlüssel kopieren. (paste-empty)")
+                               ?? UserMessage(what: L.Bridge.pasteEmpty, todo: L.Bridge.pasteEmptyTodo, code: "paste-empty").text)
         }
     },
     .always("manualCheck") { _, c in Task { await c.setup.checkManual() } },

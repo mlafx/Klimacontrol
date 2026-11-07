@@ -217,7 +217,7 @@ public func kc_history_stats_json(_ seconds: Double) -> UnsafeMutablePointer<CCh
 public func kc_energy_json(_ kind: UnsafePointer<CChar>?, _ count: Int32) -> UnsafeMutablePointer<CChar> {
     let name = kind.map { String(cString: $0) }
     return mainCString {
-        guard let c = controller else { return #"{"error":"Nicht gestartet."}"# }
+        guard let c = controller else { return encode(EnergyErrorDTO(error: L.Bridge.notStarted), fallback: #"{"error":"error"}"#) }
         return energyJSON(c, kind: name, count: Int(count))
     }
 }
