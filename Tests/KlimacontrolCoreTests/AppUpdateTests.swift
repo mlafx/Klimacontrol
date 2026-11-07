@@ -51,6 +51,14 @@ final class AppUpdateTests: XCTestCase {
         XCTAssertTrue(script.contains("WINDOWS_CRITICAL = \"\\n      <sparkle:criticalUpdate></sparkle:criticalUpdate>\""))
     }
 
+    func testReleaseScriptSignsUpdateFilesLast() throws {
+        let script = try String(contentsOf: root.appendingPathComponent("tools/make_release.py"), encoding: .utf8)
+        XCTAssertTrue(script.contains("--verify"))
+        XCTAssertTrue(script.contains("updateinfo-mac-beta.xml"))
+        XCTAssertTrue(script.contains("FIRST_AUTO_INSTALL_VERSION = \"1.1.0.0\""))
+        XCTAssertEqual(AppUpdate.firstAutoInstallVersion, "1.1.0.0")
+    }
+
     func testReleaseScriptWritesOnlyUpdateinfoFiles() throws {
         let script = try String(contentsOf: root.appendingPathComponent("tools/make_release.py"), encoding: .utf8)
         XCTAssertTrue(script.contains("\"updateinfo-mac.xml\"") && script.contains("\"updateinfo-win.xml\""))

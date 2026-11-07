@@ -232,7 +232,9 @@ Vertrag in Abschnitt 8.
 | `VERSION` | einzige Quelle der Versionsnummer (auch für Windows: `KlimacontrolTray.csproj` liest sie) |
 | `test.sh` | Swift-Tests am Mac (Scratch-Pfad außerhalb des Projekts, Protokoll in Temp-Ordner) |
 | `build_app.sh` | Mac-App universal bauen, Sparkle einbetten, signieren, optional notarisieren, DMG + ZIP |
-| `make_release.py` | Release-Ordner `releases/v<Version>/`: Pakete, Appcasts (signiert mit dem Update-Schlüssel), Prüfsummen, Release-Text; `--publish` legt das GitHub-Release an |
+| `make_release.py` | Release-Ordner `releases/v<Version>/` bzw. Beta `releases/v<Version>b<n>/` (`--beta <n>`): Pakete, Update-Dateien (`updateinfo-mac.xml`, `-win.xml`, `-mac-beta.xml`, als letzter Schritt mit dem Update-Schlüssel signiert und geprüft), Prüfsummen, Release-Text (deutsch und englisch); `--publish` legt das GitHub-Release an, `--check-published` prüft die veröffentlichten Adressen (liest nur), `--rollback <kaputt> <vorige> [--execute]` ist die Notbremse |
+| `test_make_release.py` | Selbsttest für `make_release.py` mit Probedateien und nachgebildetem `sign_update` (`python3 -I tools/test_make_release.py`; läuft auch in `ReleaseScriptTests`) |
+| `update_test_feed.py` | lokale, signierte Update-Datei zum Prüfen der Updates vor dem Release (Abschnitt 14.1) |
 | `UPDATE_PUBLIC_KEY` | öffentlicher EdDSA-Schlüssel der Updates (Mac: Info.plist, Windows: WinSparkle) |
 | `build_windows.ps1` | Windows: Swift-Kern + DLL + WPF-App bauen, alle Tests, optional ZIP, Setup, Installation; **nur ASCII** (PowerShell 5.1) |
 | `make_ico.ps1` | Windows-Programmsymbol `Klimacontrol.ico` aus `AppIcon.icns` erzeugen |
@@ -266,7 +268,7 @@ Vertrag in Abschnitt 8.
 | Alle Tests (Mac) | `tools/test.sh` (Argumente gehen an `swift test`, z. B. `--filter TransportTests`, `--skip-build`) |
 | Nur bauen inkl. Tests | `swift build --build-tests --scratch-path ~/Library/Caches/Klimacontrol-build` |
 | Mac-App bauen | `tools/build_app.sh [--no-test]` (führt vorher alle Tests aus, wie unter Windows) → App in `<Build-Ordner>/app/`, nach `dist/mac/`: `Klimacontrol-<Version>-mac.dmg`, `…-mac.zip`, `LIESMICH.txt` |
-| Release vorbereiten | `python3 tools/make_release.py [--key-file <Datei>] [--publish]` → `releases/v<Version>/` |
+| Release vorbereiten | `python3 tools/make_release.py [--beta <n>] [--key-file <Datei>] [--publish]` → `releases/v<Version>[b<n>]/`; Selbsttest `python3 -I tools/test_make_release.py` |
 | … und notarisieren | `KLIMACONTROL_NOTARY_PROFILE=<Profil> tools/build_app.sh` (nur mit „Developer ID Application“) |
 | Windows bauen + testen | `powershell -ExecutionPolicy Bypass -File tools\build_windows.ps1 [-Release] [-NoTest] [-App] [-Zip] [-Setup] [-Install] [-Shortcut]` |
 | Testvektoren neu erzeugen | `python3 tools/make_vectors.py Tests/MideaKitTests/vectors.json` (msmart-ng nötig) |
@@ -825,7 +827,7 @@ MideaKit-Tests als am Mac (zuletzt 125 statt 132), weil einige nur auf Darwin ü
 | Ziel | Dateien (Auswahl) |
 |---|---|
 | `MideaKitTests` | `TestSupport` (Vektoren, `Locked`, `TestClock`, `TestFrames`, `FakeTransport`), `MideaKitTests` (Rahmen, Antworten), `TransportTests` (Wegwahl, Sperren), `PortaSplitDeviceTests` (Gerät mit Fake-Transport), `CloudTests`, `RobustnessTests` (kaputte Rahmen), `PlatformTests` (Krypto-Vektoren, Schlüsselbund), `ConcurrencyTests`, `LANLoopbackTests` (echter TCP-Weg gegen 127.0.0.1, nur Darwin), `TestIsolationTests`, `vectors.json` |
-| `KlimacontrolCoreTests` | `TestSupport` (`CoreTestCase`, `FakeDevice`, `SpyPlatform`, `MemorySettings`, `waitUntil`, `AsyncGate`), `KlimacontrolCoreTests`, `ControllerTests`, `HistoryTests` (Spalten, Kopfzeilen wörtlich, Rundläufe), `DisplayCatalogTests` (Anzeige-Katalog wörtlich), `ACControllerUITests`, `SetupTests`, `SetupFlowTests`, `TimerEnergyTests`, `EnergyPeriodTests` (Verbrauch je Zeitraum, Sommerzeit, Zählerwechsel), `AppearanceTests`, `VersionTests` (CHANGELOG-Kopf = `tools/VERSION`), `ThirdPartyNoticesTests` (Swift-Texte = `docs/THIRD_PARTY_NOTICES.md`), `AppUpdateTests` (Feed, Intervall und Schlüssel passen zu `build_app.sh`), `LocalizerTests`, `StringsCatalogTests`, `FormatProfileTests`, `AppVersionTests`, `ChangelogParityTests`, `SettingsLocaleTests` |
+| `KlimacontrolCoreTests` | `TestSupport` (`CoreTestCase`, `FakeDevice`, `SpyPlatform`, `MemorySettings`, `waitUntil`, `AsyncGate`), `KlimacontrolCoreTests`, `ControllerTests`, `HistoryTests` (Spalten, Kopfzeilen wörtlich, Rundläufe), `DisplayCatalogTests` (Anzeige-Katalog wörtlich), `ACControllerUITests`, `SetupTests`, `SetupFlowTests`, `TimerEnergyTests`, `EnergyPeriodTests` (Verbrauch je Zeitraum, Sommerzeit, Zählerwechsel), `AppearanceTests`, `VersionTests` (CHANGELOG-Kopf = `tools/VERSION`), `ThirdPartyNoticesTests` (Swift-Texte = `docs/THIRD_PARTY_NOTICES.md`), `AppUpdateTests` (Feed, Intervall und Schlüssel passen zu `build_app.sh`), `ReleaseProtectionTests` (D1-Werte wörtlich, Abschnitt 14.1), `ReleaseScriptTests` (startet `tools/test_make_release.py`, nur Mac), `LocalizerTests`, `StringsCatalogTests`, `FormatProfileTests`, `AppVersionTests`, `ChangelogParityTests`, `SettingsLocaleTests` |
 | `KlimacontrolBridgeTests` | `BridgeDisplayTests` (Katalog-Felder), `BridgeContractTests`: jedes Feld des echten Schnappschusses steht in `bridge-muster.json` (Gegenrichtung zu `VertragTests`); `BridgeCommandTests`: Parametertypen, Meldungen, Befehlsnamen gegen `Cmd` in C#; `BridgeEnergyTests` (`kc_energy_json`), `BridgeLocaleTests` (`kc_set_locale`, `kc_strings_json`, Befehle `language`/`currency`) |
 | Windows (C#) | `CoreTests`, `LayoutTests`, `ThemeTests`, `AppearanceTextTests` (Darstellung wie am Mac), `VertragTests` (Schnappschuss, Befehlsnamen, Anzeige-Katalog, keine eigenen Listen/Grenzen in der Oberfläche) |
 
@@ -1084,7 +1086,11 @@ Muster: „What happened. What to do. (code)“. „Klimacontrol“ und „Porta
   des Autors (Konto `klimacontrol`, angelegt mit Sparkles `generate_keys --account klimacontrol`). Geht der private
   Schlüssel verloren, bekommen installierte Fassungen keine Updates mehr – er muss gesichert sein. Nie ins Repo.
 - Ablauf: `tools/build_app.sh` (mit Notarisierung) · Windows `tools\build_windows.ps1 -Zip` (legt auch das Setup an) ·
-  `python3 tools/make_release.py` · D3 abarbeiten · Release `v<Version>` anlegen.
+  `python3 tools/make_release.py` · D3 abarbeiten · Release `v<Version>` anlegen (`--publish`) · danach
+  `python3 tools/make_release.py --check-published` (D3/8).
+- Ablauf Beta (nur Mac): `tools/build_app.sh --beta <n>` · Notarisierung · `python3 tools/make_release.py --beta <n>` ·
+  D3 · `--publish`. Die stabile Fassung für die Beta-Update-Datei kommt aus `--stable-feed <Datei>`, sonst aus dem
+  höchsten lokalen `releases/v<a.b.c.d>/`, sonst nur mit `--fetch-stable` aus dem Netz.
 - Am Release hängen **nur das Mac-DMG und das Windows-Setup** (dazu die beiden `updateinfo-*.xml` und Prüfsummen); die ZIPs aus den
   Bauskripten sind für Tests und Handbetrieb. `make_release.py` prüft zuerst, dass DMG und App darin notarisiert und
   geheftet sind (`stapler validate`, `spctl` „Notarized Developer ID“), und bricht sonst ab, ebenso ohne Setup.
@@ -1097,7 +1103,14 @@ Muster: „What happened. What to do. (code)“. „Klimacontrol“ und „Porta
   `updateinfo-mac-beta.xml`; `make_release.py` schreibt diese Datei bei jedem Release und jeder Beta neu (neueste
   stabile + neueste Beta). Die öffentliche `updateinfo-mac.xml` wird für eine Beta nie angefasst.
 - **Signatur der Update-Dateien:** `make_release.py` signiert DMG, Setup und zuletzt die `updateinfo-*.xml`, prüft
-  jede Signatur (`sign_update --verify`) und verändert die Dateien danach nicht mehr.
+  jede Signatur (`sign_update --verify`) und verändert die Dateien danach nicht mehr. Zum Schluss prüft
+  `verify_release_dir()` den Ordner vollständig (D3/7, läuft automatisch). Bestehende Release-Ordner werden nie
+  gelöscht, sondern in `…alt-<Zeitstempel>` umbenannt.
+- **Selbsttest:** `python3 -I tools/test_make_release.py` (auch als `ReleaseScriptTests`) läuft mit Probedateien und
+  einem nachgebildeten `sign_update`, ohne Schlüssel, Netz oder GitHub.
+- **Testaufbau D3/1 und D3/3:** `tools/update_test_feed.py` stellt eine lokale, echt signierte Update-Datei bereit, mit der
+  das originale DMG der vorigen Fassung auf die neue (bzw. die Probe-Fassung) aktualisiert wird; Aufruf und Optionen
+  stehen im Kopf des Skripts.
 
 #### Schutz der installierten Fassungen (Pflicht bei jedem Release)
 
@@ -1111,7 +1124,7 @@ Installierte Fassungen ab 1.1.0.0 aktualisieren sich nur, solange diese Punkte s
 | „latest“ | immer ein stabiles Release mit beiden Dateien | ebenso |
 | Schlüssel, Signatur | derselbe EdDSA-Schlüssel (`tools/UPDATE_PUBLIC_KEY`); dieselbe Developer-ID (Team wie in der Signatur von 1.1.0.0) | derselbe EdDSA-Schlüssel |
 | Kennungen | `de.mlafx.klimacontrol`, `Klimacontrol.app` | `AppId {1EAA2BD1-F86E-420F-A62C-4057C87B34F8}`, `{localappdata}\Programs\Klimacontrol`, Registry-Pfad von WinSparkle |
-| Mindest-System | macOS 15.0 | Windows 11 x64 |
+| Mindest-System | macOS 15.0 | Windows 10 x64 (`MinVersion=10.0`, `ArchitecturesAllowed=x64compatible`) |
 | Update-Datei | gültig signiert oder gar nicht | – |
 | Releases, Tags | nie verschieben, löschen, umbenennen | ebenso |
 
@@ -1131,15 +1144,16 @@ Region, Mac „Jetzt neu starten · Später“.
 4. Beta-Weg: erste Beta von Hand, zweite über den Kanal, dann die stabile Fassung; die öffentliche Update-Datei bleibt
    unverändert (Prüfsumme vorher/nachher).
 5. Notarisierung einer Beta-Version (`…b1`) angenommen, sonst Rückfall auf eine rein numerische Vorabnummer.
-6. Automatische Tests grün: D1-Werte, Signatur, stabiler Eintrag in der Beta-Datei, Versionsvergleich, CHANGELOG
-   deutsch/englisch gleich aufgebaut.
+6. Automatische Tests grün: D1-Werte (`ReleaseProtectionTests`), Signatur, stabiler Eintrag in der Beta-Datei,
+   Versionsvergleich (`ReleaseScriptTests` bzw. `tools/test_make_release.py`), CHANGELOG deutsch/englisch gleich aufgebaut.
 7. `make_release.py` vor dem Veröffentlichen: „latest“, kein Vorabrelease, beide Update-Dateien, Dateinamen exakt,
-   Signaturen gültig.
+   Signaturen gültig (läuft automatisch in `verify_release_dir()` und vor `--publish` als Plan-Prüfung).
 8. Nach dem Veröffentlichen: beide `latest/download`-Adressen liefern HTTP 200, die neue Version und eine gültige
-   Signatur.
+   Signatur: `python3 tools/make_release.py --check-published [<Version>]` (liest nur, braucht den Schlüssel).
 
 **D4 – Notbremse:** Release auf „Vorabrelease“ stellen und `gh release edit v<vorige Version> --latest`; die Korrektur
-kommt als nächste Fehlerbehebungs-Version (z. B. `1.2.0.1`).
+kommt als nächste Fehlerbehebungs-Version (z. B. `1.2.0.1`). `python3 tools/make_release.py --rollback <kaputt> <vorige>`
+zeigt die beiden Befehle, mit `--execute` führt es sie nacheinander aus.
 
 ### 14.2 Git / GitHub
 
