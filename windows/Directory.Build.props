@@ -1,0 +1,9 @@
+<Project>
+  <!-- Build-Artefakte nie in OneDrive: bin/obj unter %LOCALAPPDATA%, je Projekt eigener Ordner (sonst teilen sich App
+       und Tests obj\project.assets.json). Eigener Wurzelordner: -p:TrayBuildRoot=… -->
+  <PropertyGroup>
+    <TrayBuildRoot Condition="'$(TrayBuildRoot)' == ''">$(LOCALAPPDATA)\Klimacontrol-tray-build</TrayBuildRoot>
+    <BaseOutputPath>$(TrayBuildRoot)\$(MSBuildProjectName)\bin\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(TrayBuildRoot)\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+</Project>

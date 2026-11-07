@@ -1,0 +1,66 @@
+<Window x:Class="KlimacontrolTray.MiniWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Klimacontrol – Mini-Fenster" Width="190" Height="64" WindowStyle="None" AllowsTransparency="True"
+        Background="{DynamicResource Bg}" BorderBrush="{DynamicResource Line}" BorderThickness="1"
+        ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True" ShowActivated="False" WindowStartupLocation="Manual"
+        TextElement.Foreground="{DynamicResource Fg}" UseLayoutRounding="True" Style="{x:Null}"
+        AutomationProperties.Name="Klimacontrol Mini-Fenster">
+  <!-- Eigene Vorlage: der Fensterhintergrund füllt nur die abgerundete Fläche, die Ecken bleiben durchsichtig. -->
+  <Window.Template>
+    <ControlTemplate TargetType="Window">
+      <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12">
+        <AdornerDecorator>
+          <ContentPresenter/>
+        </AdornerDecorator>
+      </Border>
+    </ControlTemplate>
+  </Window.Template>
+  <Window.ContextMenu>
+    <ContextMenu>
+      <MenuItem Header="Klimacontrol _öffnen" Click="Open_Click"/>
+      <MenuItem Header="Mini-Fenster _schließen" Click="CloseMini_Click"/>
+    </ContextMenu>
+  </Window.ContextMenu>
+  <Grid>
+    <Border x:Name="TintFill" CornerRadius="11" IsHitTestVisible="False"/>
+    <Grid Margin="14,4,10,4">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+      <StackPanel x:Name="TextArea" VerticalAlignment="Center" Margin="0,0,6,0">
+        <TextBlock x:Name="BigText" Text="–" FontSize="28" LineHeight="32" LineStackingStrategy="BlockLineHeight"
+                   AutomationProperties.LiveSetting="Polite"/>
+        <TextBlock x:Name="Caption" FontSize="11" Foreground="{DynamicResource Sub}" TextTrimming="CharacterEllipsis"/>
+      </StackPanel>
+      <Button x:Name="PowerButton" Grid.Column="1" Width="34" Height="34" VerticalAlignment="Center"
+              FocusVisualStyle="{x:Null}" Cursor="Hand" Click="Power_Click" AutomationProperties.Name="Einschalten">
+        <Button.Template>
+          <ControlTemplate TargetType="Button">
+            <Grid>
+              <Ellipse x:Name="Back" Fill="{TemplateBinding Background}"/>
+              <Ellipse x:Name="Ring" Stroke="{DynamicResource Fg}" StrokeThickness="1.5" Visibility="Hidden"/>
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Back" Property="Opacity" Value="0.85"/>
+              </Trigger>
+              <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="Back" Property="Opacity" Value="0.7"/>
+              </Trigger>
+              <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter TargetName="Ring" Property="Visibility" Value="Visible"/>
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="0.4"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Button.Template>
+      </Button>
+    </Grid>
+  </Grid>
+</Window>

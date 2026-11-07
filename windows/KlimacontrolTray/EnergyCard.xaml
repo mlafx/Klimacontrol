@@ -1,0 +1,30 @@
+<UserControl x:Class="KlimacontrolTray.EnergyCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Border Padding="12" CornerRadius="8" Background="{DynamicResource Tile}">
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+      </Grid.RowDefinitions>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel x:Name="TitleHost" Orientation="Horizontal" VerticalAlignment="Center">
+          <ContentControl x:Name="TitleIcon" VerticalAlignment="Center" Margin="0,0,6,0"/>
+          <TextBlock x:Name="TitleText" FontSize="13" FontWeight="SemiBold"/>
+        </StackPanel>
+        <StackPanel x:Name="KindPanel" Grid.Column="1" Orientation="Horizontal"/>
+      </Grid>
+      <Grid x:Name="Bars" Grid.Row="1" MinHeight="120" Margin="0,8,0,0"/>
+      <TextBlock x:Name="NoDataText" Grid.Row="1" Margin="0,16" TextWrapping="Wrap" TextAlignment="Center" FontSize="13"
+                 Foreground="{DynamicResource Sub}" Visibility="Collapsed"/>
+      <TextBlock x:Name="SummaryText" Grid.Row="2" Margin="0,8,0,0" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap"/>
+      <TextBlock x:Name="LegendText" Grid.Row="3" Margin="0,2,0,0" FontSize="12" TextWrapping="Wrap" Foreground="{DynamicResource Sub}"/>
+    </Grid>
+  </Border>
+</UserControl>

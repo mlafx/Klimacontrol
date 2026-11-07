@@ -1,0 +1,73 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- Gemeinsame Stile der Einrichtung (SetupStart, SetupAccount, SetupManual). -->
+  <Style x:Key="StepCard" TargetType="Border">
+    <Setter Property="Background" Value="{DynamicResource Card}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource Line}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="8"/>
+    <Setter Property="Padding" Value="12"/>
+    <Setter Property="Margin" Value="0,10,0,0"/>
+  </Style>
+  <Style x:Key="StepNumber" TargetType="Grid">
+    <Setter Property="Width" Value="20"/>
+    <Setter Property="Height" Value="20"/>
+    <Setter Property="Margin" Value="0,0,8,0"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+  </Style>
+  <Style x:Key="StepTitle" TargetType="TextBlock">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeFixedNormal}"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+  </Style>
+  <Style x:Key="Small" TargetType="TextBlock">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeFixedSmall}"/>
+    <Setter Property="Foreground" Value="{DynamicResource Sub}"/>
+    <Setter Property="TextWrapping" Value="Wrap"/>
+  </Style>
+  <!-- Kopf eines Ablaufs: Titel und Erklärung. -->
+  <Style x:Key="SetupTitle" TargetType="TextBlock">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeFixedTitle}"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="TextWrapping" Value="Wrap"/>
+  </Style>
+  <Style x:Key="SetupDetail" TargetType="TextBlock">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeFixedBody}"/>
+    <Setter Property="Foreground" Value="{DynamicResource Sub}"/>
+    <Setter Property="TextWrapping" Value="Wrap"/>
+    <Setter Property="Margin" Value="0,4,0,0"/>
+  </Style>
+  <!-- Platzhalter über leeren Eingabefeldern (WPF kennt keinen eigenen). -->
+  <Style x:Key="Placeholder" TargetType="TextBlock">
+    <Setter Property="IsHitTestVisible" Value="False"/>
+    <Setter Property="Margin" Value="11,0,8,0"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+    <Setter Property="Foreground" Value="{DynamicResource Sub}"/>
+    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+  </Style>
+  <!-- Platzhalter in mehrzeiligen Feldern: oben statt mittig. -->
+  <Style x:Key="PlaceholderTop" TargetType="TextBlock" BasedOn="{StaticResource Placeholder}">
+    <Setter Property="Margin" Value="11,6,8,0"/>
+    <Setter Property="VerticalAlignment" Value="Top"/>
+  </Style>
+  <!-- Beschriftung links am Feld (Weg „Zugangsdaten“). -->
+  <Style x:Key="FieldLabel" TargetType="TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource Sub}"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+    <Setter Property="Width" Value="72"/>
+  </Style>
+  <!-- Hinweis unter einem Feld (Zähler bzw. Problem), eingerückt bis unter das Feld. -->
+  <Style x:Key="FieldNote" TargetType="TextBlock">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeFixedSmall}"/>
+    <Setter Property="TextWrapping" Value="Wrap"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+  </Style>
+  <!-- Meldung unter einem Schritt: orange mit Warndreieck, Erfolg grün. -->
+  <Style x:Key="StepMessage" TargetType="Border">
+    <Setter Property="Margin" Value="0,10,0,0"/>
+    <Setter Property="Padding" Value="10,8"/>
+    <Setter Property="CornerRadius" Value="6"/>
+    <Setter Property="Background" Value="{DynamicResource Tile}"/>
+    <Setter Property="Visibility" Value="Collapsed"/>
+  </Style>
+</ResourceDictionary>

@@ -1,0 +1,58 @@
+<UserControl x:Class="KlimacontrolTray.TimerRow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Margin="0,14,0,0">
+  <!-- Links „Ausschalten in …“ bzw. die Restzeit, rechts „Einschalten um …“ bzw. die Uhrzeit; gesetzte Timer als Chip
+       mit ✕. -->
+  <Border x:Name="TimerCard" Padding="12,8" CornerRadius="8" Background="{DynamicResource Tile}">
+    <StackPanel>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <ContentControl x:Name="TimerIcon" VerticalAlignment="Center" Margin="0,0,8,0" Focusable="False"/>
+
+        <Button x:Name="OffTimerButton" Grid.Column="1" FontSize="13" Padding="8,4" Click="OffTimer_Click"
+                ToolTip="Schaltet die Anlage nach der gewählten Zeit aus. Klimacontrol muss dafür geöffnet bleiben."/>
+        <StackPanel x:Name="OffChip" Grid.Column="1" Orientation="Horizontal" Visibility="Collapsed">
+          <ContentControl x:Name="OffChipIcon" VerticalAlignment="Center" Margin="0,0,6,0" Focusable="False"/>
+          <TextBlock x:Name="OffChipText" FontSize="13" VerticalAlignment="Center" Typography.NumeralAlignment="Tabular"/>
+          <Button x:Name="OffClear" Margin="4,0,0,0" Padding="5" Background="Transparent" BorderThickness="0"
+                  VerticalAlignment="Center" Foreground="{DynamicResource Sub}" ToolTip="Timer löschen"
+                  AutomationProperties.Name="Timer löschen" Click="OffClear_Click"/>
+        </StackPanel>
+
+        <Button x:Name="OnTimerButton" Grid.Column="3" FontSize="13" Padding="8,4" Click="OnTimer_Click"
+                ToolTip="Schaltet die Anlage zur gewählten Uhrzeit ein"/>
+        <StackPanel x:Name="OnChip" Grid.Column="3" Orientation="Horizontal" Visibility="Collapsed">
+          <ContentControl x:Name="OnChipIcon" VerticalAlignment="Center" Margin="0,0,6,0" Focusable="False"/>
+          <TextBlock x:Name="OnChipText" FontSize="13" VerticalAlignment="Center" Typography.NumeralAlignment="Tabular"/>
+          <Button x:Name="OnClear" Margin="4,0,0,0" Padding="5" Background="Transparent" BorderThickness="0"
+                  VerticalAlignment="Center" Foreground="{DynamicResource Sub}" ToolTip="Timer löschen"
+                  AutomationProperties.Name="Timer löschen" Click="OnClear_Click"/>
+        </StackPanel>
+      </Grid>
+
+      <!-- Uhrzeit für „Einschalten um …“: Feld, Hinweis, Knöpfe rechts (in einer Zeile zu breit für die Spalte). -->
+      <StackPanel x:Name="OnTimePicker" Margin="0,8,0,0" Visibility="Collapsed">
+        <StackPanel Orientation="Horizontal">
+          <TextBlock FontSize="13" VerticalAlignment="Center" Text="Uhrzeit" Margin="0,0,8,0"/>
+          <TextBox x:Name="OnTimeBox" MinWidth="120" Text="07:00" KeyDown="OnTime_KeyDown" TextChanged="OnTime_TextChanged"
+                   ToolTip="Uhrzeit als HH:MM, z. B. 07:30" AutomationProperties.Name="Uhrzeit zum Einschalten"/>
+        </StackPanel>
+        <!-- Der Tag steht immer dabei, damit niemand rätselt, ob heute oder morgen gemeint ist. -->
+        <TextBlock x:Name="OnDayText" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,8,0,0"
+                   AutomationProperties.LiveSetting="Polite"/>
+        <TextBlock x:Name="TimerHint" FontSize="11" Foreground="{DynamicResource Sub}" TextWrapping="Wrap" Margin="0,6,0,0"
+                   AutomationProperties.LiveSetting="Assertive"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+          <Button Content="Timer setzen" Style="{StaticResource Primary}" Click="OnTimeSet_Click"/>
+          <Button Content="Abbrechen" Margin="6,0,0,0" Click="OnTimeCancel_Click"/>
+        </StackPanel>
+      </StackPanel>
+    </StackPanel>
+  </Border>
+</UserControl>

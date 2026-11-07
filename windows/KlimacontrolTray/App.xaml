@@ -1,0 +1,64 @@
+<Application x:Class="KlimacontrolTray.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+             ShutdownMode="OnExplicitShutdown" ThemeMode="System">
+  <!-- Platzhalter für den XAML-Designer; die echten Werte setzt Theme.Apply. Immer per DynamicResource benutzen,
+       nie StaticResource. -->
+  <Application.Resources>
+    <SolidColorBrush x:Key="Bg" Color="#F9F9F9"/>
+    <!-- Surface: Bg mit der Deckkraft aus „Transparenz“ (randlose Fenster). -->
+    <SolidColorBrush x:Key="Surface" Color="#F9F9F9"/>
+    <SolidColorBrush x:Key="Card" Color="#FBFBFB"/>
+    <SolidColorBrush x:Key="Tile" Color="#F3F3F3"/>
+    <SolidColorBrush x:Key="Fg" Color="#1B1B1B"/>
+    <SolidColorBrush x:Key="Sub" Color="#505050"/>
+    <SolidColorBrush x:Key="Line" Color="#E5E5E5"/>
+    <!-- Edge: Kartenrahmen; bei Neon leuchtend, sonst wie Line. -->
+    <SolidColorBrush x:Key="Edge" Color="#E5E5E5"/>
+    <SolidColorBrush x:Key="Accent" Color="#005FB8"/>
+    <SolidColorBrush x:Key="Ok" Color="#0F7B0F"/>
+    <SolidColorBrush x:Key="Warn" Color="#9D5D00"/>
+    <SolidColorBrush x:Key="Bad" Color="#C42B1C"/>
+    <SolidColorBrush x:Key="BadBg" Color="#FDE7E9"/>
+
+    <!-- Schriftgrößen schon mal Theme.SizeFactor. -->
+    <sys:Double x:Key="FontSizeCaption">11</sys:Double>
+    <sys:Double x:Key="FontSizeSmall">12</sys:Double>
+    <sys:Double x:Key="FontSizeBody">13</sys:Double>
+    <sys:Double x:Key="FontSizeNormal">14</sys:Double>
+    <sys:Double x:Key="FontSizeLarge">17</sys:Double>
+    <sys:Double x:Key="FontSizeTitle">20</sys:Double>
+    <sys:Double x:Key="FontSizeHero">64</sys:Double>
+    <FontFamily x:Key="DigitFontFamily">Segoe UI</FontFamily>
+    <FontWeight x:Key="DigitFontWeight">Light</FontWeight>
+    <!-- Feste Schriftgrößen der Stile hier, in den Einstellungen und in der Einrichtung – ohne Theme.SizeFactor, darum
+         per StaticResource. Die Steuerung skaliert ihre Schriften selbst (SizeScale). -->
+    <sys:Double x:Key="FontSizeFixedFoot">11.5</sys:Double>
+    <sys:Double x:Key="FontSizeFixedSmall">12</sys:Double>
+    <sys:Double x:Key="FontSizeFixedBody">13</sys:Double>
+    <sys:Double x:Key="FontSizeFixedNormal">14</sys:Double>
+    <sys:Double x:Key="FontSizeFixedTitle">20</sys:Double>
+
+    <Style x:Key="Label" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="{StaticResource FontSizeFixedSmall}"/>
+      <Setter Property="Foreground" Value="{DynamicResource Sub}"/>
+      <Setter Property="Margin" Value="0,0,0,6"/>
+    </Style>
+    <Style x:Key="Hint" TargetType="TextBlock" BasedOn="{StaticResource Label}">
+      <Setter Property="TextWrapping" Value="Wrap"/>
+      <Setter Property="Margin" Value="0,4,0,12"/>
+    </Style>
+    <Style x:Key="Seg" TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+      <Setter Property="HorizontalAlignment" Value="Stretch"/>
+      <Setter Property="Padding" Value="4,6"/>
+      <Setter Property="FontSize" Value="{StaticResource FontSizeFixedSmall}"/>
+      <Setter Property="Margin" Value="2"/>
+    </Style>
+    <Style x:Key="Primary" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+      <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+      <Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource AccentControlElevationBorderBrush}"/>
+    </Style>
+  </Application.Resources>
+</Application>

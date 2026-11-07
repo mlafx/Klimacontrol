@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Windows-Oberfläche für Klimacontrol; die Logik kommt aus dem Swift-Kern über KlimacontrolBridge.dll. -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AssemblyName>Klimacontrol</AssemblyName>
+    <RootNamespace>KlimacontrolTray</RootNamespace>
+    <PlatformTarget>x64</PlatformTarget>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <!-- Läuft ohne Installation (.NET steckt in der exe). Komprimiert: kleinere exe, dafür entpackt .NET die
+         Bibliotheken bei jedem Start in den Speicher. -->
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <!-- Sparsamer Garbage Collector: kein Hintergrund-GC, Speicher eher zurückgeben als vorhalten. -->
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <TieredPGO>false</TieredPGO>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <DebugType>embedded</DebugType>
+    <SatelliteResourceLanguages>de</SatelliteResourceLanguages>
+    <Version>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)..\..\tools\VERSION').Trim())</Version>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- App-Symbol für exe, Verknüpfungen und Taskleiste (aus tools/AppIcon.icns, siehe tools/make_ico.ps1). -->
+    <ApplicationIcon>Klimacontrol.ico</ApplicationIcon>
+    <!-- WFAC010/WFO0003: DPI-Angabe steht im Manifest. WPF0001: ThemeMode gilt als Vorschau. -->
+    <NoWarn>$(NoWarn);WFAC010;WFO0003;WPF0001</NoWarn>
+  </PropertyGroup>
+
+  <!-- Ausgeliefert wird ohne Symbole und ohne Pfade dieses Rechners: keine PDB (auch nicht eingebettet), Quell- und
+       Bauordner umgeschrieben, reproduzierbar. Source Link aus, weil der Repo-Verweis hier nicht lesbar ist. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <PathMap>$(MSBuildProjectDirectory)=/_/src,$(TrayBuildRoot)=/_/build</PathMap>
+    <EnableSourceLink>false</EnableSourceLink>
+    <EnableSourceControlManagerQueries>false</EnableSourceControlManagerQueries>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 0–9: je höher, desto eher verdichtet der GC den Heap statt ihn wachsen zu lassen. -->
+    <RuntimeHostConfigurationOption Include="System.GC.ConserveMemory" Value="7" />
+    <!-- Öffentlicher Schlüssel der Update-Signaturen (einzige Quelle: tools/UPDATE_PUBLIC_KEY), gelesen in Updates.cs. -->
+    <Resource Include="Klimacontrol.ico" />
+    <AssemblyMetadata Include="UpdatePublicKey" Value="$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)..\..\tools\UPDATE_PUBLIC_KEY').Trim())" />
+  </ItemGroup>
+
+</Project>

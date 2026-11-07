@@ -1,0 +1,11 @@
+<UserControl x:Class="KlimacontrolTray.SetupView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:KlimacontrolTray">
+  <!-- Erst den Weg wählen (SetupStart), dann dessen Ablauf (SetupAccount bzw. SetupManual). -->
+  <Grid>
+    <local:SetupStart x:Name="Start"/>
+    <local:SetupAccount x:Name="Account" Visibility="Collapsed"/>
+    <local:SetupManual x:Name="Manual" Visibility="Collapsed"/>
+  </Grid>
+</UserControl>

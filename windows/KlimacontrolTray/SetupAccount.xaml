@@ -1,0 +1,120 @@
+<UserControl x:Class="KlimacontrolTray.SetupAccount"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:KlimacontrolTray">
+  <!-- Weg „Mit Midea-Konto“: 1 Midea-Konto → 2 Anlage finden → 3 Verbinden. -->
+  <UserControl.Resources>
+    <ResourceDictionary Source="SetupStyles.xaml"/>
+  </UserControl.Resources>
+
+  <StackPanel>
+    <!-- Kopf: zurück zur Startseite, auch mit Esc -->
+    <TextBlock FontSize="13" HorizontalAlignment="Left" ToolTip="Zurück zur Auswahl (Esc)">
+      <Hyperlink x:Name="BackLink" Click="Back_Click">‹ Zurück</Hyperlink>
+    </TextBlock>
+    <TextBlock Style="{StaticResource SetupTitle}" Margin="0,4,0,0" Text="Mit Midea-Konto verbinden"/>
+    <TextBlock Style="{StaticResource SetupDetail}"
+               Text="Klimacontrol holt Token und Schlüssel einmalig über dein Konto. Unterwegs oder bei ausgeschalteter Anlage geht es über das Konto auch per Cloud."/>
+
+    <!-- 1 Midea-Konto -->
+    <Border Style="{StaticResource StepCard}">
+      <StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+          <Grid Style="{StaticResource StepNumber}">
+            <Ellipse Fill="{DynamicResource Accent}" Opacity="0.2"/>
+            <TextBlock Text="1" FontSize="11" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Grid>
+          <TextBlock Style="{StaticResource StepTitle}" Text="Midea-Konto"/>
+        </StackPanel>
+        <TextBlock Style="{StaticResource Small}"
+                   Text="Das Konto der MSmartHome-App. Das Passwort geht nur an Midea und wird nicht gespeichert."/>
+        <TextBlock Style="{StaticResource Small}" Foreground="{DynamicResource Warn}" Margin="0,2,0,8"
+                   Text="Die Anmeldung kann die MSmartHome-App oder einen anderen Rechner mit diesem Konto abmelden („Konto anderswo eingeloggt“). Dort dann einfach neu anmelden."/>
+        <Grid>
+          <TextBox x:Name="AccountBox" KeyDown="Account_KeyDown" TextChanged="Input_Changed"
+                   AutomationProperties.Name="E-Mail"/>
+          <TextBlock x:Name="AccountHint" Style="{StaticResource Placeholder}" Text="E-Mail"/>
+        </Grid>
+        <Grid Margin="0,6,0,0">
+          <PasswordBox x:Name="PasswordBox" KeyDown="Password_KeyDown" PasswordChanged="Password_Changed"
+                       AutomationProperties.Name="Passwort"/>
+          <TextBlock x:Name="PasswordHint" Style="{StaticResource Placeholder}" Text="Passwort"/>
+        </Grid>
+        <Border x:Name="Msg1" Style="{StaticResource StepMessage}">
+          <DockPanel>
+            <ContentControl x:Name="MsgIcon1" DockPanel.Dock="Left" Margin="0,1,8,0" VerticalAlignment="Top" Focusable="False"/>
+            <TextBlock x:Name="MsgText1" TextWrapping="Wrap" FontSize="12"/>
+          </DockPanel>
+        </Border>
+      </StackPanel>
+    </Border>
+
+    <!-- 2 Anlage finden -->
+    <Border Style="{StaticResource StepCard}">
+      <StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+          <Grid Style="{StaticResource StepNumber}">
+            <Ellipse Fill="{DynamicResource Accent}" Opacity="0.2"/>
+            <TextBlock Text="2" FontSize="11" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Grid>
+          <TextBlock Style="{StaticResource StepTitle}" Text="Anlage finden"/>
+        </StackPanel>
+        <WrapPanel>
+          <Button x:Name="ScanButton" Style="{StaticResource Primary}" Margin="0,0,6,6" Click="Scan_Click"
+                  ToolTip="Sucht Anlagen im WLAN"/>
+          <Button x:Name="SubnetButton" Margin="0,0,6,6" Click="Subnet_Click"
+                  ToolTip="Fragt jede Adresse deines Netzes einzeln – hilft, wenn die normale Suche nichts findet"/>
+          <Button x:Name="CloudButton" Margin="0,0,6,6" Click="Cloud_Click" ToolTipService.ShowOnDisabled="True"/>
+        </WrapPanel>
+        <Grid Margin="0,2,0,0">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+          <TextBox x:Name="IpBox" KeyDown="Ip_KeyDown" TextChanged="Input_Changed"
+                   AutomationProperties.Name="IP-Adresse"/>
+          <TextBlock x:Name="IpHint" Style="{StaticResource Placeholder}"/>
+          <Button x:Name="CheckButton" Grid.Column="1" Content="Prüfen" Margin="6,0,0,0" Click="Check_Click"/>
+        </Grid>
+        <StackPanel x:Name="FoundList" Margin="0,4,0,0"/>
+        <Border x:Name="Msg2" Style="{StaticResource StepMessage}">
+          <DockPanel>
+            <ContentControl x:Name="MsgIcon2" DockPanel.Dock="Left" Margin="0,1,8,0" VerticalAlignment="Top" Focusable="False"/>
+            <TextBlock x:Name="MsgText2" TextWrapping="Wrap" FontSize="12"/>
+          </DockPanel>
+        </Border>
+        <!-- Nichts gefunden bzw. keine Antwort: Windows-Gründe und Knopf zu den WLAN-Einstellungen -->
+        <local:NetworkHelp x:Name="Help2"/>
+      </StackPanel>
+    </Border>
+
+    <!-- 3 Verbinden -->
+    <Border Style="{StaticResource StepCard}">
+      <StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+          <Grid Style="{StaticResource StepNumber}">
+            <Ellipse Fill="{DynamicResource Accent}" Opacity="0.2"/>
+            <TextBlock Text="3" FontSize="11" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Grid>
+          <TextBlock Style="{StaticResource StepTitle}" Text="Verbinden"/>
+        </StackPanel>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+          </Grid.ColumnDefinitions>
+          <Button x:Name="ConnectButton" Style="{StaticResource Primary}" Content="Verbinden" MinWidth="96" Click="Connect_Click"/>
+          <TextBlock x:Name="ConnectHint" Grid.Column="1" Style="{StaticResource Small}" Margin="10,0,0,0" VerticalAlignment="Center"/>
+        </Grid>
+        <Border x:Name="Msg3" Style="{StaticResource StepMessage}">
+          <DockPanel>
+            <ContentControl x:Name="MsgIcon3" DockPanel.Dock="Left" Margin="0,1,8,0" VerticalAlignment="Top" Focusable="False"/>
+            <TextBlock x:Name="MsgText3" TextWrapping="Wrap" FontSize="12"/>
+          </DockPanel>
+        </Border>
+        <!-- Nichts gefunden bzw. keine Antwort: Windows-Gründe und Knopf zu den WLAN-Einstellungen -->
+        <local:NetworkHelp x:Name="Help3"/>
+      </StackPanel>
+    </Border>
+  </StackPanel>
+</UserControl>

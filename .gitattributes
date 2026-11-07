@@ -1,0 +1,10 @@
+# Mac und Windows teilen den Code: überall LF, sonst laufen die zsh-Skripte (build_app.sh, test.sh) nicht.
+* text=auto eol=lf
+*.ps1 text eol=lf
+*.icns binary
+*.png binary
+*.ico binary
+*.zip binary
+*.sqlite binary
+# Mitgelieferte SQLite-Amalgamation: fremder Code, zählt nicht für die Sprachstatistik von GitHub.
+Sources/CSQLite/** linguist-vendored

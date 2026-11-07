@@ -1,0 +1,54 @@
+# Build-Ausgaben und Werkzeug-Ordner (Build-Artefakte gehören nie ins Repo bzw. in einen Cloud-Ordner, siehe AGENTS.md)
+.build
+.swiftpm/
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+DerivedData/
+*.xcresult
+dist/
+# Release-Ordner zum Hochladen (tools/make_release.py), Pakete gehören an das GitHub-Release, nicht ins Repo
+releases/
+# .NET (Windows-Oberfläche)
+bin/
+obj/
+.vs/
+*.user
+*.suo
+TestResults/
+*.trx
+# Rechner-, Sitzungs- und Sync-Dateien
+.DS_Store
+Thumbs.db
+desktop.ini
+.agent-lock
+*.tmp
+*.swp
+__pycache__/
+*~
+# Package.resolved wird bewusst eingecheckt (legt swift-crypto und swift-asn1 fest).
+# Private Daten: alles, was den Autor persönlich identifiziert oder Schlüssel enthält, liegt in _privat/ und kommt nie ins Repo.
+_privat/
+# Agenten-Einstiege, die auch auf _privat/AGENTS.md verweisen (öffentlich ist AGENTS.md)
+CLAUDE.md
+CODEX.md
+# Daten der App und Protokolle, falls jemand sie ins Projekt kopiert
+device.json
+verlauf.sqlite*
+verlauf*.csv
+*.log
+# Zertifikate und Schlüssel (auch der private Update-Schlüssel und Sicherungen mit Token/Schlüssel der Anlage)
+*privatschluessel*
+*private-key*
+klimacontrol-sicherung*.json
+Klimacontrol-Sicherung*.json
+*.pem
+*.p8
+*.p12
+*.pfx
+*.key
+*.cer
+*.certSigningRequest
+*.mobileprovision
+# Editor-Einstellungen (VS Code, Swift-Erweiterung) – je Rechner verschieden
+.vscode/
