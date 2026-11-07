@@ -9,7 +9,7 @@ public struct ReleaseNote: Equatable, Sendable {
     }
 
     public let version: String
-    /// nil bei „in Arbeit“.
+    /// nil bei „in Arbeit“ bzw. „in progress“.
     public let date: String?
     public let sections: [Section]
 }
@@ -48,7 +48,7 @@ public enum ReleaseNotes {
                 version = String(line[line.index(line.startIndex, offsetBy: 4)..<end])
                 let rest = line[line.index(after: end)...].trimmingCharacters(in: .whitespaces)
                 let stamp = rest.drop { $0 == "–" || $0 == "-" || $0 == " " }
-                date = stamp.isEmpty || stamp == "in Arbeit" ? nil : String(stamp)
+                date = stamp.isEmpty || stamp == "in Arbeit" || stamp == "in progress" ? nil : String(stamp)
                 open = false
             } else if version == nil {
                 continue
@@ -102,18 +102,22 @@ public enum ReleaseNotes {
         }
     }
 
-    /// Versionsnummer als vier Zahlen; nil, wenn sie anders aufgebaut ist.
-    static func numbers(_ version: String) -> [Int]? {
-        let parts = version.split(separator: ".", omittingEmptySubsequences: false).map { Int($0) }
-        guard !parts.isEmpty, parts.allSatisfy({ $0 != nil }) else { return nil }
-        var n = parts.compactMap { $0 }
-        while n.count < 4 { n.append(0) }
-        return n
+    /// Abschnitte für die Anzeige in `language`: Deutsch aus `changelog`; Englisch aus `changelogEnglish`, wobei jede
+    /// Version ohne englischen Abschnitt deutsch erscheint, mit `UIText.whatsNewGermanOnly` als erstem Abschnitt
+    /// (Titel leer).
+    public static func all(for language: AppLanguage) -> [ReleaseNote] {
+        let german = parse(changelog)
+        guard language == .en else { return german }
+        return merged(german: german, english: parse(changelogEnglish), hint: UIText.whatsNewGermanOnly)
     }
 
-    static func compare(_ a: [Int], _ b: [Int]) -> Int {
-        for (x, y) in zip(a, b) where x != y { return x < y ? -1 : 1 }
-        return 0
+    /// Kern von `all(for:)`: Reihenfolge und Versionen nach `german`; Versionen nur in `english` fallen weg.
+    static func merged(german: [ReleaseNote], english: [ReleaseNote], hint: String) -> [ReleaseNote] {
+        german.map { note in
+            if let en = english.first(where: { $0.version == note.version }) { return en }
+            return ReleaseNote(version: note.version, date: note.date,
+                               sections: [.init(title: "", items: [hint])] + note.sections)
+        }
     }
 }
 
@@ -125,22 +129,19 @@ public enum WhatsNew {
     ///   - usedBefore: eine Anlage ist schon eingerichtet.
     /// - Returns: Abschnitte von `lastSeen` (ausgeschlossen) bis `current`, neueste zuerst; leer, wenn nichts zu zeigen ist.
     public static func pending(lastSeen: String?, current: String, usedBefore: Bool, notes: [ReleaseNote]) -> [ReleaseNote] {
-        guard let cur = ReleaseNotes.numbers(current), lastSeen != current else { return [] }
-        guard notes.contains(where: { ReleaseNotes.numbers($0.version).map { ReleaseNotes.compare($0, cur) == 0 } ?? false })
-        else { return [] }
+        guard let cur = AppVersion(current)?.base, lastSeen != current else { return [] }
+        guard notes.contains(where: { AppVersion($0.version) == cur }) else { return [] }
         let range: [ReleaseNote]
-        if let seen = lastSeen.flatMap(ReleaseNotes.numbers) {
+        if let seen = lastSeen.flatMap(AppVersion.init)?.base {
             range = notes.filter {
-                guard let v = ReleaseNotes.numbers($0.version) else { return false }
-                return ReleaseNotes.compare(v, seen) > 0 && ReleaseNotes.compare(v, cur) <= 0
+                guard let v = AppVersion($0.version) else { return false }
+                return v > seen && v <= cur
             }
         } else if usedBefore {
-            range = notes.filter { ReleaseNotes.numbers($0.version).map { ReleaseNotes.compare($0, cur) == 0 } ?? false }
+            range = notes.filter { AppVersion($0.version) == cur }
         } else {
             return []
         }
-        return range.sorted {
-            ReleaseNotes.compare(ReleaseNotes.numbers($0.version) ?? [], ReleaseNotes.numbers($1.version) ?? []) > 0
-        }
+        return range.sorted { (AppVersion($0.version) ?? cur) > (AppVersion($1.version) ?? cur) }
     }
 }

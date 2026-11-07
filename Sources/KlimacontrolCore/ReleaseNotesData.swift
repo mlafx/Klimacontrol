@@ -1,4 +1,4 @@
-// Erzeugt von tools/sync_release_notes.py aus CHANGELOG.md – nicht von Hand ändern.
+// Erzeugt von tools/sync_release_notes.py aus CHANGELOG.md und CHANGELOG.en.md – nicht von Hand ändern.
 
 extension ReleaseNotes {
     static let changelog = #"""
@@ -65,4 +65,7 @@ Erste öffentliche Fassung für Mac und Windows.
   Das Setup ist nicht von Microsoft signiert, darum warnt Windows beim ersten Start („Weitere Informationen“ →
   „Trotzdem ausführen“); die Updates selbst sind signiert und werden geprüft.
 """#
+
+    /// Leer, solange es CHANGELOG.en.md nicht gibt.
+    static let changelogEnglish = ""
 }

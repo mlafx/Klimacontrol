@@ -19,6 +19,12 @@ public enum SettingsKey {
     public static let refreshSeconds = "refreshSeconds"
     public static let pricePerKWh = "pricePerKWh"
     public static let connectionMode = "connectionMode"
+    /// Windows: gewählte Sprache "system", "de" oder "en" (wirkt nach Neustart). Mac: Sprache über AppleLanguages der App.
+    public static let language = "language"
+    /// Währung des Strompreises (1–3 Zeichen, Standard „€“).
+    public static let currency = "currency"
+    /// Mac: Vorabversionen (Beta) über die Beta-Update-Datei beziehen (Standard aus).
+    public static let updateBetaChannel = "updateBetaChannel"
     public static let beep = "beep"
     public static let timerOffAt = "timerOffAt"
     public static let timerOnAt = "timerOnAt"

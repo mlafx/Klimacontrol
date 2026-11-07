@@ -52,13 +52,46 @@ extension ACController {
         restartPolling()
     }
 
-    /// Strompreis je kWh in Euro (0–10).
+    /// Strompreis je kWh (0–1000, Währung siehe `currency`).
     public var pricePerKWh: Double {
         get { storedPrice }
         set {
             guard let price = Self.validPrice(newValue) else { return }
             storedPrice = price
             settings.set(price, forKey: SettingsKey.pricePerKWh)
+        }
+    }
+
+    /// Währung des Strompreises, immer nachgestellt. Ungültige Werte werden ignoriert (Oberfläche zeigt `currencyHint`).
+    public var currency: String {
+        get { storedCurrency }
+        set {
+            guard let value = Self.validCurrency(newValue), value != storedCurrency else { return }
+            storedCurrency = value
+            settings.set(value, forKey: SettingsKey.currency)
+            AppLog.write("Währung: \(value)")
+        }
+    }
+
+    /// Gespeicherte Sprachwahl; ändert die laufende Sprache nicht (wirkt nach Neustart).
+    public var languageChoice: LanguageChoice {
+        get { storedLanguage }
+        set {
+            guard newValue != storedLanguage else { return }
+            storedLanguage = newValue
+            settings.set(newValue.rawValue, forKey: SettingsKey.language)
+            AppLog.write("Sprache nach Neustart: \(newValue.rawValue)")
+        }
+    }
+
+    /// Mac: Beta-Kanal der Updates.
+    public var updateBetaChannel: Bool {
+        get { storedBetaChannel }
+        set {
+            guard newValue != storedBetaChannel else { return }
+            storedBetaChannel = newValue
+            settings.set(newValue, forKey: SettingsKey.updateBetaChannel)
+            AppLog.write("Vorabversionen: \(newValue ? "an" : "aus")")
         }
     }
 
@@ -100,5 +133,13 @@ extension ACController {
     static func clampRefresh(_ v: Int) -> Int { min(UIOptions.refreshMax, max(UIOptions.refreshMin, v)) }
     public static func validPrice(_ v: Double?) -> Double? { v.flatMap { $0.isFinite && ($0 >= UIOptions.priceMin && $0 <= UIOptions.priceMax) ? $0 : nil } }
     /// Meldung für einen Strompreis außerhalb von `validPrice` (beide Oberflächen).
-    public static let priceHint = "Der Strompreis muss zwischen 0 und 10 € je kWh liegen. Bitte korrigieren. (price)"
+    public static var priceHint: String { L.Settings.Price.invalid }
+    public static var currencyHint: String { L.Settings.Currency.invalid }
+    /// Gültige Währung (getrimmt) oder nil: 1…`currencyMaxLength` Zeichen, nur Buchstaben oder Währungszeichen.
+    public static func validCurrency(_ text: String?) -> String? {
+        guard let value = text?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !value.isEmpty, value.count <= UIOptions.currencyMaxLength else { return nil }
+        let allowed: Set<Unicode.GeneralCategory> = [.uppercaseLetter, .lowercaseLetter, .titlecaseLetter, .modifierLetter, .otherLetter, .currencySymbol]
+        return value.unicodeScalars.allSatisfy { allowed.contains($0.properties.generalCategory) } ? value : nil
+    }
 }

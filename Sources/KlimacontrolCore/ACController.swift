@@ -99,6 +99,9 @@ public final class ACController {
     var storedRefreshSeconds: Int
     var storedPrice: Double
     var storedMode: ConnectionMode
+    var storedCurrency: String
+    var storedLanguage: LanguageChoice
+    var storedBetaChannel: Bool
     var storedBeep: Bool
     /// Darstellung (beobachtet); ändern nur über `setAppearance`/`applyTheme`/`resetAppearance`.
     public internal(set) var appearance: Appearance = .standard
@@ -197,6 +200,9 @@ public final class ACController {
         storedPrice = Self.validPrice(stored.object(forKey: SettingsKey.pricePerKWh) as? Double) ?? 0.30
         // Alte Bluetooth-Werte („ble“, „blePreferred“) werden zu „Automatisch“.
         storedMode = ConnectionMode(stored: stored.object(forKey: SettingsKey.connectionMode) as? String)
+        storedCurrency = Self.validCurrency(stored.object(forKey: SettingsKey.currency) as? String) ?? UIOptions.currencyDefault
+        storedLanguage = LanguageChoice(stored: stored.object(forKey: SettingsKey.language) as? String)
+        storedBetaChannel = stored.object(forKey: SettingsKey.updateBetaChannel) as? Bool ?? false
         storedBeep = stored.object(forKey: SettingsKey.beep) as? Bool ?? true
         appearance = Self.loadAppearance(from: stored)
         credentialsBackedUp = stored.object(forKey: SettingsKey.credentialsBackedUp) as? Bool ?? false

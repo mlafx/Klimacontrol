@@ -131,4 +131,62 @@ final class ReleaseNotesTests: CoreTestCase {
         let mac = try XCTUnwrap(ReleaseNotes.notes([note], for: .mac).first)
         XCTAssertFalse(mac.sections.flatMap(\.items).isEmpty)
     }
+
+    func testInProgressInEnglish() {
+        XCTAssertNil(ReleaseNotes.parse("## [1.2.0.0] – in progress\n### Added\n- A.").first?.date)
+        XCTAssertEqual(ReleaseNotes.parse("## [1.2.0.0] – 2026-12-01\n### Added\n- A.").first?.date, "2026-12-01")
+    }
+
+    func testPendingWithBetas() {
+        let notes = ReleaseNotes.parse(sample)
+        func versions(_ seen: String?, _ current: String, used: Bool = true) -> [String] {
+            WhatsNew.pending(lastSeen: seen, current: current, usedBefore: used, notes: notes).map(\.version)
+        }
+        XCTAssertEqual(versions("1.0.1.1", "1.0.1.2b1"), ["1.0.1.2"])
+        XCTAssertEqual(versions("1.0.1.2b1", "1.0.1.2b2"), [])
+        XCTAssertEqual(versions("1.0.1.2b2", "1.0.1.2"), [])
+        XCTAssertEqual(versions(nil, "1.0.1.2b1", used: false), [])
+    }
+
+    private var englishSample: String {
+        "## [1.0.1.2] – in progress\n\n### Added\n- English item.\n"
+    }
+
+    func testMergedFallsBackToGerman() throws {
+        let merged = ReleaseNotes.merged(german: ReleaseNotes.parse(sample), english: ReleaseNotes.parse(englishSample), hint: "H")
+        XCTAssertEqual(merged.map(\.version), ["1.0.1.2", "1.0.1.1", "1.0.0.0"])
+        XCTAssertEqual(merged[0].sections.map(\.title), ["Added"])
+        XCTAssertEqual(merged[1].sections[0].title, "")
+        XCTAssertEqual(merged[1].sections[0].items, ["H"])
+        XCTAssertEqual(merged[1].sections[1].title, "Geändert")
+    }
+
+    func testHintSurvivesPlatformFilter() {
+        let merged = ReleaseNotes.merged(german: ReleaseNotes.parse(sample), english: [], hint: "H")
+        let mac = ReleaseNotes.notes(merged, for: .mac)
+        XCTAssertEqual(mac.first?.sections.first?.items, ["H"])
+    }
+
+    func testEmbeddedEnglishChangelogMatchesFile() throws {
+        let url = root.appendingPathComponent("CHANGELOG.en.md")
+        if FileManager.default.fileExists(atPath: url.path) {
+            let file = try String(contentsOf: url, encoding: .utf8)
+                .replacingOccurrences(of: "\r\n", with: "\n").trimmingCharacters(in: .newlines)
+            XCTAssertEqual(ReleaseNotes.changelogEnglish, file, "Neu erzeugen: python3 tools/sync_release_notes.py")
+        } else {
+            XCTAssertEqual(ReleaseNotes.changelogEnglish, "")
+        }
+    }
+
+    func testWhatsNewFollowsLanguage() {
+        Localizer.withLanguage(.en) {
+            let english = ReleaseNotes.all(for: .en)
+            XCTAssertEqual(english.map(\.version), ReleaseNotes.parse(ReleaseNotes.changelog).map(\.version))
+            if ReleaseNotes.changelogEnglish.isEmpty {
+                for note in english {
+                    XCTAssertEqual(note.sections.first?.items.first, "Release notes for this version are available in German only.")
+                }
+            }
+        }
+    }
 }

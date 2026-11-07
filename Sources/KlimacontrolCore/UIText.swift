@@ -96,9 +96,10 @@ public enum UIText {
 
     // MARK: Neu in dieser Version
 
-    public static func whatsNewTitle(version: String) -> String { "Neu in Klimacontrol \(version)" }
-    public static func whatsNewVersionHeading(_ version: String) -> String { "Version \(version)" }
-    public static let whatsNewOK = "OK"
+    public static func whatsNewTitle(version: String) -> String { L.WhatsNew.title(version: version) }
+    public static func whatsNewVersionHeading(_ version: String) -> String { L.WhatsNew.versionHeading(version: version) }
+    public static var whatsNewOK: String { L.WhatsNew.ok }
+    public static var whatsNewGermanOnly: String { L.WhatsNew.germanOnly }
 
     // MARK: Sicherung einlesen
 

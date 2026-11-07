@@ -1,30 +1,104 @@
 import Foundation
 import MideaKit
 
-/// Zahlen und Kurztexte auf Deutsch – in allen Oberflächen gleich.
+/// Zahlen und Kurztexte – in allen Oberflächen gleich; Trennzeichen und Uhrzeit folgen dem `FormatProfile`.
 public enum Fmt {
-    public static let locale = Locale(identifier: "de_DE")
+    /// Locale des aktuellen Profils (nur noch für Eingabefelder der Mac-Oberfläche).
+    public static var locale: Locale { FormatProfile.current.locale }
 
-    public static func num(_ v: Double, _ digits: Int) -> String {
-        v.formatted(.number.precision(.fractionLength(digits)).locale(locale))
+    private static let neutral = Locale(identifier: "en_US")
+
+    /// Gruppen zu je drei Stellen; Sonderfälle wie die indische Gruppierung sind bewusst nicht abgebildet.
+    public static func num(_ v: Double, _ digits: Int, profile: FormatProfile = .current) -> String {
+        let text = v.formatted(.number.precision(.fractionLength(digits)).locale(neutral))
+        var out = ""
+        for ch in text {
+            switch ch {
+            case ",": out += profile.groupingSeparator
+            case ".": out += profile.decimalSeparator
+            default: out.append(ch)
+            }
+        }
+        return out
     }
 
-    public static func temp(_ v: Double?) -> String { v.map { num($0, 1) + "°" } ?? "–" }
+    public static func temp(_ v: Double?, profile: FormatProfile = .current) -> String {
+        v.map { num($0, 1, profile: profile) + "°" } ?? "–"
+    }
+
     /// Solltemperatur: nur ganze Grad.
-    public static func target(_ v: Double) -> String { num(v.rounded(), 0) + "°" }
+    public static func target(_ v: Double, profile: FormatProfile = .current) -> String {
+        num(v.rounded(), 0, profile: profile) + "°"
+    }
+
+    public static func watts(_ v: Double?, profile: FormatProfile = .current) -> String {
+        v.map { num($0, 0, profile: profile) + " W" } ?? "–"
+    }
+
+    public static func kwh(_ v: Double?, profile: FormatProfile = .current) -> String {
+        v.map { num($0, 2, profile: profile) + " kWh" } ?? "–"
+    }
+
+    /// Betrag mit nachgestellter Währung: "0,30 €", "0.30 CHF"; nil → "–".
+    public static func money(_ v: Double?, currency: String, profile: FormatProfile = .current) -> String {
+        v.map { num($0, 2, profile: profile) + " " + currency } ?? "–"
+    }
+
+    public static func euro(_ v: Double?, profile: FormatProfile = .current) -> String {
+        money(v, currency: "€", profile: profile)
+    }
+
+    /// Uhrzeit: 24 h "14:32"; 12 h "2:32 PM", "12:05 AM" (Stunde ohne führende Null).
+    public static func clock(_ d: Date, calendar: Calendar = .current, profile: FormatProfile = .current) -> String {
+        let c = calendar.dateComponents([.hour, .minute], from: d)
+        let h = c.hour ?? 0
+        let minutes = pad(c.minute ?? 0)
+        if profile.uses24HourClock { return pad(h) + ":" + minutes }
+        let symbol = h < 12 ? profile.amSymbol : profile.pmSymbol
+        let fallback = h < 12 ? "AM" : "PM"
+        return "\(h % 12 == 0 ? 12 : h % 12):\(minutes) \(symbol.isEmpty ? fallback : symbol)"
+    }
+
+    /// Tag und Monat nach `dayMonthPattern`: "03.11.", "11/03".
+    public static func dayMonth(_ d: Date, calendar: Calendar = .current, profile: FormatProfile = .current) -> String {
+        let c = calendar.dateComponents([.day, .month], from: d)
+        let chars = Array(profile.dayMonthPattern)
+        var out = ""
+        var i = 0
+        while i < chars.count {
+            let ch = chars[i]
+            if ch == "'" {
+                i += 1
+                while i < chars.count, chars[i] != "'" {
+                    out.append(chars[i])
+                    i += 1
+                }
+                i += 1
+            } else if ch == "d" || ch == "M" || ch == "L" {
+                var run = 0
+                while i < chars.count, chars[i] == ch {
+                    run += 1
+                    i += 1
+                }
+                let value = ch == "d" ? (c.day ?? 0) : (c.month ?? 0)
+                out += run == 1 ? "\(value)" : pad(value)
+            } else {
+                out.append(ch)
+                i += 1
+            }
+        }
+        return out
+    }
 
     /// „Stand 14:32“ bzw. „Stand 03.11., 14:32“ (nicht von heute) – für Werte, die nicht mehr live sind.
-    public static func stand(_ d: Date, now: Date = Date(), calendar: Calendar = .current) -> String {
-        let c = calendar.dateComponents([.day, .month, .hour, .minute], from: d)
-        let clock = pad(c.hour ?? 0) + ":" + pad(c.minute ?? 0)
-        guard !calendar.isDate(d, inSameDayAs: now) else { return "Stand " + clock }
-        return "Stand " + pad(c.day ?? 0) + "." + pad(c.month ?? 0) + "., " + clock
+    public static func stand(_ d: Date, now: Date = Date(), calendar: Calendar = .current,
+                             profile: FormatProfile = .current) -> String {
+        let time = clock(d, calendar: calendar, profile: profile)
+        guard !calendar.isDate(d, inSameDayAs: now) else { return "Stand " + time }
+        return "Stand " + dayMonth(d, calendar: calendar, profile: profile) + ", " + time
     }
 
     private static func pad(_ v: Int) -> String { v < 10 ? "0\(v)" : "\(v)" }
-    public static func watts(_ v: Double?) -> String { v.map { num($0, 0) + " W" } ?? "–" }
-    public static func kwh(_ v: Double?) -> String { v.map { num($0, 2) + " kWh" } ?? "–" }
-    public static func euro(_ v: Double?) -> String { v.map { num($0, 2) + " €" } ?? "–" }
 
     /// Was sich zwischen zwei Zuständen geändert hat, fürs Protokoll („ein, Modus Kühlen, Soll 22°“).
     public static func change(from a: ACState, to b: ACState) -> String {

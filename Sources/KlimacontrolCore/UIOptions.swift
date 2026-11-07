@@ -38,7 +38,9 @@ public enum UIOptions {
     // MARK: Strompreis
 
     public static let priceMin = 0.0
-    public static let priceMax = 10.0
+    public static let priceMax = 1000.0
+    public static let currencyDefault = "€"
+    public static let currencyMaxLength = 3
     public static let priceFractionDigitsMin = 2
     public static let priceFractionDigitsMax = 4
 

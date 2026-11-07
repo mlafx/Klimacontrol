@@ -7,6 +7,9 @@ public enum AppUpdate {
     public static let repository = "https://github.com/mlafx/Klimacontrol"
     public static let releasesPage = repository + "/releases"
     public static let feedMac = repository + "/releases/latest/download/updateinfo-mac.xml"
+    /// Beta-Kanal (nur Mac): feste Update-Datei am Vorabrelease „beta“, nie unter latest.
+    public static let feedMacBeta = repository + "/releases/download/beta/updateinfo-mac-beta.xml"
+    public static func feedMac(beta: Bool) -> String { beta ? feedMacBeta : feedMac }
     public static let feedWindows = repository + "/releases/latest/download/updateinfo-win.xml"
     /// Standard: automatisch einmal am Tag suchen.
     public static let checkInterval = 86_400

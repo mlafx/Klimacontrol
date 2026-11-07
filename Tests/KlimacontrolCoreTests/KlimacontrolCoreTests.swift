@@ -88,7 +88,7 @@ final class KlimacontrolCoreTests: CoreTestCase {
 
     func testStoredValuesOutOfRangeAreClampedOnLoad() {
         settings.values[SettingsKey.refreshSeconds] = 0
-        settings.values[SettingsKey.pricePerKWh] = 999.0
+        settings.values[SettingsKey.pricePerKWh] = 1001.0
         let c = makeController()
         XCTAssertEqual(c.refreshSeconds, 1)
         XCTAssertEqual(c.pricePerKWh, 0.30)

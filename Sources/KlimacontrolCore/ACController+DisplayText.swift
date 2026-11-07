@@ -174,7 +174,7 @@ extension ACController {
     /// Zuletzt bekannte Werte (höchstens 7 Tage alt); `sample` = `lastKnown` oder letzter Verlaufspunkt.
     public func startupValues(from sample: HistorySample?, now: Date) -> StartupValues? {
         guard let s = sample, now.timeIntervalSince(s.time) < 7 * 86400 else { return nil }
-        let main = s.on && s.target != nil ? s.target.map(Fmt.target) ?? "–" : Fmt.temp(s.indoor)
+        let main = s.on && s.target != nil ? s.target.map { Fmt.target($0) } ?? "–" : Fmt.temp(s.indoor)
         let stand = Fmt.stand(s.time, now: now)
         var extras: [String] = []
         if s.on { extras.append("Raum \(Fmt.temp(s.indoor))") }

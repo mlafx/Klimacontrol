@@ -18,6 +18,14 @@ final class AppUpdateTests: XCTestCase {
         XCTAssertEqual(AppUpdate.checkInterval, 86_400, "Standard: einmal am Tag")
     }
 
+    func testBetaFeed() {
+        XCTAssertEqual(AppUpdate.feedMacBeta, "https://github.com/mlafx/Klimacontrol/releases/download/beta/updateinfo-mac-beta.xml")
+        XCTAssertFalse(AppUpdate.feedMacBeta.contains("/latest/"))
+        XCTAssertEqual(AppUpdate.feedMac(beta: false), AppUpdate.feedMac)
+        XCTAssertEqual(AppUpdate.feedMac(beta: true), AppUpdate.feedMacBeta)
+        XCTAssertEqual(AppUpdate.feedMac, "https://github.com/mlafx/Klimacontrol/releases/latest/download/updateinfo-mac.xml")
+    }
+
     func testMacBuildScriptUsesTheSameFeedIntervalAndKey() throws {
         let script = try String(contentsOf: root.appendingPathComponent("tools/build_app.sh"), encoding: .utf8)
         XCTAssertTrue(script.contains("<key>SUFeedURL</key><string>\(AppUpdate.feedMac)</string>"))
