@@ -228,10 +228,10 @@ Vertrag in Abschnitt 8.
 | `KlimacontrolTray/ConnectingView.*` | Anzeige „verbindet …“ beim Start |
 | `KlimacontrolTray/Appearance.cs`, `Theme.cs`, `Backdrop.cs`, `AmbientLayer.cs`, `Surface.cs`, `SizeScale.cs`, `Layout.cs` | Darstellung (Mica/Acrylic, Themen, Größen, Effekte) |
 | `KlimacontrolTray/Prefs.cs`, `Shortcuts.cs`, `Dialogs.cs`, `DialogWindow.cs`, `ClickCheckBox.cs` | Fenster-Einstellungen, Tastenkürzel (Strg+Alt+K), Dialoge, Haken mit Click auch per Sprachausgabe |
-| `KlimacontrolTray/Updates.cs` | WinSparkle (Updates): Feed und Intervall aus dem Kern, Schlüssel aus `tools/UPDATE_PUBLIC_KEY`, nur bei Setup-Installation aktiv |
+| `KlimacontrolTray/Updates.cs` | WinSparkle (Updates): Feed und Intervall aus dem Kern, Schlüssel aus `tools/UPDATE_PUBLIC_KEY`, nur bei Setup-Installation aktiv; `KLIMACONTROL_UPDATE_TEST_FEED` (nur `http://127.0.0.1:<port>/…`) biegt den Feed zum Prüfen um (`TestFeedOverride`) |
 | `KlimacontrolTray/Klimacontrol.ico` | Programmsymbol (aus `tools/AppIcon.icns`, `tools/make_ico.ps1`) |
 | `installer/Klimacontrol.iss` | Setup (Inno Setup 6): ohne Administratorrechte nach `%LOCALAPPDATA%\Programs\Klimacontrol`, Startmenü und Desktop |
-| `KlimacontrolTray.Tests/` | `CoreTests`, `LayoutTests`, `ThemeTests`, `AppearanceTextTests`, `LocalizationTests`, `VertragTests` + `Vertrag/bridge-muster.json` |
+| `KlimacontrolTray.Tests/` | `CoreTests`, `LayoutTests`, `ThemeTests`, `AppearanceTextTests`, `LocalizationTests`, `UpdatesTests` (Test-Feed nur Loopback), `VertragTests` + `Vertrag/bridge-muster.json` |
 
 ### 2.6 `tools/`
 
@@ -244,6 +244,7 @@ Vertrag in Abschnitt 8.
 | `test_make_release.py` | Selbsttest für `make_release.py` mit Probedateien und nachgebildetem `sign_update` (`python3 -I tools/test_make_release.py`; läuft auch in `ReleaseScriptTests`) |
 | `update_test_feed.py` | lokale, signierte Update-Datei zum Prüfen der Updates vor dem Release (Abschnitt 14.1); `--serve-only <Ordner>` liefert einen vorhandenen Ordner nur aus |
 | `UPDATE_PUBLIC_KEY` | öffentlicher EdDSA-Schlüssel der Updates (Mac: Info.plist, Windows: WinSparkle) |
+| `update_test_feed_win.py` | lokale, mit dem Update-Schlüssel signierte `updateinfo-win.xml` samt Setup für Windows-Updates (nur 127.0.0.1; `--unsigned`, `--bad-signature`, `--serve`, `--selftest`); Aufruf im Kopf des Skripts, Abschnitt 14.1 |
 | `check_windows_upgrade.ps1` | Windows, nur lesend: Zustand einer Setup-Installation vor und nach einem Update festhalten und vergleichen (D3/2); **nur ASCII** |
 | `build_windows.ps1` | Windows: Swift-Kern + DLL + WPF-App bauen, alle Tests, optional ZIP, Setup, Installation; **nur ASCII** (PowerShell 5.1) |
 | `make_ico.ps1` | Windows-Programmsymbol `Klimacontrol.ico` aus `AppIcon.icns` erzeugen |
@@ -311,6 +312,8 @@ baut es trotzdem. Keine `.swiftpm/`-, `*.xcodeproj`- oder sonstigen Werkzeug-Ord
 | `KLIMACONTROL_SIGN_IDENTITY` | Signatur-Identität für `build_app.sh` (`-` = ad hoc) |
 | `KLIMACONTROL_NOTARY_PROFILE` | notarytool-Profil im Schlüsselbund → `build_app.sh` notarisiert und heftet das Ticket an |
 | `KLIMACONTROL_PSEUDO=1` | Pseudo-Sprache (Testsprache, 13.2) statt Deutsch/Englisch – nur zum Prüfen der Oberfläche |
+| `KLIMACONTROL_CULTURE` | Windows: Kultur (z. B. `en-US`) für Formate und Anzeigesprache statt der Windows-Einstellung – nur zum Prüfen; ungültige Werte werden ignoriert |
+| `KLIMACONTROL_UPDATE_TEST_FEED` | Windows: Update-Feed für WinSparkle, nur `http://127.0.0.1:<port>/…` (sonst wirkungslos) – nur zum Prüfen der Updates (14.1), **nie dauerhaft setzen** |
 
 ---
 
@@ -819,7 +822,8 @@ nach einem neuen Build nicht erneut nach Freigaben (Netzwerk, Schlüsselbund); a
 - Ablage `%LOCALAPPDATA%\Klimacontrol` (nicht Roaming – Token/Schlüssel sollen nicht auf andere Rechner wandern).
 - Geheimnisse in der Windows-Anmeldeinformationsverwaltung.
 - `tools/build_windows.ps1` muss **reines ASCII** bleiben (Windows PowerShell 5.1 liest UTF-8 ohne BOM als ANSI).
-- Tests: `KlimacontrolTray.Tests` (Kern-Hülle, Layout, Themen, Bridge-Vertrag) laufen in `build_windows.ps1` mit.
+- Tests: `KlimacontrolTray.Tests` (Kern-Hülle, Layout, Themen, Texte, Updates, Bridge-Vertrag) laufen in `build_windows.ps1` mit.
+- Sprachen: Oberfläche deutsch und englisch aus dem Katalog des Kerns (`Localization.cs`, `{l:T …}`), Formate aus den Regionseinstellungen (`Formats.cs`); Texte vor dem Laden des Katalogs in `StartupText.cs`. Die Sprachwahl wirkt nach einem Neustart: Die App startet sich mit `--restart` selbst neu (ohne Rückfrage zu Timern). Das Setup ist zweisprachig (Deutsch/Englisch nach Anzeigesprache von Windows, kein Sprachdialog).
 - **Keine Spuren des Bau-Rechners im Paket:** Die ausgelieferte `KlimacontrolBridge.dll` wird mit `-gnone`,
   `/DEBUG:NONE` und Prefix-Maps gebaut und danach mit `llvm-strip --strip-debug` von eingebetteten DWARF-Abschnitten
   befreit; .NET-Release ohne PDB, mit `PathMap`, `Deterministic` und `ContinuousIntegrationBuild`. Vor ZIP und Setup
@@ -866,9 +870,8 @@ MideaKit-Tests als am Mac (zuletzt 125 statt 132), weil einige nur auf Darwin ü
 | `KlimacontrolBridgeTests` | `BridgeDisplayTests` (Katalog-Felder), `BridgeContractTests`: jedes Feld des echten Schnappschusses steht in `bridge-muster.json` (Gegenrichtung zu `VertragTests`); `BridgeCommandTests`: Parametertypen, Meldungen, Befehlsnamen gegen `Cmd` in C#; `BridgeEnergyTests` (`kc_energy_json`), `BridgeLocaleTests` (`kc_set_locale`, `kc_strings_json`, Befehle `language`/`currency`), `BridgeEnglishTests`, `BridgeWhatsNewTests` |
 | Windows (C#) | `CoreTests`, `LayoutTests`, `ThemeTests`, `AppearanceTextTests` (Darstellung wie am Mac), `LocalizationTests` (Textschlüssel und Katalog), `VertragTests` (Schnappschuss, Befehlsnamen, Anzeige-Katalog, keine eigenen Listen/Grenzen in der Oberfläche) |
 
-Stand zuletzt: Mac 558 Tests (MideaKit 136, Kern 381, Bridge 41; 2 übersprungen, beide bewusst: Live-Scan, echter
-Schlüsselbund). Windows zuletzt 382 Swift + 146 C# (MideaKit 125, Kern 229, Bridge 28 mit `WindowsTimeZoneTests`;
-Windows noch nicht neu gezählt). Zeitzonen-Tests nehmen eine feste Zone (`TimeZone(identifier:)`) oder die Ortszeit über
+Stand zuletzt: Mac 560 Tests (MideaKit 137, Kern 382, Bridge 41; 2 übersprungen, beide bewusst: Live-Scan, echter
+Schlüsselbund). Windows zuletzt 553 Swift + 278 C# (MideaKit 130, Kern 380, Bridge 43). Zeitzonen-Tests nehmen eine feste Zone (`TimeZone(identifier:)`) oder die Ortszeit über
 `Calendar.current.timeZone`. Die Rundungstabelle `Tests/Shared/rounding-table.json` liest Swift (`#filePath`, keine
 Ressource) und C# gemeinsam.
 
@@ -1155,6 +1158,7 @@ Muster: „What happened. What to do. (code)“. „Klimacontrol“ und „Porta
 - **Testaufbau D3/1 und D3/3:** `tools/update_test_feed.py` stellt eine lokale, echt signierte Update-Datei bereit, mit der
   das originale DMG der vorigen Fassung auf die neue (bzw. die Probe-Fassung) aktualisiert wird; Aufruf und Optionen
   stehen im Kopf des Skripts.
+- **Testaufbau D3/2 und D3/3 (Windows):** `tools/update_test_feed_win.py` (Aufruf im Kopf) liefert Setup und signierte `updateinfo-win.xml` auf `http://127.0.0.1:<port>/`; `tools/check_windows_upgrade.ps1` hält den Zustand vor und nach dem Update fest und vergleicht. 1.1.0.0 kennt keinen Test-Feed: 1.1.0.0 → 1.2.0.0 wird über die WinSparkle-Schalter (Registry) ausgelöst. Ab 1.2.0.0 gilt der echte Weg über `KLIMACONTROL_UPDATE_TEST_FEED`. WinSparkle prüft die Signatur des Setups, nicht die der Update-Datei. Ein über WinSparkle geladenes Setup zeigt keine SmartScreen-Warnung, nur der Browser-Download bei der Erstinstallation.
 
 #### Schutz der installierten Fassungen (Pflicht bei jedem Release)
 
@@ -1181,7 +1185,7 @@ Region, Mac „Jetzt neu starten · Später“.
    (`defaults write de.mlafx.klimacontrol SUFeedURL …`, danach `defaults delete de.mlafx.klimacontrol SUFeedURL`),
    lokale, echt signierte Update-Datei. Prüfen: still installiert, Neustart, „Neu in …“, Einstellungen erhalten, keine
    neuen Rückfragen.
-2. Windows: vorige Fassung → neue Fassung: kein Sprachdialog im Setup, gleicher Ordner, kein zweiter
+2. Windows: vorige Fassung → neue Fassung (1.1.0.0 → 1.2.0.0 über WinSparkle-Schalter, später über den Test-Feed): kein Sprachdialog im Setup, gleicher Ordner, kein zweiter
    Uninstall-Eintrag, Autostart unverändert.
 3. Neue Fassung → Probe-Fassung (nächste Bau-Nummer): „Jetzt neu starten · Später“; eine unsignierte Update-Datei wird
    abgelehnt.
