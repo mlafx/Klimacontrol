@@ -138,7 +138,10 @@ private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
     /// Ohne Beta nil: dann gelten `SUFeedURL` aus den Einstellungen (Testumleitung per `defaults write`) und die
     /// Info.plist. Sparkle fragt den Delegate zuerst.
     func feedURLString(for updater: SPUUpdater) -> String? {
-        Self.betaEnabled ? AppUpdate.feedMacBeta : nil
+        if let test = AppUpdate.testFeedOverride(ProcessInfo.processInfo.environment[AppUpdate.testFeedVariable]) {
+            return test
+        }
+        return Self.betaEnabled ? AppUpdate.feedMacBeta : nil
     }
 
     func updater(_ updater: SPUUpdater, didFindValidUpdate item: SUAppcastItem) {

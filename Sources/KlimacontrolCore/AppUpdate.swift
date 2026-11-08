@@ -18,4 +18,13 @@ public enum AppUpdate {
     /// Erste Version, die Updates selbst still installiert. Ältere zeigen das Update im Standarddialog; als
     /// „kritisch“ markiert (Appcast) bietet er dort kein Überspringen an.
     public static let firstAutoInstallVersion = "1.1.0.0"
+
+    /// Nur für die Update-Prüfungen vor dem Release (D3): `KLIMACONTROL_UPDATE_TEST_FEED` darf die Update-Datei auf einen
+    /// lokalen Server umbiegen, auch im Beta-Kanal. Nur `http://127.0.0.1:<Port>/…`; jeder andere Wert bleibt wirkungslos.
+    public static let testFeedVariable = "KLIMACONTROL_UPDATE_TEST_FEED"
+    public static func testFeedOverride(_ value: String?) -> String? {
+        guard let value, let m = value.wholeMatch(of: /http:\/\/127\.0\.0\.1:([0-9]{1,5})\/[A-Za-z0-9._\/-]*/),
+              let port = Int(m.1), (1...65535).contains(port) else { return nil }
+        return value
+    }
 }

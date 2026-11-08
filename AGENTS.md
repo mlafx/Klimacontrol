@@ -314,7 +314,7 @@ baut es trotzdem. Keine `.swiftpm/`-, `*.xcodeproj`- oder sonstigen Werkzeug-Ord
 | `KLIMACONTROL_NOTARY_PROFILE` | notarytool-Profil im Schlüsselbund → `build_app.sh` notarisiert und heftet das Ticket an |
 | `KLIMACONTROL_PSEUDO=1` | Pseudo-Sprache (Testsprache, 13.2) statt Deutsch/Englisch – nur zum Prüfen der Oberfläche |
 | `KLIMACONTROL_CULTURE` | Windows: Kultur (z. B. `en-US`) für Formate und Anzeigesprache statt der Windows-Einstellung – nur zum Prüfen; ungültige Werte werden ignoriert |
-| `KLIMACONTROL_UPDATE_TEST_FEED` | Windows: Update-Feed für WinSparkle, nur `http://127.0.0.1:<port>/…` (sonst wirkungslos) – nur zum Prüfen der Updates (14.1), **nie dauerhaft setzen** |
+| `KLIMACONTROL_UPDATE_TEST_FEED` | Update-Datei umleiten, nur `http://127.0.0.1:<port>/…` (sonst wirkungslos, `AppUpdate.testFeedOverride`): Windows für WinSparkle, Mac ab 1.2.0.0 für Sparkle auch im Beta-Kanal (Start mit `open --env …`) – nur zum Prüfen der Updates (14.1), **nie dauerhaft setzen** |
 
 ---
 

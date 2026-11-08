@@ -18,6 +18,20 @@ final class AppUpdateTests: XCTestCase {
         XCTAssertEqual(AppUpdate.checkInterval, 86_400, "Standard: einmal am Tag")
     }
 
+    /// Wie `Updates.TestFeedOverride` unter Windows: nur Loopback mit gültigem Port.
+    func testTestFeedOverrideOnlyLoopback() {
+        XCTAssertEqual(AppUpdate.testFeedOverride("http://127.0.0.1:8765/updateinfo-mac.xml"),
+                       "http://127.0.0.1:8765/updateinfo-mac.xml")
+        XCTAssertEqual(AppUpdate.testFeedOverride("http://127.0.0.1:65535/a/b-c_d.xml"), "http://127.0.0.1:65535/a/b-c_d.xml")
+        for bad in [nil, "", "http://127.0.0.1:0/x.xml", "http://127.0.0.1:65536/x.xml", "http://127.0.0.1/x.xml",
+                    "https://127.0.0.1:8765/x.xml", "http://localhost:8765/x.xml", "http://127.0.0.2:8765/x.xml",
+                    "http://127.0.0.1:8765/x.xml?y=1", "http://127.0.0.1:8765@evil.example.com/x.xml",
+                    " http://127.0.0.1:8765/x.xml", AppUpdate.feedMac] {
+            XCTAssertNil(AppUpdate.testFeedOverride(bad), String(describing: bad))
+        }
+        XCTAssertEqual(AppUpdate.testFeedVariable, "KLIMACONTROL_UPDATE_TEST_FEED")
+    }
+
     func testBetaFeed() {
         XCTAssertEqual(AppUpdate.feedMacBeta, "https://github.com/mlafx/Klimacontrol/releases/download/beta/updateinfo-mac-beta.xml")
         XCTAssertFalse(AppUpdate.feedMacBeta.contains("/latest/"))
