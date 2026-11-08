@@ -260,6 +260,7 @@ private struct PowerMarks: View, Equatable {
         }
         .chartYAxisLabel("W")
         .chartXScale(domain: time ?? Date().addingTimeInterval(-range)...Date())
+        .timeAxis(range: range)
         .chartOverlay { proxy in
             HoverOverlay(proxy: proxy, points: points) { p in
                 p.power.map { w in
@@ -327,6 +328,7 @@ private struct TemperatureMarks: View, Equatable {
         .chartYAxisLabel("°C")
         .chartYScale(domain: window.insideRange ?? UIOptions.chartTemperatureAxis)
         .chartXScale(domain: window.timeDomain ?? Date().addingTimeInterval(-range)...Date())
+        .timeAxis(range: range)
         .chartOverlay { proxy in
             HoverOverlay(proxy: proxy, points: window.indoor) { p in
                 p.indoor.map { y in
@@ -386,6 +388,7 @@ private struct OutdoorMarks: View, Equatable {
         .chartYAxisLabel("°C")
         .chartYScale(domain: domain)
         .chartXScale(domain: time ?? Date().addingTimeInterval(-range)...Date())
+        .timeAxis(range: range)
         .chartOverlay { proxy in
             HoverOverlay(proxy: proxy, points: points) { p in
                 p.outdoor.map { y in
@@ -532,5 +535,23 @@ extension View {
                 .fill(Color.primary.opacity(0.05))
                 .overlay(RoundedRectangle(cornerRadius: radius).strokeBorder(Color.primary.opacity(0.08), lineWidth: 0.5))
         )
+    }
+}
+
+extension View {
+    /// Zeitachse mit den Formaten des Kerns: Die automatische Beschriftung von Charts mischt Sprache und Region
+    /// („7 Nov at 22:00“) und wird abgeschnitten.
+    func timeAxis(range: TimeInterval) -> some View {
+        chartXAxis {
+            AxisMarks(values: .automatic(desiredCount: range > 86400 ? 7 : 6)) { value in
+                AxisGridLine()
+                AxisTick()
+                AxisValueLabel {
+                    if let d = value.as(Date.self) {
+                        Text(range > 86400 ? Fmt.dayMonth(d) : Fmt.clock(d))
+                    }
+                }
+            }
+        }
     }
 }
