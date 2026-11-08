@@ -5,7 +5,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 `1.0.0.1`, Fehlerbehebung → `1.0.1.0`, Neues → `1.1.0.0`, Änderungen, die Einrichtung oder Daten unbrauchbar machen →
 `2.0.0.0`.
 
-## [1.2.0.0] – in Arbeit
+## [1.2.0.0] – 2026-11-08
 
 ### Hinzugefügt
 - Englische Oberfläche. Bei deutscher Systemsprache bleibt die App deutsch, bei jeder anderen erscheint sie auf Englisch.

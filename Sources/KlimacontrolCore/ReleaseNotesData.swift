@@ -9,7 +9,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 `1.0.0.1`, Fehlerbehebung → `1.0.1.0`, Neues → `1.1.0.0`, Änderungen, die Einrichtung oder Daten unbrauchbar machen →
 `2.0.0.0`.
 
-## [1.2.0.0] – in Arbeit
+## [1.2.0.0] – 2026-11-08
 
 ### Hinzugefügt
 - Englische Oberfläche. Bei deutscher Systemsprache bleibt die App deutsch, bei jeder anderen erscheint sie auf Englisch.
@@ -101,7 +101,7 @@ Erste öffentliche Fassung für Mac und Windows.
 Newest version first; sections "Added", "Changed", "Fixed", "Removed"; English, from the user's point of view.
 Versions have four parts, major.features.fixes.build. Earlier versions are available in German only.
 
-## [1.2.0.0] – in progress
+## [1.2.0.0] – 2026-11-08
 
 ### Added
 - English user interface. With German as the system language the app stays German, with any other language it appears in English.
