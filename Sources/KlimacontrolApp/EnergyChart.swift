@@ -15,6 +15,7 @@ struct EnergySection: View {
     /// Höhe des Balkendiagramms und Breite seiner Zeichenfläche (für die Höchstbreite der Balken).
     var chartHeight = 150.0
     var plotWidth = 400.0
+    var fill = false
     @State private var loaded: Loaded?
     @State private var hovered: String?
 
@@ -67,6 +68,7 @@ struct EnergySection: View {
                 Color.clear.frame(height: chartHeight)
             }
         }
+        .frame(maxHeight: fill ? .infinity : nil, alignment: .top)
         .padding(12)
         .plainCard(radius: 14)
         .task(id: key) {

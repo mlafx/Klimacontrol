@@ -2611,24 +2611,6 @@
         }
       }
     },
-    "commands.alwaysOnTopFullScreen" : {
-      "comment" : "Menüpunkt Immer im Vordergrund: Text, solange das Hauptfenster im Vollbild ist",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Immer im Vordergrund ist im Vollbild ausgesetzt."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Always on top is suspended in full screen."
-          }
-        }
-      }
-    },
     "commands.checkUpdates" : {
       "comment" : "Menü: Klimacontrol",
       "extractionState" : "manual",

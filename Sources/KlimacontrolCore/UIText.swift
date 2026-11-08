@@ -102,7 +102,6 @@ public enum UIText {
     }
     /// Ansage, wenn eine Seitenspalte wegen zu schmalem Bildschirm ausgeblendet wird.
     public static func columnHidden(_ c: MainWindowLayout.Column) -> String { L.Main.Column.hidden(column: columnName(c)) }
-    public static var alwaysOnTopFullScreenHelp: String { L.Commands.alwaysOnTopFullScreen }
 
     // MARK: Neu in dieser Version
 

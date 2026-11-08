@@ -102,6 +102,27 @@ final class MainWindowLayoutTests: XCTestCase {
         }
     }
 
+    func testChartHeightsWithMeasuredOverhead() {
+        // Gemessener Überhang ersetzt die Schätzung: die Summe der Graphen füllt die Spalte.
+        let c = M.chartHeights(columnHeight: 1290, overhead: 500)
+        XCTAssertEqual(c.power + c.temperature + c.outdoor + c.energy, 1290 - 500, accuracy: 60)
+    }
+
+    func testGridChartHeightsShareTheColumnEvenly() {
+        let min = M.chartHeights(columnHeight: 0, grid: true)
+        XCTAssertEqual([min.power, min.temperature, min.outdoor, min.energy], [180, 180, 150, 150])
+        let c = M.chartHeights(columnHeight: 1290, grid: true, overhead: 290)
+        XCTAssertEqual(c.power, 500)
+        XCTAssertEqual(c.temperature, c.power)
+        XCTAssertEqual(c.outdoor, c.energy)
+        XCTAssertEqual(c.outdoor, 500)
+        let tall = M.chartHeights(columnHeight: 5000, grid: true, overhead: 300)
+        XCTAssertEqual([tall.power, tall.outdoor], [520, 520])
+        let mid = M.chartHeights(columnHeight: 1000, grid: true, overhead: 300)
+        XCTAssertEqual(mid.power.truncatingRemainder(dividingBy: 20), 0)
+        XCTAssertEqual(mid.power, 340)
+    }
+
     // MARK: Rahmen
 
     func testGrowLeftOnlyByTheDeficit() throws {

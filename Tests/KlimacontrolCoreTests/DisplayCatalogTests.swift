@@ -43,7 +43,6 @@ final class DisplayCatalogTests: CoreTestCase {
         XCTAssertEqual(UIText.columnName(.diagnostics), "Diagnose")
         XCTAssertEqual(UIText.columnHidden(.history), "Verlauf ausgeblendet, weil der Bildschirm zu schmal ist.")
         XCTAssertEqual(UIText.columnHidden(.diagnostics), "Diagnose ausgeblendet, weil der Bildschirm zu schmal ist.")
-        XCTAssertEqual(UIText.alwaysOnTopFullScreenHelp, "Immer im Vordergrund ist im Vollbild ausgesetzt.")
     }
 
     func testOptionLists() {

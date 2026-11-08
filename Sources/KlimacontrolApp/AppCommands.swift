@@ -50,7 +50,7 @@ struct AppCommands: Commands {
             Divider()
             Button(L.Commands.miniWindow) { openWindow(id: "mini") }
                 .keyboardShortcut("m", modifiers: [.command, .shift])
-            Toggle(fullScreen == true ? UIText.alwaysOnTopFullScreenHelp : L.Commands.alwaysOnTop, isOn: Binding(get: { model.appearance.alwaysOnTop }, set: { on in
+            Toggle(L.Commands.alwaysOnTop, isOn: Binding(get: { model.appearance.alwaysOnTop }, set: { on in
                 var a = model.appearance
                 a.alwaysOnTop = on
                 model.setAppearance(a)

@@ -21,6 +21,8 @@ struct ChartsPanel: View {
     @State private var window = ChartWindow()
     @State private var loaded = false
     @State private var settled = CGSize.zero
+    /// Höhe der Spalte ohne die Graphen, je Anordnung gemessen (einspaltig, Raster).
+    @State private var overhead: [Bool: Double] = [:]
 
     var body: some View {
         // Die Zeitscheibe wird ausdrücklich getrieben (alle 30 s), nicht durch zufälliges Neuzeichnen des
@@ -58,19 +60,27 @@ struct ChartsPanel: View {
 
     private func column(size: CGSize) -> some View {
         let w = window
-        let heights = MainWindowLayout.chartHeights(columnHeight: size.height)
         let grid = MainWindowLayout.historyUsesGrid(width: size.width)
+        let heights = MainWindowLayout.chartHeights(columnHeight: size.height, grid: grid, overhead: overhead[grid])
         let inner = size.width - 40
         let cardWidth = grid ? (inner - 16) / 2 : inner
         let hasCharts = loaded && w.data.count >= 2
         let colors = SeriesColors(theme)
         let topHeight = grid ? max(heights.power, heights.temperature) : nil
         let bottomHeight = grid ? max(heights.outdoor, heights.energy) : nil
+        let hasOutdoor = hasCharts && !w.outdoor.isEmpty
+        let applied: Double
+        if grid {
+            applied = (hasCharts ? topHeight ?? 0 : 0) + (hasOutdoor || loaded ? bottomHeight ?? 0 : 0)
+        } else {
+            applied = (hasCharts ? heights.power + heights.temperature : 0) + (hasOutdoor ? heights.outdoor : 0)
+                + (loaded ? heights.energy : 0)
+        }
         let power = PowerChart(points: w.power, time: w.timeDomain, tint: mode.map { theme.tint(for: $0) } ?? .accentColor,
-                               range: range, height: topHeight ?? heights.power)
-        let temperature = TemperatureChart(window: w, range: range, colors: colors, height: topHeight ?? heights.temperature)
-        let outdoor = OutdoorChart(window: w, range: range, color: colors.outdoor, height: bottomHeight ?? heights.outdoor)
-        let energy = EnergySection(chartHeight: bottomHeight ?? heights.energy, plotWidth: (cardWidth - 24 - 50).rounded(.down))
+                               range: range, height: topHeight ?? heights.power, fill: grid)
+        let temperature = TemperatureChart(window: w, range: range, colors: colors, height: topHeight ?? heights.temperature, fill: grid)
+        let outdoor = OutdoorChart(window: w, range: range, color: colors.outdoor, height: bottomHeight ?? heights.outdoor, fill: grid)
+        let energy = EnergySection(chartHeight: bottomHeight ?? heights.energy, plotWidth: (cardWidth - 24 - 50).rounded(.down), fill: grid)
         return VStack(alignment: .leading, spacing: 16) {
             // Schließen rechts wie bei der Diagnose – links säße es neben den Fensterknöpfen.
             HStack {
@@ -94,7 +104,7 @@ struct ChartsPanel: View {
             }
             // Reihenfolge für VoiceOver in beiden Anordnungen gleich: Leistung, Temperatur, Außen, Verbrauch.
             if grid {
-                Grid(horizontalSpacing: 16, verticalSpacing: 16) {
+                Grid(alignment: .topLeading, horizontalSpacing: 16, verticalSpacing: 16) {
                     if hasCharts {
                         GridRow {
                             power
@@ -117,6 +127,10 @@ struct ChartsPanel: View {
         }
         .padding(20)
         .frame(width: size.width, alignment: .topLeading)
+        .onGeometryChange(for: CGFloat.self) { $0.size.height.rounded(.up) } action: { h in
+            let value = max(0, Double(h) - applied)
+            if overhead[grid] != value, hasCharts { overhead[grid] = value }
+        }
     }
 }
 
@@ -263,6 +277,7 @@ struct PowerChart: View {
     let tint: Color
     let range: TimeInterval
     var height = 150.0
+    var fill = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -272,6 +287,7 @@ struct PowerChart: View {
                 .frame(height: height)
                 .chartSummary(L.Charts.power, points.compactMap(\.power)) { Fmt.watts($0) }
         }
+        .frame(maxHeight: fill ? .infinity : nil, alignment: .top)
         .padding(12)
         .plainCard(radius: 14)
     }
@@ -327,6 +343,7 @@ struct TemperatureChart: View {
     let range: TimeInterval
     var colors = SeriesColors()
     var height = 180.0
+    var fill = false
 
     // Neutrale Reihenfarben: Orange/Grün/Blau stehen für die Modi Heizen/Entfeuchten/Kühlen.
     static let indoorColor = SeriesColors.indoorBase
@@ -341,6 +358,7 @@ struct TemperatureChart: View {
                 .frame(height: height)
                 .chartSummary(L.Appearance.Hero.room, window.indoor.compactMap(\.indoor)) { Fmt.temp($0) }
         }
+        .frame(maxHeight: fill ? .infinity : nil, alignment: .top)
         .padding(12)
         .plainCard(radius: 14)
     }
@@ -399,6 +417,7 @@ struct OutdoorChart: View {
     let range: TimeInterval
     var color = SeriesColors.outdoorBase
     var height = 120.0
+    var fill = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -408,6 +427,7 @@ struct OutdoorChart: View {
                 .frame(height: height)
                 .chartSummary(L.Charts.outdoor, window.outdoor.compactMap(\.outdoor)) { Fmt.temp($0) }
         }
+        .frame(maxHeight: fill ? .infinity : nil, alignment: .top)
         .padding(12)
         .plainCard(radius: 14)
     }

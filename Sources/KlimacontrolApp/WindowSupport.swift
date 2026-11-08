@@ -68,6 +68,8 @@ final class WindowRef {
     @ObservationIgnored private var stableFrame: CGRect?
     @ObservationIgnored private var grown: [MainWindowLayout.Column: Double] = [:]
     @ObservationIgnored private var grownFrame: CGRect?
+    @ObservationIgnored private var frameBeforeFullScreen: CGRect?
+    @ObservationIgnored private var controlsOnly = false
     @ObservationIgnored private var observers: [any NSObjectProtocol] = []
 
     func attach(_ new: NSWindow?) {
@@ -79,13 +81,17 @@ final class WindowRef {
         if w.styleMask.contains(.resizable) { w.collectionBehavior.insert(.fullScreenPrimary) }
         stableFrame = w.frame
         refreshAvailable()
+        enforceControlsOnlyWidth()
         let center = NotificationCenter.default
         func watch(_ name: Notification.Name, _ action: @escaping @MainActor (WindowRef, NSWindow) -> Void) {
             observers.append(center.addObserver(forName: name, object: w, queue: .main) { [weak self, weak w] _ in
                 MainActor.assumeIsolated { if let self, let w { action(self, w) } }
             })
         }
-        watch(NSWindow.willEnterFullScreenNotification) { r, _ in r.inTransition = true }
+        watch(NSWindow.willEnterFullScreenNotification) { r, w in
+            r.frameBeforeFullScreen = r.stableFrame ?? w.frame
+            r.inTransition = true
+        }
         watch(NSWindow.didEnterFullScreenNotification) { r, _ in
             r.inTransition = false
             r.isFullScreen = true
@@ -97,7 +103,7 @@ final class WindowRef {
         }
         watch(NSWindow.didExitFullScreenNotification) { r, w in
             r.inTransition = false
-            r.stableFrame = w.frame
+            r.restoreFrameAfterFullScreen(w)
             r.refreshAvailable()
         }
         watch(NSWindow.willStartLiveResizeNotification) { r, _ in
@@ -188,6 +194,47 @@ final class WindowRef {
         grownFrame = f
         stableFrame = f
         if f != w.frame { w.setFrame(f, display: true, animate: false) }
+    }
+
+    /// Nach dem Vollbild gilt wieder der Rahmen von davor; die Spalten kommen gleichzeitig zurück und dürfen ihn nicht
+    /// aufweiten. Die Spaltenansicht stellt ihre Mindestgröße erst nach dem Umschalten ein, darum ein zweiter Versuch.
+    private func restoreFrameAfterFullScreen(_ w: NSWindow) {
+        grown = [:]
+        grownFrame = nil
+        guard let saved = frameBeforeFullScreen else {
+            stableFrame = w.frame
+            enforceControlsOnlyWidth()
+            return
+        }
+        frameBeforeFullScreen = nil
+        let screen = w.screen?.visibleFrame
+        let target = screen.map { MainWindowFrame.fit(saved, in: $0) } ?? saved
+        func apply(_ w: NSWindow) {
+            if w.frame != target { w.setFrame(target, display: true, animate: false) }
+            stableFrame = target
+        }
+        apply(w)
+        Task { [weak self, weak w] in
+            try? await Task.sleep(for: .milliseconds(250))
+            guard let self, let w, !self.inTransition, !w.styleMask.contains(.fullScreen) else { return }
+            apply(w)
+            self.enforceControlsOnlyWidth()
+        }
+    }
+
+    /// Ohne Verlauf und Diagnose ist das Fenster höchstens `controlsOnlyMaxWidth` breit, auch nach einer
+    /// wiederhergestellten Größe beim Start.
+    func setControlsOnly(_ on: Bool) {
+        controlsOnly = on
+        enforceControlsOnlyWidth()
+    }
+
+    private func enforceControlsOnlyWidth() {
+        guard controlsOnly, let w = window, isFree(w),
+              Double(w.frame.width) > MainWindowLayout.controlsOnlyMaxWidth + 2 else { return }
+        let f = MainWindowFrame.limitWidth(w.frame, to: MainWindowLayout.controlsOnlyMaxWidth, keeping: .left)
+        w.setFrame(f, display: true, animate: false)
+        stableFrame = f
     }
 
     /// Größere Darstellungsgröße: das Fenster wächst bis zur neuen Mindesthöhe, soweit Platz ist.

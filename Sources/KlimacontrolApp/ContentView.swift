@@ -42,6 +42,8 @@ struct ColumnsLayout: Layout {
 
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
         let w = MainWindowLayout.widths(total: Double(bounds.width), visible: visible(subviews))
+        // Steuerung allein in einem breiten Fenster (maximiert, gekachelt): mittig statt links.
+        let lead = w.history == 0 && w.diagnostics == 0 ? w.margin / 2 : 0
         let height = max(0, bounds.height - topInset)
         func place(_ role: ColumnRole, x: Double, width: Double) {
             guard let v = subviews.first(where: { $0[ColumnRoleKey.self] == role }) else { return }
@@ -49,7 +51,7 @@ struct ColumnsLayout: Layout {
                     proposal: ProposedViewSize(width: width, height: height))
         }
         place(.history, x: 0, width: w.history)
-        place(.control, x: w.history, width: w.control)
+        place(.control, x: lead + w.history, width: w.control)
         place(.diagnostics, x: w.history + w.control, width: w.diagnostics)
     }
 }
@@ -128,6 +130,7 @@ struct ContentView: View {
         .focusedSceneValue(\.klimacontrolFullScreen, window.isFullScreen)
         .onChange(of: shown.diagnostics, initial: true) { _, visible in model.diagnosticsVisible = visible }
         .onChange(of: shown) { old, new in window.columnsChanged(from: old, to: new) }
+        .onChange(of: shown, initial: true) { _, new in window.setControlsOnly(!new.history && !new.diagnostics) }
         .onChange(of: resolution.hidden, initial: true) { _, hidden in hide(hidden) }
         .onChange(of: model.appearance.size, initial: true) { _, size in
             window.ensureMinimumHeight(MainWindowLayout.minimumHeight(size))

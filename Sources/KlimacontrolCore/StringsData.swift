@@ -2615,24 +2615,6 @@ extension StringsData {
         }
       }
     },
-    "commands.alwaysOnTopFullScreen" : {
-      "comment" : "Menüpunkt Immer im Vordergrund: Text, solange das Hauptfenster im Vollbild ist",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Immer im Vordergrund ist im Vollbild ausgesetzt."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Always on top is suspended in full screen."
-          }
-        }
-      }
-    },
     "commands.checkUpdates" : {
       "comment" : "Menü: Klimacontrol",
       "extractionState" : "manual",
@@ -26454,7 +26436,6 @@ extension StringsData {
         "charts.windows.rangeName",
         "charts.windows.tooFew",
         "commands.alwaysOnTop",
-        "commands.alwaysOnTopFullScreen",
         "commands.checkUpdates",
         "commands.cooler",
         "commands.deviceMenu",
@@ -27911,7 +27892,6 @@ extension StringsData {
         "charts.windows.rangeName": ["label"],
         "charts.windows.tooFew": [],
         "commands.alwaysOnTop": [],
-        "commands.alwaysOnTopFullScreen": [],
         "commands.checkUpdates": [],
         "commands.cooler": [],
         "commands.deviceMenu": [],
@@ -29565,8 +29545,6 @@ public enum L {
     public enum Commands {
         /// Always on top
         public static var alwaysOnTop: String { Localizer.text("commands.alwaysOnTop") }
-        /// Always on top is suspended in full screen.
-        public static var alwaysOnTopFullScreen: String { Localizer.text("commands.alwaysOnTopFullScreen") }
         /// Check for updates…
         public static var checkUpdates: String { Localizer.text("commands.checkUpdates") }
         /// Cooler

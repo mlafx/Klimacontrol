@@ -103,8 +103,15 @@ public enum MainWindowLayout {
         }
     }
 
-    /// Höhe der Verlaufsspalte mit allen Graphen in Mindesthöhe (Kopf, Kennzahlen, Rahmen eingerechnet, geschätzt).
+    /// Höhe der Verlaufsspalte einspaltig mit allen Graphen in Mindesthöhe (Kopf, Kennzahlen, Rahmen eingerechnet, geschätzt).
     public static let historyBaseHeight = 980.0
+    /// Geschätzte Höhe ohne die Graphen selbst (Kopf, Kennzahlen, Kartenränder, Abstände), bis die Oberfläche sie misst.
+    public static let singleOverhead = 380.0
+    public static let gridOverhead = 330.0
+    /// Höchsthöhe eines Graphen im 2 × 2-Raster.
+    public static let gridRowMax = 520.0
+    private static let gridTopMin = 180.0
+    private static let gridBottomMin = 150.0
 
     public struct ChartHeights: Equatable, Sendable {
         public var power = 150.0
@@ -119,7 +126,17 @@ public enum MainWindowLayout {
 
     /// Zusätzliche Höhe geht anteilig (3 : 3 : 2) an Leistung, Temperatur und Außen bis zum Doppelten, danach an den
     /// Verbrauch; Höhen in Stufen von 20 pt, der Rest bleibt leer.
-    public static func chartHeights(columnHeight: Double) -> ChartHeights {
+    /// Im 2 × 2-Raster (`grid`) teilen sich beide Zeilen die Höhe unter den Kennzahlen gleichmäßig (je Zeile bis 520 pt).
+    /// `overhead` ist die Höhe der Spalte ohne die Graphen (von der Oberfläche gemessen), sonst eine Schätzung.
+    public static func chartHeights(columnHeight: Double, grid: Bool = false, overhead: Double? = nil) -> ChartHeights {
+        if grid {
+            let available = columnHeight - (overhead ?? gridOverhead)
+            let share = available / 2
+            let top = min(gridRowMax, max(gridTopMin, ((share + 0.001) / chartStep).rounded(.down) * chartStep))
+            let bottom = min(gridRowMax, max(gridBottomMin, ((share + 0.001) / chartStep).rounded(.down) * chartStep))
+            return ChartHeights(power: top, temperature: top, outdoor: bottom, energy: bottom)
+        }
+        let columnHeight = columnHeight - (overhead ?? singleOverhead) + singleOverhead
         let base = ChartHeights()
         let baseValues = [base.power, base.temperature, base.outdoor]
         let maxValues = [chartMax.power, chartMax.temperature, chartMax.outdoor]
