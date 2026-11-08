@@ -45,7 +45,7 @@ struct ComfortSection: View, Equatable {
                         if on { confirmSelfClean = true } else { model.setSelfClean(false) }
                     }
                     row(L.Main.Comfort.display, "rectangle.dashed", state.displayOn, .display) { _ in model.toggleDisplay() }
-                    // Signalton nur unter Einstellungen › Anlage.
+                    row(L.Main.Comfort.sound, "speaker.wave.2", state.sound ?? model.beep, .sound) { on in model.setSound(on) }
                 }
                 HStack {
                     Label(L.Main.Comfort.limitPower, systemImage: "gauge.with.dots.needle.67percent").font(.callout)

@@ -96,7 +96,7 @@ final class DisplayCatalogTests: CoreTestCase {
             XCTAssertEqual(enabled(.turbo, m), m == .cool || m == .heat, "Turbo nur Kühlen/Heizen")
             XCTAssertEqual(enabled(.outdoorSilent, m), m == .cool || m == .heat, "Außengerät leise nur Kühlen/Heizen")
             XCTAssertEqual(enabled(.freezeProtection, m), m == .heat, "Frostschutz nur Heizen")
-            for f in [UIOptions.ComfortFeature.swing, .ieco, .purifier, .selfClean, .display] { XCTAssertTrue(enabled(f, m)) }
+            for f in [UIOptions.ComfortFeature.swing, .ieco, .purifier, .selfClean, .display, .sound] { XCTAssertTrue(enabled(f, m)) }
         }
     }
 

@@ -164,7 +164,7 @@ public enum UIOptions {
 
     /// Schalter, die nicht in jedem Modus gelten.
     public enum ComfortFeature: String, CaseIterable, Sendable {
-        case swing, eco, turbo, outdoorSilent, ieco, purifier, freezeProtection, selfClean, display
+        case swing, eco, turbo, outdoorSilent, ieco, purifier, freezeProtection, selfClean, display, sound
     }
 
     public struct Availability: Equatable, Sendable {
@@ -180,7 +180,7 @@ public enum UIOptions {
         case .eco: return mode == .cool
         case .turbo, .outdoorSilent: return mode == .cool || mode == .heat
         case .freezeProtection: return mode == .heat
-        case .swing, .ieco, .purifier, .selfClean, .display: return true
+        case .swing, .ieco, .purifier, .selfClean, .display, .sound: return true
         }
     }
 
@@ -197,6 +197,7 @@ public enum UIOptions {
         case .freezeProtection: return Availability(enabled: on, why: L.Availability.freezeProtection)
         case .selfClean: return Availability(enabled: on, why: L.Availability.selfClean)
         case .display: return Availability(enabled: on, why: L.Availability.display)
+        case .sound: return Availability(enabled: on, why: nil)
         }
     }
 

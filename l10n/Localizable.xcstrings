@@ -12139,6 +12139,24 @@
         }
       }
     },
+    "main.comfort.sound" : {
+      "comment" : "Kachel unter Weitere Funktionen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signalton"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beep"
+          }
+        }
+      }
+    },
     "main.comfort.swing" : {
       "comment" : "Kachel Komfort",
       "extractionState" : "manual",

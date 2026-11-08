@@ -12143,6 +12143,24 @@ extension StringsData {
         }
       }
     },
+    "main.comfort.sound" : {
+      "comment" : "Kachel unter Weitere Funktionen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signalton"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beep"
+          }
+        }
+      }
+    },
     "main.comfort.swing" : {
       "comment" : "Kachel Komfort",
       "extractionState" : "manual",
@@ -26924,6 +26942,7 @@ extension StringsData {
         "main.comfort.limitPower",
         "main.comfort.percentChoice",
         "main.comfort.selfClean",
+        "main.comfort.sound",
         "main.comfort.swing",
         "main.comfort.unknownSuffix",
         "main.fan.percentLabel",
@@ -28378,6 +28397,7 @@ extension StringsData {
         "main.comfort.limitPower": [],
         "main.comfort.percentChoice": ["value"],
         "main.comfort.selfClean": [],
+        "main.comfort.sound": [],
         "main.comfort.swing": [],
         "main.comfort.unknownSuffix": ["text"],
         "main.fan.percentLabel": [],
@@ -30722,6 +30742,8 @@ public enum L {
             public static func percentChoice(value: String) -> String { Localizer.text("main.comfort.percentChoice", ["value": value]) }
             /// Self-clean
             public static var selfClean: String { Localizer.text("main.comfort.selfClean") }
+            /// Beep
+            public static var sound: String { Localizer.text("main.comfort.sound") }
             /// Swing
             public static var swing: String { Localizer.text("main.comfort.swing") }
             /// {text}; state unknown

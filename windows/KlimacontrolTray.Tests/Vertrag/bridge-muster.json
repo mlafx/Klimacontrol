@@ -189,7 +189,8 @@
       "purifier": {"enabled": true, "why": null},
       "freezeProtection": {"enabled": false, "why": "Hält 8 °C – nur im Heizbetrieb"},
       "selfClean": {"enabled": true, "why": "Selbstreinigung: trocknet und reinigt das Innengerät (ca. 15 Min.)"},
-      "display": {"enabled": true, "why": "Temperaturanzeige an der Anlage"}
+      "display": {"enabled": true, "why": "Temperaturanzeige an der Anlage"},
+      "sound": {"enabled": true, "why": null}
     },
     "connectionTooltip": "Wohnzimmer · 192.168.1.40:6444 · lokal",
     "uiConnectionState": "live",

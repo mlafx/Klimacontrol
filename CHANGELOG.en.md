@@ -12,6 +12,7 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 - Settings → General: currency of the electricity price can be set freely, up to three characters, default €.
 - Mac: Settings → General → Updates: pre-release (beta) versions can be received, off by default.
 - Windows: Setup in German and English, matching the Windows display language.
+- The beep can be switched on and off in the main window under “More features”.
 
 ### Changed
 - Numbers, times and dates follow the system's regional settings, for example decimal point or 12-hour format.

@@ -14,6 +14,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 - Einstellungen → Allgemein: Währung des Strompreises frei wählbar, bis zu drei Zeichen, Standard €.
 - Mac: Einstellungen → Allgemein → Updates: Vorabversionen (Beta) können bezogen werden, standardmäßig aus.
 - Windows: Setup auf Deutsch und Englisch, passend zur Anzeigesprache von Windows.
+- Signalton lässt sich im Hauptfenster unter „Weitere Funktionen“ schalten.
 
 ### Geändert
 - Zahlen, Uhrzeiten und Datumsangaben folgen den Regionseinstellungen des Systems, zum Beispiel Dezimalpunkt oder 12-Stunden-Format.
