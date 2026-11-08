@@ -9,6 +9,7 @@ import SwiftUI
 struct AppCommands: Commands {
     let model: ACController
     @AppStorage(SettingsKey.showChartsPanel) private var showCharts = false
+    @FocusedValue(\.klimacontrolFullScreen) private var fullScreen
     @AppStorage(SettingsKey.showDiagnosticsPanel) private var showDiagnostics = false
     /// Nur im Hauptfenster bzw. Menüleisten-Fenster gesetzt: ⌘↑/⌘↓/⌘P schicken sonst (z. B. in den Textfeldern der
     /// Einstellungen) Befehle an die Anlage.
@@ -40,20 +41,21 @@ struct AppCommands: Commands {
                 .disabled(model.config == nil)
         }
         CommandGroup(before: .sidebar) {
-            Button(showCharts ? L.Commands.hideHistory : L.Commands.showHistory) { showCharts.toggle() }
+            Button(showCharts ? L.Commands.hideHistory : L.Commands.showHistory) { SideColumns.toggle(.history) }
                 .keyboardShortcut("g", modifiers: .command)
                 .disabled(model.config == nil)
-            Button(showDiagnostics ? L.Commands.hideDiagnostics : L.Commands.showDiagnostics) { showDiagnostics.toggle() }
+            Button(showDiagnostics ? L.Commands.hideDiagnostics : L.Commands.showDiagnostics) { SideColumns.toggle(.diagnostics) }
                 .keyboardShortcut("d", modifiers: .command)
                 .disabled(model.state == nil)
             Divider()
             Button(L.Commands.miniWindow) { openWindow(id: "mini") }
                 .keyboardShortcut("m", modifiers: [.command, .shift])
-            Toggle(L.Commands.alwaysOnTop, isOn: Binding(get: { model.appearance.alwaysOnTop }, set: { on in
+            Toggle(fullScreen == true ? UIText.alwaysOnTopFullScreenHelp : L.Commands.alwaysOnTop, isOn: Binding(get: { model.appearance.alwaysOnTop }, set: { on in
                 var a = model.appearance
                 a.alwaysOnTop = on
                 model.setAppearance(a)
             }))
+            .disabled(fullScreen == true)
             Divider()
         }
     }

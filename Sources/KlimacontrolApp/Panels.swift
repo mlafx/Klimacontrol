@@ -93,7 +93,7 @@ struct SectionTitle: View {
 
     var body: some View {
         HStack {
-            Text(text).font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+            Text(text).font(.caption.weight(.semibold)).foregroundStyle(.secondary).accessibilityAddTraits(.isHeader)
             Spacer()
             if let trailing { Text(trailing).font(.caption).foregroundStyle(.secondary).monospacedDigit() }
         }

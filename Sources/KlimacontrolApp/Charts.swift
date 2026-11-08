@@ -17,8 +17,10 @@ struct ChartsPanel: View {
     let mode: OperationalMode?
     let close: () -> Void
     @AppStorage(SettingsKey.chartRange) private var range = UIOptions.chartRangeDefault
+    @Environment(WindowRef.self) private var resizing
     @State private var window = ChartWindow()
     @State private var loaded = false
+    @State private var settled = CGSize.zero
 
     var body: some View {
         // Die Zeitscheibe wird ausdrücklich getrieben (alle 30 s), nicht durch zufälliges Neuzeichnen des
@@ -29,36 +31,17 @@ struct ChartsPanel: View {
     }
 
     private func content(now: Date) -> some View {
-        let w = window
-        let key = ChartWindowKey(range: range, history: history, sparse: w.data.count < 2, now: now)
-        return ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                // Schließen rechts wie bei der Diagnose – links säße es neben den Fensterknöpfen.
-                HStack {
-                    Label(L.Charts.title, systemImage: "chart.xyaxis.line").font(.headline)
-                    Spacer()
-                    Picker(L.Charts.range, selection: $range) {
-                        ForEach(UIOptions.chartRanges, id: \.seconds) { Text($0.label).tag($0.seconds) }
-                    }
-                    .pickerStyle(.segmented).labelsHidden().fixedSize()
-                    Button(action: close) { Image(systemName: "xmark") }
-                        .buttonStyle(.borderless).help(L.Charts.hideHelp).accessibilityLabel(L.Charts.hide)
-                }
-                SummaryTiles(avg: w.stats.avgWatts, peak: w.stats.peakWatts, kwh: w.stats.kWh, price: model.pricePerKWh, currency: model.currency)
-                if !loaded {
-                    Color.clear.frame(height: 120)
-                } else if w.data.count < 2 {
-                    Text(L.Charts.tooFew)
-                        .font(.callout).foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, minHeight: 120)
-                } else {
-                    PowerChart(points: w.power, time: w.timeDomain, tint: mode.map { theme.tint(for: $0) } ?? .accentColor, range: range)
-                    TemperatureChart(window: w, range: range, colors: SeriesColors(theme))
-                    if !w.outdoor.isEmpty { OutdoorChart(window: w, range: range, color: SeriesColors(theme).outdoor) }
-                }
-                if loaded { EnergySection() }
-            }
-            .padding(20)
+        let key = ChartWindowKey(range: range, history: history, sparse: window.data.count < 2, now: now)
+        // Während das Fenster seine Größe ändert, bleibt die Fläche der Graphen eingefroren (links ausgerichtet,
+        // abgeschnitten): Jede neue Größe ließe Swift Charts alle Graphen neu aufbauen.
+        return GeometryReader { geo in
+            let size = resizing.isResizing && settled.width > 0 ? settled : geo.size
+            ScrollView { column(size: size) }
+                .frame(width: size.width, height: size.height, alignment: .topLeading)
+                .frame(width: geo.size.width, height: geo.size.height, alignment: .topLeading)
+                .clipped()
+                .onChange(of: geo.size, initial: true) { _, new in if !resizing.isResizing { settled = new } }
+                .onChange(of: resizing.isResizing) { _, now in if !now { settled = geo.size } }
         }
         .task(id: key) {
             let db = history.db
@@ -71,6 +54,69 @@ struct ChartsPanel: View {
             if fresh != window { window = fresh }
             loaded = true
         }
+    }
+
+    private func column(size: CGSize) -> some View {
+        let w = window
+        let heights = MainWindowLayout.chartHeights(columnHeight: size.height)
+        let grid = MainWindowLayout.historyUsesGrid(width: size.width)
+        let inner = size.width - 40
+        let cardWidth = grid ? (inner - 16) / 2 : inner
+        let hasCharts = loaded && w.data.count >= 2
+        let colors = SeriesColors(theme)
+        let topHeight = grid ? max(heights.power, heights.temperature) : nil
+        let bottomHeight = grid ? max(heights.outdoor, heights.energy) : nil
+        let power = PowerChart(points: w.power, time: w.timeDomain, tint: mode.map { theme.tint(for: $0) } ?? .accentColor,
+                               range: range, height: topHeight ?? heights.power)
+        let temperature = TemperatureChart(window: w, range: range, colors: colors, height: topHeight ?? heights.temperature)
+        let outdoor = OutdoorChart(window: w, range: range, color: colors.outdoor, height: bottomHeight ?? heights.outdoor)
+        let energy = EnergySection(chartHeight: bottomHeight ?? heights.energy, plotWidth: (cardWidth - 24 - 50).rounded(.down))
+        return VStack(alignment: .leading, spacing: 16) {
+            // Schließen rechts wie bei der Diagnose – links säße es neben den Fensterknöpfen.
+            HStack {
+                Label(L.Charts.title, systemImage: "chart.xyaxis.line").font(.headline)
+                    .accessibilityAddTraits(.isHeader)
+                Spacer()
+                Picker(L.Charts.range, selection: $range) {
+                    ForEach(UIOptions.chartRanges, id: \.seconds) { Text($0.label).tag($0.seconds) }
+                }
+                .pickerStyle(.segmented).labelsHidden().fixedSize()
+                Button(action: close) { Image(systemName: "xmark") }
+                    .buttonStyle(.borderless).help(L.Charts.hideHelp).accessibilityLabel(L.Charts.hide)
+            }
+            SummaryTiles(avg: w.stats.avgWatts, peak: w.stats.peakWatts, kwh: w.stats.kWh, price: model.pricePerKWh, currency: model.currency)
+            if !loaded {
+                Color.clear.frame(height: 120)
+            } else if w.data.count < 2 {
+                Text(L.Charts.tooFew)
+                    .font(.callout).foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, minHeight: 120)
+            }
+            // Reihenfolge für VoiceOver in beiden Anordnungen gleich: Leistung, Temperatur, Außen, Verbrauch.
+            if grid {
+                Grid(horizontalSpacing: 16, verticalSpacing: 16) {
+                    if hasCharts {
+                        GridRow {
+                            power
+                            temperature
+                        }
+                    }
+                    GridRow {
+                        if hasCharts, !w.outdoor.isEmpty { outdoor }
+                        if loaded { energy }
+                    }
+                }
+            } else {
+                if hasCharts {
+                    power
+                    temperature
+                    if !w.outdoor.isEmpty { outdoor }
+                }
+                if loaded { energy }
+            }
+        }
+        .padding(20)
+        .frame(width: size.width, alignment: .topLeading)
     }
 }
 
@@ -216,13 +262,14 @@ struct PowerChart: View {
     let time: ClosedRange<Date>?
     let tint: Color
     let range: TimeInterval
+    var height = 150.0
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Label(L.Charts.power, systemImage: "bolt").font(.subheadline.weight(.medium))
             PowerMarks(points: points, time: time, tint: tint, range: range)
                 .equatable()
-                .frame(height: 150)
+                .frame(height: height)
                 .chartSummary(L.Charts.power, points.compactMap(\.power)) { Fmt.watts($0) }
         }
         .padding(12)
@@ -279,6 +326,7 @@ struct TemperatureChart: View {
     let window: ChartWindow
     let range: TimeInterval
     var colors = SeriesColors()
+    var height = 180.0
 
     // Neutrale Reihenfarben: Orange/Grün/Blau stehen für die Modi Heizen/Entfeuchten/Kühlen.
     static let indoorColor = SeriesColors.indoorBase
@@ -290,7 +338,7 @@ struct TemperatureChart: View {
             Label(L.Charts.temperature, systemImage: "thermometer.medium").font(.subheadline.weight(.medium))
             TemperatureMarks(window: window, range: range, colors: colors)
                 .equatable()
-                .frame(height: 180)
+                .frame(height: height)
                 .chartSummary(L.Appearance.Hero.room, window.indoor.compactMap(\.indoor)) { Fmt.temp($0) }
         }
         .padding(12)
@@ -350,13 +398,14 @@ struct OutdoorChart: View {
     let window: ChartWindow
     let range: TimeInterval
     var color = SeriesColors.outdoorBase
+    var height = 120.0
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Label(L.Charts.outdoor, systemImage: "sun.max").font(.subheadline.weight(.medium))
             OutdoorMarks(points: window.outdoor, time: window.timeDomain, domain: window.outsideRange ?? UIOptions.chartOutdoorAxis, range: range, color: color)
                 .equatable()
-                .frame(height: 120)
+                .frame(height: height)
                 .chartSummary(L.Charts.outdoor, window.outdoor.compactMap(\.outdoor)) { Fmt.temp($0) }
         }
         .padding(12)

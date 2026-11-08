@@ -1,4 +1,5 @@
 import AppKit
+import KlimacontrolCore
 import SwiftUI
 
 // MARK: - Fensterhelfer
@@ -48,18 +49,156 @@ struct VisibilityProbe: NSViewRepresentable {
     }
 }
 
-/// Schwacher Verweis auf das Fenster der Ansicht (für das Verschieben beim Einblenden des Verlaufs).
+/// Zustand und Rahmenlogik des Hauptfensters. Alle Rahmenänderungen beim Ein- und Ausblenden der Seitenspalten laufen
+/// hier; die Rechnung selbst steht im Kern (`MainWindowFrame`).
 @MainActor
+@Observable
 final class WindowRef {
-    weak var window: NSWindow?
+    @ObservationIgnored private(set) weak var window: NSWindow?
+    /// Von „Vollbild erreicht“ bis „Verlassen beginnt“.
+    private(set) var isFullScreen = false
+    /// Das Fenster ändert gerade seine Größe (Ziehen, Zoomen, Übergänge); Graphen zeichnen dann nicht neu.
+    private(set) var isResizing = false
+    /// Breite, die den Spalten zur Verfügung steht: Bildschirm, bei maximierten oder gekachelten Fenstern die Fensterbreite.
+    private(set) var availableWidth = 100_000.0
 
-    /// Fenster waagerecht verschieben, links nicht über den sichtbaren Bildschirmrand hinaus.
-    func shift(by dx: CGFloat) {
-        guard let window, !window.styleMask.contains(.fullScreen) else { return }
-        var origin = window.frame.origin
-        origin.x += dx
-        if let vf = (window.screen ?? NSScreen.main)?.visibleFrame { origin.x = max(vf.minX, origin.x) }
-        window.setFrameOrigin(origin)
+    @ObservationIgnored private var inTransition = false
+    @ObservationIgnored private var liveResizing = false
+    @ObservationIgnored private var settleTask: Task<Void, Never>?
+    @ObservationIgnored private var stableFrame: CGRect?
+    @ObservationIgnored private var grown: [MainWindowLayout.Column: Double] = [:]
+    @ObservationIgnored private var grownFrame: CGRect?
+    @ObservationIgnored private var observers: [any NSObjectProtocol] = []
+
+    func attach(_ new: NSWindow?) {
+        guard new !== window else { return }
+        observers.forEach(NotificationCenter.default.removeObserver)
+        observers = []
+        window = new
+        guard let w = new else { return }
+        if w.styleMask.contains(.resizable) { w.collectionBehavior.insert(.fullScreenPrimary) }
+        stableFrame = w.frame
+        refreshAvailable()
+        let center = NotificationCenter.default
+        func watch(_ name: Notification.Name, _ action: @escaping @MainActor (WindowRef, NSWindow) -> Void) {
+            observers.append(center.addObserver(forName: name, object: w, queue: .main) { [weak self, weak w] _ in
+                MainActor.assumeIsolated { if let self, let w { action(self, w) } }
+            })
+        }
+        watch(NSWindow.willEnterFullScreenNotification) { r, _ in r.inTransition = true }
+        watch(NSWindow.didEnterFullScreenNotification) { r, _ in
+            r.inTransition = false
+            r.isFullScreen = true
+            r.refreshAvailable()
+        }
+        watch(NSWindow.willExitFullScreenNotification) { r, _ in
+            r.inTransition = true
+            r.isFullScreen = false
+        }
+        watch(NSWindow.didExitFullScreenNotification) { r, w in
+            r.inTransition = false
+            r.stableFrame = w.frame
+            r.refreshAvailable()
+        }
+        watch(NSWindow.willStartLiveResizeNotification) { r, _ in
+            r.liveResizing = true
+            r.setResizing(true)
+        }
+        watch(NSWindow.didEndLiveResizeNotification) { r, w in
+            r.liveResizing = false
+            r.settle(w)
+        }
+        watch(NSWindow.didResizeNotification) { r, w in
+            r.setResizing(true)
+            guard !r.liveResizing else { return }
+            r.settleTask?.cancel()
+            r.settleTask = Task { [weak r, weak w] in
+                try? await Task.sleep(for: .milliseconds(200))
+                guard !Task.isCancelled, let r, let w else { return }
+                r.settle(w)
+            }
+        }
+        watch(NSWindow.didMoveNotification) { r, w in
+            guard !r.isResizing, !r.inTransition, !w.styleMask.contains(.fullScreen) else { return }
+            r.stableFrame = w.frame
+            r.refreshAvailable()
+        }
+        watch(NSWindow.didChangeScreenNotification) { r, _ in r.refreshAvailable() }
+    }
+
+    private func setResizing(_ on: Bool) {
+        if isResizing != on { isResizing = on }
+    }
+
+    private func settle(_ w: NSWindow) {
+        setResizing(false)
+        guard !inTransition, !w.styleMask.contains(.fullScreen) else { return }
+        stableFrame = w.frame
+        // Hat der Nutzer die Breite geändert, gehört sie ihm: nichts davon später zurücknehmen.
+        if let g = grownFrame, abs(g.width - w.frame.width) > 2 {
+            grown = [:]
+            grownFrame = nil
+        }
+        refreshAvailable()
+    }
+
+    private func refreshAvailable() {
+        guard let w = window, let screen = w.screen else { return }
+        let width: Double
+        if w.styleMask.contains(.fullScreen) || isFullScreen {
+            width = screen.frame.width
+        } else if w.isZoomed || MainWindowFrame.isConstrained(w.frame, screen: screen.visibleFrame) {
+            width = w.frame.width
+        } else {
+            width = screen.visibleFrame.width
+        }
+        if width != availableWidth { availableWidth = width }
+    }
+
+    /// Frei veränderbar: weder Vollbild noch Übergang noch maximiert oder gekachelt.
+    private func isFree(_ w: NSWindow) -> Bool {
+        guard !isFullScreen, !inTransition, !w.styleMask.contains(.fullScreen), !w.isZoomed,
+              let screen = w.screen else { return false }
+        return !MainWindowFrame.isConstrained(w.frame, screen: screen.visibleFrame)
+    }
+
+    /// Verlauf wächst nach links, Diagnose nach rechts; die Steuerung bleibt am Platz. Zurückgenommen wird nur, was
+    /// hier angebaut wurde und was der Nutzer nicht inzwischen selbst geändert hat.
+    func columnsChanged(from old: MainWindowLayout.Visible, to new: MainWindowLayout.Visible) {
+        guard let w = window, isFree(w), let screen = w.screen?.visibleFrame else { return }
+        var f = stableFrame ?? w.frame
+        let needed = MainWindowLayout.minimumWidth(new)
+        for column in [MainWindowLayout.Column.history, .diagnostics] {
+            let side: MainWindowFrame.Side = column == .history ? .left : .right
+            if new.contains(column) && !old.contains(column) {
+                guard let g = MainWindowFrame.grow(f, toMinimumWidth: needed, side: side, screen: screen) else { continue }
+                f = g.frame
+                grown[column] = g.added
+            } else if !new.contains(column) && old.contains(column) {
+                if let amount = grown[column], amount > 0, let gf = grownFrame, abs(gf.width - f.width) <= 2 {
+                    f = MainWindowFrame.shrink(f, by: amount, side: side, minimumWidth: needed)
+                }
+                grown[column] = nil
+                if !new.history && !new.diagnostics {
+                    f = MainWindowFrame.limitWidth(f, to: MainWindowLayout.controlsOnlyMaxWidth,
+                                                   keeping: column == .history ? .right : .left)
+                }
+            }
+        }
+        grownFrame = f
+        stableFrame = f
+        if f != w.frame { w.setFrame(f, display: true, animate: false) }
+    }
+
+    /// Größere Darstellungsgröße: das Fenster wächst bis zur neuen Mindesthöhe, soweit Platz ist.
+    func ensureMinimumHeight(_ height: Double) {
+        guard let w = window, isFree(w), let screen = w.screen?.visibleFrame else { return }
+        let f = MainWindowFrame.growHeight(w.frame, toMinimum: height + Double(w.frame.height - w.contentRect(forFrameRect: w.frame).height),
+                                           screen: screen)
+        if f != w.frame {
+            w.setFrame(f, display: true, animate: false)
+            stableFrame = f
+        }
     }
 }
 
@@ -72,46 +211,38 @@ struct WindowReader: NSViewRepresentable {
         return p
     }
 
-    func updateNSView(_ nsView: Probe, context: Context) { nsView.ref = ref; ref.window = nsView.window }
+    func updateNSView(_ nsView: Probe, context: Context) { nsView.ref = ref }
 
     final class Probe: NSView {
         var ref: WindowRef?
         override func viewDidMoveToWindow() {
             super.viewDidMoveToWindow()
-            ref?.window = window
+            let w = window
+            // Nicht während einer Aktualisierung der Ansicht: `attach` ändert beobachteten Zustand.
+            Task { @MainActor [weak ref] in ref?.attach(w) }
         }
     }
 }
 
-/// Hält das Fenster auf dem Bildschirm: Wächst es beim Einblenden von Verlauf oder Diagnose über den Rand,
-/// rückt es gerade so weit herein. Die obere linke Ecke bleibt sonst stehen (das Fenster springt nicht).
-struct KeepOnScreen: NSViewRepresentable {
-    func makeNSView(context: Context) -> NSView { Probe() }
-    func updateNSView(_ nsView: NSView, context: Context) {}
+/// Seitenspalten des Hauptfensters: öffnen merkt sich, welche zuletzt aufging (bei zu schmalem Bildschirm bleibt diese).
+@MainActor
+enum SideColumns {
+    static func key(_ c: MainWindowLayout.Column) -> String {
+        c == .history ? SettingsKey.showChartsPanel : SettingsKey.showDiagnosticsPanel
+    }
 
-    final class Probe: NSView {
-        private var observer: (any NSObjectProtocol)?
+    static func set(_ c: MainWindowLayout.Column, _ on: Bool) {
+        let d = UserDefaults.standard
+        if on { d.set(c.rawValue, forKey: SettingsKey.lastOpenedColumn) }
+        d.set(on, forKey: key(c))
+    }
 
-        override func viewDidMoveToWindow() {
-            super.viewDidMoveToWindow()
-            if let observer { NotificationCenter.default.removeObserver(observer) }
-            observer = nil
-            guard let window else { return }
-            observer = NotificationCenter.default.addObserver(
-                forName: NSWindow.didResizeNotification, object: window, queue: .main) { [weak window] _ in
-                MainActor.assumeIsolated { if let window { Probe.fit(window) } }
-            }
-        }
+    static func toggle(_ c: MainWindowLayout.Column) {
+        set(c, !UserDefaults.standard.bool(forKey: key(c)))
+    }
 
-        static func fit(_ window: NSWindow) {
-            guard !window.styleMask.contains(.fullScreen), let screen = window.screen ?? NSScreen.main else { return }
-            let vf = screen.visibleFrame
-            var f = window.frame
-            if f.maxX > vf.maxX { f.origin.x = max(vf.minX, vf.maxX - f.width) }
-            if f.minY < vf.minY { f.origin.y = min(vf.minY, vf.maxY - f.height) }
-            if f.maxY > vf.maxY { f.origin.y = vf.maxY - f.height }
-            if f.origin != window.frame.origin { window.setFrameOrigin(f.origin) }
-        }
+    static func binding(_ c: MainWindowLayout.Column) -> Binding<Bool> {
+        Binding(get: { UserDefaults.standard.bool(forKey: key(c)) }, set: { set(c, $0) })
     }
 }
 
@@ -123,16 +254,27 @@ struct KlimacontrolControlsKey: FocusedValueKey {
     typealias Value = Bool
 }
 
+struct KlimacontrolFullScreenKey: FocusedValueKey {
+    typealias Value = Bool
+}
+
 extension FocusedValues {
     var klimacontrolControls: Bool? {
         get { self[KlimacontrolControlsKey.self] }
         set { self[KlimacontrolControlsKey.self] = newValue }
     }
+
+    /// `true`, solange das Hauptfenster im Vollbild ist („Immer im Vordergrund“ ist dann ausgesetzt).
+    var klimacontrolFullScreen: Bool? {
+        get { self[KlimacontrolFullScreenKey.self] }
+        set { self[KlimacontrolFullScreenKey.self] = newValue }
+    }
 }
 
 // MARK: - Fenster immer im Vordergrund
 
-/// Setzt die Ebene des umgebenden Fensters: schwebend oder normal. Unsichtbar, als `.background` anhängen.
+/// Setzt die Ebene des umgebenden Fensters: schwebend oder normal. Im Vollbild (und im Übergang dorthin) bleibt sie
+/// normal; die Einstellung bleibt gespeichert. Unsichtbar, als `.background` anhängen.
 struct WindowLevelSetter: NSViewRepresentable {
     let floating: Bool
 
@@ -145,15 +287,32 @@ struct WindowLevelSetter: NSViewRepresentable {
 
     final class LevelView: NSView {
         var floating = false
+        private var suspended = false
+        private var observers: [any NSObjectProtocol] = []
 
         override func viewDidMoveToWindow() {
             super.viewDidMoveToWindow()
+            observers.forEach(NotificationCenter.default.removeObserver)
+            observers = []
+            if let window {
+                suspended = window.styleMask.contains(.fullScreen)
+                let center = NotificationCenter.default
+                for (name, value) in [(NSWindow.willEnterFullScreenNotification, true), (NSWindow.didEnterFullScreenNotification, true),
+                                      (NSWindow.didExitFullScreenNotification, false)] {
+                    observers.append(center.addObserver(forName: name, object: window, queue: .main) { [weak self] _ in
+                        MainActor.assumeIsolated {
+                            self?.suspended = value
+                            self?.apply()
+                        }
+                    })
+                }
+            }
             apply()
         }
 
         func apply() {
             guard let window else { return }
-            let level: NSWindow.Level = floating ? .floating : .normal
+            let level: NSWindow.Level = floating && !suspended ? .floating : .normal
             if window.level != level { window.level = level }
         }
     }

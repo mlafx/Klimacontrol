@@ -32,7 +32,13 @@ struct KlimacontrolApp: App {
             MainWindowRoot()
                 .environment(model)
         }
-        .windowResizability(.contentSize)
+        .windowResizability(.contentMinSize)
+        .windowIdealSize(.fitToContent)
+        .defaultWindowPlacement { content, context in
+            let ideal = content.sizeThatFits(.unspecified)
+            let area = context.defaultDisplay.visibleRect
+            return WindowPlacement(.center, size: CGSize(width: min(ideal.width, area.width), height: min(ideal.height, area.height)))
+        }
         .windowStyle(.hiddenTitleBar)
         .windowBackgroundDragBehavior(.enabled)
         .commands { AppCommands(model: model) }
@@ -80,19 +86,26 @@ struct KlimacontrolApp: App {
 /// Wurzel des Hauptfensters. Liest nur die Darstellung, nicht den Zustand der Anlage –
 /// sonst rechnete jede Abfrage das ganze Fenster neu.
 private struct MainWindowRoot: View {
+    @State private var window = WindowRef()
+
     var body: some View {
-        WindowChrome { ContentView().fixedSize() }.klimaThemeRoot().modifier(WhatsNewOpener())
+        WindowChrome { ContentView() }
+            .environment(window)
+            .background(WindowReader(ref: window))
+            .klimaThemeRoot()
+            .modifier(WhatsNewOpener())
     }
 }
 
 private struct WindowChrome<Content: View>: View {
     @Environment(ACController.self) private var model
+    @Environment(WindowRef.self) private var window
     @Environment(\.klimaTheme) private var theme
     @ViewBuilder let content: () -> Content
 
     var body: some View {
         content()
-            .containerBackground(theme.windowBackground, for: .window)
+            .containerBackground(window.isFullScreen ? AnyShapeStyle(theme.opaqueWindowBackground) : theme.windowBackground, for: .window)
             .background(WindowLevelSetter(floating: model.appearance.alwaysOnTop))
     }
 }

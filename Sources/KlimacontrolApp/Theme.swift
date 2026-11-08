@@ -169,6 +169,12 @@ struct ThemeStyle: Equatable, Sendable {
         return material.map(AnyShapeStyle.init) ?? AnyShapeStyle(Color.clear)
     }
 
+    /// Trennlinie zwischen den Spalten des Hauptfensters.
+    var separator: Color { isContrast ? Color.primary.opacity(0.6) : Color(nsColor: .separatorColor) }
+
+    /// Deckender Fensterhintergrund (Vollbild).
+    var opaqueWindowBackground: Color { Color(nsColor: .windowBackgroundColor) }
+
     /// Neon: leuchtende Kanten an getönten Karten.
     var edgeGlow: Bool { theme == .neon }
 
@@ -364,6 +370,19 @@ struct KlimaGlow: ViewModifier {
 
 // MARK: - Lebendiger Hintergrund
 
+/// Grenzen der bewegten Effekte bei großen Fenstern (Vollbild): weniger Bilder je Sekunde, Teilchen nach Fläche.
+enum EffectsBudget {
+    /// Über etwa 2 Megapixel genügen 20 Bilder je Sekunde.
+    static func interval(size: CGSize, scale: CGFloat) -> Double {
+        size.width * size.height * scale * scale > 2_000_000 ? 1.0 / 20 : 1.0 / 30
+    }
+
+    /// Teilchenzahl des Schneefalls: 28 bei der Fläche des bisherigen Fensters, nach Fläche begrenzt.
+    static func particles(size: CGSize) -> Int {
+        min(120, max(12, Int(28 * size.width * size.height / 340_000)))
+    }
+}
+
 /// Langsam fließender Farbverlauf in der Modusfarbe hinter dem Fenster. Zeichnet nur, wenn eingeschaltet, `active`
 /// (Anlage arbeitet), Bewegung erlaubt und das Fenster sichtbar ist – sonst eine leere Fläche ohne Zeitgeber.
 /// Höchstens 30 Bilder je Sekunde, für VoiceOver ausgeblendet.
@@ -372,16 +391,25 @@ struct LivelyBackground: View {
     let active: Bool
     var mode: OperationalMode? = nil
     @State private var visible = false
+    @Environment(\.displayScale) private var displayScale
+
+    private static let reduction: CGFloat = 3
 
     var body: some View {
         let run = active && visible && theme.livelyEnabled
         let tint = theme.tint(for: mode)
         ZStack {
             if run {
-                TimelineView(.animation(minimumInterval: 1.0 / 30)) { ctx in
-                    Canvas { g, size in
-                        let t = ctx.date.timeIntervalSinceReferenceDate
-                        Self.draw(g, size: size, t: t, tint: tint, strength: theme.isDark ? 0.32 : 0.22)
+                // Weiche Flecken brauchen keine volle Auflösung: auf ein Drittel zeichnen und hochskalieren.
+                GeometryReader { geo in
+                    TimelineView(.animation(minimumInterval: EffectsBudget.interval(size: geo.size, scale: displayScale))) { ctx in
+                        Canvas { g, size in
+                            let t = ctx.date.timeIntervalSinceReferenceDate
+                            Self.draw(g, size: size, t: t, tint: tint, strength: theme.isDark ? 0.32 : 0.22)
+                        }
+                        .frame(width: geo.size.width / Self.reduction, height: geo.size.height / Self.reduction)
+                        .scaleEffect(Self.reduction, anchor: .topLeading)
+                        .frame(width: geo.size.width, height: geo.size.height, alignment: .topLeading)
                     }
                 }
                 .transition(.opacity)
@@ -418,8 +446,7 @@ struct WeatherEffect: View {
     let mode: OperationalMode?
     let active: Bool
     @State private var visible = false
-
-    private static let count = 28
+    @Environment(\.displayScale) private var displayScale
 
     var body: some View {
         let kind: OperationalMode? = mode == .cool || mode == .heat ? mode : nil
@@ -428,11 +455,14 @@ struct WeatherEffect: View {
         let snow = theme.isDark ? Color.white : Color(white: 0.55)
         ZStack {
             if run, let kind {
-                TimelineView(.animation(minimumInterval: 1.0 / 30)) { ctx in
-                    Canvas { g, size in
-                        let t = ctx.date.timeIntervalSinceReferenceDate
-                        if kind == .cool { Self.snow(g, size: size, t: t, color: snow) }
-                        else { Self.warmth(g, size: size, t: t, color: tint) }
+                GeometryReader { geo in
+                    TimelineView(.animation(minimumInterval: EffectsBudget.interval(size: geo.size, scale: displayScale))) { ctx in
+                        Canvas { g, size in
+                            let t = ctx.date.timeIntervalSinceReferenceDate
+                            let count = EffectsBudget.particles(size: size)
+                            if kind == .cool { Self.snow(g, size: size, t: t, color: snow, count: count) }
+                            else { Self.warmth(g, size: size, t: t, color: tint, count: count / 2) }
+                        }
                     }
                 }
                 .transition(.opacity)
@@ -451,7 +481,7 @@ struct WeatherEffect: View {
         return x - x.rounded(.down)
     }
 
-    static func snow(_ g: GraphicsContext, size: CGSize, t: Double, color: Color) {
+    static func snow(_ g: GraphicsContext, size: CGSize, t: Double, color: Color, count: Int) {
         for i in 0..<count {
             let speed = 12 + rnd(i, 1) * 18            // pt je Sekunde
             let h = size.height + 20
@@ -463,8 +493,8 @@ struct WeatherEffect: View {
         }
     }
 
-    static func warmth(_ g: GraphicsContext, size: CGSize, t: Double, color: Color) {
-        for i in 0..<(count / 2) {
+    static func warmth(_ g: GraphicsContext, size: CGSize, t: Double, color: Color, count: Int) {
+        for i in 0..<count {
             let period = 6 + rnd(i, 1) * 6
             let p = (t / period + rnd(i, 2)).truncatingRemainder(dividingBy: 1)   // 0 unten … 1 oben
             let y = size.height * (1 - p)
