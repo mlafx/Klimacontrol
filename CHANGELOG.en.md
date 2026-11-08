@@ -24,3 +24,8 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 - Mac: Updates are verified against their signature before unpacking; the update information is signed as well.
 - Windows: The update dialog appears in the language of the app.
 - Technical foundation reworked and optimized, numerous minor bugs fixed.
+
+### Fixed
+- Numbers with exactly half a remainder were rounded down (21.25 as 21.2), they are now rounded half up.
+- Mac: “Restart now” in the language selection appears only if the language actually changes.
+- Mac: “What’s new” also appears when moving from one beta to the next beta or to the final version.

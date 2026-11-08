@@ -31,6 +31,11 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 - Windows: Der Update-Dialog erscheint in der Sprache der App.
 - Technischer Unterbau überarbeitet und optimiert, zahlreiche kleinere Fehler behoben.
 
+### Behoben
+- Zahlen mit genau halbem Rest wurden abgerundet (21,25 als 21,2), jetzt kaufmännisch gerundet.
+- Mac: „Jetzt neu starten“ bei der Sprachwahl erscheint nur, wenn sich die Sprache tatsächlich ändert.
+- Mac: „Neu in dieser Version“ erscheint auch beim Wechsel von einer Beta auf die nächste Beta oder die fertige Fassung.
+
 ## [1.1.0.0] – 2026-11-07
 
 ### Hinzugefügt
@@ -116,5 +121,10 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 - Mac: Updates are verified against their signature before unpacking; the update information is signed as well.
 - Windows: The update dialog appears in the language of the app.
 - Technical foundation reworked and optimized, numerous minor bugs fixed.
+
+### Fixed
+- Numbers with exactly half a remainder were rounded down (21.25 as 21.2), they are now rounded half up.
+- Mac: “Restart now” in the language selection appears only if the language actually changes.
+- Mac: “What’s new” also appears when moving from one beta to the next beta or to the final version.
 """#
 }
