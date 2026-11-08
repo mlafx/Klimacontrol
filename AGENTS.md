@@ -1358,7 +1358,7 @@ Ab hier nur auf ausdrückliches Kommando des Autors (veröffentlicht):
     (Tag auf den Merge-Commit; `gh release create` nimmt den vorhandenen Tag).
 12. `python3 tools/make_release.py --publish` baut den Ordner neu (der alte wird zu `…alt-<Zeit>`), legt das Release als „latest“
     an (ohne Vorabrelease „beta“ und ohne Beta-Datei). `make_release.py` fragt den Schlüsselbund je Lauf, und `--publish`
-    baut den Ordner neu: Der Schlüsselbund-Dialog erscheint erneut (Markus bestätigt ihn).
+    baut den Ordner neu: Der Schlüsselbund-Dialog erscheint erneut (der Autor bestätigt ihn).
 13. `python3 tools/make_release.py --check-published` (D3/8).
 14. Abschlusstest mit installierten Vorversionen auf Mac und Windows: das echte Update über `latest` kommt an (D3/1, D3/2);
     Mac-Sperre frei, `erledigt` in den Briefkasten.
