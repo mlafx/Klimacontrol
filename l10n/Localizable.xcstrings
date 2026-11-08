@@ -26029,6 +26029,78 @@
         }
       }
     },
+    "updates.manual.current.message" : {
+      "comment" : "Hinweisfenster nach manueller Update-Suche: keine neue Version; version = installierte Version",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version {version} ist die neueste Version."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version {version} is the latest version."
+          }
+        }
+      }
+    },
+    "updates.manual.current.title" : {
+      "comment" : "Hinweisfenster nach manueller Update-Suche: keine neue Version (Titel)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol ist aktuell."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol is up to date."
+          }
+        }
+      }
+    },
+    "updates.manual.failed.message" : {
+      "comment" : "Hinweisfenster nach manueller Update-Suche: Fehler (Text)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Update-Information konnte nicht geladen oder geprüft werden. Später erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The update information could not be loaded or verified. Try again later."
+          }
+        }
+      }
+    },
+    "updates.manual.failed.title" : {
+      "comment" : "Hinweisfenster nach manueller Update-Suche: Fehler (Titel)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach Updates suchen hat nicht geklappt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking for updates failed."
+          }
+        }
+      }
+    },
     "updates.restart.later" : {
       "comment" : "Update-Hinweis: Knopf, Neustart später",
       "extractionState" : "manual",

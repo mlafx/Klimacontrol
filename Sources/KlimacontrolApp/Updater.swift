@@ -50,6 +50,7 @@ final class AppUpdater {
             Task { @MainActor in self?.canCheck = updater.canCheckForUpdates }
         }
         delegate.onStatus = { [weak self] in self?.status = $0 }
+        delegate.onManualResult = { [weak self] title, message in self?.showManualResult(title: title, message: message) }
         delegate.onReady = { [weak self] version, install in self?.updateIsReady(version: version, install: install) }
         AppLog.write(L.Log.Updates.automatic(state: UpdaterDelegate.betaEnabled ? L.Log.Common.on : L.Log.Common.off, feed: AppUpdate.feedMac(beta: UpdaterDelegate.betaEnabled)))
     }
@@ -123,7 +124,17 @@ final class AppUpdater {
     func checkForUpdates() {
         guard let controller else { return }
         status = UIText.updatesChecking
+        delegate.userInitiated = true
         controller.updater.checkForUpdatesInBackground()
+    }
+
+    private func showManualResult(title: String, message: String) {
+        let alert = NSAlert()
+        alert.messageText = title
+        alert.informativeText = message
+        alert.addButton(withTitle: L.Common.ok)
+        NSApp.activate()
+        alert.runModal()
     }
 }
 
@@ -131,6 +142,9 @@ final class AppUpdater {
 private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
     var onStatus: ((String) -> Void)?
     var onReady: ((String, @escaping () -> Void) -> Void)?
+    var onManualResult: ((String, String) -> Void)?
+    /// Nur eine vom Nutzer angestoßene Suche meldet ihr Ergebnis in einem Fenster; Hintergrundsuchen bleiben still.
+    var userInitiated = false
 
     /// Der Mac-Kern speichert den Schalter in den UserDefaults.
     static var betaEnabled: Bool { UserDefaults.standard.bool(forKey: SettingsKey.updateBetaChannel) }
@@ -146,11 +160,16 @@ private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
 
     func updater(_ updater: SPUUpdater, didFindValidUpdate item: SUAppcastItem) {
         AppLog.write(L.Log.Updates.found(version: item.displayVersionString))
+        userInitiated = false
         onStatus?(L.Updates.Mac.downloading(version: item.displayVersionString))
     }
 
     func updaterDidNotFindUpdate(_ updater: SPUUpdater) {
         onStatus?(UIText.updatesCurrent)
+        guard userInitiated else { return }
+        userInitiated = false
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
+        onManualResult?(UIText.updatesManualCurrentTitle, UIText.updatesManualCurrentMessage(version: version))
     }
 
     func updater(_ updater: SPUUpdater, didAbortWithError error: any Error) {
@@ -160,6 +179,9 @@ private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
         if e.domain == SUSparkleErrorDomain, e.code == Int(SUError.noUpdateError.rawValue) { return }
         AppLog.write(L.Log.Updates.aborted(error: error.localizedDescription))
         onStatus?(UIText.updatesFailed)
+        guard userInitiated else { return }
+        userInitiated = false
+        onManualResult?(UIText.updatesManualFailedTitle, UIText.updatesManualFailedMessage)
     }
 
     /// Sparkle installiert beim Beenden ohnehin; true meldet, dass die App den sofortigen Weg über den Block anbietet.

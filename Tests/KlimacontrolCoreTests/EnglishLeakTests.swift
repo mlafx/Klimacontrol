@@ -118,7 +118,8 @@ final class EnglishLeakTests: CoreTestCase {
         for phase in [ConnectPhase.searching, .handshake, .reading] { out.append(UIText.connectStepsLine(phase)) }
         out += [UIText.connectSlowText, UIText.retryButton, UIText.offCaption, UIText.offHint, UIText.fanModeCaption,
                 UIText.notConfiguredCaption, UIText.updatesChecking, UIText.updatesCurrent, UIText.updatesInstalling(version: "1.2.0.0"),
-                UIText.updatesFailed, UIText.updatesCheckButton, UIText.updatesHelp(host: .mac), UIText.updatesHelp(host: .windows),
+                UIText.updatesFailed, UIText.updatesCheckButton, UIText.updatesManualCurrentTitle,
+                UIText.updatesManualCurrentMessage(version: "1.2.0.0"), UIText.updatesManualFailedTitle, UIText.updatesManualFailedMessage, UIText.updatesHelp(host: .mac), UIText.updatesHelp(host: .windows),
                 UIText.whatsNewTitle(version: "1.2.0.0"), UIText.whatsNewOK, UIText.whatsNewGermanOnly,
                 UIText.importPanelTitle, UIText.importPanelMessage, UIText.exportBackupPanelTitle, UIText.exportBackupPanelMessage,
                 UIText.exportHistoryPanelTitle, UIText.importAlertTitle, UIText.notBackedUpTitle,

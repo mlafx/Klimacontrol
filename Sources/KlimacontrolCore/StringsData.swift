@@ -26033,6 +26033,78 @@ extension StringsData {
         }
       }
     },
+    "updates.manual.current.message" : {
+      "comment" : "Hinweisfenster nach manueller Update-Suche: keine neue Version; version = installierte Version",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version {version} ist die neueste Version."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version {version} is the latest version."
+          }
+        }
+      }
+    },
+    "updates.manual.current.title" : {
+      "comment" : "Hinweisfenster nach manueller Update-Suche: keine neue Version (Titel)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol ist aktuell."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol is up to date."
+          }
+        }
+      }
+    },
+    "updates.manual.failed.message" : {
+      "comment" : "Hinweisfenster nach manueller Update-Suche: Fehler (Text)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Update-Information konnte nicht geladen oder geprüft werden. Später erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The update information could not be loaded or verified. Try again later."
+          }
+        }
+      }
+    },
+    "updates.manual.failed.title" : {
+      "comment" : "Hinweisfenster nach manueller Update-Suche: Fehler (Titel)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach Updates suchen hat nicht geklappt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking for updates failed."
+          }
+        }
+      }
+    },
     "updates.restart.later" : {
       "comment" : "Update-Hinweis: Knopf, Neustart später",
       "extractionState" : "manual",
@@ -27621,6 +27693,10 @@ extension StringsData {
         "updates.mac.promptMessage",
         "updates.mac.promptTitle",
         "updates.mac.ready",
+        "updates.manual.current.message",
+        "updates.manual.current.title",
+        "updates.manual.failed.message",
+        "updates.manual.failed.title",
         "updates.restart.later",
         "way.auto",
         "way.cloud",
@@ -29071,6 +29147,10 @@ extension StringsData {
         "updates.mac.promptMessage": ["version"],
         "updates.mac.promptTitle": [],
         "updates.mac.ready": ["version"],
+        "updates.manual.current.message": ["version"],
+        "updates.manual.current.title": [],
+        "updates.manual.failed.message": [],
+        "updates.manual.failed.title": [],
         "updates.restart.later": [],
         "way.auto": [],
         "way.cloud": [],
@@ -32584,6 +32664,20 @@ public enum L {
             public static var promptTitle: String { Localizer.text("updates.mac.promptTitle") }
             /// Version {version} is ready and will be installed when the app quits.
             public static func ready(version: String) -> String { Localizer.text("updates.mac.ready", ["version": version]) }
+        }
+        public enum Manual {
+            public enum Current {
+                /// Version {version} is the latest version.
+                public static func message(version: String) -> String { Localizer.text("updates.manual.current.message", ["version": version]) }
+                /// Klimacontrol is up to date.
+                public static var title: String { Localizer.text("updates.manual.current.title") }
+            }
+            public enum Failed {
+                /// The update information could not be loaded or verified. Try again later.
+                public static var message: String { Localizer.text("updates.manual.failed.message") }
+                /// Checking for updates failed.
+                public static var title: String { Localizer.text("updates.manual.failed.title") }
+            }
         }
         public enum Restart {
             /// Later

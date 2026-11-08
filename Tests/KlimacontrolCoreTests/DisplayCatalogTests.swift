@@ -712,6 +712,11 @@ final class DisplayCatalogTests: CoreTestCase {
                        "Version 1.2.3.4 wird geladen und installiert. Klimacontrol startet danach neu.")
         XCTAssertEqual(UIText.updatesFailed, "Die Suche nach Updates hat nicht geklappt. Später erneut versuchen.")
         XCTAssertEqual(UIText.updatesCheckButton, "Jetzt suchen …")
+        XCTAssertEqual(UIText.updatesManualCurrentTitle, "Klimacontrol ist aktuell.")
+        XCTAssertEqual(UIText.updatesManualCurrentMessage(version: "1.2.3.4"), "Version 1.2.3.4 ist die neueste Version.")
+        XCTAssertEqual(UIText.updatesManualFailedTitle, "Nach Updates suchen hat nicht geklappt.")
+        XCTAssertEqual(UIText.updatesManualFailedMessage,
+                       "Die Update-Information konnte nicht geladen oder geprüft werden. Später erneut versuchen.")
     }
 
     func testWhatsNewTexts() {

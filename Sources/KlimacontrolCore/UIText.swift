@@ -86,6 +86,10 @@ public enum UIText {
     public static var updatesCurrent: String { L.Updates.current }
     public static func updatesInstalling(version: String) -> String { L.Updates.installing(version: version) }
     public static var updatesFailed: String { L.Updates.failed }
+    public static var updatesManualCurrentTitle: String { L.Updates.Manual.Current.title }
+    public static func updatesManualCurrentMessage(version: String) -> String { L.Updates.Manual.Current.message(version: version) }
+    public static var updatesManualFailedTitle: String { L.Updates.Manual.Failed.title }
+    public static var updatesManualFailedMessage: String { L.Updates.Manual.Failed.message }
     public static var updatesCheckButton: String { L.Updates.checkButton }
 
     // MARK: Neu in dieser Version
