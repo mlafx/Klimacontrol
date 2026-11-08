@@ -81,14 +81,14 @@ public partial class SettingsWindow
             VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
             HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
         };
-        text.SetValue(AutomationProperties.NameProperty, $"Lizenztext {n.Name}");
+        text.SetValue(AutomationProperties.NameProperty, L.F("notices.windows.licenseTextName", ("name", n.Name)));
         // Das Mausrad gehört der Seite, nicht dem Textfeld (es scrollt selbst nicht).
         text.PreviewMouseWheel += (_, e) =>
         {
             e.Handled = true;
             NoticesScroll.ScrollToVerticalOffset(NoticesScroll.VerticalOffset - e.Delta / 3.0);
         };
-        var expander = new Expander { Header = "Lizenztext", FontSize = 12, Margin = new Thickness(0, 4, 0, 0), Content = text };
+        var expander = new Expander { Header = L.T("notices.licenseText"), FontSize = 12, Margin = new Thickness(0, 4, 0, 0), Content = text };
         expander.Expanded += (_, _) => { if (text.Text.Length == 0) text.Text = n.LicenseText; };
         card.Children.Add(expander);
 

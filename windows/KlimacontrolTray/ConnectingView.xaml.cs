@@ -102,15 +102,16 @@ public partial class ConnectingView : UserControl
         if (texts.Retry.Length > 0 && !Equals(RetryButton.Content, texts.Retry)) RetryButton.Content = texts.Retry;
         if (s.ConnectSlow && !lastSlow) ControlPanel.Announce(SlowText);
         lastSlow = s.ConnectSlow;
-        var retryTip = keys ? "Sofort neu verbinden (Strg+R)" : "Sofort neu verbinden";
+        var retryTip = L.Tip("main.windows.reconnectHelp", keys ? Hotkeys.Ctrl("R") : "");
         if (!Equals(RetryButton.ToolTip, retryTip)) RetryButton.ToolTip = retryTip;
-        AutomationProperties.SetAcceleratorKey(RetryButton, keys ? "Strg+R" : "");
+        AutomationProperties.SetAcceleratorKey(RetryButton, keys ? Hotkeys.Ctrl("R") : "");
     }
 
     /// Gesprochene Form der Schrittzeile des Kerns („Anlage suchen ✓ · Anmelden … · Werte lesen“ → „Anlage suchen erledigt,
     /// Anmelden läuft, Werte lesen“).
     internal static string SpokenSteps(string line) =>
-        line.Replace(" ✓", " erledigt", StringComparison.Ordinal).Replace(" …", " läuft", StringComparison.Ordinal)
+        line.Replace(" ✓", " " + L.T("main.windows.spokenDone"), StringComparison.Ordinal)
+            .Replace(" …", " " + L.T("main.windows.spokenRunning"), StringComparison.Ordinal)
             .Replace(" · ", ", ", StringComparison.Ordinal);
 
     /// „Erneut versuchen“: sofort neu verbinden; der Kern hebt dabei die Sperren der Wegwahl auf.

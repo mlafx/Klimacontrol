@@ -39,7 +39,7 @@ public partial class SettingsWindow
             {
                 Title = texts.ExportBackupPanelTitle,
                 FileName = texts.ExportBackupFileName,
-                Filter = "Klimacontrol-Sicherung (*.json)|*.json",
+                Filter = L.T("settings.device.windows.backupFilter"),
                 InitialDirectory = folder,
             };
             if (dlg.ShowDialog(this) != true) return false;
@@ -50,7 +50,7 @@ public partial class SettingsWindow
                 if (choice != 1) return false;
             }
             var err = Core.Send(Cmd.ExportBackup, ("path", dlg.FileName));
-            Result(BackupResult, err ?? $"Gesichert als „{Path.GetFileName(dlg.FileName)}“.", err == null);
+            Result(BackupResult, err ?? L.F("result.backupExported", ("name", Path.GetFileName(dlg.FileName))), err == null);
             return err == null;
         }
     }
@@ -62,14 +62,13 @@ public partial class SettingsWindow
         if (!lan) return;
         if (s.CredentialsBackedUp)
         {
-            BackupState.Text = "✓ Zugangsdaten gesichert. Nach einer Änderung (z. B. neue Einrichtung) erneut sichern.";
+            BackupState.Text = L.T("settings.device.windows.backupDone");
             BackupState.Foreground = (Brush)FindResource("Sub");
             BackupState.FontWeight = FontWeights.Normal;
         }
         else
         {
-            BackupState.Text = "Noch nicht gesichert. Ohne Sicherung muss die Anlage auf einem neuen Rechner oder nach " +
-                               "„Neu einrichten“ wieder gesucht werden. Jetzt „Zugangsdaten sichern …“ wählen.";
+            BackupState.Text = L.T("settings.device.windows.backupMissing");
             BackupState.Foreground = (Brush)FindResource("Warn");
             BackupState.FontWeight = FontWeights.SemiBold;
         }
@@ -84,7 +83,7 @@ public partial class SettingsWindow
         var dlg = new OpenFileDialog
         {
             Title = Core.Snap.Options.Texts.ImportPanelTitle,
-            Filter = "Klimacontrol-Sicherung (*.json)|*.json|Alle Dateien|*.*",
+            Filter = L.T("settings.device.windows.importFilter"),
             InitialDirectory = Dialogs.SaveFolder(),
         };
         if (dlg.ShowDialog(this) != true) return;
@@ -112,7 +111,7 @@ public partial class SettingsWindow
         }
         importSeq.Pending = job;
         BackupResult.Inlines.Clear();
-        BackupResult.Text = "Sicherung wird eingelesen und an der Anlage geprüft …";
+        BackupResult.Text = L.T("settings.device.windows.importing");
         BackupResult.Foreground = (Brush)FindResource("Sub");
         BackupResult.Visibility = Visibility.Visible;
         RenderImportButton();
@@ -121,7 +120,7 @@ public partial class SettingsWindow
     void RenderImportButton()
     {
         ImportButton.IsEnabled = importSeq.Pending == null;
-        ImportButton.Content = importSeq.Pending == null ? "Sicherung einlesen …" : "Lese ein …";
+        ImportButton.Content = importSeq.Pending == null ? L.T("settings.device.backup.import") : L.T("settings.device.windows.importButtonBusy");
     }
 
     /// Neues Import-Ergebnis des Kerns. Nur für einen Auftrag aus diesem Fenster (die Einrichtung im Hauptfenster
@@ -150,7 +149,7 @@ public partial class SettingsWindow
     {
         var choice = p.Warning ? await Dialogs.AskWarn(this, p.Title, p.Message, p.Cancel, p.Confirm)
                                : await Dialogs.Ask(this, p.Title, p.Message, p.Cancel, p.Confirm);
-        if (choice != 1) { Result(BackupResult, "Nicht eingelesen. Die bisherige Einrichtung bleibt.", true); return; }
+        if (choice != 1) { Result(BackupResult, L.T("settings.device.windows.importDeclined"), true); return; }
         StartImport(job with { AllowOtherDevice = true });
     }
 
@@ -177,7 +176,7 @@ public partial class SettingsWindow
             break;
         }
         var err = Core.Send(Cmd.ForgetDevice);
-        if (err != null) { Warn("Nicht zurückgesetzt", err); return; }
+        if (err != null) { Warn(L.T("settings.device.windows.forgetFailedTitle"), err); return; }
         BackupResult.Visibility = Visibility.Collapsed;
         RelocateResult.Visibility = Visibility.Collapsed;
         importSeq.Pending = null;
@@ -200,8 +199,7 @@ public partial class SettingsWindow
         catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Security.SecurityException) { }
         SetAsidePanel.Visibility = Show(setAsideFile != null);
         if (setAsideFile != null)
-            SetAsideText.Text = $"Die bisherige Einrichtung liegt als „{Path.GetFileName(setAsideFile)}“ im Datenordner. " +
-                                "Sie enthält Token und Schlüssel der alten Anlage. Wer sie nicht mehr braucht, löscht sie dort.";
+            SetAsideText.Text = L.F("settings.device.windows.setAsideNote", ("name", Path.GetFileName(setAsideFile)));
     }
 
     void SetAsideShow_Click(object sender, RoutedEventArgs e) => ShowInExplorer(setAsideFile ?? Native.SupportDir());
@@ -229,6 +227,6 @@ public partial class SettingsWindow
         }
         var busy = s.Relocating || relocateRequested;
         RelocateButton.IsEnabled = !busy;
-        RelocateButton.Content = busy ? "Suche …" : "Adresse neu suchen";
+        RelocateButton.Content = busy ? L.T("main.relocate.searching") : L.T("settings.device.relocate.button");
     }
 }

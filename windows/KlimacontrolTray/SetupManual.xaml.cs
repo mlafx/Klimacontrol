@@ -54,7 +54,7 @@ public partial class SetupManual : UserControl
             new Field(KeyBox, KeyHint, "key", m => m.Key),
         };
         SetupUi.SetupSearch(ScanButton, out scanLabel, SubnetButton, out subnetLabel);
-        PasteButton.Content = SetupUi.Labeled(SetupIcons.Clipboard, out _, "Aus Zwischenablage einfügen");
+        PasteButton.Content = SetupUi.Labeled(SetupIcons.Clipboard, out _, L.T("setup.view.manual.paste"));
         var ok = Icons.Make(Icons.Check, 12, null, 1.6);
         ok.SetResourceReference(Shape.StrokeProperty, "Ok");
         CheckOkIcon.Content = ok;
@@ -124,7 +124,7 @@ public partial class SetupManual : UserControl
         var can = m.Complete && !s.Busy;
         CheckButton.IsEnabled = can;
         ConnectButton.IsEnabled = can;
-        ConnectButton.Content = s.Busy ? "Verbinde …" : "Verbinden";
+        ConnectButton.Content = L.T(s.Busy ? "setup.view.connecting" : "setup.view.connect");
         CheckOk.Visibility = s.ManualCheckOK == true ? Visibility.Visible : Visibility.Collapsed;
 
         RenderMessages(s);
@@ -192,7 +192,8 @@ public partial class SetupManual : UserControl
     static void Count(TextBlock note, ContentControl mark, ref string? shown, int n, int total, string? problem)
     {
         var ok = problem == null && n == total;
-        note.Text = problem ?? (ok ? $"{total} Zeichen" : $"{n} von {total} Zeichen");
+        note.Text = problem ?? (ok ? L.F("setup.view.manual.charsComplete", ("total", Fmt.Num(total, 0)))
+            : L.F("setup.view.manual.charsPartial", ("count", Fmt.Num(n, 0)), ("total", Fmt.Num(total, 0))));
         var key = problem != null ? "Warn" : ok ? "Ok" : "Sub";
         if (shown == key) return;
         shown = key;
@@ -275,17 +276,18 @@ public partial class SetupManual : UserControl
         var names = new List<string>();
         for (var i = 0; i < fields.Length; i++)
             if (fields[i].Get(m) != before[i]) names.Add(FieldName(fields[i].Key));
-        PastedNote.Text = names.Count > 0 ? "Übernommen: " + string.Join(", ", names) : "Übernommen: keine Änderung";
+        PastedNote.Text = names.Count > 0 ? L.F("setup.view.manual.pasted", ("what", string.Join(L.T("setup.found.separator"), names)))
+            : L.T("setup.view.windows.pastedNone");
         PastedNote.Visibility = Visibility.Visible;
     }
 
     static string FieldName(string key) => key switch
     {
-        "ip" => "Adresse",
-        "port" => "Port",
-        "deviceId" => "Anlagen-ID",
-        "token" => "Token",
-        _ => "Schlüssel",
+        "ip" => L.T("setup.found.address"),
+        "port" => L.T("setup.found.port"),
+        "deviceId" => L.T("setup.found.applianceId"),
+        "token" => L.T("setup.found.token"),
+        _ => L.T("setup.found.key"),
     };
 
     bool CanAct

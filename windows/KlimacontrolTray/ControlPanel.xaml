@@ -1,7 +1,8 @@
 <UserControl x:Class="KlimacontrolTray.ControlPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:KlimacontrolTray">
+             xmlns:local="clr-namespace:KlimacontrolTray"
+             xmlns:l="clr-namespace:KlimacontrolTray">
   <!-- Nur das Gerüst; den Inhalt setzt ControlPanel.xaml.cs je nach Zustand. -->
   <UserControl.Resources>
     <!-- Flacher Knopf für Sprungmarken und Zonen-Symbole am Lüfter: per Tab erreichbar, per Sprachausgabe
@@ -41,14 +42,14 @@
             <ColumnDefinition Width="Auto"/>
           </Grid.ColumnDefinitions>
           <StackPanel VerticalAlignment="Center">
-            <TextBlock x:Name="NameText" FontSize="17" FontWeight="SemiBold" Text="Klimaanlage"/>
+            <TextBlock x:Name="NameText" FontSize="17" FontWeight="SemiBold" Text="{l:T message.defaultName}"/>
             <!-- Verbindungszeile: Punkt grün/grau/orange, Text, Tooltip mit Adresse -->
             <StackPanel x:Name="StatusRow" Orientation="Horizontal" Margin="0,2,0,0" Background="Transparent">
               <Ellipse x:Name="StatusDot" Width="7" Height="7" Margin="0,0,6,0" VerticalAlignment="Center"/>
               <TextBlock x:Name="StatusText" FontSize="12" Foreground="{DynamicResource Sub}" TextTrimming="CharacterEllipsis"/>
             </StackPanel>
           </StackPanel>
-          <Button x:Name="PowerButton" Grid.Column="1" Width="46" Height="46" Padding="0" Click="Power_Click" ToolTip="Ein/Aus">
+          <Button x:Name="PowerButton" Grid.Column="1" Width="46" Height="46" Padding="0" Click="Power_Click" ToolTip="{l:T main.windows.powerToggle}">
             <Button.Template>
               <ControlTemplate TargetType="Button">
                 <Border x:Name="b" CornerRadius="23" Background="{TemplateBinding Background}" BorderBrush="{DynamicResource Line}" BorderThickness="1">
@@ -71,15 +72,15 @@
               <ColumnDefinition/>
               <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="MinusButton" Width="44" Height="44" Padding="0" VerticalAlignment="Center" Click="Minus_Click" ToolTip="Kälter"
-                    AutomationProperties.Name="Kälter"/>
+            <Button x:Name="MinusButton" Width="44" Height="44" Padding="0" VerticalAlignment="Center" Click="Minus_Click" ToolTip="{l:T main.step.cooler}"
+                    AutomationProperties.Name="{l:T main.step.cooler}"/>
             <StackPanel Grid.Column="1" HorizontalAlignment="Center">
               <TextBlock x:Name="TargetText" FontSize="64" FontWeight="Light" HorizontalAlignment="Center" Text="–"/>
               <TextBlock x:Name="GoalText" FontSize="13" Foreground="{DynamicResource Sub}" HorizontalAlignment="Center"
                          TextAlignment="Center" TextWrapping="Wrap"/>
             </StackPanel>
-            <Button x:Name="PlusButton" Grid.Column="2" Width="44" Height="44" Padding="0" VerticalAlignment="Center" Click="Plus_Click" ToolTip="Wärmer"
-                    AutomationProperties.Name="Wärmer"/>
+            <Button x:Name="PlusButton" Grid.Column="2" Width="44" Height="44" Padding="0" VerticalAlignment="Center" Click="Plus_Click" ToolTip="{l:T main.step.warmer}"
+                    AutomationProperties.Name="{l:T main.step.warmer}"/>
           </Grid>
           <Grid x:Name="TempRow" Margin="0,8,0,0">
             <Grid.ColumnDefinitions>
@@ -90,7 +91,7 @@
             <TextBlock x:Name="Min16" FontSize="11" VerticalAlignment="Center"/>
             <Slider x:Name="TempSlider" Grid.Column="1" Margin="8,0" TickFrequency="1"
                     IsSnapToTickEnabled="True" TickPlacement="BottomRight" ValueChanged="TempSlider_ValueChanged"
-                    AutomationProperties.Name="Solltemperatur"/>
+                    AutomationProperties.Name="{l:T main.hero.targetTemperature}"/>
             <TextBlock x:Name="Max30" Grid.Column="2" FontSize="11" VerticalAlignment="Center"/>
           </Grid>
         </StackPanel>
@@ -122,12 +123,12 @@
     <!-- Lüfter -->
     <StackPanel x:Name="FanPanel" Margin="0,16,0,0">
       <Grid>
-        <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Sub}" Text="LÜFTER" VerticalAlignment="Center"/>
+        <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Sub}" Text="{l:T main.section.fan}" VerticalAlignment="Center"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
           <TextBlock x:Name="FanValue" FontSize="12" Foreground="{DynamicResource Sub}" VerticalAlignment="Center" Margin="0,0,10,0"/>
           <!-- Checked/Unchecked statt Click: auch Leertaste und Sprachausgabe (Umschalten) schicken den Befehl. -->
-          <ToggleButton x:Name="FanAuto" Content="Auto" FontSize="12" Padding="10,3" Checked="FanAuto_Changed" Unchecked="FanAuto_Changed"
-                        AutomationProperties.Name="Lüfter automatisch"/>
+          <ToggleButton x:Name="FanAuto" Content="{l:T fan.auto}" FontSize="12" Padding="10,3" Checked="FanAuto_Changed" Unchecked="FanAuto_Changed"
+                        AutomationProperties.Name="{l:T main.windows.fanAutoName}"/>
         </StackPanel>
       </Grid>
       <!-- Spur selbst gezeichnet (FanTrack): fest 1–100 %, beim Kühlen/Heizen links gestrichelt bis „Außengerät leise“,
@@ -136,7 +137,7 @@
         <Canvas x:Name="FanTrack" IsHitTestVisible="False"/>
         <Slider x:Name="FanSlider" Minimum="1" Maximum="100" SmallChange="1" LargeChange="10" IsMoveToPointEnabled="True"
                 FocusVisualStyle="{x:Null}" ValueChanged="FanSlider_ValueChanged" SizeChanged="FanSlider_SizeChanged"
-                AutomationProperties.Name="Lüfter in Prozent">
+                AutomationProperties.Name="{l:T main.fan.percentLabel}">
           <Slider.Template>
             <ControlTemplate TargetType="Slider">
               <Grid Height="24" Background="Transparent">
@@ -184,7 +185,7 @@
     <!-- Umfang „Einfach“: Komfort, weitere Funktionen und Szenen unter „Mehr …“ (Zustand für die Sitzung). -->
     <ToggleButton x:Name="MoreToggle" Margin="0,12,0,0" HorizontalAlignment="Stretch" Cursor="Hand" Visibility="Collapsed"
                   Checked="MoreToggle_Changed" Unchecked="MoreToggle_Changed"
-                  ToolTip="Komfort, weitere Funktionen und Szenen ein- oder ausblenden" AutomationProperties.Name="Mehr">
+                  ToolTip="{l:T main.windows.moreHelp}" AutomationProperties.Name="{l:T main.windows.moreName}">
       <ToggleButton.Template>
         <ControlTemplate TargetType="ToggleButton">
           <Border x:Name="Box" Background="Transparent" MinHeight="22" Padding="0,2" CornerRadius="4">
@@ -202,25 +203,25 @@
           </ControlTemplate.Triggers>
         </ControlTemplate>
       </ToggleButton.Template>
-      <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Sub}" Text="MEHR …"/>
+      <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Sub}" Text="{l:T main.windows.moreHeader}"/>
     </ToggleButton>
 
     <!-- Komfort -->
     <StackPanel x:Name="ComfortPanel" Margin="0,12,0,0">
-      <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Sub}" Text="KOMFORT" Margin="0,0,0,6"/>
+      <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Sub}" Text="{l:T main.section.comfort}" Margin="0,0,0,6"/>
       <UniformGrid x:Name="ComfortGrid" Rows="1" Margin="-3,0"/>
       <!-- Weitere Funktionen: immer sichtbar wie am Mac (nichts hinter einem Klappmenü verstecken). -->
       <StackPanel x:Name="MorePanel" Margin="0,14,0,0">
-          <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Sub}" Text="WEITERE FUNKTIONEN" Margin="0,0,0,6"/>
+          <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Sub}" Text="{l:T main.section.moreFeatures}" Margin="0,0,0,6"/>
           <UniformGrid x:Name="MoreGrid" Columns="3" Margin="-3,0"/>
           <Grid x:Name="RateRow" Margin="0,10,0,0" Background="Transparent">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
               <ContentControl x:Name="RateIcon" VerticalAlignment="Center" Margin="0,0,6,0" Focusable="False" IsTabStop="False"/>
-              <TextBlock FontSize="13" VerticalAlignment="Center" Text="Leistung begrenzen"/>
+              <TextBlock FontSize="13" VerticalAlignment="Center" Text="{l:T main.comfort.limitPower}"/>
             </StackPanel>
             <!-- RadioButton im Knopf-Stil: Pfeiltasten, Leertaste und Sprachausgabe schicken den Befehl wie ein Klick. -->
             <StackPanel x:Name="RatePanel" Orientation="Horizontal" HorizontalAlignment="Right"
-                        AutomationProperties.Name="Leistung begrenzen"/>
+                        AutomationProperties.Name="{l:T main.comfort.limitPower}"/>
           </Grid>
       </StackPanel>
     </StackPanel>
@@ -245,9 +246,9 @@
         <TextBlock x:Name="MessageText" Grid.Column="1" TextWrapping="Wrap" FontSize="12" VerticalAlignment="Center"
                    AutomationProperties.LiveSetting="Assertive"/>
         <Button x:Name="RetryButton" Grid.Column="2" Padding="8,2" Margin="8,0,0,0" FontSize="11"
-                VerticalAlignment="Center" Click="Retry_Click" ToolTip="Sofort neu abfragen"/>
+                VerticalAlignment="Center" Click="Retry_Click" ToolTip="{l:T main.windows.retryHelp}"/>
         <Button Grid.Column="3" Content="✕" Padding="6,2" Margin="6,0,0,0" FontSize="11" VerticalAlignment="Center"
-                Click="DismissMessage_Click" ToolTip="Ausblenden" AutomationProperties.Name="Meldung ausblenden"/>
+                Click="DismissMessage_Click" ToolTip="{l:T common.dismiss}" AutomationProperties.Name="{l:T main.windows.dismissMessage}"/>
       </Grid>
     </Border>
 
@@ -263,7 +264,7 @@
         <TextBlock x:Name="NoticeText" Grid.Column="1" TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource Sub}" VerticalAlignment="Center"
                    AutomationProperties.LiveSetting="Polite"/>
         <Button Grid.Column="2" Content="✕" Padding="6,2" Margin="8,0,0,0" FontSize="11" VerticalAlignment="Center"
-                Click="DismissNotice_Click" ToolTip="Ausblenden" AutomationProperties.Name="Hinweis ausblenden"/>
+                Click="DismissNotice_Click" ToolTip="{l:T common.dismiss}" AutomationProperties.Name="{l:T main.windows.dismissNotice}"/>
       </Grid>
     </Border>
 
@@ -274,7 +275,7 @@
            Kein eigener Knopf: „Klimacontrol öffnen“ steht unten im Fenster am Infobereich schon. -->
       <StackPanel x:Name="SetupHint" Visibility="Collapsed">
         <TextBlock FontSize="13" TextWrapping="Wrap"
-                   Text="Noch keine Anlage eingerichtet – das geht im Hauptfenster („Klimacontrol öffnen“)."/>
+                   Text="{l:T menu.noDevice}"/>
       </StackPanel>
     </StackPanel>
   </StackPanel>

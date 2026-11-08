@@ -25,6 +25,10 @@ interface ICoreBridge
 {
     /// Version der C-Schnittstelle (kc_api_version); null = ältere DLL ohne diese Angabe.
     int? ApiVersion();
+    /// Sprache und Formate setzen (kc_set_locale), vor `Init`. null = übernommen, sonst Meldung.
+    string? SetLocale(string json);
+    /// Alle Texte der aktiven Sprache (kc_strings_json).
+    string StringsJson();
     /// Startet den Kern (kc_init).
     void Init(string version);
     /// Leert die Main-Queue des Kerns einmal (kc_pump).
@@ -44,6 +48,8 @@ sealed class NativeBridge : ICoreBridge
 {
     public static readonly NativeBridge Instance = new();
     public int? ApiVersion() => Native.ApiVersion();
+    public string? SetLocale(string json) => Native.SetLocale(json);
+    public string StringsJson() => Native.StringsJson();
     public void Init(string version) => Native.Init(version);
     public void Pump() => Native.kc_pump();
     public void Stop() => Native.kc_stop();
@@ -63,9 +69,7 @@ sealed class BridgeVersionException : EntryPointNotFoundException
     public int Expected { get; }
 
     public BridgeVersionException(int? found, int expected)
-        : base("Klimacontrol.exe und der Kern im Ordner „res“ passen nicht zusammen – sie stammen aus verschiedenen Ständen. "
-               + "Bitte den ganzen Ordner aus dem ZIP übernehmen. "
-               + $"(Schnittstelle {(found is { } f ? f.ToString() : "fehlt")}, erwartet {expected})")
+        : base(StartupText.VersionMismatch(found, expected))
     {
         Found = found;
         Expected = expected;
@@ -78,7 +82,7 @@ sealed class Core
     public static readonly Core Shared = new();
 
     /// Rückgabe von `Send` nach `Stop()` (App wird beendet): Der Befehl kommt nicht mehr beim Kern an.
-    public const string StoppedText = "Klimacontrol wird gerade beendet. Der Befehl wurde nicht mehr ausgeführt.";
+    public static string StoppedText => L.T("app.windows.quitting");
 
     readonly ICoreBridge bridge;
 
@@ -157,9 +161,16 @@ sealed class Core
         var api = bridge.ApiVersion();
         if (api != Native.ExpectedApi)
         {
-            bridge.Trace($"FEHLER Kern-Schnittstelle {(api is { } f ? f.ToString() : "fehlt")}, erwartet {Native.ExpectedApi}");
+            bridge.Trace(StartupText.VersionMismatch(api, Native.ExpectedApi)); // vor dem Laden des Katalogs: zweisprachiger Starttext
             throw new BridgeVersionException(api, Native.ExpectedApi);
         }
+        // Sprache und Formate vor dem Start des Kerns: Er wählt danach die Textsprache und liefert den Katalog.
+        var profile = FormatProfile.FromCulture(Formats.RegionCulture());
+        var problem = bridge.SetLocale(Formats.LocaleJson(Formats.UiCulture().Name, profile));
+        if (problem != null) bridge.Trace(L.T("log.windows.localeNotApplied") + ": " + problem);
+        L.Load(bridge.StringsJson());
+        Fmt.Profile = profile;
+        App.UseUiCulture(L.Language);
         bridge.Init(version);
         started = true;
         ui = Dispatcher.CurrentDispatcher;
@@ -198,7 +209,7 @@ sealed class Core
         else
         {
             r = bridge.Command(BuildJson(Cmd.UiVisible, new (string Key, object? Value)[] { ("id", id), ("visible", visible) }));
-            if (r != null) bridge.Trace($"FEHLER Befehl uiVisible {id}={visible}: {r}");
+            if (r != null) bridge.Trace(L.T("log.windows.commandFailed") + $" uiVisible {id}={visible}: {r}");
         }
         if (r == null) uiSent[id] = visible;
     }
@@ -215,7 +226,7 @@ sealed class Core
         poll?.Stop();
         if (!started) return;
         try { bridge.Stop(); }
-        catch (Exception ex) { bridge.Trace("FEHLER Kern beenden: " + ex.Message); }
+        catch (Exception ex) { bridge.Trace(L.T("log.windows.coreStopFailed") + ": " + ex.Message); }
     }
 
     /// Nach dem Aufwachen aus dem Standby sofort frisch lesen (die WLAN-Verbindung von vorher ist meist tot), beim
@@ -308,7 +319,7 @@ sealed class Core
         // Unlesbar: letzte Werte behalten, einmal protokollieren.
         LiveInfo? live = null;
         try { live = JsonSerializer.Deserialize(bridge.LiveJson(), BridgeJson.Default.LiveInfo) ?? new LiveInfo(); }
-        catch (JsonException ex) { TraceOnce("live", "FEHLER Kern-Daten (busy/nextRefresh) nicht lesbar, letzter Stand bleibt: " + ex.Message); }
+        catch (JsonException ex) { TraceOnce("live", L.T("log.windows.liveUnreadable") + ": " + ex.Message); }
         var changed = false;
         // Schnappschuss nur bei geändertem Zähler lesen; der Textvergleich bleibt als Sicherheitsnetz.
         var rev = bridge.StateRev();
@@ -346,7 +357,7 @@ sealed class Core
         foreach (var d in Changed.GetInvocationList())
         {
             try { ((Action)d)(); }
-            catch (Exception ex) { bridge.Trace("FEHLER Oberfläche (Changed): " + ex); }
+            catch (Exception ex) { bridge.Trace(L.T("log.windows.uiChanged") + ": " + ex); }
         }
     }
 
@@ -357,7 +368,7 @@ sealed class Core
         try { snap = JsonSerializer.Deserialize(json, BridgeJson.Default.Snapshot); }
         catch (JsonException ex)
         {
-            TraceOnce("state", "FEHLER Kern-Zustand nicht lesbar, letzter Stand bleibt: " + ex.Message);
+            TraceOnce("state", L.T("log.windows.stateUnreadable") + ": " + ex.Message);
             return null;
         }
         if (snap != null)
@@ -365,7 +376,7 @@ sealed class Core
             // Kodierfehler im Kern ohne früheren Stand: {"jsonError":true} – kein echter Zustand (sonst „nicht eingerichtet“).
             if (json.Length < 64 && json.Contains("\"jsonError\":true", StringComparison.Ordinal))
             {
-                TraceOnce("state", "FEHLER Kern konnte den Zustand nicht liefern (jsonError), letzter Stand bleibt");
+                TraceOnce("state", L.T("log.windows.stateFailed"));
                 return null;
             }
             return snap;
@@ -373,7 +384,7 @@ sealed class Core
         // "null" = Kern nicht gestartet. Vor Start() ist das der leere Anfangsstand; danach kein Grund, die Oberfläche
         // auf „nicht eingerichtet“ springen zu lassen.
         if (!started) return new Snapshot();
-        TraceOnce("null", "FEHLER Kern liefert keinen Zustand, letzter Stand bleibt");
+        TraceOnce("null", L.T("log.windows.stateMissing"));
         return null;
     }
 
@@ -393,7 +404,7 @@ sealed class Core
     {
         if (stopped) return StoppedText;
         var r = bridge.Command(BuildJson(cmd, args));
-        if (r != null) bridge.Trace($"FEHLER Befehl {cmd}: {r}");
+        if (r != null) bridge.Trace(L.T("log.windows.commandFailed") + $" {cmd}: {r}");
         // Nicht synchron pumpen: Send kann mitten im WPF-Layout kommen, dort wirft WPF „Dispatcherverarbeitung wurde
         // angehalten …“. Ein eingereihter Auftrag genügt für mehrere Befehle.
         Hurry();
@@ -424,33 +435,6 @@ sealed class Core
     T? Read<T>(string what, Func<T?> read) where T : class
     {
         try { return read(); }
-        catch (JsonException ex) { TraceOnce(what, $"FEHLER Kern-Daten ({what}) nicht lesbar: " + ex.Message); return null; }
-    }
-}
-
-/// Deutsche Zahlen wie Fmt im Kern.
-static class Fmt
-{
-    static readonly CultureInfo De = CultureInfo.GetCultureInfo("de-DE");
-    public static string Num(double v, int digits) => v.ToString("N" + digits, De);
-    // Wie Fmt.temp/Fmt.target im Kern (Mac): „21,5°“ bzw. „22°“.
-    public static string Temp(double? v) => v.HasValue ? Num(v.Value, 1) + "°" : "–";
-    public static string Target(double v) => Num(Math.Round(v), 0) + "°";
-    public static string Watts(double? v) => v.HasValue ? Num(v.Value, 0) + " W" : "–";
-    public static string Kwh(double? v) => v.HasValue ? Num(v.Value, 2) + " kWh" : "–";
-    public static string Euro(double? v) => v.HasValue ? Num(v.Value, 2) + " €" : "–";
-    // Wie die Regler am Mac (PanelsAppearance): Anteil 0–1 als ganze Prozent („40 %“), Unschärfe als „20 pt“; gerundet
-    // wie Swift `rounded()` (ab ,5 weg von null).
-    public static string Percent(double fraction) => Num(Math.Round(fraction * 100, MidpointRounding.AwayFromZero), 0) + " %";
-    public static string Points(double v) => Num(Math.Round(v, MidpointRounding.AwayFromZero), 0) + " pt";
-    public static string Clock(double epoch) => Codes.Local(epoch).ToString("HH:mm", De);
-
-    public static string Ago(double? epoch)
-    {
-        if (!epoch.HasValue) return "noch nicht gelesen";
-        var s = (DateTime.Now - Codes.Local(epoch.Value)).TotalSeconds;
-        if (s < 60) return $"vor {Math.Max(0, (int)s)} s";
-        if (s < 3600) return $"vor {(int)(s / 60)} min";
-        return "um " + Clock(epoch.Value);
+        catch (JsonException ex) { TraceOnce(what, L.T("log.windows.dataUnreadable") + $" ({what}): " + ex.Message); return null; }
     }
 }

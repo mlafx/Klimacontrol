@@ -2,7 +2,8 @@
 ;   ISCC.exe /DAppVersion=<tools\VERSION> /DSourceDir=<dist\windows\Klimacontrol> /DOutputDir=<dist\windows> Klimacontrol.iss
 ; Ohne Administratorrechte nach %LOCALAPPDATA%\Programs\Klimacontrol. Updates kommen ueber WinSparkle, das dieses
 ; Setup mit /SILENT /SP- /SUPPRESSMSGBOXES /NORESTART /CLOSEAPPLICATIONS startet (tools/make_release.py).
-; Nur ASCII: die deutschen Texte kommen aus German.isl.
+; Nur ASCII: die Texte kommen aus German.isl/Default.isl und [CustomMessages].
+; Sprache: deutsche Windows-Anzeigesprache -> Deutsch, jede andere -> Englisch (erste Sprache), nie ein Sprachdialog.
 
 #ifndef AppVersion
   #error AppVersion fehlt (/DAppVersion=...)
@@ -43,9 +44,21 @@ OutputBaseFilename=Klimacontrol-Windows-{#AppVersion}-Setup
 Compression=lzma2/max
 SolidCompression=yes
 WizardStyle=modern
+ShowLanguageDialog=no
+LanguageDetectionMethod=uilanguage
+; Nein: sonst gewaenne die gespeicherte Sprache einer frueheren Installation (1.1.0.0: de) auch auf englischem Windows.
+UsePreviousLanguage=no
 
 [Languages]
+; Englisch zuerst: Rueckfall, wenn keine Sprache zur Anzeigesprache passt. Inno Setup 6 hat keine English.isl.
+Name: "en"; MessagesFile: "compiler:Default.isl"
 Name: "de"; MessagesFile: "compiler:Languages\German.isl"
+
+[CustomMessages]
+de.AutostartTask=Mit Windows starten
+en.AutostartTask=Start with Windows
+de.OtherOptions=Weitere Optionen:
+en.OtherOptions=Additional options:
 
 [InstallDelete]
 ; Alte Laufzeitdateien einer frueheren Version nicht liegen lassen.
@@ -58,7 +71,7 @@ Source: "{#SourceDir}\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recurse
 [Tasks]
 ; Standard an. Bei Updates (still) behaelt Inno Setup die fruehere Wahl bei.
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
-Name: "autostart"; Description: "Mit Windows starten"; GroupDescription: "Weitere Optionen:"
+Name: "autostart"; Description: "{cm:AutostartTask}"; GroupDescription: "{cm:OtherOptions}"
 
 [Icons]
 Name: "{autoprograms}\Klimacontrol"; Filename: "{app}\Klimacontrol.exe"

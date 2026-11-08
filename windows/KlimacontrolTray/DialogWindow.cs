@@ -31,7 +31,7 @@ sealed class DialogWindow : Window
     {
         this.title = title;
         this.text = text;
-        if (buttons.Length == 0) buttons = new[] { "OK" };
+        if (buttons.Length == 0) buttons = new[] { L.T("common.ok") };
 
         Title = "Klimacontrol";
         ResizeMode = ResizeMode.NoResize;

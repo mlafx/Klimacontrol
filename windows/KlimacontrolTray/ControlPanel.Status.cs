@@ -39,9 +39,9 @@ public partial class ControlPanel
             RetryButton.Visibility = s.LastRefreshFailed ? Visibility.Visible : Visibility.Collapsed;
             var retry = s.Options.Texts.Retry;
             if (retry.Length > 0 && !Equals(RetryButton.Content, retry)) RetryButton.Content = retry;
-            var retryTip = keys ? "Sofort neu abfragen (Strg+R)" : "Sofort neu abfragen";
+            var retryTip = L.Tip("main.windows.retryHelp", keys ? Hotkeys.Ctrl("R") : "");
             if (!Equals(RetryButton.ToolTip, retryTip)) RetryButton.ToolTip = retryTip;
-            AutomationProperties.SetAcceleratorKey(RetryButton, keys ? "Strg+R" : "");
+            AutomationProperties.SetAcceleratorKey(RetryButton, keys ? Hotkeys.Ctrl("R") : "");
             // Fehler sofort ansagen, „Anlage ausgeschaltet“ nur höflich.
             AutomationProperties.SetLiveSetting(MessageText, quiet ? AutomationLiveSetting.Polite : AutomationLiveSetting.Assertive);
         }
@@ -72,7 +72,7 @@ public partial class ControlPanel
     static Run CodeRun(string code)
     {
         code = code.Trim();
-        var run = new Run("  (" + (code.All(char.IsDigit) ? "Code " + code : code) + ")") { FontSize = 10.5 };
+        var run = new Run("  (" + (code.All(char.IsDigit) ? L.F("main.message.codeLabel", ("code", code)) : code) + ")") { FontSize = 10.5 };
         run.SetResourceReference(TextElement.ForegroundProperty, "Sub");
         return run;
     }

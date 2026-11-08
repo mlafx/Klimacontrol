@@ -1,6 +1,7 @@
 <UserControl x:Class="KlimacontrolTray.DiagnosticsPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="clr-namespace:KlimacontrolTray">
   <StackPanel>
     <Grid>
       <Grid.ColumnDefinitions>
@@ -9,10 +10,10 @@
       </Grid.ColumnDefinitions>
       <StackPanel Orientation="Horizontal">
         <ContentControl x:Name="TitleIcon" VerticalAlignment="Center" Margin="0,0,8,0"/>
-        <TextBlock FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" Text="Diagnose"/>
+        <TextBlock FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" Text="{l:T diagnostics.panel.title}"/>
       </StackPanel>
-      <Button x:Name="CloseButton" Grid.Column="1" Padding="6" Click="Close_Click" ToolTip="Diagnose ausblenden (Strg+D)"
-              AutomationProperties.Name="Diagnose ausblenden" AutomationProperties.AcceleratorKey="Strg+D"/>
+      <Button x:Name="CloseButton" Grid.Column="1" Padding="6" Click="Close_Click"
+              AutomationProperties.Name="{l:T diagnostics.panel.hide}"/>
     </Grid>
     <TextBlock x:Name="LiveText" FontSize="12" Foreground="{DynamicResource Sub}" Margin="0,8,0,0" TextWrapping="Wrap"/>
     <StackPanel x:Name="Sections" Margin="0,4,0,0"/>
@@ -23,9 +24,9 @@
         <ColumnDefinition/>
         <ColumnDefinition Width="Auto"/>
       </Grid.ColumnDefinitions>
-      <TextBlock FontSize="12" Foreground="{DynamicResource Sub}" Text="Verlauf in verlauf.sqlite" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+      <TextBlock FontSize="12" Foreground="{DynamicResource Sub}" Text="{l:T diagnostics.panel.historyFile}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
       <TextBlock Grid.Column="1" FontSize="12" Margin="8,0,0,0">
-        <Hyperlink Click="Folder_Click" ToolTip="Ablageordner öffnen und verlauf.sqlite markieren">Im Explorer zeigen</Hyperlink>
+        <Hyperlink Click="Folder_Click" ToolTip="{l:T diagnostics.panel.windows.showInExplorerHelp}"><Run Text="{l:T common.windows.showInExplorer}"/></Hyperlink>
       </TextBlock>
     </Grid>
   </StackPanel>

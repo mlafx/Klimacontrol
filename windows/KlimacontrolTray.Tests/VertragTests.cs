@@ -160,6 +160,21 @@ public class VertragTests
     }
 
     [Fact]
+    public void WinSparkleSpracheKommtAusDerOberflaeche()
+    {
+        var dir = TrayDir();
+        if (!Directory.Exists(dir)) return;
+        var updates = File.ReadAllText(Path.Combine(dir, "Updates.cs"));
+        var calls = Regex.Matches(updates, @"win_sparkle_set_lang""\)\(([^;]*)\);");
+        Assert.NotEmpty(calls);
+        Assert.All(calls.Select(m => m.Groups[1].Value), v =>
+        {
+            Assert.Contains("L.Language", v);
+            Assert.DoesNotMatch(@"^\s*""[a-z]*""\s*$", v);
+        });
+    }
+
+    [Fact]
     public void TexteUndRegelnAusDemKernKommenAn()
     {
         var s = JsonSerializer.Deserialize(Sample("snapshot").GetRawText(), Strict.Snapshot)!;
@@ -234,8 +249,10 @@ public class VertragTests
                 number++;
                 var t = line.TrimStart();
                 if (t.StartsWith("//") || t.StartsWith("<!--")) continue;
+                // Namen von Platzhaltern in L.F/L.P („day“, „week“ …) sind keine eigenen Listen.
+                var checkedLine = NamedArg.Replace(line, "(");
                 foreach (var f in forbidden)
-                    if (line.Contains(f, StringComparison.Ordinal)) offenders.Add($"{Path.GetFileName(file)}:{number} „{f}“");
+                    if (checkedLine.Contains(f, StringComparison.Ordinal)) offenders.Add($"{Path.GetFileName(file)}:{number} „{f}“");
             }
         }
         Assert.True(offenders.Count == 0, "Eigene Kopien von Kern-Texten in der Oberfläche: " + string.Join(", ", offenders));
@@ -305,5 +322,293 @@ public class VertragTests
         // Leer = alle Namen gefunden; sonst stehen die unbekannten in der Meldung.
         var unknown = names.Where(n => !known.Contains(n)).ToList();
         Assert.Empty(unknown);
+    }
+
+    // --- Texte: Katalog, Markup-Erweiterung, Formate (Phase 5) ---
+
+    /// Werte, die auch ohne Katalog stehen dürfen: Markennamen, Einheiten, feste Begriffe.
+    static readonly HashSet<string> Allowed = new(StringComparer.Ordinal)
+    {
+        "Klimacontrol", "PortaSplit", "Midea", "MSmartHome", "Eco", "Turbo", "iECO", "OK", "IP", "Port", "Token", "kWh", "W", "pt",
+    };
+
+    static readonly string[] ShownAttributes =
+    {
+        "Text", "Content", "ToolTip", "Header", "Title", "AutomationProperties.Name", "AutomationProperties.HelpText",
+        "AutomationProperties.ItemStatus", "InputGestureText",
+    };
+
+    static readonly string[] TextElements = { "TextBlock", "Run", "Hyperlink", "Label" };
+
+    static IEnumerable<string> SourceFiles(params string[] extensions)
+    {
+        var dir = TrayDir();
+        if (!Directory.Exists(dir)) return Enumerable.Empty<string>();
+        return Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories)
+            .Where(f => extensions.Any(e => f.EndsWith(e, StringComparison.Ordinal))
+                        && !f.Contains(Path.DirectorySeparatorChar + "obj" + Path.DirectorySeparatorChar)
+                        && !f.Contains(Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar))
+            .OrderBy(f => f, StringComparer.Ordinal);
+    }
+
+    static bool HasLetters(string text) => text.Any(char.IsLetter);
+
+    /// Feste Anzeigetexte in XAML: Attribute und Elementtext, die weder Markup noch erlaubt noch ohne Buchstaben sind.
+    static List<string> XamlTextFindings()
+    {
+        var found = new List<string>();
+        foreach (var file in SourceFiles(".xaml"))
+        {
+            var name = Path.GetFileName(file);
+            var doc = System.Xml.Linq.XDocument.Load(file);
+            foreach (var e in doc.Descendants())
+            {
+                foreach (var a in e.Attributes())
+                {
+                    var attribute = a.Name.LocalName;
+                    if (!ShownAttributes.Contains(attribute)) continue;
+                    var v = a.Value.Trim();
+                    if (v.StartsWith('{') || !HasLetters(v) || Allowed.Contains(v)) continue;
+                    found.Add($"{name} {e.Name.LocalName}.{attribute}=\"{v}\"");
+                }
+                if (TextElements.Contains(e.Name.LocalName) && !e.HasElements)
+                {
+                    var v = e.Value.Trim();
+                    if (v.Length == 0 || v.StartsWith('{') || !HasLetters(v) || Allowed.Contains(v)) continue;
+                    found.Add($"{name} <{e.Name.LocalName}>{v}");
+                }
+            }
+        }
+        return found;
+    }
+
+    static readonly Regex GermanWord = new(
+        @"[äöüÄÖÜß„“]|\b(?:der|die|das|und|nicht|ist|mit|für|bei|von|zum|zur|Anlage|Einstellungen|Verlauf|Fenster|Abbrechen|Beenden|Schließen|Strg|Umschalt|heute|morgen|Uhr|Aus|Ein)\b",
+        RegexOptions.CultureInvariant);
+
+    static readonly Regex LogCall = new(@"\b(?:Trace|TraceOnce|Log)\(", RegexOptions.CultureInvariant);
+
+    /// Inhalte der Zeichenkettenliterale einer Codezeile (ohne Kommentar); bei `$"…"` nur die Textteile.
+    static List<string> Literals(string line)
+    {
+        var result = new List<string>();
+        var i = 0;
+        while (i < line.Length)
+        {
+            var c = line[i];
+            if (c == '/' && i + 1 < line.Length && line[i + 1] == '/') break;
+            if (c == '\'')
+            {
+                // Zeichenliteral: '"' darf keine Zeichenkette öffnen.
+                i += i + 2 < line.Length && line[i + 1] == '\\' ? 4 : 3;
+                continue;
+            }
+            var prefix = i;
+            var interpolated = false;
+            var verbatim = false;
+            while (prefix < line.Length && (line[prefix] == '$' || line[prefix] == '@'))
+            {
+                interpolated |= line[prefix] == '$';
+                verbatim |= line[prefix] == '@';
+                prefix++;
+            }
+            if (prefix >= line.Length || line[prefix] != '"') { i = Math.Max(i + 1, prefix); continue; }
+            var text = new System.Text.StringBuilder();
+            var k = prefix + 1;
+            var depth = 0;
+            while (k < line.Length)
+            {
+                var ch = line[k];
+                if (depth > 0)
+                {
+                    if (ch == '{') depth++;
+                    else if (ch == '}') depth--;
+                    else if (ch == '"')
+                    {
+                        // verschachtelte Zeichenkette im Ausdruck überspringen
+                        var end = line.IndexOf('"', k + 1);
+                        k = end < 0 ? line.Length : end;
+                    }
+                    k++;
+                    continue;
+                }
+                if (ch == '"')
+                {
+                    if (verbatim && k + 1 < line.Length && line[k + 1] == '"') { text.Append('"'); k += 2; continue; }
+                    break;
+                }
+                if (ch == '\\' && !verbatim) { k += 2; continue; }
+                if (interpolated && ch == '{')
+                {
+                    if (k + 1 < line.Length && line[k + 1] == '{') { text.Append('{'); k += 2; continue; }
+                    depth = 1;
+                    text.Append(' ');
+                    k++;
+                    continue;
+                }
+                text.Append(ch);
+                k++;
+            }
+            result.Add(text.ToString());
+            i = k + 1;
+        }
+        return result;
+    }
+
+    /// Feste Anzeigetexte in C#: Literale mit Umlauten, „ “ oder typischen deutschen Wörtern; nicht in Kommentaren und
+    /// Protokollaufrufen, nicht in StartupText.cs und BridgeCommands.cs, nicht in Zeilen mit `// kein Anzeigetext`.
+    static List<string> CodeTextFindings()
+    {
+        var found = new List<string>();
+        foreach (var file in SourceFiles(".cs"))
+        {
+            var name = Path.GetFileName(file);
+            if (name is "StartupText.cs" or "BridgeCommands.cs") continue;
+            var inBlock = false;
+            var inLog = false;
+            var number = 0;
+            foreach (var raw in File.ReadLines(file))
+            {
+                number++;
+                var line = raw;
+                if (inBlock)
+                {
+                    var close = line.IndexOf("*/", StringComparison.Ordinal);
+                    if (close < 0) continue;
+                    line = line[(close + 2)..];
+                    inBlock = false;
+                }
+                var t = line.TrimStart();
+                if (t.StartsWith("//")) continue;
+                if (t.StartsWith("/*") && !t.Contains("*/")) { inBlock = true; continue; }
+                if (line.Contains("// kein Anzeigetext", StringComparison.Ordinal)) continue;
+                if (inLog || LogCall.IsMatch(line))
+                {
+                    inLog = !line.TrimEnd().EndsWith(';');
+                    continue;
+                }
+                foreach (var literal in Literals(line))
+                    if (GermanWord.IsMatch(literal)) found.Add($"{name}:{number} „{literal.Trim()}“");
+            }
+        }
+        return found;
+    }
+
+    /// Stand der Umstellung: Zahl der noch festen Texte. Jeder Teilauftrag senkt sie, am Ende steht 0.
+    const int Erlaubt = 0;
+
+    [Fact]
+    public void OberflaecheOhneDeutscheTexte()
+    {
+        if (!Directory.Exists(TrayDir())) return;
+        var funde = XamlTextFindings().Concat(CodeTextFindings()).ToList();
+        Assert.True(funde.Count <= Erlaubt,
+            $"{funde.Count} feste Texte, erlaubt {Erlaubt}. Liegt die Zahl über dem Stand, sind Texte dazugekommen; erste Funde: "
+            + string.Join(" | ", funde.Take(40)));
+    }
+
+    static readonly Regex XamlKey = new(@"\{l:T\s+([\w.]+)\s*\}", RegexOptions.CultureInvariant);
+    static readonly Regex CodeKey = new(@"\bL\.(T|F|P|Tip)\(\s*""([\w.]+)""\s*[,)]", RegexOptions.CultureInvariant);
+    static readonly Regex NamedArg = new(@"\(\s*""(\w+)""\s*,", RegexOptions.CultureInvariant);
+
+    [Fact]
+    public void TextschluesselStehenImKatalog()
+    {
+        if (!Catalog.Available) return;
+        var problems = new List<string>();
+        void CheckKey(string where, string key)
+        {
+            if (!Catalog.Has(key)) { problems.Add($"{where}: {key} fehlt im Katalog"); return; }
+            foreach (var language in new[] { "de", "en" })
+                if (string.IsNullOrEmpty(Catalog.Text(key, language))) problems.Add($"{where}: {key} ohne {language}");
+        }
+        foreach (var file in SourceFiles(".xaml"))
+            foreach (Match m in XamlKey.Matches(File.ReadAllText(file)))
+                CheckKey(Path.GetFileName(file), m.Groups[1].Value);
+        foreach (var file in SourceFiles(".cs"))
+        {
+            var name = Path.GetFileName(file);
+            var text = string.Join("\n", File.ReadLines(file).Where(l => !l.TrimStart().StartsWith("//")));
+            foreach (Match m in CodeKey.Matches(text))
+            {
+                var kind = m.Groups[1].Value;
+                var key = m.Groups[2].Value;
+                var where = $"{name} L.{kind}(\"{key}\")";
+                CheckKey(where, key);
+                if (!Catalog.Has(key)) continue;
+                var plural = Catalog.IsPlural(key);
+                var end = text.IndexOf(';', m.Index);
+                var statement = text[m.Index..(end < 0 ? text.Length : end)];
+                var placeholders = new[] { "de", "en" }
+                    .SelectMany(l => Regex.Matches(Catalog.Text(key, l) ?? "", @"\{(\w+)\}").Select(x => x.Groups[1].Value))
+                    .Distinct().ToList();
+                var given = NamedArg.Matches(statement).Select(x => x.Groups[1].Value).ToHashSet();
+                if (kind == "P" && !plural) problems.Add($"{where}: kein Mehrzahl-Eintrag");
+                if (kind is "T" or "Tip" && plural) problems.Add($"{where}: Mehrzahl-Eintrag, bitte L.P");
+                if (kind is "T" or "Tip" && placeholders.Count > 0) problems.Add($"{where}: hat Platzhalter, bitte L.F");
+                if (kind is not ("T" or "Tip"))
+                    foreach (var ph in placeholders)
+                        if (!given.Contains(ph) && !(kind == "P" && ph == "count"))
+                            problems.Add($"{where}: Platzhalter {{{ph}}} wird nicht gefüllt");
+            }
+        }
+        Assert.True(problems.Count == 0, "Textschlüssel: " + string.Join(" | ", problems));
+    }
+
+    [Fact]
+    public void MarkupErweiterungIstUeberallEingebunden()
+    {
+        var missing = SourceFiles(".xaml")
+            .Where(f => File.ReadAllText(f).Contains("{l:T", StringComparison.Ordinal)
+                        && !File.ReadAllText(f).Contains("xmlns:l=\"clr-namespace:KlimacontrolTray\"", StringComparison.Ordinal))
+            .Select(Path.GetFileName)
+            .ToList();
+        Assert.True(missing.Count == 0, "Ohne xmlns:l: " + string.Join(", ", missing));
+    }
+
+    /// Stand der Umstellung auf `Formats.cs`: Zahl der Zeilen mit eigenem Format (`GetCultureInfo("de-DE")`, "HH:mm",
+    /// `CurrentCulture`) außerhalb von Formats.cs und dem Protokoll-Reiter. Wird bis 5g auf 0 gesenkt.
+    const int ErlaubteEigeneFormate = 0;
+
+    static List<string> OwnFormatFindings()
+    {
+        var found = new List<string>();
+        foreach (var file in SourceFiles(".cs"))
+        {
+            var name = Path.GetFileName(file);
+            if (name is "Formats.cs" or "SettingsWindow.Log.cs") continue;
+            var number = 0;
+            foreach (var line in File.ReadLines(file))
+            {
+                number++;
+                if (line.TrimStart().StartsWith("//") || line.Contains("// kein Anzeigetext", StringComparison.Ordinal)) continue;
+                if (line.Contains("GetCultureInfo(\"de-DE\")", StringComparison.Ordinal)
+                    || line.Contains("HH:mm", StringComparison.Ordinal)
+                    || line.Contains("CurrentCulture", StringComparison.Ordinal))
+                    found.Add($"{name}:{number} {line.Trim()}");
+            }
+        }
+        return found;
+    }
+
+    [Fact]
+    public void KeineEigenenFormate()
+    {
+        if (!Directory.Exists(TrayDir())) return;
+        var funde = OwnFormatFindings();
+        Assert.True(funde.Count <= ErlaubteEigeneFormate,
+            $"{funde.Count} Stellen mit eigenem Zahlen-/Zeitformat, erlaubt {ErlaubteEigeneFormate}: " + string.Join(" | ", funde));
+    }
+
+    [Fact]
+    public void KeinBetaSchalterUnterWindows()
+    {
+        var offenders = SourceFiles(".cs", ".xaml")
+            .Where(f => Path.GetFileName(f).StartsWith("SettingsWindow", StringComparison.Ordinal) || Path.GetFileName(f) == "BridgeCommands.cs")
+            .Where(f => File.ReadAllText(f).Contains("Beta", StringComparison.Ordinal)
+                        || File.ReadAllText(f).Contains("updateBetaChannel", StringComparison.Ordinal))
+            .Select(Path.GetFileName)
+            .ToList();
+        Assert.True(offenders.Count == 0, "Beta-Schalter unter Windows: " + string.Join(", ", offenders));
     }
 }

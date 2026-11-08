@@ -55,7 +55,7 @@ public partial class MiniWindow : Window
         // Texte aus dem Kern (wie am Mac): bei alten Werten „Stand HH:MM“ statt eines Flackerns je Abfrage.
         BigText.Text = s.MiniValue;
         Caption.Text = s.MiniCaption;
-        TextArea.ToolTip = s.StatusLine.Length > 0 ? $"{s.DisplayName}: {s.StatusLine}" : s.DisplayName;
+        TextArea.ToolTip = s.StatusLine.Length > 0 ? L.F("tray.tip.line", ("name", s.DisplayName), ("text", s.StatusLine)) : s.DisplayName;
         var (family, weight) = Theme.DigitFont;
         if (BigText.FontFamily?.Source != family.Source) BigText.FontFamily = family;
         BigText.FontWeight = weight;
@@ -90,7 +90,7 @@ public partial class MiniWindow : Window
             PowerButton.SetResourceReference(BackgroundProperty, "Tile");
             PowerButton.SetResourceReference(ForegroundProperty, "Fg");
         }
-        var label = on ? "Ausschalten" : "Einschalten";
+        var label = L.T(on ? "settings.appearance.mini.turnOff" : "settings.appearance.mini.turnOn");
         AutomationProperties.SetName(PowerButton, label);
         PowerButton.ToolTip = label;
 

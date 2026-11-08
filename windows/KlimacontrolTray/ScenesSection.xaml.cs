@@ -32,7 +32,7 @@ public partial class ScenesSection : UserControl
         SceneAdd.Content = new StackPanel
         {
             Orientation = Orientation.Horizontal,
-            Children = { plus, new TextBlock { Text = "Szene sichern", VerticalAlignment = VerticalAlignment.Center } },
+            Children = { plus, new TextBlock { Text = L.T("main.scene.save"), VerticalAlignment = VerticalAlignment.Center } },
         };
         ScenesExpander.IsExpanded = scenesOpen;
 
@@ -105,8 +105,8 @@ public partial class ScenesSection : UserControl
     {
         var active = s.Scenes.FirstOrDefault(x => x.Active);
         // Eingeklappt zeigen, welche Szene gerade eingestellt ist (Name nicht in Großbuchstaben).
-        HeaderText.Text = active != null ? $"SZENEN · {active.Name} aktiv" : "SZENEN";
-        HeaderText.ToolTip = active != null ? $"{active.Name} ist eingestellt" : null;
+        HeaderText.Text = active != null ? L.F("main.section.scenesActive", ("name", active.Name)) : L.T("main.section.scenes");
+        HeaderText.ToolTip = active != null ? L.F("main.scene.activeHelp", ("name", active.Name)) : null;
         var empty = s.Scenes.Count == 0;
         ScenesHint.Visibility = empty ? Visibility.Visible : Visibility.Collapsed;
         SceneGrid.Visibility = empty ? Visibility.Collapsed : Visibility.Visible;
@@ -161,7 +161,7 @@ public partial class ScenesSection : UserControl
         {
             Content = content, Margin = new Thickness(3), Padding = new Thickness(10, 7, 10, 7),
             HorizontalAlignment = HorizontalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Stretch,
-            ToolTip = scene.Active ? $"{scene.Name} ist eingestellt" : $"{scene.Name} anwenden – Rechtsklick zum Löschen",
+            ToolTip = scene.Active ? L.F("main.scene.activeHelp", ("name", scene.Name)) : L.F("main.scene.applyHelp", ("name", scene.Name)),
         };
         // Aktiv = getönte Fläche mit weißer Schrift; für die Sprachausgabe „aktiv“.
         AutomationProperties.SetName(b, scene.Name);
@@ -172,17 +172,17 @@ public partial class ScenesSection : UserControl
             // Neon: leuchtende Kante in der hellen Modusfarbe (wie die Kacheln im ControlPanel).
             b.BorderBrush = Appearance.Current.Theme == "neon" && !Theme.HighContrast ? tint : fill;
             b.Foreground = onFill;
-            AutomationProperties.SetItemStatus(b, "aktiv");
+            AutomationProperties.SetItemStatus(b, L.T("main.mode.activeValue"));
         }
         var id = scene.Id;
         b.Click += (_, _) => Core.Send(Cmd.ApplyScene, ("id", id));
         var name = scene.Name;
-        var del = new MenuItem { Header = "Szene löschen …" };
+        var del = new MenuItem { Header = L.T("main.scene.deleteMenu") };
         del.Click += async (_, _) =>
         {
             // Wie am Mac: erst nachfragen, eine gelöschte Szene lässt sich nicht wiederherstellen.
-            var answer = await Dialogs.AskWarn(Window.GetWindow(b),$"Szene „{name}“ löschen?",
-                "Die Szene lässt sich danach nicht wiederherstellen.", "Löschen", "Abbrechen");
+            var answer = await Dialogs.AskWarn(Window.GetWindow(b), L.F("main.scene.deleteTitle", ("name", name)),
+                L.T("main.scene.deleteMessage"), L.T("main.scene.deleteConfirm"), L.T("common.cancel"));
             if (answer == 0) Core.Send(Cmd.DeleteScene, ("id", id));
         };
         b.ContextMenu = new ContextMenu { Items = { del } };

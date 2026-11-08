@@ -2,7 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:KlimacontrolTray"
-        Title="Klimacontrol – Einstellungen" Width="620" Height="640" MinWidth="520" MinHeight="480"
+        xmlns:l="clr-namespace:KlimacontrolTray"
+        Title="{l:T app.windows.settingsTitle}" Width="660" Height="640" MinWidth="560" MinHeight="480"
         WindowStartupLocation="CenterScreen"
         UseLayoutRounding="True">
   <!-- Reiterreihenfolge fest, muss zu `SettingsTab` passen: Allgemein, Darstellung, Verbindung, Anlage, Protokoll,
@@ -102,60 +103,118 @@
       <Setter Property="TextAlignment" Value="Right"/>
       <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
-    <Style x:Key="ThemeChoice" TargetType="RadioButton" BasedOn="{StaticResource {x:Type RadioButton}}">
+    <!-- Themenkachel: Hintergrund und Inhalt setzt `SettingsWindow.Appearance.cs` aus der Palette des Themas. -->
+    <Style x:Key="ThemeTile" TargetType="RadioButton">
       <Setter Property="GroupName" Value="LookTheme"/>
-      <Setter Property="Margin" Value="0,4"/>
-      <Setter Property="VerticalContentAlignment" Value="Top"/>
+      <Setter Property="Margin" Value="3"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="RadioButton">
+            <Border x:Name="Box" Background="{TemplateBinding Background}" BorderBrush="{DynamicResource Line}" BorderThickness="1"
+                    CornerRadius="10" Padding="4,8" MinHeight="78">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Box" Property="BorderBrush" Value="{DynamicResource Sub}"/>
+              </Trigger>
+              <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter TargetName="Box" Property="BorderBrush" Value="{DynamicResource Fg}"/>
+              </Trigger>
+              <Trigger Property="IsChecked" Value="True">
+                <Setter TargetName="Box" Property="BorderBrush" Value="{DynamicResource Fg}"/>
+                <Setter TargetName="Box" Property="BorderThickness" Value="2.5"/>
+                <Setter TargetName="Box" Property="Padding" Value="2.5,6.5"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
     </Style>
   </Window.Resources>
 
   <TabControl x:Name="Tabs" Margin="12">
 
     <!-- 0 Allgemein -->
-    <TabItem Header="Allgemein">
+    <TabItem Header="{l:T settings.tabs.general}">
       <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="12,4,12,12">
-          <TextBlock Style="{StaticResource SectionHead}" Text="Anzeige"/>
+          <TextBlock Style="{StaticResource SectionHead}" Text="{l:T settings.language.title}"/>
           <Border Style="{StaticResource Section}">
             <StackPanel>
               <Grid Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Name"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Steht im Fenster und im Infobereich."/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.language.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.language.restartHint}"/>
                 </StackPanel>
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                  <TextBox x:Name="NameBox" Width="190" AutomationProperties.Name="Name der Anlage" KeyDown="Name_KeyDown"/>
-                  <Button Content="Übernehmen" Margin="6,0,0,0" Click="Name_Click"/>
-                </StackPanel>
-              </Grid>
-              <Grid Style="{StaticResource Row}">
-                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Strompreis"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Für die Kosten in der Übersicht und im Verlauf (gilt auch rückwirkend für den Verlauf)."/>
-                </StackPanel>
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                  <TextBox x:Name="PriceBox" Width="70" TextAlignment="Right" KeyDown="Price_KeyDown"
-                           AutomationProperties.Name="Strompreis in Euro je Kilowattstunde"/>
-                  <TextBlock Text="€ je kWh" VerticalAlignment="Center" Margin="6,0,0,0" Foreground="{DynamicResource Sub}"/>
-                  <Button Content="Übernehmen" Margin="6,0,0,0" Click="Price_Click"/>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                  <ComboBox x:Name="LanguageBox" Width="170" HorizontalAlignment="Right"
+                            AutomationProperties.Name="{l:T settings.general.languageAccessibility}" SelectionChanged="Language_Changed">
+                    <ComboBoxItem Content="{l:T settings.language.system}" Tag="system"/>
+                    <ComboBoxItem Content="{l:T settings.language.german}" Tag="de"/>
+                    <ComboBoxItem Content="{l:T settings.language.english}" Tag="en"/>
+                  </ComboBox>
+                  <Button x:Name="RestartButton" Content="{l:T app.restartNow}" HorizontalAlignment="Right" Margin="0,6,0,0"
+                          Visibility="Collapsed" Click="Restart_Click"/>
                 </StackPanel>
               </Grid>
+              <TextBlock x:Name="LanguageResult" TextWrapping="Wrap" FontSize="11.5" Margin="0,0,0,4" Visibility="Collapsed"/>
             </StackPanel>
           </Border>
 
-          <TextBlock Style="{StaticResource SectionHead}" Text="Aktualisierung"/>
+          <TextBlock Style="{StaticResource SectionHead}" Text="{l:T settings.general.sectionDisplay}"/>
           <Border Style="{StaticResource Section}">
             <StackPanel>
               <Grid Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Anlage abfragen alle"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Kürzer = aktueller, aber mehr Verkehr zur Anlage."/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.general.nameTitle}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.general.windows.nameHelp}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                  <TextBox x:Name="NameBox" Width="190" AutomationProperties.Name="{l:T settings.general.nameAccessibility}" KeyDown="Name_KeyDown"/>
+                  <Button Content="{l:T settings.general.apply}" Margin="6,0,0,0" Click="Name_Click"/>
+                </StackPanel>
+              </Grid>
+              <Grid Style="{StaticResource Row}">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,12,0">
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.general.priceTitle}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.general.priceHelp}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                  <TextBox x:Name="PriceBox" Width="70" TextAlignment="Right" KeyDown="Price_KeyDown"/>
+                  <TextBlock x:Name="PriceUnit" VerticalAlignment="Center" Margin="6,0,0,0" Foreground="{DynamicResource Sub}"/>
+                  <Button Content="{l:T settings.general.apply}" Margin="6,0,0,0" Click="Price_Click"/>
+                </StackPanel>
+              </Grid>
+              <Grid Style="{StaticResource Row}">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,12,0">
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.currency.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.general.currencyHelp}"/>
+                </StackPanel>
+                <TextBox x:Name="CurrencyBox" Grid.Column="1" Width="56" MaxLength="3" TextAlignment="Center" VerticalAlignment="Center"
+                         AutomationProperties.Name="{l:T settings.general.currencyAccessibility}"
+                         KeyDown="Currency_KeyDown" LostKeyboardFocus="Currency_LostFocus"/>
+              </Grid>
+              <TextBlock x:Name="CurrencyResult" TextWrapping="Wrap" FontSize="11.5" Margin="0,0,0,4" Visibility="Collapsed"/>
+            </StackPanel>
+          </Border>
+
+          <TextBlock Style="{StaticResource SectionHead}" Text="{l:T settings.general.sectionRefresh}"/>
+          <Border Style="{StaticResource Section}">
+            <StackPanel>
+              <Grid Style="{StaticResource Row}">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,12,0">
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.general.refreshTitle}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.general.refreshHelp}"/>
                 </StackPanel>
                 <ComboBox x:Name="RefreshBox" Grid.Column="1" Width="160" VerticalAlignment="Center"
-                          AutomationProperties.Name="Anlage abfragen alle" SelectionChanged="Refresh_Changed"/>
+                          AutomationProperties.Name="{l:T settings.general.refreshTitle}" SelectionChanged="Refresh_Changed"/>
               </Grid>
               <Grid x:Name="CustomRefreshPanel" Style="{StaticResource Row}" Visibility="Collapsed">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
@@ -165,9 +224,9 @@
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                   <TextBox x:Name="CustomRefreshBox" Width="60" TextAlignment="Right" KeyDown="CustomRefresh_KeyDown"
-                           AutomationProperties.Name="Eigener Wert in Sekunden"/>
-                  <TextBlock Text="s" VerticalAlignment="Center" Margin="6,0,0,0" Foreground="{DynamicResource Sub}"/>
-                  <Button Content="Übernehmen" Margin="6,0,0,0" Click="CustomRefresh_Click"/>
+                           AutomationProperties.Name="{l:T settings.general.customAccessibility}"/>
+                  <TextBlock Text="{l:T settings.general.secondsUnit}" VerticalAlignment="Center" Margin="6,0,0,0" Foreground="{DynamicResource Sub}"/>
+                  <Button Content="{l:T settings.general.apply}" Margin="6,0,0,0" Click="CustomRefresh_Click"/>
                 </StackPanel>
               </Grid>
               <DockPanel x:Name="RefreshWarn" Margin="0,4,0,4" Visibility="Collapsed">
@@ -179,27 +238,27 @@
             </StackPanel>
           </Border>
 
-          <TextBlock Style="{StaticResource SectionHead}" Text="Verlauf"/>
+          <TextBlock Style="{StaticResource SectionHead}" Text="{l:T settings.general.sectionHistory}"/>
           <Border Style="{StaticResource Section}">
             <StackPanel>
               <Grid Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Zusätzlich als CSV schreiben"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Der Verlauf liegt immer in verlauf.sqlite. Auf Wunsch zusätzlich alle 30 s eine Zeile in verlauf.csv."/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.general.csvTitle}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.general.csvHelp}"/>
                 </StackPanel>
                 <local:ClickCheckBox x:Name="HistoryCsvBox" Grid.Column="1" VerticalAlignment="Center" MinWidth="0"
-                          AutomationProperties.Name="Zusätzlich als CSV schreiben" Click="HistoryCsv_Click"/>
+                          AutomationProperties.Name="{l:T settings.general.csvTitle}" Click="HistoryCsv_Click"/>
               </Grid>
               <Grid Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Ganzen Verlauf exportieren"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Als CSV-Datei mit Ortszeit und deutschen Spalten, z. B. für Excel."/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.general.exportTitle}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.general.windows.exportHelp}"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                  <Button Content="Im Explorer zeigen" Click="HistoryShow_Click"/>
-                  <Button Content="Exportieren …" Margin="6,0,0,0" Click="HistoryExport_Click"/>
+                  <Button Content="{l:T common.windows.showInExplorer}" Click="HistoryShow_Click"/>
+                  <Button Content="{l:T settings.general.exportButton}" Margin="6,0,0,0" Click="HistoryExport_Click"/>
                 </StackPanel>
               </Grid>
               <TextBlock x:Name="HistoryResult" TextWrapping="Wrap" FontSize="11.5" Margin="0,0,0,4" Visibility="Collapsed"/>
@@ -207,81 +266,81 @@
           </Border>
 
           <!-- Der Autostart-Eintrag startet mit "- -tray" nur im Infobereich. -->
-          <TextBlock Style="{StaticResource SectionHead}" Text="Start"/>
+          <TextBlock Style="{StaticResource SectionHead}" Text="{l:T settings.general.sectionStart}"/>
           <Border Style="{StaticResource Section}">
             <StackPanel>
               <Grid Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Mit Windows starten"/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.general.windows.autostartTitle}"/>
                   <TextBlock Style="{StaticResource RowHelp}"
-                             Text="Startet beim Anmelden nur im Infobereich. Timer und Verlauf laufen nur, solange Klimacontrol läuft."/>
+                             Text="{l:T settings.general.windows.autostartHelp}"/>
                 </StackPanel>
                 <local:ClickCheckBox x:Name="AutostartBox" Grid.Column="1" VerticalAlignment="Center" MinWidth="0"
-                          AutomationProperties.Name="Mit Windows starten" Click="Autostart_Click"/>
+                          AutomationProperties.Name="{l:T settings.general.windows.autostartTitle}" Click="Autostart_Click"/>
               </Grid>
               <TextBlock x:Name="AutostartHint" TextWrapping="Wrap" FontSize="11.5" Margin="0,0,0,6"
                          Foreground="{DynamicResource Warn}" Visibility="Collapsed"/>
             </StackPanel>
           </Border>
 
-          <TextBlock Style="{StaticResource SectionHead}" Text="Tastatur"/>
+          <TextBlock Style="{StaticResource SectionHead}" Text="{l:T settings.general.windows.sectionKeyboard}"/>
           <Border Style="{StaticResource Section}">
             <StackPanel>
               <Grid Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Fenster am Infobereich öffnen"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Tastenkürzel, das in jedem Programm wirkt."/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.general.windows.hotkeyTitle}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.general.windows.hotkeyHelp}"/>
                 </StackPanel>
                 <ComboBox x:Name="HotkeyBox" Grid.Column="1" Width="190" VerticalAlignment="Center"
-                          AutomationProperties.Name="Tastenkürzel für das Fenster am Infobereich"
+                          AutomationProperties.Name="{l:T settings.general.windows.hotkeyAccessibility}"
                           SelectionChanged="Hotkey_Changed"/>
               </Grid>
               <Grid x:Name="HotkeyRecordPanel" Style="{StaticResource Row}" Visibility="Collapsed">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Eigene Kombination"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Ins Feld klicken und die Tasten zusammen drücken, mit Strg, Alt oder Win. Esc bricht ab."/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.general.windows.customTitle}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.general.windows.customHelp}"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                   <TextBox x:Name="HotkeyRecordBox" Width="150" IsReadOnly="True" IsReadOnlyCaretVisible="False"
-                           TextAlignment="Center" AutomationProperties.Name="Neue Tastenkombination"
+                           TextAlignment="Center" AutomationProperties.Name="{l:T settings.general.windows.customAccessibility}"
                            PreviewKeyDown="HotkeyRecord_PreviewKeyDown"/>
-                  <Button Content="Abbrechen" Margin="6,0,0,0" Click="HotkeyRecordCancel_Click"/>
+                  <Button Content="{l:T common.cancel}" Margin="6,0,0,0" Click="HotkeyRecordCancel_Click"/>
                 </StackPanel>
               </Grid>
               <TextBlock x:Name="HotkeyResult" TextWrapping="Wrap" FontSize="11.5" Margin="0,0,0,4" Visibility="Collapsed"/>
               <TextBlock Style="{StaticResource RowHelp}" Margin="0,6,0,4" TextWrapping="Wrap">
-                <Run FontWeight="SemiBold" Text="Im Fenster:"/>
-                <Run Text="Strg+P ein/aus · Strg+↑/↓ Temperatur · F5 oder Strg+R aktualisieren · Strg+G Verlauf · Strg+D Diagnose · Strg+, Einstellungen."/>
+                <Run FontWeight="SemiBold" Text="{l:T settings.general.windows.inWindowLabel}"/>
+                <Run x:Name="InWindowKeysRun"/>
                 <LineBreak/>
-                <Run FontWeight="SemiBold" Text="Symbol per Tastatur:"/>
-                <Run Text="Win+B springt in den Infobereich, mit den Pfeiltasten zum Symbol; Enter öffnet das Fenster, Umschalt+F10 das Menü."/>
+                <Run FontWeight="SemiBold" Text="{l:T settings.general.windows.iconKeysLabel}"/>
+                <Run x:Name="IconKeysRun"/>
                 <LineBreak/>
-                <Run FontWeight="SemiBold" Text="Symbol immer anzeigen:"/>
-                <Run Text="Einstellungen → Personalisierung → Taskleiste → Andere Symbole → Klimacontrol einschalten."/>
+                <Run FontWeight="SemiBold" Text="{l:T settings.general.windows.iconAlwaysLabel}"/>
+                <Run Text="{l:T settings.general.windows.iconAlways}"/>
               </TextBlock>
             </StackPanel>
           </Border>
 
           <!-- Updates: nur mit Setup-Installation bedienbar (Updates.Running), sonst Hinweis. -->
-          <TextBlock Style="{StaticResource SectionHead}" Text="Updates"/>
+          <TextBlock Style="{StaticResource SectionHead}" Text="{l:T settings.general.updatesSection}"/>
           <Border Style="{StaticResource Section}">
             <StackPanel>
               <Grid Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
                   <TextBlock x:Name="UpdateVersionText" Style="{StaticResource RowTitle}"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Neue Versionen sind signiert und kommen nur von der Release-Seite des Projekts."/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.general.windows.updatesSigned}"/>
                 </StackPanel>
-                <Button x:Name="UpdateCheckButton" Grid.Column="1" VerticalAlignment="Center" Content="Jetzt suchen …"
+                <Button x:Name="UpdateCheckButton" Grid.Column="1" VerticalAlignment="Center" Content="{l:T updates.checkButton}"
                         Click="UpdateCheck_Click"/>
               </Grid>
               <TextBlock x:Name="UpdateHelpText" Style="{StaticResource RowHelp}" Margin="0,0,0,6" TextWrapping="Wrap"
                          Visibility="Collapsed"/>
               <TextBlock x:Name="UpdateSetupHint" Style="{StaticResource RowHelp}" Margin="0,0,0,6" TextWrapping="Wrap"
-                         Text="Automatische Updates gibt es nur mit dem Setup." Visibility="Collapsed"/>
+                         Text="{l:T settings.general.windows.updatesSetupOnly}" Visibility="Collapsed"/>
             </StackPanel>
           </Border>
 
@@ -291,333 +350,315 @@
     </TabItem>
 
     <!-- 1 Darstellung: jede Änderung wirkt sofort, die Anzeige folgt `Appearance.Changed`. -->
-    <TabItem Header="Darstellung">
+    <TabItem Header="{l:T settings.tabs.appearance}">
       <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="12,4,12,12">
 
-          <TextBlock Style="{StaticResource SectionHead}" Text="Thema"/>
+          <TextBlock Style="{StaticResource SectionHead}" Text="{l:T settings.appearance.theme.title}"/>
           <Border Style="{StaticResource Section}">
-            <StackPanel Margin="0,2">
-              <RadioButton x:Name="ThemeStandard" Style="{StaticResource ThemeChoice}" Tag="standard" Checked="LookTheme_Checked"
-                           AutomationProperties.Name="Thema Standard" AutomationProperties.HelpText="Wie bisher: Glas, Farben nach Modus.">
-                <StackPanel>
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Standard"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Wie bisher: Glas, Farben nach Modus."/>
+            <StackPanel>
+              <UniformGrid Columns="5" Margin="-3,2,-3,4" KeyboardNavigation.DirectionalNavigation="Cycle">
+                <RadioButton x:Name="ThemeStandard" Style="{StaticResource ThemeTile}" Tag="standard" Checked="LookTheme_Checked"
+                             ToolTip="{l:T settings.appearance.windows.themeStandardHelp}"
+                             AutomationProperties.HelpText="{l:T settings.appearance.windows.themeStandardHelp}"/>
+                <RadioButton x:Name="ThemeNight" Style="{StaticResource ThemeTile}" Tag="night" Checked="LookTheme_Checked"
+                             ToolTip="{l:T settings.appearance.windows.themeNightHelp}"
+                             AutomationProperties.HelpText="{l:T settings.appearance.windows.themeNightHelp}"/>
+                <RadioButton x:Name="ThemeNeon" Style="{StaticResource ThemeTile}" Tag="neon" Checked="LookTheme_Checked"
+                             ToolTip="{l:T settings.appearance.windows.themeNeonHelp}"
+                             AutomationProperties.HelpText="{l:T settings.appearance.windows.themeNeonHelp}"/>
+                <RadioButton x:Name="ThemeMinimal" Style="{StaticResource ThemeTile}" Tag="minimal" Checked="LookTheme_Checked"
+                             ToolTip="{l:T settings.appearance.windows.themeMinimalHelp}"
+                             AutomationProperties.HelpText="{l:T settings.appearance.windows.themeMinimalHelp}"/>
+                <RadioButton x:Name="ThemeContrast" Style="{StaticResource ThemeTile}" Tag="contrast" Checked="LookTheme_Checked"
+                             ToolTip="{l:T settings.appearance.windows.themeContrastHelp}"
+                             AutomationProperties.HelpText="{l:T settings.appearance.windows.themeContrastHelp}"/>
+              </UniformGrid>
+              <Grid Style="{StaticResource Row}">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,12,0">
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.scheme.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.windows.schemeHelp}"/>
                 </StackPanel>
-              </RadioButton>
-              <RadioButton x:Name="ThemeNight" Style="{StaticResource ThemeChoice}" Tag="night" Checked="LookTheme_Checked"
-                           AutomationProperties.Name="Thema Nacht" AutomationProperties.HelpText="Gedimmt und rotarm, angenehm im dunklen Raum.">
-                <StackPanel>
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Nacht"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Gedimmt und rotarm, angenehm im dunklen Raum."/>
+                <ComboBox x:Name="LookModeBox" Grid.Column="1" Width="170" VerticalAlignment="Center"
+                          AutomationProperties.Name="{l:T settings.appearance.scheme.title}" SelectionChanged="Look_SelectionChanged">
+                  <ComboBoxItem Content="{l:T appearance.scheme.system}" Tag="system"/>
+                  <ComboBoxItem Content="{l:T appearance.scheme.light}" Tag="light"/>
+                  <ComboBoxItem Content="{l:T appearance.scheme.dark}" Tag="dark"/>
+                </ComboBox>
+              </Grid>
+              <Grid x:Name="LookRestoreRow" Style="{StaticResource Row}" Visibility="Collapsed">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,12,0">
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.theme.restore}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.theme.restoreHelp}"/>
                 </StackPanel>
-              </RadioButton>
-              <RadioButton x:Name="ThemeNeon" Style="{StaticResource ThemeChoice}" Tag="neon" Checked="LookTheme_Checked"
-                           AutomationProperties.Name="Thema Neon" AutomationProperties.HelpText="Leuchtende Kanten, kräftige Farben.">
-                <StackPanel>
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Neon"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Leuchtende Kanten, kräftige Farben."/>
-                </StackPanel>
-              </RadioButton>
-              <RadioButton x:Name="ThemeMinimal" Style="{StaticResource ThemeChoice}" Tag="minimal" Checked="LookTheme_Checked"
-                           AutomationProperties.Name="Thema Minimal" AutomationProperties.HelpText="Dünne Schrift, fast farblos.">
-                <StackPanel>
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Minimal"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Dünne Schrift, fast farblos."/>
-                </StackPanel>
-              </RadioButton>
-              <RadioButton x:Name="ThemeContrast" Style="{StaticResource ThemeChoice}" Tag="contrast" Checked="LookTheme_Checked"
-                           AutomationProperties.Name="Thema Kontrast" AutomationProperties.HelpText="Deckende Flächen, gut lesbar.">
-                <StackPanel>
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Kontrast"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Deckende Flächen, gut lesbar."/>
-                </StackPanel>
-              </RadioButton>
+                <Button x:Name="LookRestoreButton" Grid.Column="1" VerticalAlignment="Center" Content="{l:T settings.appearance.theme.restore}"
+                        Click="LookRestore_Click"/>
+              </Grid>
             </StackPanel>
           </Border>
-          <TextBlock Style="{StaticResource Foot}" Text="Ein Thema setzt alle Werte darunter auf einmal; danach lässt sich jeder einzeln ändern."/>
+          <TextBlock Style="{StaticResource Foot}" Text="{l:T settings.appearance.theme.help}"/>
 
-          <TextBlock Style="{StaticResource SectionHead}" Text="Farben"/>
+          <TextBlock Style="{StaticResource SectionHead}" Text="{l:T settings.appearance.display.section}"/>
           <Border Style="{StaticResource Section}">
             <StackPanel>
               <Grid Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Modus"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Hell, dunkel oder wie Windows."/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.size.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.size.help}"/>
                 </StackPanel>
-                <ComboBox x:Name="LookModeBox" Grid.Column="1" Width="170" VerticalAlignment="Center"
-                          AutomationProperties.Name="Modus" SelectionChanged="Look_SelectionChanged">
-                  <ComboBoxItem Content="System" Tag="system"/>
-                  <ComboBoxItem Content="Hell" Tag="light"/>
-                  <ComboBoxItem Content="Dunkel" Tag="dark"/>
+                <ComboBox x:Name="LookSizeBox" Grid.Column="1" Width="170" VerticalAlignment="Center"
+                          AutomationProperties.Name="{l:T settings.appearance.size.title}" SelectionChanged="Look_SelectionChanged">
+                  <ComboBoxItem Content="{l:T appearance.size.compact}" Tag="compact"/>
+                  <ComboBoxItem Content="{l:T appearance.size.normal}" Tag="normal"/>
+                  <ComboBoxItem Content="{l:T appearance.size.large}" Tag="large"/>
                 </ComboBox>
               </Grid>
               <Grid Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Farben"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Nach Modus: Blau beim Kühlen, Orange beim Heizen usw."/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.heroValue.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.heroValue.help}"/>
+                </StackPanel>
+                <ComboBox x:Name="LookBigBox" Grid.Column="1" Width="170" VerticalAlignment="Center"
+                          AutomationProperties.Name="{l:T settings.appearance.heroValue.title}" SelectionChanged="Look_SelectionChanged">
+                  <ComboBoxItem Content="{l:T appearance.hero.target}" Tag="target"/>
+                  <ComboBoxItem Content="{l:T appearance.hero.room}" Tag="room"/>
+                </ComboBox>
+              </Grid>
+              <Grid Style="{StaticResource Row}">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,12,0">
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.scope.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.scope.help}"/>
+                </StackPanel>
+                <ComboBox x:Name="LookScopeBox" Grid.Column="1" Width="170" VerticalAlignment="Center"
+                          AutomationProperties.Name="{l:T settings.appearance.scope.title}" SelectionChanged="Look_SelectionChanged">
+                  <ComboBoxItem Content="{l:T appearance.scope.simple}" Tag="simple"/>
+                  <ComboBoxItem Content="{l:T appearance.scope.all}" Tag="all"/>
+                </ComboBox>
+              </Grid>
+            </StackPanel>
+          </Border>
+
+          <TextBlock Style="{StaticResource SectionHead}" Text="{l:T settings.appearance.windowNotify.section}"/>
+          <Border Style="{StaticResource Section}">
+            <StackPanel>
+              <Grid Style="{StaticResource Row}">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,12,0">
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.alwaysOnTop.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.alwaysOnTop.help}"/>
+                </StackPanel>
+                <local:ClickCheckBox x:Name="LookOnTopBox" Grid.Column="1" VerticalAlignment="Center" MinWidth="0"
+                          AutomationProperties.Name="{l:T settings.appearance.alwaysOnTop.title}" Click="LookToggle_Click"/>
+              </Grid>
+              <Grid Style="{StaticResource Row}">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,12,0">
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.menuBar.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.windows.trayHelp}"/>
+                </StackPanel>
+                <ComboBox x:Name="LookTooltipBox" Grid.Column="1" Width="170" VerticalAlignment="Center"
+                          AutomationProperties.Name="{l:T settings.appearance.windows.trayAccessibility}" SelectionChanged="Look_SelectionChanged">
+                  <ComboBoxItem Content="{l:T appearance.menuBar.iconOnly}" Tag="iconOnly"/>
+                  <ComboBoxItem Content="{l:T appearance.menuBar.iconTarget}" Tag="iconTarget"/>
+                  <ComboBoxItem Content="{l:T appearance.menuBar.iconRoom}" Tag="iconRoom"/>
+                  <ComboBoxItem Content="{l:T appearance.menuBar.roomTarget}" Tag="roomTarget"/>
+                </ComboBox>
+              </Grid>
+              <Grid Style="{StaticResource Row}">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,12,0">
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.menuBarColored.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.menuBarColored.help}"/>
+                </StackPanel>
+                <local:ClickCheckBox x:Name="LookTrayColoredBox" Grid.Column="1" VerticalAlignment="Center" MinWidth="0"
+                          AutomationProperties.Name="{l:T settings.appearance.menuBarColored.title}" Click="LookToggle_Click"/>
+              </Grid>
+              <Grid Style="{StaticResource Row}">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,12,0">
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.mini.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.windows.miniHelp}"/>
+                </StackPanel>
+                <local:ClickCheckBox x:Name="LookMiniBox" Grid.Column="1" VerticalAlignment="Center" MinWidth="0"
+                          AutomationProperties.Name="{l:T settings.appearance.mini.title}" Click="LookToggle_Click"/>
+              </Grid>
+            </StackPanel>
+          </Border>
+
+          <Expander x:Name="LookCustomize" Margin="0,10,0,6" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                    AutomationProperties.Name="{l:T settings.appearance.customize.title}"
+                    AutomationProperties.HelpText="{l:T settings.appearance.customize.help}">
+            <Expander.Header>
+              <StackPanel Margin="0,2">
+                <TextBlock Style="{StaticResource RowTitle}" FontWeight="SemiBold" Text="{l:T settings.appearance.customize.title}"/>
+                <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.customize.help}"/>
+              </StackPanel>
+            </Expander.Header>
+          <Border Style="{StaticResource Section}">
+            <StackPanel>
+              <Grid Style="{StaticResource Row}">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,12,0">
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.colors.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.accent.help}"/>
                 </StackPanel>
                 <ComboBox x:Name="LookColorsBox" Grid.Column="1" Width="170" VerticalAlignment="Center"
-                          AutomationProperties.Name="Farben" SelectionChanged="Look_SelectionChanged">
-                  <ComboBoxItem Content="Nach Modus" Tag="byMode"/>
-                  <ComboBoxItem Content="Systemfarbe" Tag="system"/>
-                  <ComboBoxItem Content="Eigene" Tag="custom"/>
+                          AutomationProperties.Name="{l:T settings.appearance.colors.title}" SelectionChanged="Look_SelectionChanged">
+                  <ComboBoxItem Content="{l:T appearance.accent.byMode}" Tag="byMode"/>
+                  <ComboBoxItem Content="{l:T appearance.accent.system}" Tag="system"/>
+                  <ComboBoxItem Content="{l:T appearance.accent.custom}" Tag="custom"/>
                 </ComboBox>
               </Grid>
               <Grid x:Name="LookSwatchRow" Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Eigene Farbe"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Gilt für alle Modi."/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.customColor.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.customColor.help}"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center"
                             KeyboardNavigation.DirectionalNavigation="Cycle">
                   <RadioButton x:Name="SwatchOrange" Style="{StaticResource Swatch}" Tag="orange" Background="#F58524"
-                               ToolTip="Orange" AutomationProperties.Name="Eigene Farbe Orange" Checked="LookSwatch_Checked"/>
+                               ToolTip="{l:T appearance.color.orange}" Checked="LookSwatch_Checked"/>
                   <RadioButton x:Name="SwatchBlue" Style="{StaticResource Swatch}" Tag="blue" Background="#3380F2"
-                               ToolTip="Blau" AutomationProperties.Name="Eigene Farbe Blau" Checked="LookSwatch_Checked"/>
+                               ToolTip="{l:T appearance.color.blue}" Checked="LookSwatch_Checked"/>
                   <RadioButton x:Name="SwatchGreen" Style="{StaticResource Swatch}" Tag="green" Background="#33A861"
-                               ToolTip="Grün" AutomationProperties.Name="Eigene Farbe Grün" Checked="LookSwatch_Checked"/>
+                               ToolTip="{l:T appearance.color.green}" Checked="LookSwatch_Checked"/>
                   <RadioButton x:Name="SwatchPurple" Style="{StaticResource Swatch}" Tag="purple" Background="#9466E6"
-                               ToolTip="Lila" AutomationProperties.Name="Eigene Farbe Lila" Checked="LookSwatch_Checked"/>
+                               ToolTip="{l:T appearance.color.purple}" Checked="LookSwatch_Checked"/>
                   <RadioButton x:Name="SwatchGrey" Style="{StaticResource Swatch}" Tag="gray" Background="#808794" Margin="0"
-                               ToolTip="Grau" AutomationProperties.Name="Eigene Farbe Grau" Checked="LookSwatch_Checked"/>
+                               ToolTip="{l:T appearance.color.gray}" Checked="LookSwatch_Checked"/>
                 </StackPanel>
               </Grid>
               <TextBlock x:Name="LookHighContrastHint" Style="{StaticResource RowHelp}" Margin="0,0,0,6" Visibility="Collapsed"
-                         Text="Hoher Kontrast ist in Windows an: Dann gelten die Farben des Kontrastdesigns."/>
-            </StackPanel>
-          </Border>
-
-          <TextBlock Style="{StaticResource SectionHead}" Text="Hintergrund"/>
-          <Border Style="{StaticResource Section}">
-            <StackPanel>
+                         Text="{l:T settings.appearance.windows.highContrast}"/>
               <Grid Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Hintergrund"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Glas lässt den Schreibtisch durchscheinen, Matt ist ruhig und deckend."/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.background.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.background.help}"/>
                 </StackPanel>
                 <ComboBox x:Name="LookBackgroundBox" Grid.Column="1" Width="170" VerticalAlignment="Center"
-                          AutomationProperties.Name="Hintergrund" SelectionChanged="Look_SelectionChanged">
-                  <ComboBoxItem Content="Glas" Tag="glass"/>
-                  <ComboBoxItem Content="Glas kräftig" Tag="glassStrong"/>
-                  <ComboBoxItem Content="Matt" Tag="matte"/>
+                          AutomationProperties.Name="{l:T settings.appearance.background.title}" SelectionChanged="Look_SelectionChanged">
+                  <ComboBoxItem Content="{l:T appearance.background.glass}" Tag="glass"/>
+                  <ComboBoxItem Content="{l:T appearance.background.glassStrong}" Tag="glassStrong"/>
+                  <ComboBoxItem Content="{l:T appearance.background.matte}" Tag="matte"/>
                 </ComboBox>
               </Grid>
               <Grid Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Transparenz"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Wie stark Karten und Fenster durchscheinen."/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.transparency.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.transparency.help}"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                   <Slider x:Name="LookTransparency" Style="{StaticResource LookPercentSlider}" Maximum="95"
-                          AutomationProperties.Name="Transparenz in Prozent" ValueChanged="LookSlider_ValueChanged"/>
+                          AutomationProperties.Name="{l:T settings.appearance.windows.transparencyAccessibility}" ValueChanged="LookSlider_ValueChanged"/>
                   <TextBlock x:Name="LookTransparencyText" Style="{StaticResource SliderValue}"/>
                 </StackPanel>
               </Grid>
               <Grid Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Unschärfe"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Wie weich der Hintergrund hinter den Karten verschwimmt. Unter Windows kommt sie vom Glas-Effekt des Systems."/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.blur.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.windows.blurHelp}"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                   <Slider x:Name="LookBlur" Style="{StaticResource LookSlider}" Maximum="40"
-                          AutomationProperties.Name="Unschärfe" ValueChanged="LookSlider_ValueChanged"/>
+                          AutomationProperties.Name="{l:T settings.appearance.blur.title}" ValueChanged="LookSlider_ValueChanged"/>
                   <TextBlock x:Name="LookBlurText" Style="{StaticResource SliderValue}"/>
                 </StackPanel>
               </Grid>
-            </StackPanel>
-          </Border>
-
-          <TextBlock Style="{StaticResource SectionHead}" Text="Große Temperatur"/>
-          <Border Style="{StaticResource Section}">
-            <StackPanel>
               <Grid Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Leuchten"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Schein in der Modusfarbe um die große Zahl."/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.glow.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.glow.help}"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                   <Slider x:Name="LookGlow" Style="{StaticResource LookPercentSlider}" Maximum="100"
-                          AutomationProperties.Name="Leuchten der Temperatur in Prozent" ValueChanged="LookSlider_ValueChanged"/>
+                          AutomationProperties.Name="{l:T settings.appearance.windows.glowAccessibility}" ValueChanged="LookSlider_ValueChanged"/>
                   <TextBlock x:Name="LookGlowText" Style="{StaticResource SliderValue}"/>
                 </StackPanel>
               </Grid>
               <Grid Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Größe"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Größe der großen Zahl und der Bedienelemente."/>
-                </StackPanel>
-                <ComboBox x:Name="LookSizeBox" Grid.Column="1" Width="170" VerticalAlignment="Center"
-                          AutomationProperties.Name="Größe" SelectionChanged="Look_SelectionChanged">
-                  <ComboBoxItem Content="Kompakt" Tag="compact"/>
-                  <ComboBoxItem Content="Normal" Tag="normal"/>
-                  <ComboBoxItem Content="Groß" Tag="large"/>
-                </ComboBox>
-              </Grid>
-              <Grid Style="{StaticResource Row}">
-                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Ziffernstil"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Form der großen Zahl, daneben die Vorschau."/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.digits.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.windows.digitsHelp}"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                   <TextBlock x:Name="LookDigitPreview" Text="23°" FontSize="26" Foreground="{DynamicResource Fg}"
-                             VerticalAlignment="Center" Margin="0,-4,12,-4" AutomationProperties.Name="Vorschau Ziffernstil"/>
-                  <ComboBox x:Name="LookDigitsBox" Width="170" VerticalAlignment="Center"
-                            AutomationProperties.Name="Ziffernstil" SelectionChanged="Look_SelectionChanged">
-                    <ComboBoxItem Content="Dünn" Tag="thin"/>
-                    <ComboBoxItem Content="Normal" Tag="normal"/>
-                    <ComboBoxItem Content="Fett" Tag="bold"/>
-                    <ComboBoxItem Content="Abgerundet" Tag="rounded"/>
-                  </ComboBox>
-                </StackPanel>
-              </Grid>
-              <Grid Style="{StaticResource Row}">
-                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Groß angezeigt"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Welche Temperatur groß steht; die andere steht klein darunter."/>
-                </StackPanel>
-                <ComboBox x:Name="LookBigBox" Grid.Column="1" Width="170" VerticalAlignment="Center"
-                          AutomationProperties.Name="Groß angezeigt" SelectionChanged="Look_SelectionChanged">
-                  <ComboBoxItem Content="Solltemperatur" Tag="target"/>
-                  <ComboBoxItem Content="Raumtemperatur" Tag="room"/>
+                             VerticalAlignment="Center" Margin="0,-4,12,-4" AutomationProperties.Name="{l:T settings.appearance.windows.digitsPreviewName}"/>
+                <ComboBox x:Name="LookDigitsBox" Width="170" VerticalAlignment="Center"
+                          AutomationProperties.Name="{l:T settings.appearance.digits.title}" SelectionChanged="Look_SelectionChanged">
+                  <ComboBoxItem Content="{l:T appearance.digits.thin}" Tag="thin"/>
+                  <ComboBoxItem Content="{l:T appearance.digits.normal}" Tag="normal"/>
+                  <ComboBoxItem Content="{l:T appearance.digits.bold}" Tag="bold"/>
+                  <ComboBoxItem Content="{l:T appearance.digits.rounded}" Tag="rounded"/>
                 </ComboBox>
-              </Grid>
-              <Grid Style="{StaticResource Row}">
-                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Umfang"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Einfach: nur Ein/Aus, Modus, Temperatur, Lüfter und Timer, der Rest unter „Mehr …“."/>
                 </StackPanel>
-                <ComboBox x:Name="LookScopeBox" Grid.Column="1" Width="170" VerticalAlignment="Center"
-                          AutomationProperties.Name="Umfang" SelectionChanged="Look_SelectionChanged">
-                  <ComboBoxItem Content="Einfach" Tag="simple"/>
-                  <ComboBoxItem Content="Alles" Tag="all"/>
-                </ComboBox>
               </Grid>
-            </StackPanel>
-          </Border>
-
-          <TextBlock Style="{StaticResource SectionHead}" Text="Bewegung"/>
-          <Border Style="{StaticResource Section}">
-            <StackPanel>
               <Grid x:Name="LookLivingRow" Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Lebendiger Hintergrund"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Langsam fließende Farben, solange die Anlage arbeitet."/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.lively.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.lively.help}"/>
                 </StackPanel>
                 <local:ClickCheckBox x:Name="LookLivingBox" Grid.Column="1" VerticalAlignment="Center" MinWidth="0"
-                          AutomationProperties.Name="Lebendiger Hintergrund" Click="LookToggle_Click"/>
+                          AutomationProperties.Name="{l:T settings.appearance.lively.title}" Click="LookToggle_Click"/>
               </Grid>
               <Grid x:Name="LookWeatherRow" Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Wetter-Effekte"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Schneeflocken beim Kühlen, aufsteigende Wärme beim Heizen – dezent."/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.weather.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.weather.help}"/>
                 </StackPanel>
                 <local:ClickCheckBox x:Name="LookWeatherBox" Grid.Column="1" VerticalAlignment="Center" MinWidth="0"
-                          AutomationProperties.Name="Wetter-Effekte" Click="LookToggle_Click"/>
+                          AutomationProperties.Name="{l:T settings.appearance.weather.title}" Click="LookToggle_Click"/>
               </Grid>
               <Grid Style="{StaticResource Row}">
                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Animationen reduzieren"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Schaltet lebendigen Hintergrund und Wetter-Effekte immer ab."/>
-                </StackPanel>
-                <local:ClickCheckBox x:Name="LookReduceBox" Grid.Column="1" VerticalAlignment="Center" MinWidth="0"
-                          AutomationProperties.Name="Animationen reduzieren" Click="LookToggle_Click"/>
-              </Grid>
-              <TextBlock x:Name="LookSystemMotionHint" Style="{StaticResource RowHelp}" Margin="0,0,0,6" Visibility="Collapsed"
-                         Text="„Animationseffekte“ ist in den Windows-Einstellungen ausgeschaltet (Barrierefreiheit → Visuelle Effekte) – Effekte bleiben aus."/>
-            </StackPanel>
-          </Border>
-
-          <TextBlock Style="{StaticResource SectionHead}" Text="Fenster"/>
-          <Border Style="{StaticResource Section}">
-            <StackPanel>
-              <Grid Style="{StaticResource Row}">
-                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Immer im Vordergrund"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Das Hauptfenster bleibt über anderen Fenstern."/>
-                </StackPanel>
-                <local:ClickCheckBox x:Name="LookOnTopBox" Grid.Column="1" VerticalAlignment="Center" MinWidth="0"
-                          AutomationProperties.Name="Immer im Vordergrund" Click="LookToggle_Click"/>
-              </Grid>
-              <Grid Style="{StaticResource Row}">
-                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Mini-Fenster"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Kleines schwebendes Fenster mit Temperatur und Ein/Aus."/>
-                </StackPanel>
-                <local:ClickCheckBox x:Name="LookMiniBox" Grid.Column="1" VerticalAlignment="Center" MinWidth="0"
-                          AutomationProperties.Name="Mini-Fenster" Click="LookToggle_Click"/>
-              </Grid>
-            </StackPanel>
-          </Border>
-
-          <TextBlock Style="{StaticResource SectionHead}" Text="Infobereich"/>
-          <Border Style="{StaticResource Section}">
-            <StackPanel>
-              <Grid Style="{StaticResource Row}">
-                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Anzeige"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Was das Symbol im Infobereich und seine Kurzinfo zeigen."/>
-                </StackPanel>
-                <ComboBox x:Name="LookTooltipBox" Grid.Column="1" Width="170" VerticalAlignment="Center"
-                          AutomationProperties.Name="Anzeige im Infobereich" SelectionChanged="Look_SelectionChanged">
-                  <ComboBoxItem Content="Nur Symbol" Tag="iconOnly"/>
-                  <ComboBoxItem Content="Symbol + Soll" Tag="iconTarget"/>
-                  <ComboBoxItem Content="Symbol + Raum" Tag="iconRoom"/>
-                  <ComboBoxItem Content="Raum + Soll" Tag="roomTarget"/>
-                </ComboBox>
-              </Grid>
-              <Grid Style="{StaticResource Row}">
-                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Symbol farbig"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Symbol in der Modusfarbe statt einfarbig."/>
-                </StackPanel>
-                <local:ClickCheckBox x:Name="LookTrayColoredBox" Grid.Column="1" VerticalAlignment="Center" MinWidth="0"
-                          AutomationProperties.Name="Symbol farbig" Click="LookToggle_Click"/>
-              </Grid>
-              <Grid Style="{StaticResource Row}">
-                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                <StackPanel Margin="0,0,12,0">
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Symbol animiert"/>
-                  <TextBlock Style="{StaticResource RowHelp}" Text="Der Lüfter dreht sich, solange die Anlage läuft."/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.menuBarAnimated.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.menuBarAnimated.help}"/>
                 </StackPanel>
                 <local:ClickCheckBox x:Name="LookTrayAnimatedBox" Grid.Column="1" VerticalAlignment="Center" MinWidth="0"
-                          AutomationProperties.Name="Symbol animiert" Click="LookToggle_Click"/>
+                          AutomationProperties.Name="{l:T settings.appearance.menuBarAnimated.title}" Click="LookToggle_Click"/>
               </Grid>
+              <Grid Style="{StaticResource Row}">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,12,0">
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.reduceMotion.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.reduceMotion.help}"/>
+                </StackPanel>
+                <local:ClickCheckBox x:Name="LookReduceBox" Grid.Column="1" VerticalAlignment="Center" MinWidth="0"
+                          AutomationProperties.Name="{l:T settings.appearance.reduceMotion.title}" Click="LookToggle_Click"/>
+              </Grid>
+              <TextBlock x:Name="LookSystemMotionHint" Style="{StaticResource RowHelp}" Margin="0,0,0,6" Visibility="Collapsed"
+                         Text="{l:T settings.appearance.windows.reduceMotionSystem}"/>
             </StackPanel>
           </Border>
+          </Expander>
 
-          <Button x:Name="LookResetButton" Content="Auf Standard zurücksetzen …" HorizontalAlignment="Left" Margin="0,12,0,4"
-                  AutomationProperties.Name="Darstellung auf Standard zurücksetzen" Click="LookReset_Click"/>
-          <TextBlock Style="{StaticResource Foot}" Text="Alle Werte dieses Reiters gelten sofort und bleiben gespeichert."/>
+          <Button x:Name="LookResetButton" Content="{l:T settings.appearance.reset.button}" HorizontalAlignment="Left" Margin="0,12,0,4"
+                  AutomationProperties.Name="{l:T settings.appearance.windows.resetAccessibility}" Click="LookReset_Click"/>
+          <TextBlock Style="{StaticResource Foot}" Text="{l:T settings.appearance.windows.footer}"/>
         </StackPanel>
       </ScrollViewer>
     </TabItem>
 
     <!-- 2 Verbindung -->
-    <TabItem Header="Verbindung">
+    <TabItem Header="{l:T settings.tabs.connection}">
       <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="12,4,12,12">
           <StackPanel x:Name="ConnNoDevice" Margin="0,12,0,0">
-            <TextBlock Style="{StaticResource RowHelp}" FontSize="13" Text="Noch keine Anlage eingerichtet – das geht im Hauptfenster."/>
-            <Button Content="Hauptfenster öffnen" HorizontalAlignment="Left" Margin="0,10,0,0" Click="OpenMain_Click"/>
+            <TextBlock Style="{StaticResource RowHelp}" FontSize="13" Text="{l:T settings.connection.noDevice}"/>
+            <Button Content="{l:T settings.connection.windows.openMain}" HorizontalAlignment="Left" Margin="0,10,0,0" Click="OpenMain_Click"/>
           </StackPanel>
 
           <StackPanel x:Name="ConnPanel">
@@ -625,7 +666,7 @@
               <StackPanel>
                 <Grid Style="{StaticResource Row}">
                   <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Status" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.connection.status}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                   <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                     <Path x:Name="ConnIcon" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" StrokeThickness="1.6"
                           StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round" VerticalAlignment="Center"/>
@@ -637,38 +678,38 @@
                 <Grid x:Name="ModeRow" Style="{StaticResource Row}">
                   <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                   <StackPanel Margin="0,0,12,0">
-                    <TextBlock Style="{StaticResource RowTitle}" Text="Weg zur Anlage"/>
+                    <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.connection.wayTitle}"/>
                     <TextBlock x:Name="ModeHint" Style="{StaticResource RowHelp}"/>
                   </StackPanel>
                   <ComboBox x:Name="ModeBox" Grid.Column="1" MinWidth="170" VerticalAlignment="Center"
-                            AutomationProperties.Name="Weg zur Anlage" SelectionChanged="Mode_Changed"/>
+                            AutomationProperties.Name="{l:T settings.connection.wayTitle}" SelectionChanged="Mode_Changed"/>
                 </Grid>
               </StackPanel>
             </Border>
 
-            <TextBlock Style="{StaticResource SectionHead}" Text="Midea-Konto – Steuerung von unterwegs"/>
+            <TextBlock Style="{StaticResource SectionHead}" Text="{l:T settings.connection.accountHeader}"/>
             <Border Style="{StaticResource Section}">
               <StackPanel>
                 <StackPanel x:Name="CloudOn" Visibility="Collapsed">
                   <Grid Style="{StaticResource Row}">
                     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
-                    <TextBlock Style="{StaticResource RowTitle}" Text="Midea-Konto" Margin="0,0,12,0"/>
+                    <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.connection.accountTitle}" Margin="0,0,12,0"/>
                     <TextBlock x:Name="CloudAccountText" Grid.Column="1" Style="{StaticResource RowValue}"/>
                   </Grid>
-                  <Button Content="Midea-Konto entfernen …" HorizontalAlignment="Left" Margin="0,4,0,4"
+                  <Button Content="{l:T settings.connection.accountRemove}" HorizontalAlignment="Left" Margin="0,4,0,4"
                           Foreground="{DynamicResource Bad}" Click="CloudLogout_Click"/>
                 </StackPanel>
                 <TextBlock x:Name="CloudNoId" Style="{StaticResource RowHelp}" FontSize="13" Margin="0,4" Visibility="Collapsed"
-                           Text="Erst eine Anlage einrichten – für das Midea-Konto braucht es die Anlagen-ID."/>
+                           Text="{l:T settings.connection.needsDevice}"/>
                 <StackPanel x:Name="CloudOff">
                   <TextBlock Style="{StaticResource RowHelp}" Foreground="{DynamicResource Warn}" Margin="0,2,0,8"
-                             Text="Hinweis: Midea meldet bei jeder Anmeldung „Konto anderswo eingeloggt“. Die Anmeldung auf anderen Geräten kann dadurch enden. Das Midea-Konto in Klimacontrol am besten nur auf einem Rechner benutzen."/>
-                  <TextBlock Style="{StaticResource Label}" Text="E-Mail (wie in der App MSmartHome)"/>
-                  <TextBox x:Name="CloudUser" AutomationProperties.Name="E-Mail" TextChanged="CloudInput_Changed"/>
-                  <TextBlock Style="{StaticResource Label}" Margin="0,8,0,6" Text="Passwort"/>
-                  <PasswordBox x:Name="CloudPass" AutomationProperties.Name="Passwort" PasswordChanged="CloudInput_Changed"
+                             Text="{l:T settings.connection.windows.hint}"/>
+                  <TextBlock Style="{StaticResource Label}" Text="{l:T settings.connection.emailPlaceholder}"/>
+                  <TextBox x:Name="CloudUser" AutomationProperties.Name="{l:T settings.connection.windows.emailAccessibility}" TextChanged="CloudInput_Changed"/>
+                  <TextBlock Style="{StaticResource Label}" Margin="0,8,0,6" Text="{l:T settings.connection.passwordPlaceholder}"/>
+                  <PasswordBox x:Name="CloudPass" AutomationProperties.Name="{l:T settings.connection.passwordPlaceholder}" PasswordChanged="CloudInput_Changed"
                                KeyDown="CloudPass_KeyDown"/>
-                  <Button x:Name="CloudLoginButton" Content="Anmelden und speichern" HorizontalAlignment="Left" Margin="0,10,0,4"
+                  <Button x:Name="CloudLoginButton" Content="{l:T settings.connection.signIn}" HorizontalAlignment="Left" Margin="0,10,0,4"
                           Style="{StaticResource Primary}" Click="CloudLogin_Click"/>
                 </StackPanel>
                 <TextBlock x:Name="CloudResult" TextWrapping="Wrap" FontSize="11.5" Margin="0,4,0,2" Visibility="Collapsed"/>
@@ -681,103 +722,103 @@
     </TabItem>
 
     <!-- 3 Anlage -->
-    <TabItem Header="Anlage">
+    <TabItem Header="{l:T settings.tabs.device}">
       <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="12,4,12,12">
           <StackPanel x:Name="DeviceNoDevice" Margin="0,12,0,0">
-            <TextBlock Style="{StaticResource RowHelp}" FontSize="13" Text="Noch keine Anlage eingerichtet – das geht im Hauptfenster."/>
-            <Button Content="Hauptfenster öffnen" HorizontalAlignment="Left" Margin="0,10,0,0" Click="OpenMain_Click"/>
+            <TextBlock Style="{StaticResource RowHelp}" FontSize="13" Text="{l:T settings.device.noDevice}"/>
+            <Button Content="{l:T settings.connection.windows.openMain}" HorizontalAlignment="Left" Margin="0,10,0,0" Click="OpenMain_Click"/>
             <!-- Nach „Anlage neu einrichten“: wo die beiseitegelegte Datei mit Token und Schlüssel liegt. -->
             <Border x:Name="SetAsidePanel" Style="{StaticResource Section}" Margin="0,16,0,0" Visibility="Collapsed">
               <StackPanel>
                 <TextBlock x:Name="SetAsideText" Style="{StaticResource RowHelp}" FontSize="12.5" Margin="0,2,0,6"/>
-                <Button Content="Datenordner öffnen" HorizontalAlignment="Left" Margin="0,0,0,4" Click="SetAsideShow_Click"/>
+                <Button Content="{l:T settings.device.windows.openDataFolder}" HorizontalAlignment="Left" Margin="0,0,0,4" Click="SetAsideShow_Click"/>
               </StackPanel>
             </Border>
           </StackPanel>
 
           <StackPanel x:Name="DevicePanel">
-            <TextBlock Style="{StaticResource SectionHead}" Text="Anlage"/>
+            <TextBlock Style="{StaticResource SectionHead}" Text="{l:T settings.device.section}"/>
             <Border Style="{StaticResource Section}">
               <StackPanel>
                 <Grid Style="{StaticResource Row}">
                   <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                   <StackPanel Margin="0,0,12,0">
-                    <TextBlock Style="{StaticResource RowTitle}" Text="Name der Anlage"/>
-                    <TextBlock Style="{StaticResource RowHelp}" Text="Von Midea vergeben. Der Anzeigename steht unter „Allgemein“."/>
+                    <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.device.name.title}"/>
+                    <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.device.name.help}"/>
                   </StackPanel>
                   <TextBlock x:Name="DeviceNameText" Grid.Column="1" Style="{StaticResource RowValue}" MaxWidth="240"/>
                 </Grid>
                 <Grid Style="{StaticResource Row}">
                   <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                  <TextBlock Style="{StaticResource RowTitle}" Text="Adresse" Margin="0,0,12,0"/>
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T setup.found.address}" Margin="0,0,12,0"/>
                   <TextBlock x:Name="AddressText" Grid.Column="1" Style="{StaticResource RowValue}"/>
                 </Grid>
                 <!-- Router-Wechsel, neue Adresse: Anlage über ihre Anlagen-ID neu suchen, Zugangsdaten bleiben. -->
                 <StackPanel x:Name="RelocateRow" Margin="0,2,0,6">
-                  <Button x:Name="RelocateButton" Content="Adresse neu suchen" HorizontalAlignment="Left" Click="Relocate_Click"/>
+                  <Button x:Name="RelocateButton" Content="{l:T settings.device.relocate.button}" HorizontalAlignment="Left" Click="Relocate_Click"/>
                   <TextBlock Style="{StaticResource RowHelp}" Margin="0,4,0,0"
-                             Text="Nach einem Router-Wechsel oder wenn die Anlage eine neue Adresse hat. Token und Schlüssel bleiben erhalten."/>
+                             Text="{l:T settings.device.relocate.help}"/>
                   <TextBlock x:Name="RelocateResult" TextWrapping="Wrap" FontSize="11.5" Margin="0,4,0,0" Visibility="Collapsed"/>
                 </StackPanel>
                 <Grid x:Name="SoundRow" Style="{StaticResource Row}">
                   <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                   <StackPanel Margin="0,0,12,0">
-                    <TextBlock Style="{StaticResource RowTitle}" Text="Signalton"/>
-                    <TextBlock Style="{StaticResource RowHelp}" Text="Piepen der Anlage bei Befehlen aus dieser App."/>
+                    <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.general.soundTitle}"/>
+                    <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.general.soundHelp}"/>
                   </StackPanel>
                   <local:ClickCheckBox x:Name="BeepBox" Grid.Column="1" VerticalAlignment="Center" MinWidth="0"
-                            AutomationProperties.Name="Signalton" Click="Beep_Click"/>
+                            AutomationProperties.Name="{l:T settings.general.soundTitle}" Click="Beep_Click"/>
                 </Grid>
                 <!-- Eingeklappt, ohne Token/Schlüssel. -->
-                <Expander x:Name="TechExpander" Header="Technische Angaben" Margin="0,6,0,4">
+                <Expander x:Name="TechExpander" Header="{l:T settings.device.details.title}" Margin="0,6,0,4">
                   <Grid Margin="0,6,0,0">
                     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                       <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBlock x:Name="PortLabel" Text="Port" Foreground="{DynamicResource Sub}" Margin="0,0,16,4"/>
+                    <TextBlock x:Name="PortLabel" Text="{l:T setup.found.port}" Foreground="{DynamicResource Sub}" Margin="0,0,16,4"/>
                     <TextBlock x:Name="PortText" Grid.Column="1" Margin="0,0,0,4" TextAlignment="Right"/>
-                    <TextBlock x:Name="DeviceIdLabel" Grid.Row="1" Text="Anlagen-ID" Foreground="{DynamicResource Sub}" Margin="0,0,16,4"/>
+                    <TextBlock x:Name="DeviceIdLabel" Grid.Row="1" Text="{l:T setup.found.applianceId}" Foreground="{DynamicResource Sub}" Margin="0,0,16,4"/>
                     <TextBlock x:Name="DeviceIdText" Grid.Row="1" Grid.Column="1" Margin="0,0,0,4" TextWrapping="Wrap" TextAlignment="Right"/>
-                    <TextBlock Grid.Row="2" Text="Kennung der Anlage" Foreground="{DynamicResource Sub}" Margin="0,0,16,4"
-                               ToolTip="Eigenschaft 0x00AB der Anlage"/>
+                    <TextBlock Grid.Row="2" Text="{l:T settings.device.identifier.title}" Foreground="{DynamicResource Sub}" Margin="0,0,16,4"
+                               ToolTip="{l:T settings.device.identifier.help}"/>
                     <TextBlock x:Name="IdentifierText" Grid.Row="2" Grid.Column="1" Margin="0,0,0,4" TextWrapping="Wrap" TextAlignment="Right"
-                               ToolTip="Eigenschaft 0x00AB der Anlage"/>
-                    <TextBlock Grid.Row="3" Text="WLAN-Zugangsdaten" Foreground="{DynamicResource Sub}" Margin="0,0,16,4"/>
+                               ToolTip="{l:T settings.device.identifier.help}"/>
+                    <TextBlock Grid.Row="3" Text="{l:T settings.device.credentials.title}" Foreground="{DynamicResource Sub}" Margin="0,0,16,4"/>
                     <TextBlock x:Name="CredentialsText" Grid.Row="3" Grid.Column="1" Margin="0,0,0,4" TextWrapping="Wrap" TextAlignment="Right"/>
                   </Grid>
                 </Expander>
               </StackPanel>
             </Border>
 
-            <TextBlock Style="{StaticResource SectionHead}" Text="Sichern und übertragen"/>
+            <TextBlock Style="{StaticResource SectionHead}" Text="{l:T settings.device.backup.header}"/>
             <Border Style="{StaticResource Section}">
               <StackPanel>
                 <!-- Noch nicht gesichert (credentialsBackedUp): Hinweis hervorgehoben. -->
                 <TextBlock x:Name="BackupState" TextWrapping="Wrap" FontSize="12.5" Margin="0,4,0,2" Visibility="Collapsed"/>
                 <WrapPanel Margin="0,4">
-                  <Button x:Name="ExportButton" Content="Zugangsdaten sichern …" Margin="0,0,6,4" Click="Export_Click"/>
-                  <Button x:Name="ImportButton" Content="Sicherung einlesen …" Margin="0,0,6,4" Click="Import_Click"/>
+                  <Button x:Name="ExportButton" Content="{l:T settings.device.backup.export}" Margin="0,0,6,4" Click="Export_Click"/>
+                  <Button x:Name="ImportButton" Content="{l:T settings.device.backup.import}" Margin="0,0,6,4" Click="Import_Click"/>
                 </WrapPanel>
                 <TextBlock x:Name="BackupResult" TextWrapping="Wrap" FontSize="11.5" Margin="0,2,0,2" Visibility="Collapsed"/>
               </StackPanel>
             </Border>
             <TextBlock Style="{StaticResource Foot}"
-                       Text="Die Sicherung enthält Token, Schlüssel, Adresse und Szenen – damit lässt sich die Anlage auf einem anderen Rechner ohne Midea-Konto einrichten. Nicht in Cloud-Ordnern (OneDrive, Dropbox, iCloud) ablegen."/>
+                       Text="{l:T settings.device.backup.footer}"/>
 
             <Border Style="{StaticResource Section}" Margin="0,8,0,6">
-              <Button Content="Anlage neu einrichten …" HorizontalAlignment="Left" Margin="0,4"
+              <Button Content="{l:T settings.device.forget.button}" HorizontalAlignment="Left" Margin="0,4"
                       Foreground="{DynamicResource Bad}" Click="Forget_Click"/>
             </Border>
-            <TextBlock Style="{StaticResource Foot}" Text="Nur für eine andere Anlage. Nach einem Router-Wechsel oder bei neuer Adresse reicht „Adresse neu suchen“."/>
+            <TextBlock Style="{StaticResource Foot}" Text="{l:T settings.device.forget.footer}"/>
           </StackPanel>
         </StackPanel>
       </ScrollViewer>
     </TabItem>
 
     <!-- 4 Protokoll -->
-    <TabItem Header="Protokoll">
+    <TabItem Header="{l:T settings.tabs.log}">
       <Grid Margin="12">
         <Grid.RowDefinitions>
           <RowDefinition/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
@@ -786,36 +827,36 @@
           <TextBox x:Name="LogBox" IsReadOnly="True" FontFamily="Consolas" FontSize="11" Padding="6"
                    Background="Transparent" BorderThickness="0"
                    VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap"
-                   AutomationProperties.Name="Protokoll"/>
+                   AutomationProperties.Name="{l:T settings.tabs.log}"/>
         </Border>
         <Grid Grid.Row="1" Margin="0,8,0,0">
           <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
-          <local:ClickCheckBox x:Name="DebugBox" Content="Ausführliches Protokoll" VerticalAlignment="Center" Margin="0,0,16,0" Click="Debug_Click"/>
-          <local:ClickCheckBox x:Name="EventsOnlyBox" Grid.Column="1" Content="Nur Ereignisse" VerticalAlignment="Center" Margin="0,0,12,0"
-                    ToolTip="Blendet die ausführlichen Zeilen (Nachrichten an Anlage und Midea) in der Anzeige aus – die Datei bleibt vollständig"
+          <local:ClickCheckBox x:Name="DebugBox" Content="{l:T settings.log.detailed.title}" VerticalAlignment="Center" Margin="0,0,16,0" Click="Debug_Click"/>
+          <local:ClickCheckBox x:Name="EventsOnlyBox" Grid.Column="1" Content="{l:T settings.log.eventsOnly.title}" VerticalAlignment="Center" Margin="0,0,12,0"
+                    ToolTip="{l:T settings.log.windows.eventsOnlyHelp}"
                     ToolTipService.ShowOnDisabled="True" Click="EventsOnly_Click"/>
           <TextBlock Grid.Column="2" FontSize="11.5" Foreground="{DynamicResource Sub}" TextWrapping="Wrap" TextAlignment="Right"
-                     VerticalAlignment="Center" Text="Ortszeit · Passwort, Token, Schlüssel geschwärzt"/>
+                     VerticalAlignment="Center" Text="{l:T settings.log.legend}"/>
         </Grid>
         <TextBlock x:Name="DebugHint" Grid.Row="2" FontSize="11.5" Foreground="{DynamicResource Sub}" TextWrapping="Wrap" Margin="0,4,0,0"/>
         <WrapPanel Grid.Row="3" HorizontalAlignment="Right" Margin="0,8,0,0">
-          <Button Content="Aktualisieren" Margin="6,0,0,0" Click="LogRefresh_Click"/>
-          <Button Content="Protokoll im Explorer zeigen" Margin="6,0,0,0" Click="LogShow_Click"/>
-          <Button Content="Leeren …" Margin="6,0,0,0" Click="LogClear_Click"/>
+          <Button Content="{l:T settings.log.refresh}" Margin="6,0,0,0" Click="LogRefresh_Click"/>
+          <Button Content="{l:T settings.log.windows.showInExplorer}" Margin="6,0,0,0" Click="LogShow_Click"/>
+          <Button Content="{l:T settings.log.clear.button}" Margin="6,0,0,0" Click="LogClear_Click"/>
         </WrapPanel>
       </Grid>
     </TabItem>
 
     <!-- 5 Lizenzen: Karten baut der Code beim ersten Öffnen. -->
-    <TabItem Header="Lizenzen">
+    <TabItem Header="{l:T settings.tabs.notices}">
       <ScrollViewer x:Name="NoticesScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="12,12,12,12">
           <TextBlock FontSize="12.5" Foreground="{DynamicResource Sub}" TextWrapping="Wrap" Margin="0,0,0,12"
-                     Text="Klimacontrol baut auf den folgenden Open-Source-Projekten auf. Ihre Lizenzen verlangen, Urheberrechtsvermerk und Lizenztext mitzugeben."/>
+                     Text="{l:T notices.intro}"/>
           <StackPanel x:Name="NoticesList"/>
           <!-- Wortgleich mit ThirdPartyNotices.trademarkNote im Kern. -->
           <TextBlock Style="{StaticResource Foot}" Margin="0,4,0,0"
-                     Text="Klimacontrol ist kein Produkt von Midea und steht in keiner Verbindung zu Midea. Midea, MSmartHome, NetHome Plus und PortaSplit sind Marken ihrer jeweiligen Inhaber."/>
+                     Text="{l:T notices.windows.trademarks}"/>
         </StackPanel>
       </ScrollViewer>
     </TabItem>

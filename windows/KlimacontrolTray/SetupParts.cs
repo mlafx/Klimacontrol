@@ -49,10 +49,12 @@ static class SetupUi
     public static void RenderSearch(SetupInfo s, Button scan, TextBlock scanLabel, Button subnet, TextBlock subnetLabel)
     {
         scan.IsEnabled = !s.Scanning;
-        scanLabel.Text = s.Scanning ? "Suche …" : "Im WLAN suchen";
+        scanLabel.Text = L.T(s.Scanning ? "setup.view.searching" : "setup.view.search.wifi");
         subnet.IsEnabled = !s.SubnetScanning;
-        subnetLabel.Text = !s.SubnetScanning ? "Netz durchsuchen"
-            : s.SubnetSent is int sent && s.SubnetTotal is int total ? $"{sent} von {total}" : "Netz …";
+        subnetLabel.Text = !s.SubnetScanning ? L.T("setup.view.search.subnet")
+            : s.SubnetSent is int sent && s.SubnetTotal is int total
+                ? L.F("setup.view.search.subnetProgress", ("done", Fmt.Num(sent, 0)), ("total", Fmt.Num(total, 0)))
+                : L.T("setup.view.search.subnetBusy");
     }
 
     /// Code am Ende einer Kernmeldung („Was ist passiert. Was tun. (code)“): ein Wort ohne Leerzeichen in Klammern.
@@ -119,26 +121,22 @@ public sealed class NetworkHelp : Border
         var panel = new StackPanel();
         title = new TextBlock { FontSize = 12, FontWeight = FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap };
         panel.Children.Add(title);
-        foreach (var line in new[]
+        foreach (var key in new[]
         {
-            "Die Anlage ist eingeschaltet, und dieser Rechner ist im selben WLAN wie sie.",
-            "Das WLAN ist auf „Privat“ gestellt: Einstellungen → Netzwerk und Internet → WLAN → dein WLAN → "
-                + "Netzwerkprofiltyp „Privates Netzwerk“.",
-            "Beim ersten Start fragt Windows, ob Klimacontrol ins Netzwerk darf – dort „Private Netzwerke“ erlauben. "
-                + "Schon abgelehnt? Windows-Sicherheit → Firewall- und Netzwerkschutz → „Zugriff von App durch Firewall "
-                + "zulassen“ → Klimacontrol bei „Privat“ anhaken.",
-            "Kein Gast-WLAN: Es trennt die Geräte voneinander. Rechner und Anlage ins normale WLAN bringen oder am Router "
-                + "erlauben, dass sich die Geräte sehen.",
+            "setup.view.windows.helpPowerWifi",
+            "setup.view.windows.helpPrivate",
+            "setup.view.windows.helpFirewall",
+            "setup.view.windows.helpGuest",
         })
-            panel.Children.Add(Bullet(line));
+            panel.Children.Add(Bullet(L.T(key)));
 
         var open = new Button
         {
-            Content = "Netzwerkeinstellungen öffnen",
+            Content = L.T("setup.view.windows.openNetwork"),
             HorizontalAlignment = HorizontalAlignment.Left,
             Margin = new Thickness(0, 8, 0, 0),
             Padding = new Thickness(9, 4, 9, 5),
-            ToolTip = "Öffnet Einstellungen → Netzwerk und Internet → WLAN",
+            ToolTip = L.T("setup.view.windows.openNetworkHelp"),
         };
         open.Click += (_, _) => OpenSettings();
         panel.Children.Add(open);
@@ -161,7 +159,7 @@ public sealed class NetworkHelp : Border
     /// Sichtbar machen; die Überschrift passt zur Art der Meldung (`Setup.Issue`).
     public void Show(string? issue)
     {
-        title.Text = issue == "unreachable" ? "Anlage antwortet nicht? Das hilft oft:" : "Nichts gefunden? Das hilft oft:";
+        title.Text = L.T(issue == "unreachable" ? "setup.view.windows.helpTitleUnreachable" : "setup.view.windows.helpTitleNotFound");
         Visibility = Visibility.Visible;
     }
 

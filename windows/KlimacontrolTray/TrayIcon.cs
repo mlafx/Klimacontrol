@@ -103,34 +103,34 @@ static class TrayIcon
         size = Math.Clamp(size, 16, 64);
         var mono = !a.TrayColored;
         var ink = taskbarLight ? Color.Black : Color.White;
-        Look L(Color tile, string text, Symbol symbol, bool outline = false, string? glyph = null, bool running = false) =>
+        Look Mk(Color tile, string text, Symbol symbol, bool outline = false, string? glyph = null, bool running = false) =>
             mono ? new Look(ink, text, symbol, size, true, outline, glyph, 0, running)
                  : new Look(tile, text, symbol, size, false, false, glyph, 0, running);
 
-        if (!s.Configured) return L(Grey, "–", Symbol.None);
+        if (!s.Configured) return Mk(Grey, "–", Symbol.None);
         // Ohne bekannten Verbindungszustand nach den Merkern.
         switch (s.ConnectionState)
         {
-            case "deviceOff": return L(OffGrey, "", Symbol.DeviceOff);
-            case "noConnection": return L(Orange, "", Symbol.Warning);
-            case "connecting": return L(Grey, "", Symbol.Connecting);
+            case "deviceOff": return Mk(OffGrey, "", Symbol.DeviceOff);
+            case "noConnection": return Mk(Orange, "", Symbol.Warning);
+            case "connecting": return Mk(Grey, "", Symbol.Connecting);
             case "live": break;
             default:
-                if (s.DeviceOffNotice) return L(OffGrey, "", Symbol.DeviceOff);
-                if (s.LastRefreshFailed) return L(Orange, "", Symbol.Warning);
+                if (s.DeviceOffNotice) return Mk(OffGrey, "", Symbol.DeviceOff);
+                if (s.LastRefreshFailed) return Mk(Orange, "", Symbol.Warning);
                 break;
         }
         var st = s.State;
-        if (st == null) return L(Grey, "–", Symbol.None);
+        if (st == null) return Mk(Grey, "–", Symbol.None);
         var target = Math.Round(st.Target).ToString("0");
-        if (s.Message != null) return st.Power ? L(Red, target, Symbol.None, outline: true) : L(Red, "", Symbol.PowerOff);
-        if (!st.Power) return L(OffGrey, "", Symbol.PowerOff);
+        if (s.Message != null) return st.Power ? Mk(Red, target, Symbol.None, outline: true) : Mk(Red, "", Symbol.PowerOff);
+        if (!st.Power) return Mk(OffGrey, "", Symbol.PowerOff);
         var fill = ModeFill(st.Mode);
         return a.TrayTooltip switch
         {
-            "iconOnly" => L(fill, "", Symbol.Mode, glyph: ModeGlyph(st.Mode), running: true),
-            "iconRoom" => L(fill, st.Indoor is { } room ? Math.Round(room).ToString("0") : "–", Symbol.None, running: true),
-            _ => L(fill, target, Symbol.None, running: true),
+            "iconOnly" => Mk(fill, "", Symbol.Mode, glyph: ModeGlyph(st.Mode), running: true),
+            "iconRoom" => Mk(fill, st.Indoor is { } room ? Math.Round(room).ToString("0") : "–", Symbol.None, running: true),
+            _ => Mk(fill, target, Symbol.None, running: true),
         };
     }
 

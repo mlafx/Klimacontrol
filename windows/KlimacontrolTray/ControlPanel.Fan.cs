@@ -60,8 +60,8 @@ public partial class ControlPanel
         // Flache Knöpfe in der Reihenfolge von links nach rechts, damit Tab ihnen so folgt:
         // „Außengerät leise“, 1 % … Max, Turbo. Die Sprungmarken dazwischen legt `EnsureFanMarks` nach der Liste des Kerns an.
         var flat = (Style)FindResource("FlatMark");
-        Zone(quietZone, quietIcon, flat, "Außengerät leise", "Außengerät leise: 1 % und leises Außengerät – nur beim Kühlen und Heizen", Cmd.FanQuiet);
-        Zone(turboZone, turboIcon, flat, "Turbo", "Turbo: 100 % und Turbo – nur beim Kühlen und Heizen", Cmd.FanTurbo);
+        Zone(quietZone, quietIcon, flat, L.T("options.fan.quietOutdoor"), L.T("options.fan.quietZoneHelpOff"), Cmd.FanQuiet);
+        Zone(turboZone, turboIcon, flat, L.T("options.fan.turbo"), L.T("options.fan.turboZoneHelpOff"), Cmd.FanTurbo);
 
         FanMarks.SizeChanged += (_, _) => PlaceFanMarks();
         // Bedienung mit der Maus beginnt/endet; Ziehen am Knopf meldet DragCompleted, Klick auf die Spur nur MouseUp.
@@ -93,7 +93,7 @@ public partial class ControlPanel
                 CancelReconcile();
                 Core.Send(Cmd.Fan, ("value", value), ("now", true));
             };
-            AutomationProperties.SetName(t, "Lüfter " + mark.Label);
+            AutomationProperties.SetName(t, L.F("main.windows.fanMarkName", ("label", mark.Label)));
             fanMarkLabels.Add(t);
             FanMarks.Children.Insert(at++, t);
         }
@@ -148,8 +148,8 @@ public partial class ControlPanel
         if (!fanInteracting && (DateTime.Now - lastFanDrag).TotalSeconds > 1.5 && !FanSlider.IsMouseCaptureWithin)
             FanSlider.Value = fanAuto ? s.Options.Fan.AutoKnob : fanQuiet ? QuietMin : fanTurboOn ? TurboMax : Math.Clamp(st.Fan, 1, 100);
         else ResyncSoon();
-        AutomationProperties.SetItemStatus(FanSlider, fanAuto ? "automatisch" : fanQuiet ? "Außengerät leise, 1 Prozent"
-                                                      : fanTurboOn ? "Turbo, 100 Prozent" : $"{st.Fan} Prozent");
+        AutomationProperties.SetItemStatus(FanSlider, fanAuto ? L.T("main.windows.fanStatusAuto") : fanQuiet ? L.T("main.windows.fanStatusQuiet")
+                                                      : fanTurboOn ? L.T("main.windows.fanStatusTurbo") : L.F("main.windows.fanStatusPercent", ("percent", st.Fan.ToString(System.Globalization.CultureInfo.InvariantCulture))));
 
         // Erst die Schriftstärke der Marken, dann platzieren – die gewählte Marke ist breiter.
         var sub = (Brush)FindResource("Sub");
@@ -161,14 +161,14 @@ public partial class ControlPanel
             var sel = !fanAuto && !fanQuiet && !fanTurboOn && st.Fan == (int)t.Tag;
             t.Foreground = sel ? textBrush : sub;
             t.FontWeight = sel ? FontWeights.SemiBold : FontWeights.Normal;
-            AutomationProperties.SetItemStatus(t, sel ? "aktiv" : "");
+            AutomationProperties.SetItemStatus(t, sel ? L.T("main.mode.activeValue") : "");
         }
         foreach (var (zone, icon, active) in new[] { (quietZone, quietIcon, fanQuiet), (turboZone, turboIcon, fanTurboOn) })
         {
             zone.Visibility = zones ? Visibility.Visible : Visibility.Collapsed;
             icon.Stroke = active ? iconBrush : sub;
             icon.StrokeThickness = active ? 1.8 : 1.3;
-            AutomationProperties.SetItemStatus(zone, active ? "aktiv" : "");
+            AutomationProperties.SetItemStatus(zone, active ? L.T("main.mode.activeValue") : "");
         }
         DrawFanTrack();
         PlaceFanMarks();

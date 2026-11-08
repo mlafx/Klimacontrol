@@ -172,7 +172,7 @@ public partial class EnergyCard : UserControl
     {
         FrameworkElement? m = null;
         if (p.Current) m = Icons.Glyph(((char)0xE121).ToString(), 11);
-        else if (p.KWh == null) m = new TextBlock { Text = "ca.", FontSize = 11 };
+        else if (p.KWh == null) m = new TextBlock { Text = L.T("charts.approxMarker"), FontSize = 11 };
         else if (!p.Complete) m = new TextBlock { Text = "…", FontSize = 11 };
         if (m is TextBlock t) t.SetResourceReference(TextBlock.ForegroundProperty, "Sub");
         return m;

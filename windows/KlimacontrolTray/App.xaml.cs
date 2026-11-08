@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -26,17 +27,23 @@ public partial class App : Application
             var file = Path.Combine(Path.GetTempPath(), "klimacontrol-ui.log");
             var info = new FileInfo(file);
             if (info.Exists && info.Length > TraceLimit) File.Move(file, Path.Combine(Path.GetTempPath(), "klimacontrol-ui.1.log"), true);
-            File.AppendAllText(file, $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} {line}\n");
+            File.AppendAllText(file, $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} {line}\n"); // kein Anzeigetext: Protokollzeile, bleibt deutsch
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException) { }
     }
 
     const long TraceLimit = 1 << 20;
+    const string SingleInstanceName = "KlimacontrolTray.SingleInstance";
+    const string ShowSignalName = "KlimacontrolTray.Show";
     const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
     const string DefaultHotkey = "Ctrl+Alt+K";
 
     static int errorShown;
     Mutex? single;
+    /// Dieser Prozess besitzt den Mutex (nur dann darf OnExit ihn freigeben).
+    bool ownsMutex;
+    /// `Restart()` läuft bereits.
+    bool restarting;
     EventWaitHandle? showSignal, quitSignal;
     NotifyArea? notify;
     ContextMenu? trayMenu;
@@ -55,11 +62,27 @@ public partial class App : Application
     {
         base.OnStartup(e);
         // Autostart startet nur im Infobereich: kein Hauptfenster, auch kein Nach-vorn-Holen einer laufenden App.
-        var trayOnly = e.Args.Any(a => a.Equals("--tray", StringComparison.OrdinalIgnoreCase));
-        // Läuft Klimacontrol schon, bittet ein zweiter Start nur die laufende App, ihr Fenster zu zeigen.
-        showSignal = new EventWaitHandle(false, EventResetMode.AutoReset, "KlimacontrolTray.Show", out var created);
-        single = new Mutex(true, "KlimacontrolTray.SingleInstance", out var first);
-        if (!first || !created)
+        var args = StartArgs.Parse(e.Args);
+        var trayOnly = args.Tray;
+        bool first, created;
+        if (args.Restart)
+        {
+            // Neustart: Der alte Prozess gibt den Mutex beim Beenden frei. Erst warten, dann die Ereignisse anlegen; deren
+            // alte Handles können noch kurz offen sein und gelten hier nicht als „läuft schon“.
+            single = new Mutex(false, SingleInstanceName);
+            first = WaitForOldInstance(single);
+            showSignal = new EventWaitHandle(false, EventResetMode.AutoReset, ShowSignalName, out _);
+            created = true;
+            if (!first) Trace("Neustart: der alte Prozess läuft nach 30 s noch – Start geht trotzdem weiter");
+        }
+        else
+        {
+            // Läuft Klimacontrol schon, bittet ein zweiter Start nur die laufende App, ihr Fenster zu zeigen.
+            showSignal = new EventWaitHandle(false, EventResetMode.AutoReset, ShowSignalName, out created);
+            single = new Mutex(true, SingleInstanceName, out first);
+        }
+        ownsMutex = first;
+        if (args.IsSecondStart(first, created))
         {
             if (!trayOnly) showSignal.Set();
             Shutdown();
@@ -111,8 +134,7 @@ public partial class App : Application
             }
             catch (Exception ex) when (ex is DllNotFoundException or EntryPointNotFoundException or BadImageFormatException)
             {
-                FailStart("Klimacontrol kann nicht starten: Im Ordner „" + Native.ResFolder + "“ neben Klimacontrol.exe fehlen "
-                          + "Dateien oder sie sind unvollständig. Bitte den ganzen Ordner aus dem ZIP neu entpacken.", ex);
+                FailStart(StartupText.FilesMissing, ex);
                 return;
             }
 
@@ -143,8 +165,7 @@ public partial class App : Application
         }
         catch (Exception ex)
         {
-            FailStart("Klimacontrol konnte nicht starten. Bitte noch einmal starten; hilft das nicht, den Ordner aus dem "
-                      + "ZIP neu entpacken.", ex);
+            FailStart(StartupText.StartFailed, ex);
         }
     }
 
@@ -152,7 +173,7 @@ public partial class App : Application
     /// und Text der Ausnahme klein am Ende (aus, wenn `text` schon alles sagt).
     void FailStart(string text, Exception ex, bool details = true)
     {
-        Trace("FEHLER beim Start: " + ex);
+        Trace(L.T("log.windows.startFailed") + ": " + ex);
         try
         {
             Core.Shared.Changed -= UpdateTray;
@@ -160,13 +181,13 @@ public partial class App : Application
             RemoveTrayIcon();
             StopCore();
         }
-        catch (Exception cleanup) { Trace("Aufräumen nach Startfehler: " + cleanup.GetType().Name); }
+        catch (Exception cleanup) { Trace(L.T("log.windows.cleanupFailed") + ": " + cleanup.GetType().Name); }
         _ = ShowAndExit();
 
         async Task ShowAndExit()
         {
             try { await Dialogs.Warn(null, "Klimacontrol", details ? text + $"\n\n({ex.GetType().Name}: {ex.Message})" : text); }
-            catch (Exception dialog) { Trace("Startfehler-Dialog: " + dialog.GetType().Name); }
+            catch (Exception dialog) { Trace(L.T("log.windows.startDialogFailed") + ": " + dialog.GetType().Name); }
             finally { Shutdown(1); }
         }
     }
@@ -177,30 +198,27 @@ public partial class App : Application
         DispatcherUnhandledException += (_, a) =>
         {
             a.Handled = true;
-            ReportError("Oberfläche", a.Exception);
+            ReportError("log.windows.errorUi", a.Exception);
         };
         // Fehler in nicht abgewarteten Aufgaben (async ohne await): erst beim Aufräumen bemerkt, auf dem Finalizer-Thread.
         TaskScheduler.UnobservedTaskException += (_, a) =>
         {
             a.SetObserved();
             var ex = a.Exception.InnerExceptions.Count == 1 ? a.Exception.InnerExceptions[0] : a.Exception;
-            if (!Dispatcher.HasShutdownStarted) Dispatcher.InvokeAsync(() => ReportError("Hintergrund", ex));
+            if (!Dispatcher.HasShutdownStarted) Dispatcher.InvokeAsync(() => ReportError("log.windows.errorBackground", ex));
         };
         // Danach beendet .NET den Prozess; ein Dialog käme nicht mehr sicher an – nur protokollieren.
         AppDomain.CurrentDomain.UnhandledException += (_, a) =>
-            Trace($"FEHLER (Absturz{(a.IsTerminating ? ", Programm endet" : "")}): {a.ExceptionObject}");
+            Trace(L.T(a.IsTerminating ? "log.windows.crashTerminating" : "log.windows.crash") + $": {a.ExceptionObject}");
     }
 
-    void ReportError(string where, Exception ex)
+    void ReportError(string whereKey, Exception ex)
     {
-        Trace($"FEHLER {where}: {ex}");
+        Trace(L.T(whereKey) + $": {ex}");
         // Höchstens ein Dialog: Timer laufen weiter, ein wiederkehrender Fehler öffnete sonst Dutzende.
         if (Interlocked.Exchange(ref errorShown, 1) != 0 || quitting) return;
         // Dialogs wartet, bis der Dispatcher frei ist: Der Fehler kann mitten im Layout oder in kc_pump fallen.
-        _ = Dialogs.Warn(null, "Klimacontrol",
-            "In der Oberfläche ist etwas schiefgelaufen. Klimacontrol läuft weiter. Reagiert etwas nicht mehr, Klimacontrol "
-            + "über das Symbol im Infobereich beenden und neu starten. Weitere Fehler stehen nur in der Datei "
-            + $"klimacontrol-ui.log im Temp-Ordner.\n\n({ex.GetType().Name}: {ex.Message})");
+        _ = Dialogs.Warn(null, "Klimacontrol", L.T("app.windows.uiError") + $"\n\n({ex.GetType().Name}: {ex.Message})");
     }
 
     void UpdateTray()
@@ -307,39 +325,41 @@ public partial class App : Application
     /// Tooltip nach Darstellung „Tooltip-Text“. Vorrang haben: nicht eingerichtet, eine Meldung, beim Verbinden der Schritt.
     static string TipText(Snapshot s, string tooltip)
     {
-        if (!s.Configured) return "Klimacontrol – nicht eingerichtet";
-        if (s.MessageDetail is { What.Length: > 0 } m) return $"{s.DisplayName}: {m.What}";
-        if (s.Message != null) return $"{s.DisplayName}: {s.Message}";
+        if (!s.Configured) return L.T("tray.tip.notConfigured");
+        if (s.MessageDetail is { What.Length: > 0 } m) return Line(s, m.What);
+        if (s.Message != null) return Line(s, s.Message);
         if (s.ConnectionState == "connecting" || s.State == null || s.StatusLine.Length == 0)
         {
             var step = s.ConnectPhase switch
             {
-                "searching" => "sucht die Anlage …",
-                "handshake" => "meldet sich an der Anlage an …",
-                "reading" => "liest die Werte …",
-                _ => "verbindet …",
+                "searching" => L.T("tray.tip.searching"),
+                "handshake" => L.T("tray.tip.handshake"),
+                "reading" => L.T("tray.tip.reading"),
+                _ => L.T("tray.tip.connecting"),
             };
-            return $"{s.DisplayName}: {step}";
+            return Line(s, step);
         }
-        return $"{s.DisplayName}: {TipDetail(s.State, tooltip) ?? s.StatusLine}";
+        return Line(s, TipDetail(s.State, tooltip) ?? s.StatusLine);
     }
+
+    static string Line(Snapshot s, string text) => L.F("tray.tip.line", ("name", s.DisplayName), ("text", text));
 
     /// Tooltip-Text nach `TrayTooltip` ohne den Namen; null = Statuszeile des Kerns (Standard "iconTarget").
     internal static string? TipDetail(AcState st, string tooltip)
     {
-        var status = st.Power ? Codes.Verb(st.Mode) : "Aus";
-        string? room = st.Indoor is { } r ? "Raum " + Fmt.Temp(r) : null;
+        var status = st.Power ? Codes.Verb(st.Mode) : L.T("common.off");
+        string? room = st.Indoor is { } r ? L.F("status.room", ("temp", Fmt.Temp(r))) : null;
         // Soll nur bei laufender Anlage und nicht beim Lüften.
-        string? target = st.Power && st.Mode != 5 ? "Soll " + Fmt.Target(st.Target) : null;
+        string? target = st.Power && st.Mode != 5 ? L.F("menu.target", ("target", Fmt.Target(st.Target))) : null;
         return tooltip switch
         {
             "iconOnly" => status,
-            "iconRoom" => room == null ? status : $"{status} · {room}",
+            "iconRoom" => room == null ? status : L.F("tray.tip.statusRoom", ("status", status), ("room", room)),
             "roomTarget" => (room, target) switch
             {
-                ({ } ro, { } ta) => $"{ro} · {ta}",
-                ({ } ro, null) => $"{status} · {ro}",
-                (null, { } ta) => $"{status} · {ta}",
+                ({ } ro, { } ta) => L.F("tray.tip.roomTarget", ("room", ro), ("target", ta)),
+                ({ } ro, null) => L.F("tray.tip.statusRoom", ("status", status), ("room", ro)),
+                (null, { } ta) => L.F("tray.tip.statusTarget", ("status", status), ("target", ta)),
                 _ => status,
             },
             _ => null,
@@ -441,13 +461,13 @@ public partial class App : Application
             return item;
         }
 
-        menu.Items.Add(Item("_Schnellsteuerung", () => ShowFlyout(fromKeyboard: true), gesture: HotkeyText));
-        menu.Items.Add(Item("Klimacontrol _öffnen", () => { flyout?.Close(); ShowMain(); }));
+        menu.Items.Add(Item(L.T("tray.menu.quickControls"), () => ShowFlyout(fromKeyboard: true), gesture: HotkeyText));
+        menu.Items.Add(Item(L.T("tray.menu.openApp"), () => { flyout?.Close(); ShowMain(); }));
         menu.Items.Add(new Separator());
-        menu.Items.Add(Item(st?.Power == true ? "_Ausschalten" : "_Einschalten", TogglePower, st != null));
+        menu.Items.Add(Item(L.T(st?.Power == true ? "tray.menu.turnOff" : "tray.menu.turnOn"), TogglePower, st != null));
         if (s.Configured && s.Scenes.Count > 0)
         {
-            var scenes = new MenuItem { Header = "S_zenen", IsEnabled = st != null };
+            var scenes = new MenuItem { Header = L.T("tray.menu.scenes"), IsEnabled = st != null };
             foreach (var scene in s.Scenes)
             {
                 var id = scene.Id;
@@ -459,17 +479,17 @@ public partial class App : Application
             menu.Items.Add(scenes);
         }
         if (s.OffAt is { } off)
-            menu.Items.Add(Item($"Aus-_Timer löschen (aus um {Fmt.Clock(off)})", () => Core.Shared.Send(Cmd.OffTimer)));
+            menu.Items.Add(Item(L.F("tray.menu.deleteOffTimer", ("time", Fmt.Clock(off))), () => Core.Shared.Send(Cmd.OffTimer)));
         else
-            menu.Items.Add(Item("Aus in _1 Stunde", () => Core.Shared.Send(Cmd.OffTimer, ("minutes", 60)), st?.Power == true));
+            menu.Items.Add(Item(L.T("tray.menu.offInOneHour"), () => Core.Shared.Send(Cmd.OffTimer, ("minutes", 60)), st?.Power == true));
         // „refresh“ hebt auch alle Sperren der Wegwahl auf – wie „Erneut versuchen“ im Fehlerbanner.
-        menu.Items.Add(Item("Jetzt a_ktualisieren", () => Core.Shared.Send(Cmd.Refresh), s.Configured));
+        menu.Items.Add(Item(L.T("tray.menu.refresh"), () => Core.Shared.Send(Cmd.Refresh), s.Configured));
         menu.Items.Add(new Separator());
-        menu.Items.Add(Item("E_instellungen", () => ShowSettings(SettingsTab.General)));
-        menu.Items.Add(Item("_Protokoll", () => ShowSettings(SettingsTab.Log)));
-        if (Updates.Running) menu.Items.Add(Item("Nach _Updates suchen …", Updates.CheckNow));
+        menu.Items.Add(Item(L.T("tray.menu.settings"), () => ShowSettings(SettingsTab.General)));
+        menu.Items.Add(Item(L.T("tray.menu.log"), () => ShowSettings(SettingsTab.Log)));
+        if (Updates.Running) menu.Items.Add(Item(L.T("tray.menu.checkUpdates"), Updates.CheckNow));
         menu.Items.Add(new Separator());
-        menu.Items.Add(Item("_Beenden", QuitAsk));
+        menu.Items.Add(Item(L.T("tray.menu.quit"), QuitAsk));
         return menu;
     }
 
@@ -513,10 +533,8 @@ public partial class App : Application
     {
         if (quitting || notify == null || Prefs.GetBool("TrayHintShown", false)) return;
         var hotkey = HotkeyText;
-        var text = "Das Fenster ist zu, Klimacontrol läuft im Infobereich weiter (evtl. hinter dem Pfeil ^). "
-                   + "Klick aufs Symbol öffnet die Schnellsteuerung, Rechtsklick das Menü mit „Beenden“."
-                   + (hotkey.Length > 0 ? $" Tastenkürzel: {hotkey}." : "");
-        if (notify.ShowBalloon("Klimacontrol läuft weiter", text)) Prefs.SetBool("TrayHintShown", true);
+        var text = hotkey.Length > 0 ? L.F("tray.hint.textWithHotkey", ("hotkey", hotkey)) : L.T("tray.hint.text");
+        if (notify.ShowBalloon(L.T("tray.hint.title"), text)) Prefs.SetBool("TrayHintShown", true);
         else Trace("Hinweis „läuft im Infobereich weiter“ nicht gezeigt (kein Symbol)");
     }
 
@@ -549,7 +567,7 @@ public partial class App : Application
         }
         catch (Exception e) when (e is System.Security.SecurityException or UnauthorizedAccessException or IOException)
         {
-            Trace($"Mit Windows starten: Eintrag nicht nachgeführt ({e.GetType().Name})");
+            Trace(L.T("log.windows.autostartNotUpdated") + $" ({e.GetType().Name})");
         }
     }
 
@@ -636,7 +654,7 @@ public partial class App : Application
     {
         if (!coreStarted) return;
         try { Core.Shared.Stop(); }
-        catch (Exception e) { Trace("Kern beenden: " + e.GetType().Name + ": " + e.Message); }
+        catch (Exception e) { Trace(L.T("log.windows.coreStopFailed") + ": " + e.GetType().Name + ": " + e.Message); }
     }
 
     bool quitAsking;
@@ -661,6 +679,49 @@ public partial class App : Application
         Quit();
     }
 
+    /// Startet Klimacontrol neu (Sprachwechsel): neuer Prozess mit `--restart`, dann beenden, ohne Rückfrage zu Timern
+    /// (sie sind gespeichert und laufen danach weiter). Scheitert der Start, bleibt die App offen.
+    public void Restart()
+    {
+        if (restarting || quitting) return;
+        restarting = true;
+        Trace("Neustart angefordert");
+        try
+        {
+            var exe = Environment.ProcessPath ?? throw new InvalidOperationException("Programmpfad unbekannt");
+            Process.Start(new ProcessStartInfo(exe, "--restart") { UseShellExecute = false });
+        }
+        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException or PlatformNotSupportedException)
+        {
+            Trace(L.F("log.app.restartNotPossible", ("error", ex.Message)));
+            restarting = false;
+            _ = Dialogs.Warn(null, "Klimacontrol", L.Has("app.windows.restartFailed") ? L.T("app.windows.restartFailed") : StartupText.RestartFailed);
+            return;
+        }
+        Quit();
+    }
+
+    /// Sprache der App für WPF-eigene Texte (Kontextmenü in Textfeldern): "de" → de-DE, sonst en-US. Nur die
+    /// Anzeigesprache, nicht die Regionsformate.
+    internal static void UseUiCulture(string language)
+    {
+        var culture = CultureInfo.GetCultureInfo(language == "de" ? "de-DE" : "en-US");
+        CultureInfo.DefaultThreadCurrentUICulture = culture;
+        CultureInfo.CurrentUICulture = culture;
+    }
+
+    /// Wartet bis zu 30 s, bis der alte Prozess den Mutex freigibt (UI-Thread, noch kein Fenster).
+    static bool WaitForOldInstance(Mutex mutex)
+    {
+        var deadline = Stopwatch.StartNew();
+        while (deadline.Elapsed < TimeSpan.FromSeconds(30))
+        {
+            try { if (mutex.WaitOne(500)) return true; }
+            catch (AbandonedMutexException) { return true; }
+        }
+        return false;
+    }
+
     public void Quit()
     {
         quitting = true;
@@ -683,7 +744,25 @@ public partial class App : Application
         Updates.Stop();
         StopCore();
         RemoveTrayIcon();
+        // Freigeben, bevor der Prozess endet: Ein Neustart wartet auf den Mutex.
+        try { if (ownsMutex) single?.ReleaseMutex(); }
+        catch (ApplicationException) { }
+        ownsMutex = false;
         single?.Dispose();
         base.OnExit(e);
     }
+}
+
+/// Startargumente: `--tray` (nur Infobereich, Autostart) und `--restart` (Neustart durch die App selbst).
+readonly record struct StartArgs(bool Tray, bool Restart)
+{
+    public static StartArgs Parse(string[] args)
+    {
+        bool Has(string name) => args.Any(a => a.Equals(name, StringComparison.OrdinalIgnoreCase));
+        return new StartArgs(Has("--tray"), Has("--restart"));
+    }
+
+    /// Zweiter Start neben einer laufenden App: nur sie bitten, das Fenster zu zeigen, und beenden. Ein Neustart gilt nie
+    /// so, auch wenn der alte Prozess nach 30 s noch den Mutex hält: er startet normal weiter, sonst bliebe die App weg.
+    public bool IsSecondStart(bool ownsMutex, bool eventsCreated) => !Restart && (!ownsMutex || !eventsCreated);
 }

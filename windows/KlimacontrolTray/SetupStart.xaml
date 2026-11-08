@@ -1,6 +1,7 @@
 <UserControl x:Class="KlimacontrolTray.SetupStart"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="clr-namespace:KlimacontrolTray">
   <!-- Startseite der Einrichtung: Weg wählen. -->
   <UserControl.Resources>
     <ResourceDictionary>
@@ -30,12 +31,12 @@
 
   <StackPanel>
     <ContentControl x:Name="HeadIcon" HorizontalAlignment="Left" Margin="0,0,0,4" Focusable="False"/>
-    <TextBlock Style="{StaticResource SetupTitle}" Text="Wie möchtest du verbinden?"/>
+    <TextBlock Style="{StaticResource SetupTitle}" Text="{l:T setup.view.start.title}"/>
     <TextBlock Style="{StaticResource SetupDetail}"
-               Text="Klimacontrol steuert die Anlage direkt im WLAN. Dafür braucht es einmalig Token und Schlüssel der Anlage."/>
+               Text="{l:T setup.view.start.intro}"/>
 
     <Button x:Name="AccountCard" Style="{StaticResource ChoiceCard}" Click="Account_Click"
-            AutomationProperties.Name="Mit Midea-Konto, empfohlen">
+            AutomationProperties.Name="{l:T setup.view.windows.choiceAccountName}">
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="40"/>
@@ -45,21 +46,21 @@
         <ContentControl x:Name="AccountIcon" VerticalAlignment="Top" HorizontalAlignment="Left" Focusable="False"/>
         <StackPanel Grid.Column="1">
           <WrapPanel>
-            <TextBlock Style="{StaticResource ChoiceTitle}" Text="Mit Midea-Konto" Margin="0,0,6,0"/>
+            <TextBlock Style="{StaticResource ChoiceTitle}" Text="{l:T setup.view.choice.account.title}" Margin="0,0,6,0"/>
             <Grid VerticalAlignment="Center">
               <Border CornerRadius="8" Background="{DynamicResource Accent}" Opacity="0.2"/>
-              <TextBlock Text="empfohlen" FontSize="11" FontWeight="Medium" Margin="6,1,6,1"/>
+              <TextBlock Text="{l:T setup.view.recommended}" FontSize="11" FontWeight="Medium" Margin="6,1,6,1"/>
             </Grid>
           </WrapPanel>
           <TextBlock Style="{StaticResource ChoiceDetail}"
-                     Text="Holt Token und Schlüssel automatisch. Findet die Anlage auch, wenn sie ausgeschaltet ist."/>
+                     Text="{l:T setup.view.windows.choiceAccountDetail}"/>
         </StackPanel>
         <ContentControl x:Name="AccountChevron" Grid.Column="2" VerticalAlignment="Center" Margin="8,0,0,0" Focusable="False"/>
       </Grid>
     </Button>
 
     <Button x:Name="ManualCard" Style="{StaticResource ChoiceCard}" Click="Manual_Click"
-            AutomationProperties.Name="Zugangsdaten eingeben">
+            AutomationProperties.Name="{l:T setup.view.choice.manual.title}">
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="40"/>
@@ -68,16 +69,16 @@
         </Grid.ColumnDefinitions>
         <ContentControl x:Name="ManualIcon" VerticalAlignment="Top" HorizontalAlignment="Left" Focusable="False"/>
         <StackPanel Grid.Column="1">
-          <TextBlock Style="{StaticResource ChoiceTitle}" Text="Zugangsdaten eingeben"/>
+          <TextBlock Style="{StaticResource ChoiceTitle}" Text="{l:T setup.view.choice.manual.title}"/>
           <TextBlock Style="{StaticResource ChoiceDetail}"
-                     Text="Token und Schlüssel liegen dir schon vor. Kein Midea-Konto nötig."/>
+                     Text="{l:T setup.view.windows.choiceManualDetail}"/>
         </StackPanel>
         <ContentControl x:Name="ManualChevron" Grid.Column="2" VerticalAlignment="Center" Margin="8,0,0,0" Focusable="False"/>
       </Grid>
     </Button>
 
     <Button x:Name="BackupCard" Style="{StaticResource ChoiceCard}" Click="Import_Click"
-            AutomationProperties.Name="Sicherung einlesen">
+            AutomationProperties.Name="{l:T setup.view.choice.backup.title}">
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="40"/>
@@ -86,9 +87,9 @@
         </Grid.ColumnDefinitions>
         <ContentControl x:Name="BackupIcon" VerticalAlignment="Top" HorizontalAlignment="Left" Focusable="False"/>
         <StackPanel Grid.Column="1">
-          <TextBlock Style="{StaticResource ChoiceTitle}" Text="Sicherung einlesen"/>
+          <TextBlock Style="{StaticResource ChoiceTitle}" Text="{l:T setup.view.choice.backup.title}"/>
           <TextBlock Style="{StaticResource ChoiceDetail}"
-                     Text="Sicherungsdatei mit den Zugangsdaten, z. B. von einem anderen Rechner."/>
+                     Text="{l:T setup.view.windows.choiceBackupDetail}"/>
         </StackPanel>
         <ContentControl x:Name="BackupChevron" Grid.Column="2" VerticalAlignment="Center" Margin="8,0,0,0" Focusable="False"/>
       </Grid>
@@ -96,9 +97,8 @@
     <TextBlock x:Name="ImportResult" FontSize="12" TextWrapping="Wrap" Margin="0,6,0,0" Visibility="Collapsed"/>
 
     <!-- Fußzeile -->
-    <TextBlock FontSize="12" Margin="0,12,0,0" HorizontalAlignment="Right"
-               ToolTip="Protokoll und Verbindung in den Einstellungen (Strg+,)">
-      <Hyperlink Click="Settings_Click">Einstellungen …</Hyperlink>
+    <TextBlock x:Name="SettingsLinkText" FontSize="12" Margin="0,12,0,0" HorizontalAlignment="Right">
+      <Hyperlink Click="Settings_Click"><Run Text="{l:T setup.view.settings.link}"/></Hyperlink>
     </TextBlock>
   </StackPanel>
 </UserControl>

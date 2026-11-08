@@ -15,6 +15,9 @@ public partial class SettingsWindow
     string? logRaw;
     bool eventsOnly = true;
 
+    // Zeitstempel im Protokoll-Reiter bleiben deutsch (wie das Protokoll selbst).
+    static readonly CultureInfo De = CultureInfo.GetCultureInfo("de-DE");
+
     static string LogPath => Path.Combine(Native.SupportDir(), "klimacontrol.log");
 
     static DateTime LogStamp()
@@ -41,7 +44,7 @@ public partial class SettingsWindow
     void ShowLog()
     {
         var shown = RenderLog(logRaw ?? "", Filtering);
-        if (shown.Length == 0) shown = "Noch keine Einträge.";
+        if (shown.Length == 0) shown = L.T("settings.log.empty");
         if (shown == LogBox.Text) return;
         // Nur ans Ende springen, wenn man schon unten war – sonst bleibt die Leseposition stehen.
         var atEnd = LogBox.ExtentHeight == 0 || LogBox.VerticalOffset + LogBox.ViewportHeight >= LogBox.ExtentHeight - 4;
@@ -82,8 +85,8 @@ public partial class SettingsWindow
 
     async void LogClear_Click(object sender, RoutedEventArgs e)
     {
-        if (!await Confirm("Protokoll leeren?", "Alle Einträge werden gelöscht – auch die, die bei einer Fehlersuche helfen könnten.", "Leeren")) return;
-        Warn("Protokoll nicht geleert", Core.Send(Cmd.ClearLog));
+        if (!await Confirm(L.T("settings.log.clear.title"), L.T("settings.log.clear.message"), L.T("settings.log.clear.confirm"))) return;
+        Warn(L.T("settings.log.windows.notCleared"), Core.Send(Cmd.ClearLog));
         logRaw = null;
         LoadLog(force: true);
     }

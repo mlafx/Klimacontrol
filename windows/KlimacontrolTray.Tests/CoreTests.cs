@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text.Json;
 using System.Windows.Threading;
 using Xunit;
@@ -21,9 +22,16 @@ sealed class FakeBridge : ICoreBridge
     int depth;
     public readonly List<string> Commands = new();
     public readonly List<string> Traces = new();
+    /// Reihenfolge der Aufrufe beim Start („ApiVersion“, „SetLocale“, „StringsJson“, „Init“).
+    public readonly List<string> Calls = new();
+    public string? LocaleResult;
+    public string LocaleJson = "";
+    public string Strings = "{}";
 
-    public int? ApiVersion() => Api;
-    public void Init(string version) => Inits++;
+    public int? ApiVersion() { Calls.Add("ApiVersion"); return Api; }
+    public string? SetLocale(string json) { Calls.Add("SetLocale"); LocaleJson = json; return LocaleResult; }
+    public string StringsJson() { Calls.Add("StringsJson"); return Strings; }
+    public void Init(string version) { Calls.Add("Init"); Inits++; }
     public void Pump()
     {
         Pumps++;
@@ -40,16 +48,33 @@ sealed class FakeBridge : ICoreBridge
     public void Trace(string line) => Traces.Add(line);
 }
 
-public class CoreTests
+/// Teilt den globalen Zustand (Texte, Format) mit Tests, die ihn verändern: nie gleichzeitig mit anderen Klassen.
+[CollectionDefinition("Global", DisableParallelization = true)]
+public sealed class GlobalCollection;
+
+[Collection("Global")]
+public class CoreTests : IDisposable
 {
     readonly FakeBridge bridge = new();
     readonly Core core;
+    readonly CultureInfo uiCulture = CultureInfo.CurrentUICulture;
     int changed;
 
     public CoreTests()
     {
         core = new Core(bridge);
         core.Changed += () => changed++;
+        L.Log = _ => { };
+    }
+
+    public void Dispose()
+    {
+        // Start() setzt Texte, Format und Anzeigesprache des Prozesses.
+        L.Reset();
+        Fmt.Profile = FormatProfile.Germany;
+        CultureInfo.CurrentUICulture = uiCulture;
+        CultureInfo.DefaultThreadCurrentUICulture = null;
+        L.Log = App.Trace;
     }
 
     [Fact]
@@ -255,7 +280,7 @@ public class CoreTests
         bridge.CommandResult = "Anmeldung fehlgeschlagen.";
         core.Send("cloudLogin", ("account", "a@b.de"), ("password", "geheim123"));
         var line = Assert.Single(bridge.Traces);
-        Assert.Equal("FEHLER Befehl cloudLogin: Anmeldung fehlgeschlagen.", line);
+        Assert.Equal("log.windows.commandFailed cloudLogin: Anmeldung fehlgeschlagen.", line);
         Assert.DoesNotContain("geheim123", line);
         Assert.DoesNotContain("a@b.de", line);
     }
@@ -282,13 +307,38 @@ public class CoreTests
     }
 
     [Fact]
+    public void StartRuftApiSpracheTexteUndInitInDieserReihenfolge()
+    {
+        bridge.Strings = "{\"language\":\"en\",\"pseudo\":false,\"strings\":{\"common.off\":\"Off\"}}";
+        core.Start("1.2.3", background: false);
+        Assert.Equal(new[] { "ApiVersion", "SetLocale", "StringsJson", "Init" }, bridge.Calls);
+        using var doc = JsonDocument.Parse(bridge.LocaleJson);
+        Assert.True(doc.RootElement.TryGetProperty("uiLanguage", out _));
+        Assert.True(doc.RootElement.GetProperty("format").TryGetProperty("dayMonthPattern", out _));
+        Assert.Equal("en", L.Language);
+        Assert.Equal("Off", L.T("common.off"));
+        core.Stop();
+    }
+
+    [Fact]
+    public void SpracheFormatFehlerBeendetDenStartNicht()
+    {
+        bridge.LocaleResult = "Die Sprache konnte nicht gesetzt werden.";
+        core.Start("1.2.3", background: false);
+        Assert.Equal(1, bridge.Inits);
+        Assert.Contains(bridge.Traces, t => t.StartsWith("log.windows.localeNotApplied"));
+        core.Stop();
+    }
+
+    [Fact]
     public void FalscheSchnittstellenVersionVerhindertStart()
     {
         bridge.Api = Native.ExpectedApi + 1;
         var ex = Assert.Throws<BridgeVersionException>(() => core.Start("x", background: false));
         Assert.IsAssignableFrom<EntryPointNotFoundException>(ex); // fängt der Start-Fehlerweg der App schon
-        Assert.Contains("ganzen Ordner", ex.Message);
+        Assert.Equal(StartupText.VersionMismatch(Native.ExpectedApi + 1, Native.ExpectedApi), ex.Message);
         Assert.Equal(0, bridge.Inits);
+        Assert.DoesNotContain("SetLocale", bridge.Calls);
         core.Stop(); // ohne gelungenen Start: DLL nicht mehr anfassen
         Assert.Equal(0, bridge.Stops);
     }
@@ -299,9 +349,11 @@ public class CoreTests
         bridge.Api = null;
         var ex = Assert.Throws<BridgeVersionException>(() => core.Start("x", background: false));
         Assert.Null(ex.Found);
-        Assert.Contains("Schnittstelle fehlt, erwartet 2", ex.Message);
+        Assert.Contains($"expected {Native.ExpectedApi}", StartupText.VersionMismatch(null, Native.ExpectedApi, CultureInfo.GetCultureInfo("en-US")));
+        Assert.Contains($"erwartet {Native.ExpectedApi}", StartupText.VersionMismatch(null, Native.ExpectedApi, CultureInfo.GetCultureInfo("de-DE")));
+        Assert.Contains("fehlt", StartupText.VersionMismatch(null, Native.ExpectedApi, CultureInfo.GetCultureInfo("de-DE")));
         Assert.Equal(0, bridge.Inits);
-        Assert.Contains(bridge.Traces, t => t.StartsWith("FEHLER Kern-Schnittstelle fehlt"));
+        Assert.Contains(bridge.Traces, t => t.Contains("Klimacontrol.exe"));
     }
 
     [Fact]
@@ -355,7 +407,7 @@ public class CoreTests
         core.Start("x", background: false);
         bridge.StopThrows = new InvalidOperationException("weg");
         core.Stop();
-        Assert.Contains(bridge.Traces, t => t.Contains("Kern beenden") && t.Contains("weg"));
+        Assert.Contains(bridge.Traces, t => t.Contains("log.windows.coreStopFailed") && t.Contains("weg"));
     }
 
     [Fact]
@@ -385,7 +437,7 @@ public class CoreTests
         core.Start("x", background: false);
         bridge.CommandResult = "Oberfläche fehlt";
         core.SetUIVisible("settings", false);
-        Assert.Contains(bridge.Traces, t => t.StartsWith("FEHLER Befehl uiVisible settings=False"));
+        Assert.Contains(bridge.Traces, t => t.StartsWith("log.windows.commandFailed uiVisible settings=False"));
         bridge.CommandResult = null;
         core.SetUIVisible("settings", false);
         Assert.Equal(2, bridge.Commands.Count);
@@ -407,7 +459,7 @@ public class CoreTests
         }
         Assert.Same(good, core.Snap);
         Assert.Equal(1, changed);
-        Assert.Single(bridge.Traces, t => t.Contains("Kern-Zustand nicht lesbar"));
+        Assert.Single(bridge.Traces, t => t.Contains("log.windows.stateUnreadable"));
         bridge.Rev = 9;
         bridge.State = "{\"configured\":false}";
         core.Poll();
@@ -425,7 +477,7 @@ public class CoreTests
         core.Poll();
         Assert.True(core.Snap.Busy);
         Assert.Equal(42, core.Snap.NextRefresh);
-        Assert.Single(bridge.Traces, t => t.Contains("busy/nextRefresh"));
+        Assert.Single(bridge.Traces, t => t.Contains("log.windows.liveUnreadable"));
     }
 
     [Fact]
@@ -439,7 +491,7 @@ public class CoreTests
         core.Poll();
         Assert.True(core.Snap.Configured);
         Assert.Equal(1, changed);
-        Assert.Single(bridge.Traces, t => t.Contains("jsonError"));
+        Assert.Single(bridge.Traces, t => t.Contains("log.windows.stateFailed"));
         core.Stop();
     }
 
@@ -452,7 +504,7 @@ public class CoreTests
         bridge.State = "null";
         core.Poll();
         Assert.True(core.Snap.Configured);
-        Assert.Single(bridge.Traces, t => t.Contains("keinen Zustand"));
+        Assert.Single(bridge.Traces, t => t.Contains("log.windows.stateMissing"));
         core.Stop();
     }
 
