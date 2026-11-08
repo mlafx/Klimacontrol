@@ -5,6 +5,27 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 `1.0.0.1`, Fehlerbehebung → `1.0.1.0`, Neues → `1.1.0.0`, Änderungen, die Einrichtung oder Daten unbrauchbar machen →
 `2.0.0.0`.
 
+## [1.2.0.0] – in Arbeit
+
+### Hinzugefügt
+- Englische Oberfläche. Bei deutscher Systemsprache bleibt die App deutsch, bei jeder anderen erscheint sie auf Englisch.
+- Einstellungen → Allgemein: Auswahl der Sprache (Systemsprache, Deutsch, English). Die Änderung wirkt nach einem Neustart der App.
+- Mac: Die Sprache lässt sich auch unter Systemeinstellungen → Allgemein → Sprache & Region → Apps festlegen.
+- Einstellungen → Allgemein: Währung des Strompreises frei wählbar, bis zu drei Zeichen, Standard €.
+- Mac: Einstellungen → Allgemein → Updates: Vorabversionen (Beta) können bezogen werden, standardmäßig aus.
+- Windows: Setup auf Deutsch und Englisch, passend zur Anzeigesprache von Windows.
+
+### Geändert
+- Zahlen, Uhrzeiten und Datumsangaben folgen den Regionseinstellungen des Systems, zum Beispiel Dezimalpunkt oder 12-Stunden-Format.
+- Strompreis bis 1000 je kWh einstellbar, bisher bis 10.
+- Verlauf: Der lesbare CSV-Export verwendet die Sprache der Oberfläche. Ältere deutsche Exporte lassen sich weiterhin einlesen.
+- Versionshinweise, Protokoll und Lizenzhinweise erscheinen in der Sprache der Oberfläche.
+- Darstellung: Themen als Vorschaukacheln, Feinheiten unter „Anpassen“.
+- Mac: Ein geladenes Update startet die App nicht mehr sofort neu. Ein Hinweis bietet „Jetzt neu starten“ oder „Später“, spätestens beim Beenden wird installiert.
+- Mac: Updates werden vor dem Entpacken auf ihre Signatur geprüft, die Update-Information ist ebenfalls signiert.
+- Windows: Der Update-Dialog erscheint in der Sprache der App.
+- Technischer Unterbau überarbeitet und optimiert, zahlreiche kleinere Fehler behoben.
+
 ## [1.1.0.0] – 2026-11-07
 
 ### Hinzugefügt

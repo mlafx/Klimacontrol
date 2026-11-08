@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
-"""Schreibt Sources/KlimacontrolCore/ReleaseNotesData.swift neu aus CHANGELOG.md und CHANGELOG.en.md (eingebetteter Text für „Neu in dieser Version“)."""
+"""Schreibt Sources/KlimacontrolCore/ReleaseNotesData.swift neu aus CHANGELOG.md und CHANGELOG.en.md (eingebetteter Text für „Neu in dieser Version“).
+
+  python3 tools/sync_release_notes.py          schreiben
+  python3 tools/sync_release_notes.py --check  nur vergleichen (Exit 1 bei veraltetem Stand), schreibt nichts
+"""
 import pathlib
+import sys
 
 root = pathlib.Path(__file__).resolve().parent.parent
 
@@ -36,6 +41,13 @@ out = (
     + "}\n"
 )
 target = root / "Sources/KlimacontrolCore/ReleaseNotesData.swift"
+if "--check" in sys.argv[1:]:
+    current = target.read_text(encoding="utf-8") if target.exists() else ""
+    if current != out:
+        print("ReleaseNotesData.swift ist veraltet: python3 tools/sync_release_notes.py ausführen.", file=sys.stderr)
+        sys.exit(1)
+    print("ReleaseNotesData.swift ist aktuell.")
+    sys.exit(0)
 with open(target, "w", encoding="utf-8", newline="\n") as f:
     f.write(out)
 print(f"{target.relative_to(root)} geschrieben ({'mit' if english else 'ohne'} CHANGELOG.en.md)")

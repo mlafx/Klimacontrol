@@ -18,7 +18,10 @@ final class VersionTests: XCTestCase {
     func testEnglishChangelogHeadMatchesVersionFile() throws {
         let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
         let en = root.appendingPathComponent("CHANGELOG.en.md")
-        guard FileManager.default.fileExists(atPath: en.path) else { throw XCTSkip("CHANGELOG.en.md fehlt noch") }
+        guard FileManager.default.fileExists(atPath: en.path) else {
+            try ChangelogParityTests.skipOrFail(root: root)
+            throw XCTSkip("CHANGELOG.en.md fehlt noch")
+        }
         func head(_ url: URL) throws -> String {
             let text = try String(contentsOf: url, encoding: .utf8)
             return String(try XCTUnwrap(text.split(separator: "\n").first { $0.hasPrefix("## [") }))

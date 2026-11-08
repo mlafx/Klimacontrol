@@ -59,6 +59,12 @@ if [ -f .agent-lock ] && ! grep -q "plattform=mac" .agent-lock; then
   cat .agent-lock
 fi
 
+# Eingebettete Texte müssen zu Katalog und CHANGELOG passen, sonst bauen wir einen veralteten Stand.
+if command -v python3 >/dev/null 2>&1; then
+  python3 tools/sync_strings.py --check || { echo "FEHLER: Text-Katalog und StringsData.swift weichen ab. Bitte 'python3 tools/sync_strings.py' ausführen." >&2; exit 1; }
+  python3 tools/sync_release_notes.py --check || { echo "FEHLER: ReleaseNotesData.swift ist veraltet. Bitte 'python3 tools/sync_release_notes.py' ausführen." >&2; exit 1; }
+fi
+
 if [ "$RUN_TESTS" = 1 ]; then
   echo "Tests …"
   if ! zsh tools/test.sh > "${TMPDIR:-/tmp}/klimacontrol-build-tests.log" 2>&1; then

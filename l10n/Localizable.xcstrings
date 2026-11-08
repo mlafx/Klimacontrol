@@ -11689,6 +11689,312 @@
         }
       }
     },
+    "log.windows.autostartNotUpdated" : {
+      "comment" : "Windows: UI-Protokoll, App.xaml.cs KeepAutostartPath",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Windows starten: Eintrag nicht nachgeführt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start with Windows: entry not updated"
+          }
+        }
+      }
+    },
+    "log.windows.cleanupFailed" : {
+      "comment" : "Windows: UI-Protokoll, App.xaml.cs FailStart",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufräumen nach Startfehler"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cleanup after startup error"
+          }
+        }
+      }
+    },
+    "log.windows.commandFailed" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs Send, uiVisible",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Befehl"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR command"
+          }
+        }
+      }
+    },
+    "log.windows.coreStopFailed" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs Stop, App.xaml.cs StopCore",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Kern beenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR stopping core"
+          }
+        }
+      }
+    },
+    "log.windows.crash" : {
+      "comment" : "Windows: UI-Protokoll, App.xaml.cs CatchErrors",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER (Absturz)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR (crash)"
+          }
+        }
+      }
+    },
+    "log.windows.crashTerminating" : {
+      "comment" : "Windows: UI-Protokoll, App.xaml.cs CatchErrors",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER (Absturz, Programm endet)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR (crash, program ends)"
+          }
+        }
+      }
+    },
+    "log.windows.dataUnreadable" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs Read",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Kern-Daten nicht lesbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR core data unreadable"
+          }
+        }
+      }
+    },
+    "log.windows.errorBackground" : {
+      "comment" : "Windows: UI-Protokoll, App.xaml.cs ReportError",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Hintergrund"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR background task"
+          }
+        }
+      }
+    },
+    "log.windows.errorUi" : {
+      "comment" : "Windows: UI-Protokoll, App.xaml.cs ReportError",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Oberfläche"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR UI"
+          }
+        }
+      }
+    },
+    "log.windows.liveUnreadable" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs Poll",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Kern-Daten (busy/nextRefresh) nicht lesbar, letzter Stand bleibt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR core data (busy/nextRefresh) unreadable, last state kept"
+          }
+        }
+      }
+    },
+    "log.windows.localeNotApplied" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs Start",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprache/Format nicht übernommen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language/format not applied"
+          }
+        }
+      }
+    },
+    "log.windows.startDialogFailed" : {
+      "comment" : "Windows: UI-Protokoll, App.xaml.cs FailStart",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Startfehler-Dialog"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Startup error dialog"
+          }
+        }
+      }
+    },
+    "log.windows.startFailed" : {
+      "comment" : "Windows: UI-Protokoll, App.xaml.cs FailStart",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER beim Start"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR during startup"
+          }
+        }
+      }
+    },
+    "log.windows.stateFailed" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs ReadSnapshot",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Kern konnte den Zustand nicht liefern (jsonError), letzter Stand bleibt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR core could not provide the state (jsonError), last state kept"
+          }
+        }
+      }
+    },
+    "log.windows.stateMissing" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs ReadSnapshot",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Kern liefert keinen Zustand, letzter Stand bleibt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR core returns no state, last state kept"
+          }
+        }
+      }
+    },
+    "log.windows.stateUnreadable" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs ReadSnapshot",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Kern-Zustand nicht lesbar, letzter Stand bleibt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR core state unreadable, last state kept"
+          }
+        }
+      }
+    },
+    "log.windows.uiChanged" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs Changed-Abonnenten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Oberfläche (Changed)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR UI (Changed)"
+          }
+        }
+      }
+    },
     "main.comfort.display" : {
       "comment" : "Funktion weitere Funktionen (Anzeige am Gerät)",
       "extractionState" : "manual",
