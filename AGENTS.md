@@ -572,7 +572,7 @@ sobald sie im selben Netz antwortet.
 `displayName`, `refreshSeconds`, `pricePerKWh` (0–1000), `currency`, `language` (Windows; Mac: Systemsprache), `updateBetaChannel` (Mac), `connectionMode`, `beep`, `timerOffAt`, `timerOnAt`,
 `energyDayStart`, `showDiagnosticsPanel`, `historyCSV`, `credentialsBackedUp`, `appearance` (JSON),
 `loginItemDefaultOn` (Mac: „Beim Anmelden starten“ schon einmal eingetragen). Mac: in
-`UserDefaults` (Domäne `de.mlafx.klimacontrol`), Windows: über die Bridge im Kern gespeichert. Neue Schlüssel immer
+`UserDefaults` (Domäne `de.mlafx.klimacontrol`), Windows: über die Bridge im Kern gespeichert (`UserDefaults.standard` von swift-corelibs-foundation, Datei `%LOCALAPPDATA%\Klimacontrol.exe.plist` – der Name folgt dem Prozessnamen; seit 1.0 so, darum nicht verlegen, das Setup legt den Namen der exe fest). Neue Schlüssel immer
 in `SettingsKey` anlegen, nie als String-Literal in einer Oberfläche.
 
 ### 7.8 Darstellung (`Appearance`)
@@ -1376,6 +1376,8 @@ PortaSplit sind Marken ihrer Inhaber; Klimacontrol ist kein Produkt von Midea �
 ## Anhang A: Dateien der App
 
 Ablage: Mac `~/Library/Application Support/Klimacontrol/`, Windows `%LOCALAPPDATA%\Klimacontrol\`.
+Einstellungen liegen getrennt davon: Mac in den UserDefaults (`de.mlafx.klimacontrol`), Windows in
+`%LOCALAPPDATA%\Klimacontrol.exe.plist` (7.7).
 
 | Datei | Inhalt |
 |---|---|
