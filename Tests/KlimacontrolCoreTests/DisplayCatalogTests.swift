@@ -37,6 +37,15 @@ final class DisplayCatalogTests: CoreTestCase {
 
     // MARK: Optionen und Grenzen
 
+    func testWindowColumnTexts() {
+        XCTAssertEqual(UIText.columnControls, "Steuerung")
+        XCTAssertEqual(UIText.columnName(.history), "Verlauf")
+        XCTAssertEqual(UIText.columnName(.diagnostics), "Diagnose")
+        XCTAssertEqual(UIText.columnHidden(.history), "Verlauf ausgeblendet, weil der Bildschirm zu schmal ist.")
+        XCTAssertEqual(UIText.columnHidden(.diagnostics), "Diagnose ausgeblendet, weil der Bildschirm zu schmal ist.")
+        XCTAssertEqual(UIText.alwaysOnTopFullScreenHelp, "Immer im Vordergrund ist im Vollbild ausgesetzt.")
+    }
+
     func testOptionLists() {
         XCTAssertEqual(UIOptions.temperatureMin, 16)
         XCTAssertEqual(UIOptions.temperatureMax, 30)

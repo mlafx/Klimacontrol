@@ -39,6 +39,10 @@ public enum SettingsKey {
     /// Fenster-Einstellungen der Mac-Oberfläche (Windows merkt sie sich in Prefs.cs).
     public static let showChartsPanel = "showChartsPanel"
     public static let showScenes = "showScenes"
+    /// Mac: Seitenspalte, die zuletzt geöffnet wurde (`history` oder `diagnostics`); bleibt bei zu schmalem Bildschirm.
+    public static let lastOpenedColumn = "lastOpenedColumn"
+    /// Mac: Verlauf und Diagnose vor dem Vollbild („1,0“), damit sie beim Verlassen zurückkehren; leer = nicht im Vollbild.
+    public static let columnsBeforeFullScreen = "columnsBeforeFullScreen"
     public static let showMoreControls = "showMoreControls"
     public static let chartRange = "chartRange"
     /// Art des Verbrauchs unter den Graphen: day, week oder month.

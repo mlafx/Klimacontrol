@@ -2615,6 +2615,24 @@ extension StringsData {
         }
       }
     },
+    "commands.alwaysOnTopFullScreen" : {
+      "comment" : "Menüpunkt Immer im Vordergrund: Text, solange das Hauptfenster im Vollbild ist",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Immer im Vordergrund ist im Vollbild ausgesetzt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Always on top is suspended in full screen."
+          }
+        }
+      }
+    },
     "commands.checkUpdates" : {
       "comment" : "Menü: Klimacontrol",
       "extractionState" : "manual",
@@ -11995,6 +12013,42 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ERROR UI (Changed)"
+          }
+        }
+      }
+    },
+    "main.column.controls" : {
+      "comment" : "Hauptfenster: Name der mittleren Spalte (Bedienung) für VoiceOver",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steuerung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controls"
+          }
+        }
+      }
+    },
+    "main.column.hidden" : {
+      "comment" : "Hauptfenster: Ansage, wenn eine Seitenspalte (Verlauf oder Diagnose) wegen zu schmalem Bildschirm ausgeblendet wird",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{column} ausgeblendet, weil der Bildschirm zu schmal ist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{column} hidden because the screen is too narrow."
           }
         }
       }
@@ -26400,6 +26454,7 @@ extension StringsData {
         "charts.windows.rangeName",
         "charts.windows.tooFew",
         "commands.alwaysOnTop",
+        "commands.alwaysOnTopFullScreen",
         "commands.checkUpdates",
         "commands.cooler",
         "commands.deviceMenu",
@@ -26916,6 +26971,8 @@ extension StringsData {
         "log.windows.stateMissing",
         "log.windows.stateUnreadable",
         "log.windows.uiChanged",
+        "main.column.controls",
+        "main.column.hidden",
         "main.comfort.display",
         "main.comfort.eco",
         "main.comfort.frostProtection",
@@ -27854,6 +27911,7 @@ extension StringsData {
         "charts.windows.rangeName": ["label"],
         "charts.windows.tooFew": [],
         "commands.alwaysOnTop": [],
+        "commands.alwaysOnTopFullScreen": [],
         "commands.checkUpdates": [],
         "commands.cooler": [],
         "commands.deviceMenu": [],
@@ -28370,6 +28428,8 @@ extension StringsData {
         "log.windows.stateMissing": [],
         "log.windows.stateUnreadable": [],
         "log.windows.uiChanged": [],
+        "main.column.controls": [],
+        "main.column.hidden": ["column"],
         "main.comfort.display": [],
         "main.comfort.eco": [],
         "main.comfort.frostProtection": [],
@@ -29505,6 +29565,8 @@ public enum L {
     public enum Commands {
         /// Always on top
         public static var alwaysOnTop: String { Localizer.text("commands.alwaysOnTop") }
+        /// Always on top is suspended in full screen.
+        public static var alwaysOnTopFullScreen: String { Localizer.text("commands.alwaysOnTopFullScreen") }
         /// Check for updates…
         public static var checkUpdates: String { Localizer.text("commands.checkUpdates") }
         /// Cooler
@@ -30705,6 +30767,12 @@ public enum L {
         }
     }
     public enum Main {
+        public enum Column {
+            /// Controls
+            public static var controls: String { Localizer.text("main.column.controls") }
+            /// {column} hidden because the screen is too narrow.
+            public static func hidden(column: String) -> String { Localizer.text("main.column.hidden", ["column": column]) }
+        }
         public enum Comfort {
             /// Display
             public static var display: String { Localizer.text("main.comfort.display") }

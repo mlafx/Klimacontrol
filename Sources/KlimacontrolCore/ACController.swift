@@ -17,7 +17,12 @@ public final class ACController {
     // MARK: Anlage und Werte
 
     public internal(set) var config: DeviceConfig?
-    public internal(set) var state: ACState?
+    public internal(set) var state: ACState? {
+        didSet { if (state != nil) != hasState { hasState = state != nil } }
+    }
+    /// Ob es einen Zustand gibt; ändert sich nur bei Wechsel zwischen „kein Zustand“ und „Zustand“, damit Ansichten,
+    /// die nur das wissen wollen, nicht bei jeder Abfrage neu rechnen.
+    public internal(set) var hasState = false
     public internal(set) var diagnostics: Diagnostics?
     public internal(set) var deviceIdentifier: String?
     /// Zeitpunkt der nächsten automatischen Abfrage (für den Countdown in der Diagnose).

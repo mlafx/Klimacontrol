@@ -92,6 +92,18 @@ public enum UIText {
     public static var updatesManualFailedMessage: String { L.Updates.Manual.Failed.message }
     public static var updatesCheckButton: String { L.Updates.checkButton }
 
+    // MARK: Hauptfenster (Spalten)
+
+    public static var columnControls: String { L.Main.Column.controls }
+    public static var columnHistory: String { L.Main.Footer.history }
+    public static var columnDiagnostics: String { L.Main.Footer.diagnostics }
+    public static func columnName(_ c: MainWindowLayout.Column) -> String {
+        c == .history ? columnHistory : columnDiagnostics
+    }
+    /// Ansage, wenn eine Seitenspalte wegen zu schmalem Bildschirm ausgeblendet wird.
+    public static func columnHidden(_ c: MainWindowLayout.Column) -> String { L.Main.Column.hidden(column: columnName(c)) }
+    public static var alwaysOnTopFullScreenHelp: String { L.Commands.alwaysOnTopFullScreen }
+
     // MARK: Neu in dieser Version
 
     public static func whatsNewTitle(version: String) -> String { L.WhatsNew.title(version: version) }
