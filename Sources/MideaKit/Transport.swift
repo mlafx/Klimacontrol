@@ -112,9 +112,10 @@ public struct PathFailure: Sendable, Equatable {
         case refused
         case timeout
         case unreachable
-        case busy
+        case busy(BusyCause)
         /// Cloud-Fehler; `code` ist der Midea-Code (nur bei Antworten der Cloud).
         case cloud(CloudErrorKind, code: Int?)
+        case connection(ConnectionReason)
         case other
     }
 
@@ -131,6 +132,11 @@ public struct PathFailure: Sendable, Equatable {
     static var errorWord: String { LogText.t("kit.generic.error", "Fehler") }
 
     static var noPathText: String { LogText.t("reason.noPath", "kein Weg zur Anlage verfügbar") }
+
+    public var isBusy: Bool {
+        if case .busy = reason { return true }
+        return false
+    }
 
     public var isApplianceOffline: Bool {
         if case .applianceOffline = reason { return true }
@@ -169,8 +175,8 @@ public struct PathFailure: Sendable, Equatable {
         case .timeout: return PathFailure(path: path, reason: .timeout, text: LogText.t("reason.timeout", "antwortet nicht"))
         case .unreachable: return PathFailure(path: path, reason: .unreachable, text: LogText.t("reason.unreachable", "nicht erreichbar"))
         case .refused: return PathFailure(path: path, reason: .refused, text: NetSocket.refusedText)
-        case .busy: return PathFailure(path: path, reason: .busy, text: m.errorDescription ?? Self.errorWord)
-        case .connectionFailed(let s): return PathFailure(path: path, reason: .other, text: s)
+        case .busy(let cause): return PathFailure(path: path, reason: .busy(cause), text: m.errorDescription ?? Self.errorWord)
+        case .connectionFailed(let r): return PathFailure(path: path, reason: .connection(r), text: r.text)
         default: return PathFailure(path: path, reason: .other, text: m.errorDescription ?? Self.errorWord)
         }
     }
@@ -249,10 +255,10 @@ final class AutoTransport: FrameTransport, @unchecked Sendable {
         if failedMode != mode { resetBackoff(); failedMode = mode }
         switch mode {
         case .lan:
-            guard let lan else { throw MideaError.connectionFailed(Self.noLANText) }
+            guard let lan else { throw MideaError.connectionFailed(.noLAN) }
             return try use(.lan) { try lan.send(frame, retries: retries, expect: expect) }
         case .cloud:
-            guard let cloud else { throw MideaError.connectionFailed(Self.noCloudText) }
+            guard let cloud else { throw MideaError.connectionFailed(.noCloud) }
             // Auch „Nur Cloud“ fragt eine ausgeschaltete Anlage nicht alle 30 s bei Midea nach.
             if let next = cloudOfflineNextCheck(at: now()) { throw MideaError.allPathsFailed([.offline(nextCheck: next)]) }
             do {
@@ -271,7 +277,7 @@ final class AutoTransport: FrameTransport, @unchecked Sendable {
     private func withFallback(_ frame: Data, _ retries: Int, _ expect: UInt8?,
                               _ all: [(ConnectionPath, (any FrameTransport)?)]) throws -> [Data] {
         let avail: [(ConnectionPath, any FrameTransport)] = all.compactMap { p, t in t.map { (p, $0) } }
-        guard !avail.isEmpty else { throw MideaError.connectionFailed(PathFailure.noPathText) }
+        guard !avail.isEmpty else { throw MideaError.connectionFailed(.noPath) }
         let current = now()
         var failures: [PathFailure] = []
         /// Wege, die in dieser Abfrage schon zum wiederholten Mal scheiterten (Kandidaten fürs Verdoppeln).
@@ -332,7 +338,7 @@ final class AutoTransport: FrameTransport, @unchecked Sendable {
             else { p = cloud != nil ? .cloud : .lan }
         }
         guard let t = p == .lan ? lan : cloud else {
-            throw MideaError.connectionFailed(p == .lan ? Self.noLANText : Self.noCloudText)
+            throw MideaError.connectionFailed(p == .lan ? .noLAN : .noCloud)
         }
         if p == .cloud, let next = cloudOfflineNextCheck(at: now()) { throw MideaError.allPathsFailed([.offline(nextCheck: next)]) }
         return try use(p) { try t.sendSingle(frame, expect: expect) }

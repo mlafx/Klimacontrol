@@ -59,8 +59,8 @@ public enum Discovery {
         }
         AppLog.debug(LogText.t("log.discovery.broadcast", "Suche: Broadcast an {target} Port 6445 und 20086 (je 3×), warte {seconds} s", ["target": target, "seconds": String(Int(timeout))]))
         guard sentAny else {
-            throw MideaError.connectionFailed(NetSocket.isUnreachable(lastError)
-                ? LANClient.localNetworkHint : LogText.t("kit.discovery.searchFailed", "Suche nicht möglich: {error}", ["error": NetSocket.describe(lastError)]))
+            throw MideaError.connectionFailed(.other(NetSocket.isUnreachable(lastError)
+                ? LANClient.localNetworkHint : LogText.t("kit.discovery.searchFailed", "Suche nicht möglich: {error}", ["error": NetSocket.describe(lastError)])))
         }
 
         var found: [String: DiscoveredDevice] = [:]
@@ -186,7 +186,7 @@ public enum Discovery {
             targets += (net.hosts + [net.broadcast]).filter { seen.insert($0).inserted }
         }
         guard !targets.isEmpty else {
-            throw MideaError.connectionFailed(LogText.t("kit.discovery.noNetwork", "Kein aktives Netz gefunden – ist der Rechner mit WLAN oder Ethernet verbunden?"))
+            throw MideaError.connectionFailed(.other(LogText.t("kit.discovery.noNetwork", "Kein aktives Netz gefunden – ist der Rechner mit WLAN oder Ethernet verbunden?")))
         }
         AppLog.debug(LogText.t("log.discovery.scanPlan", "Netz-Scan: {nets} → {count} Adressen, warte {seconds} s", ["nets": nets.map { "\($0.ip)/\($0.mask)" }.joined(separator: ", "), "count": String(targets.count), "seconds": String(Int(timeout))]))
 

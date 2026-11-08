@@ -178,18 +178,50 @@ enum AESModes {
     }
 }
 
+/// Ursache einer fehlenden Verbindung; `text` ist nur für Protokoll und Detailzeile, ausgewertet wird der Fall.
+public enum ConnectionReason: Sendable, Equatable, ExpressibleByStringLiteral {
+    case closed
+    case notConnected
+    case budget
+    case noLAN
+    case noCloud
+    case noPath
+    /// Freier Text (Systemfehler, Hinweise der Suche).
+    case other(String)
+
+    public init(stringLiteral value: String) { self = .other(value) }
+
+    public var text: String {
+        switch self {
+        case .closed: LANClient.closedText
+        case .notConnected: LANClient.notConnectedText
+        case .budget: LANClient.budgetHint
+        case .noLAN: AutoTransport.noLANText
+        case .noCloud: AutoTransport.noCloudText
+        case .noPath: PathFailure.noPathText
+        case .other(let text): text
+        }
+    }
+}
+
+/// Wer die Anlage vermutlich hält, wenn sie „belegt“ meldet.
+public enum BusyCause: Sendable, Equatable {
+    case unknown
+    /// Klimacontrol mit offener Diagnose oder die Midea-App.
+    case otherApp
+}
+
 public enum MideaError: Error, LocalizedError, Equatable {
     case crypto(Int)
     case protocolError(String)
     case authenticationFailed(String)
     case timeout
-    case connectionFailed(String)
+    case connectionFailed(ConnectionReason)
     case invalidResponse(String)
     /// Die Anlage hat einen Stellbefehl nach 3 Versuchen nicht übernommen; die Payload ist ihr aktueller Stand.
     case commandNotApplied(ACState)
-    /// Die Anlage nimmt gerade keine Verbindung an (nur eine gleichzeitig). `msg` nennt, wer sie vermutlich hält
-    /// und was zu tun ist.
-    case busy(String)
+    /// Die Anlage nimmt gerade keine Verbindung an (nur eine gleichzeitig).
+    case busy(BusyCause)
     /// Die Anlage weist die TCP-Verbindung ab: alte Adresse oder eine andere App hält sie (ohne Beleg für „belegt“).
     case refused
     /// Im Netz nicht erreichbar (Zeitüberschreitung beim Verbinden, keine Route); `msg` ist der Text fürs Protokoll.
@@ -210,9 +242,9 @@ public enum MideaError: Error, LocalizedError, Equatable {
             return LogText.t("kit.error.noConnection", "Keine Verbindung zur Anlage: {detail}", ["detail": connectionDetail ?? ""])
         case .invalidResponse(let msg): return LogText.t("kit.error.invalidResponse", "Unerwartete Antwort: {message}", ["message": msg])
         case .commandNotApplied: return LogText.t("kit.error.notApplied", "Die Anlage hat die Änderung nicht übernommen – vielleicht steuert gerade eine andere App.")
-        case .busy(let msg):
-            return msg.isEmpty ? LogText.t("reason.busyShort", "Die Anlage ist gerade belegt. Bitte kurz warten und erneut versuchen.")
-                : LogText.t("reason.busy", "Die Anlage ist gerade belegt. {hint}", ["hint": msg])
+        case .busy(let cause):
+            return cause == .unknown ? LogText.t("reason.busyShort", "Die Anlage ist gerade belegt. Bitte kurz warten und erneut versuchen.")
+                : LogText.t("reason.busy", "Die Anlage ist gerade belegt. {hint}", ["hint": LANClient.busyHint])
         case .outcomeUnknown(let reason):
             return LogText.t("kit.error.outcomeUnknown", "Keine Verbindung zur Anlage: {reason} Ob die Änderung angekommen ist, ist unklar – bitte die Anzeige prüfen. (nach dem Senden)", ["reason": reason])
         }
@@ -221,7 +253,8 @@ public enum MideaError: Error, LocalizedError, Equatable {
     /// Text hinter „Keine Verbindung zur Anlage: “ bei Verbindungsfehlern, sonst nil.
     public var connectionDetail: String? {
         switch self {
-        case .connectionFailed(let msg), .unreachable(let msg): return msg
+        case .connectionFailed(let reason): return reason.text
+        case .unreachable(let msg): return msg
         case .refused: return NetSocket.refusedText
         case .allPathsFailed(let failures):
             return failures.isEmpty ? PathFailure.noPathText

@@ -128,16 +128,16 @@ final class DisplayNamesTests: XCTestCase {
     }
 
     func testReasonsGermanUnchanged() {
-        let busyText = MideaError.busy(busyHintDE).errorDescription!
+        let busyText = MideaError.busy(.otherApp).errorDescription!
         let cases: [(PathFailure, String)] = [
             (PathFailure(path: .lan, reason: .refused, text: refusedDE), refusedDE),
             (PathFailure(path: .lan, reason: .timeout, text: "antwortet nicht"), "antwortet nicht"),
             (PathFailure(path: .lan, reason: .unreachable, text: "nicht erreichbar"), "nicht erreichbar"),
-            (PathFailure(path: .lan, reason: .busy, text: busyText), busyText),
-            (PathFailure(path: .lan, reason: .busy, text: MideaError.busy("").errorDescription!), MideaError.busy("").errorDescription!),
-            (PathFailure(path: .lan, reason: .other, text: closedDE), closedDE),
-            (PathFailure(path: .lan, reason: .other, text: noLanDE), noLanDE),
-            (PathFailure(path: .cloud, reason: .other, text: noCloudDE), noCloudDE),
+            (PathFailure(path: .lan, reason: .busy(.otherApp), text: busyText), busyText),
+            (PathFailure(path: .lan, reason: .busy(.unknown), text: MideaError.busy(.unknown).errorDescription!), MideaError.busy(.unknown).errorDescription!),
+            (PathFailure(path: .lan, reason: .connection(.closed), text: closedDE), closedDE),
+            (PathFailure(path: .lan, reason: .connection(.noLAN), text: noLanDE), noLanDE),
+            (PathFailure(path: .cloud, reason: .connection(.noCloud), text: noCloudDE), noCloudDE),
             (PathFailure(path: .cloud, reason: .cloud(.network, code: nil), text: "Cloud nicht erreichbar"), "Cloud nicht erreichbar"),
             (PathFailure(path: .cloud, reason: .cloud(.wrongCredentials, code: 3101), text: "Falsch (3101)"), "Falsch (3101)"),
             (PathFailure(path: .cloud, reason: .cloud(.tokenRejected, code: nil), text: "Text (-1002)"), "Text (-1002)"),
@@ -154,7 +154,7 @@ final class DisplayNamesTests: XCTestCase {
         XCTAssertEqual(MideaError.refused.connectionDetailText, MideaError.refused.connectionDetail)
         XCTAssertEqual(MideaError.connectionFailed("x").connectionDetailText, "x")
         XCTAssertEqual(MideaError.connectionFailed("x").connectionDetailText, MideaError.connectionFailed("x").connectionDetail)
-        XCTAssertEqual(MideaError.connectionFailed(closedDE).connectionDetailText, closedDE)
+        XCTAssertEqual(MideaError.connectionFailed(.closed).connectionDetailText, closedDE)
         XCTAssertEqual(MideaError.unreachable("Zeitüberschreitung").connectionDetailText, "Zeitüberschreitung")
         let all = MideaError.allPathsFailed([cases[0].0, cases[8].0])
         XCTAssertEqual(all.connectionDetailText, all.connectionDetail)
@@ -171,17 +171,55 @@ final class DisplayNamesTests: XCTestCase {
         for e in errors { XCTAssertEqual(e.displayMessage, e.message, "\(e)") }
     }
 
+    /// Jede Ursache hat in beiden Sprachen einen festen Katalogtext, unabhängig vom Rohtext.
+    func testReasonMappingBothLanguages() {
+        let cases: [(any Error, de: String, en: String)] = [
+            (MideaError.connectionFailed(.closed), closedDE, "The air conditioner closed the connection."),
+            (MideaError.connectionFailed(.noLAN), noLanDE, Localizer.text("reason.noLan", language: .en)),
+            (MideaError.connectionFailed(.noCloud), noCloudDE, Localizer.text("reason.noCloud", language: .en)),
+            (MideaError.connectionFailed(.noPath), "kein Weg zur Anlage verfügbar", "no way to reach the air conditioner"),
+            (MideaError.connectionFailed(.other("Systemtext")), "Systemtext", "not reachable"),
+            (MideaError.connectionFailed(.budget), "Die Anlage hat nicht rechtzeitig geantwortet (Zeitlimit erreicht). Erneut versuchen.", "not reachable"),
+            (MideaError.refused, refusedDE, Localizer.text("reason.refused", language: .en)),
+            (MideaError.unreachable("Zeitüberschreitung"), "Zeitüberschreitung", "not reachable"),
+        ]
+        for (e, de, en) in cases {
+            let m = e as! MideaError
+            XCTAssertEqual(m.connectionDetailText, de, "\(m)")
+            Localizer.withLanguage(.en) {
+                XCTAssertEqual(m.connectionDetailText, en, "\(m)")
+            }
+        }
+        let paths: [(PathFailure, de: String, en: String)] = [
+            (PathFailure(path: .lan, reason: .busy(.unknown), text: "x"), "Die Anlage ist gerade belegt. Bitte kurz warten und erneut versuchen.",
+             Localizer.text("reason.busyShort", language: .en)),
+            (PathFailure(path: .lan, reason: .busy(.otherApp), text: "x"), "Die Anlage ist gerade belegt. \(busyHintDE)",
+             "The air conditioner is busy right now. Probably the Klimacontrol app (diagnostics open) or the Midea app is holding it. Close the other app, or wait 10 seconds and try again."),
+            (PathFailure(path: .lan, reason: .connection(.closed), text: "x"), closedDE, "The air conditioner closed the connection."),
+            (PathFailure(path: .lan, reason: .connection(.noLAN), text: "x"), noLanDE, Localizer.text("reason.noLan", language: .en)),
+            (PathFailure(path: .cloud, reason: .connection(.noCloud), text: "x"), noCloudDE, Localizer.text("reason.noCloud", language: .en)),
+            (PathFailure(path: .lan, reason: .connection(.noPath), text: "x"), "kein Weg zur Anlage verfügbar", "no way to reach the air conditioner"),
+            (PathFailure(path: .lan, reason: .timeout, text: "x"), "antwortet nicht", "not responding"),
+            (PathFailure(path: .lan, reason: .refused, text: "x"), refusedDE, Localizer.text("reason.refused", language: .en)),
+            (PathFailure(path: .lan, reason: .other, text: "Fehlertext"), "Fehlertext", "not reachable"),
+        ]
+        for (f, de, en) in paths {
+            XCTAssertEqual(f.displayText, de)
+            Localizer.withLanguage(.en) { XCTAssertEqual(f.displayText, en); assertEnglish(f.displayText) }
+        }
+    }
+
     func testReasonsEnglish() {
         Localizer.withLanguage(.en) {
             let texts: [String?] = [
                 MideaError.refused.connectionDetailText,
                 MideaError.connectionFailed("Zeitüberschreitung").connectionDetailText,
                 MideaError.unreachable("Netzwerk nicht erreichbar").connectionDetailText,
-                MideaError.connectionFailed(closedDE).connectionDetailText,
-                MideaError.connectionFailed(noLanDE).connectionDetailText,
+                MideaError.connectionFailed(.closed).connectionDetailText,
+                MideaError.connectionFailed(.noLAN).connectionDetailText,
                 MideaError.allPathsFailed([]).connectionDetailText,
                 PathFailure(path: .lan, reason: .timeout, text: "antwortet nicht").displayText,
-                PathFailure(path: .lan, reason: .busy, text: MideaError.busy(busyHintDE).errorDescription!).displayText,
+                PathFailure(path: .lan, reason: .busy(.otherApp), text: MideaError.busy(.otherApp).errorDescription!).displayText,
                 PathFailure(path: .cloud, reason: .cloud(.tokenRejected, code: nil), text: "Text (-1002)").displayText,
                 PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: "in 5 min"), text: "x").displayText,
                 MideaCloud.CloudError.tokenRejected.displayMessage,
@@ -191,7 +229,7 @@ final class DisplayNamesTests: XCTestCase {
             for t in texts { assertEnglish(t ?? "") }
             XCTAssertTrue(MideaError.refused.connectionDetailText!.hasPrefix("The air conditioner refuses the connection."))
             XCTAssertEqual(MideaError.connectionFailed("Zeitüberschreitung").connectionDetailText, "not reachable")
-            XCTAssertEqual(MideaError.connectionFailed(closedDE).connectionDetailText, "The air conditioner closed the connection.")
+            XCTAssertEqual(MideaError.connectionFailed(.closed).connectionDetailText, "The air conditioner closed the connection.")
             XCTAssertEqual(MideaError.allPathsFailed([]).connectionDetailText, "no way to reach the air conditioner")
             XCTAssertEqual(PathFailure(path: .lan, reason: .timeout, text: "antwortet nicht").displayText, "not responding")
             XCTAssertEqual(PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: "in 5 min"), text: "x").displayText,

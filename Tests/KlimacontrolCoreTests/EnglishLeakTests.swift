@@ -179,7 +179,7 @@ final class EnglishLeakTests: CoreTestCase {
 
         // Meldungen
         let errors: [any Error] = [
-            MideaError.timeout, MideaError.busy(""), MideaError.refused, MideaError.unreachable("x"),
+            MideaError.timeout, MideaError.busy(.unknown), MideaError.refused, MideaError.unreachable("x"),
             MideaError.authenticationFailed("x"), MideaError.crypto(3), MideaError.protocolError("x"),
             MideaError.invalidResponse("x"), MideaError.outcomeUnknown("x"), MideaError.connectionFailed("x"),
             MideaError.commandNotApplied(ACState()),

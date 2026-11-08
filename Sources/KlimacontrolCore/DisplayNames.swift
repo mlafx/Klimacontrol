@@ -147,40 +147,33 @@ public enum DateWords {
     }
 }
 
-/// Gründe aus MideaKit für Texte der Oberfläche. Feste MideaKit-Texte haben Katalog-Schlüssel, die MideaKit über
-/// `LogText` selbst benutzt; der Rohtext steht daher in der aktiven oder (aus älteren Aufrufen) in der deutschen Fassung. Freie Texte (Systemfehler, Fehlertexte aus Teilen der Cloud-Anbindung) bleiben im
-/// Deutschen unverändert; in jeder anderen Sprache steht ein allgemeiner Katalogtext. Texte von Midea selbst
-/// (`CloudError.api`) sind Daten und bleiben immer unverändert.
+/// Gründe aus MideaKit für Texte der Oberfläche. Der Fall bestimmt den Katalogtext; nur freie Texte (Systemfehler,
+/// Hinweise der Suche, Fehlertexte aus Teilen der Cloud-Anbindung) bleiben im Deutschen unverändert, in jeder anderen
+/// Sprache steht ein allgemeiner Katalogtext. Texte von Midea selbst (`CloudError.api`) sind Daten und bleiben immer
+/// unverändert.
 enum ReasonText {
     /// Deutsche Oberfläche ohne Pseudo-Sprache: freie Texte unverändert zeigen.
     static var showsRawGerman: Bool { Localizer.language == .de && !Localizer.isPseudo }
 
-    private static func isKnown(_ raw: String, _ key: String, _ args: [String: String] = [:]) -> Bool {
-        raw == Localizer.text(key, args) || raw == Localizer.text(key, language: .de, args)
-    }
-
-    /// Bekannte feste Texte in der Sprache der Oberfläche, sonst Rohtext (Deutsch) bzw. „nicht erreichbar“.
+    /// Freier Text: Deutsch unverändert, sonst „nicht erreichbar“.
     static func free(_ raw: String) -> String {
-        let known: [(String, String)] = [
-            ("reason.closed", L.Reason.closed),
-            ("reason.noLan", L.Reason.noLan),
-            ("reason.noCloud", L.Reason.noCloud),
-            ("reason.noPath", L.Reason.noPath),
-            ("reason.refused", L.Reason.refused),
-            ("reason.timeout", L.Reason.timeout),
-            ("reason.unreachable", L.Reason.unreachable),
-        ]
-        if let hit = known.first(where: { isKnown(raw, $0.0) }) { return hit.1 }
-        return showsRawGerman ? raw : L.Reason.unreachable
+        showsRawGerman ? raw : L.Reason.unreachable
     }
 
-    static func busy(_ raw: String) -> String {
-        if isKnown(raw, "reason.busyShort") { return L.Reason.busyShort }
-        if isKnown(raw, "reason.busy", ["hint": Localizer.text("reason.busyHint")])
-            || isKnown(raw, "reason.busy", ["hint": Localizer.text("reason.busyHint", language: .de)]) || !showsRawGerman {
-            return L.Reason.busy(hint: L.Reason.busyHint)
+    static func busy(_ cause: BusyCause) -> String {
+        cause == .unknown ? L.Reason.busyShort : L.Reason.busy(hint: L.Reason.busyHint)
+    }
+}
+
+extension ConnectionReason {
+    public var displayText: String {
+        switch self {
+        case .closed: L.Reason.closed
+        case .noLAN: L.Reason.noLan
+        case .noCloud: L.Reason.noCloud
+        case .noPath: L.Reason.noPath
+        case .notConnected, .budget, .other: ReasonText.free(text)
         }
-        return raw
     }
 }
 
@@ -188,7 +181,8 @@ extension MideaError {
     /// Anzeige-Fassung von `connectionDetail` (nil, wo `connectionDetail` nil ist).
     public var connectionDetailText: String? {
         switch self {
-        case .connectionFailed(let msg), .unreachable(let msg): ReasonText.free(msg)
+        case .connectionFailed(let reason): reason.displayText
+        case .unreachable(let msg): ReasonText.free(msg)
         case .refused: L.Reason.refused
         case .allPathsFailed(let failures):
             failures.isEmpty ? L.Reason.noPath
@@ -207,7 +201,8 @@ extension PathFailure {
         case .refused: L.Reason.refused
         case .timeout: L.Reason.timeout
         case .unreachable: L.Reason.unreachable
-        case .busy: ReasonText.busy(text)
+        case .busy(let cause): ReasonText.busy(cause)
+        case .connection(let reason): reason.displayText
         case .cloud(let kind, let code):
             code != nil ? text : cloudText(kind)
         case .other: ReasonText.free(text)

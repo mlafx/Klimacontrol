@@ -284,7 +284,7 @@ extension SetupFlow {
                     : L.Setup.Device.rejected, .rejected)
         case .timeout:
             return (L.Setup.Device.timeout, .unreachable)
-        case .allPathsFailed(let failures) where failures.contains(where: { $0.reason == .busy }):
+        case .allPathsFailed(let failures) where failures.contains(where: { $0.isBusy }):
             return (busyText, .busy)
         case .connectionFailed, .refused, .unreachable, .outcomeUnknown, .allPathsFailed:
             // Abgewiesen ohne Beleg für „belegt“ (falsche oder alte Adresse) wie jede andere fehlende Verbindung.

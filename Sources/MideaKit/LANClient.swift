@@ -140,7 +140,7 @@ final class LANClient {
     func budgeted(_ t: TimeInterval) throws -> TimeInterval {
         guard let deadline else { return t }
         let rest = deadline.timeIntervalSinceNow
-        if rest <= 0.05 { throw MideaError.connectionFailed(Self.budgetHint) }
+        if rest <= 0.05 { throw MideaError.connectionFailed(.budget) }
         return min(t, rest)
     }
 
@@ -194,7 +194,7 @@ final class LANClient {
         var dropped = 0
         while socket.wait(timeoutMs: 0) > 0 {
             let n = socket.receive(into: &readBuffer)
-            if n == 0 { throw MideaError.connectionFailed(Self.closedText) }
+            if n == 0 { throw MideaError.connectionFailed(.closed) }
             if n < 0 { break }
             dropped += codec.feed(Data(readBuffer[0..<n])).count
         }
@@ -210,7 +210,7 @@ final class LANClient {
             try connectSocket()
         } catch MideaError.refused where recentlyReachable {
             // Eben ging es noch unter dieser Adresse – dann ist „abgewiesen“ ein belastbarer Hinweis auf „belegt“.
-            throw MideaError.busy(Self.busyHint)
+            throw MideaError.busy(.otherApp)
         }
         AppLog.debug(LogText.t("log.lan.handshake", "TCP verbunden, sende Handshake (Token {bytes} Byte, geschwärzt)", ["bytes": String(token.count)]))
         onPhase?(.handshake)
@@ -222,10 +222,10 @@ final class LANClient {
         } catch MideaError.timeout {
             // Keine Antwort ist kein Token-Fehler: „belegt“ nur, wenn die Anlage hier kurz vorher
             // antwortete; sonst neutral „antwortet nicht“ (z. B. alte IP gehört jetzt einem anderen Gerät).
-            throw recentlyReachable ? MideaError.busy(Self.busyHint) : MideaError.timeout
+            throw recentlyReachable ? MideaError.busy(.otherApp) : MideaError.timeout
         } catch MideaError.connectionFailed where closedByPeer {
             // Verbindung angenommen und sofort wieder geschlossen: die Anlage hält schon eine andere.
-            throw MideaError.busy(Self.busyHint)
+            throw MideaError.busy(.otherApp)
         }
         let (type, payload) = try codec.decode(response)
         guard type == .handshakeResponse else { throw MideaError.authenticationFailed(LogText.t("kit.lan.unexpectedType", "unerwarteter Pakettyp")) }
@@ -244,7 +244,7 @@ final class LANClient {
     }
 
     private func write(_ data: Data) throws {
-        guard let socket else { throw MideaError.connectionFailed(Self.notConnectedText) }
+        guard let socket else { throw MideaError.connectionFailed(.notConnected) }
         try socket.send(data)
     }
 
@@ -281,12 +281,12 @@ final class LANClient {
         while true {
             let remaining = deadline.timeIntervalSinceNow
             if remaining <= 0 { throw MideaError.timeout }
-            guard let socket else { throw MideaError.connectionFailed(Self.notConnectedText) }
+            guard let socket else { throw MideaError.connectionFailed(.notConnected) }
             let r = socket.wait(timeoutMs: Int32(remaining * 1000))
             if r == 0 { throw MideaError.timeout }
             if r < 0 { throw NetSocket.failure(NetSocket.lastError) }
             let n = socket.receive(into: &readBuffer)
-            if n == 0 { closedByPeer = true; throw MideaError.connectionFailed(Self.closedText) }
+            if n == 0 { closedByPeer = true; throw MideaError.connectionFailed(.closed) }
             if n < 0 { throw NetSocket.failure(NetSocket.lastError) }
             pending += codec.feed(Data(readBuffer[0..<n]))
             if !pending.isEmpty { return pending.removeFirst() }

@@ -81,7 +81,7 @@ final class ControllerTests: CoreTestCase {
     func testRelocateBusyIsNotTreatedAsRejection() async throws {
         let c = try await makeConnected()
         c.locate = { _ in (ip: "192.168.1.77", port: 6444) }
-        c.probe = CredentialProbe { _ in MideaError.busy("") }
+        c.probe = CredentialProbe { _ in MideaError.busy(.unknown) }
         let ok = await c.relocate()
         XCTAssertFalse(ok)
         let text = try XCTUnwrap(c.relocateMessage)
@@ -369,8 +369,8 @@ final class ControllerTests: CoreTestCase {
         XCTAssertEqual(kind(nil), "ok")
         XCTAssertEqual(kind(MideaError.authenticationFailed("x")), "abgelehnt")
         XCTAssertEqual(kind(MideaCloud.CloudError.tokenRejected), "abgelehnt")
-        XCTAssertEqual(kind(MideaError.busy("")), "belegt")
-        XCTAssertEqual(kind(MideaError.allPathsFailed([PathFailure(path: .lan, reason: .busy, text: "belegt")])), "belegt")
+        XCTAssertEqual(kind(MideaError.busy(.unknown)), "belegt")
+        XCTAssertEqual(kind(MideaError.allPathsFailed([PathFailure(path: .lan, reason: .busy(.otherApp), text: "belegt")])), "belegt")
         XCTAssertEqual(kind(MideaError.refused), "keine Antwort", "abgewiesen ist ohne Beleg nicht „belegt“")
         XCTAssertEqual(kind(MideaError.timeout), "keine Antwort")
         XCTAssertEqual(kind(MideaError.crypto(1)), "keine Antwort", "Lesefehler ist keine Ablehnung")

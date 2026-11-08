@@ -59,7 +59,7 @@ struct NetSocket {
 
     /// Fehler einer bestehenden Verbindung (Lesen, Warten, Senden) als `MideaError`; keine Route = nicht erreichbar.
     static func failure(_ code: Int32, prefix: String = "") -> MideaError {
-        code == hostUnreach ? .unreachable(prefix + describe(code)) : .connectionFailed(prefix + describe(code))
+        code == hostUnreach ? .unreachable(prefix + describe(code)) : .connectionFailed(.other(prefix + describe(code)))
     }
     static func isRefused(_ code: Int32) -> Bool { code == connReset || code == connRefused }
 
@@ -73,12 +73,12 @@ struct NetSocket {
 
     private static func open(type: Int32, proto: Int32) throws -> NetSocket {
         #if os(Windows)
-        guard winsockStarted else { throw MideaError.connectionFailed(LogText.t("kit.socket.winsock", "Winsock nicht verfügbar")) }
+        guard winsockStarted else { throw MideaError.connectionFailed(.other(LogText.t("kit.socket.winsock", "Winsock nicht verfügbar"))) }
         let s = WinSDK.socket(AF_INET, type, proto)
-        guard s != INVALID_SOCKET else { throw MideaError.connectionFailed(LogText.t("kit.socket.createFailed", "Socket: {error}", ["error": describe(lastError)])) }
+        guard s != INVALID_SOCKET else { throw MideaError.connectionFailed(.other(LogText.t("kit.socket.createFailed", "Socket: {error}", ["error": describe(lastError)]))) }
         #else
         let s = Darwin.socket(AF_INET, type, proto)
-        guard s >= 0 else { throw MideaError.connectionFailed(LogText.t("kit.socket.createFailed", "Socket: {error}", ["error": describe(lastError)])) }
+        guard s >= 0 else { throw MideaError.connectionFailed(.other(LogText.t("kit.socket.createFailed", "Socket: {error}", ["error": describe(lastError)]))) }
         #endif
         return NetSocket(handle: s)
     }
@@ -171,7 +171,7 @@ struct NetSocket {
     /// Verbindet per TCP mit Zeitlimit. Fehlertexte sind schon für die Anzeige formuliert.
     static func connectTCP(host: String, port: UInt16, timeoutMs: Int32) throws -> NetSocket {
         #if os(Windows)
-        guard winsockStarted else { throw MideaError.connectionFailed(LogText.t("kit.socket.winsock", "Winsock nicht verfügbar")) }
+        guard winsockStarted else { throw MideaError.connectionFailed(.other(LogText.t("kit.socket.winsock", "Winsock nicht verfügbar"))) }
         #endif
         var hints = addrinfo()
         hints.ai_family = AF_INET
@@ -184,7 +184,7 @@ struct NetSocket {
         #endif
         var res: UnsafeMutablePointer<addrinfo>?
         guard getaddrinfo(host, String(port), &hints, &res) == 0, let ai = res else {
-            throw MideaError.connectionFailed(LogText.t("kit.socket.invalidHost", "Adresse {host} ungültig", ["host": host]))
+            throw MideaError.connectionFailed(.other(LogText.t("kit.socket.invalidHost", "Adresse {host} ungültig", ["host": host])))
         }
         defer { freeaddrinfo(res) }
         #if os(Windows)
@@ -205,7 +205,7 @@ struct NetSocket {
             let code = lastError
             if code != inProgress {
                 s.close()
-                throw MideaError.connectionFailed(isUnreachable(code) ? LANClient.localNetworkHint : describe(code))
+                throw MideaError.connectionFailed(.other(isUnreachable(code) ? LANClient.localNetworkHint : describe(code)))
             }
         }
         if s.wait(write: true, timeoutMs: timeoutMs) <= 0 {
@@ -218,7 +218,7 @@ struct NetSocket {
             // Abgewiesen: falsche/alte Adresse oder belegt. Neutral melden; `LANClient` macht „belegt“ daraus,
             // wenn die Anlage hier kurz vorher antwortete.
             if isRefused(err) { throw MideaError.refused }
-            throw MideaError.connectionFailed(isUnreachable(err) ? LANClient.localNetworkHint : describe(err))
+            throw MideaError.connectionFailed(.other(isUnreachable(err) ? LANClient.localNetworkHint : describe(err)))
         }
         s.setNonBlocking(false)
         s.setSendTimeout(ms: 4000)

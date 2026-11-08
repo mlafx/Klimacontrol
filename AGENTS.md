@@ -609,7 +609,7 @@ in `SettingsKey` anlegen, nie als String-Literal in einer Oberfläche.
 Texte für Fehler und Hinweise kommen aus `UserMessage`/`Fmt` im Kern und aus dem Katalog (Schlüssel `message.*`,
 `reason.*`): „Was ist passiert. Was tun. (code)“ – der Code klein am Ende in Klammern, z. B. `(path-missing)`.
 Oberflächen erfinden keine eigenen Fehlertexte. Die Rohtexte in MideaKit (`errorDescription`, `what`/`todo`, Hinweise)
-gehen nur ins Protokoll bzw. in `UserMessage.detail`; sichtbar werden sie nie als Haupttext.
+gehen nur ins Protokoll bzw. in `UserMessage.detail`; sichtbar werden sie nie als Haupttext. Ursachen von Verbindungsfehlern sind Typen (`ConnectionReason`, `BusyCause`, `PathFailure.Reason`); der Kern bildet sie auf Katalogtexte ab (`DisplayNames.swift`), nie über Textvergleich.
 
 **Protokollzeilen stehen in der Sprache der Oberfläche** (Stufe `FEHLER`/`ERROR` und `WARNUNG`/`WARNING` eingeschlossen);
 bereits geschriebene Zeilen bleiben, wie sie sind. Im Kern, in der Bridge und in der Mac-App stehen die Zeilen im
@@ -912,7 +912,7 @@ nachgebildet, mit erfundenen Kennungen.
   nur mit Kommentar, was schützt. Gemeinsamer Zustand über `Mutex` (Synchronization) statt NSLock; `@unchecked
   Sendable` bleibt nur für Zustand auf einer seriellen Queue (Beispiel: `PortaSplitDevice` – Zustand im `Mutex`
   `shared`, Transport nur auf der seriellen `queue`).
-- Fehler werden über ihren **Typ** ausgewertet (`MideaError`, `PathFailure`, `CloudError`), nie über Meldungstexte;
+- Fehler werden über ihren **Typ** ausgewertet (`MideaError`, `ConnectionReason`, `PathFailure`, `CloudError`), nie über Meldungstexte;
   Texte dienen nur Anzeige und Protokoll. Einzige Ausnahme: Antworttexte von Midea selbst (`CloudError.kind`).
 - Der LAN-Transport ist **bewusst blockierend** (serielle Queue, `Thread.sleep` für die Protokoll-Pausen). Ein
   async-Umbau ist ein eigenes Vorhaben mit Live-Tests, kein Nebenbei-Refactoring.

@@ -16,7 +16,7 @@ final class MessageEnglishTests: XCTestCase {
         en {
             XCTAssertEqual(UserMessage.from(MideaError.timeout).text,
                            "The air conditioner is not responding. Check that it has power and is connected to Wi-Fi. Klimacontrol keeps trying.")
-            XCTAssertEqual(UserMessage.from(MideaError.busy("")).text,
+            XCTAssertEqual(UserMessage.from(MideaError.busy(.unknown)).text,
                            "The air conditioner is busy right now. Close other apps (Midea app, a second Klimacontrol with Diagnostics open) or wait 10 s.")
             XCTAssertEqual(UserMessage.from(MideaError.crypto(-5)).text,
                            "The air conditioner's response could not be decrypted. Try again. (-5)")
