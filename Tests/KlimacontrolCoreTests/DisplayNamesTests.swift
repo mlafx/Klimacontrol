@@ -168,7 +168,15 @@ final class DisplayNamesTests: XCTestCase {
             .api(3004, "token expired"), .noToken, .tokenRejected, .notInAccount, .paused(until: until), .keychainLocked,
             .network("offline"), .badReply("kaputt"), .sessionKeys("Sitzungsschlüssel passt nicht"), .incompleteLogin("fehlt"),
         ]
-        for e in errors { XCTAssertEqual(e.displayMessage, e.message, "\(e)") }
+        for e in errors {
+            // Der Rohtext nennt immer den Schlüsselbund; die Anzeige nennt den Speicher des Rechners.
+            if case .keychainLocked = e {
+                XCTAssertEqual(e.displayMessage, keychainLockedText())
+                XCTAssertEqual(keychainLockedText(host: .mac), e.message)
+            } else {
+                XCTAssertEqual(e.displayMessage, e.message, "\(e)")
+            }
+        }
     }
 
     /// Jede Ursache hat in beiden Sprachen einen festen Katalogtext, unabhängig vom Rohtext.

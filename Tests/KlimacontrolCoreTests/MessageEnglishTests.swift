@@ -50,12 +50,12 @@ final class MessageEnglishTests: XCTestCase {
     }
 
     func testKeychainMessages() {
-        XCTAssertEqual(UserMessage.from(KeychainError.unavailable(5)).text,
+        XCTAssertEqual(UserMessage.from(KeychainError.unavailable(5), host: .mac).text,
                        "Der Schlüsselbund ist gesperrt oder hat den Zugriff abgelehnt. Mac entsperren bzw. den Zugriff erlauben und erneut versuchen. (Status 5)")
         XCTAssertEqual(UserMessage.from(KeychainError.tooLarge(3000)).text,
                        "Die Daten sind zu groß für den Geheimnisspeicher. Bitte melden. (3000 Byte)")
         en {
-            XCTAssertEqual(UserMessage.from(KeychainError.unavailable(5)).text,
+            XCTAssertEqual(UserMessage.from(KeychainError.unavailable(5), host: .mac).text,
                            "The keychain is locked or denied access. Unlock the Mac or allow access, then try again. (status 5)")
         }
     }
@@ -68,8 +68,12 @@ final class MessageEnglishTests: XCTestCase {
                            "The backup belongs to a different air conditioner (“Living room”, currently set up: “Bedroom”). Choose the matching backup or confirm that you want to switch air conditioners.")
             XCTAssertEqual(BackupImportError.nothingToExport.errorDescription,
                            "No air conditioner is set up yet. Set one up first.")
+            #if os(Windows)
+            XCTAssertEqual(CloudAccountError.notSaved.errorDescription, L.Message.Account.Windows.notSaved)
+            #else
             XCTAssertEqual(CloudAccountError.notSaved.errorDescription,
                            "The Midea account was not saved in the keychain. Check keychain access and sign in again.")
+            #endif
         }
         let german = ACController.defaultDisplayName
         let english = Localizer.withLanguage(.en) { ACController.defaultDisplayName }

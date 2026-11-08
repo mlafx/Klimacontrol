@@ -18329,24 +18329,6 @@ extension StringsData {
         }
       }
     },
-    "settings.appearance.hero.section" : {
-      "comment" : "Darstellung: Abschnitt",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Große Temperatur"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Large temperature"
-          }
-        }
-      }
-    },
     "settings.appearance.heroValue.help" : {
       "comment" : "Darstellung: Kurzinfo Groß angezeigt",
       "extractionState" : "manual",
@@ -18685,24 +18667,6 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Turn on"
-          }
-        }
-      }
-    },
-    "settings.appearance.motion.section" : {
-      "comment" : "Darstellung: Abschnitt",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bewegung"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Motion"
           }
         }
       }
@@ -19229,24 +19193,6 @@ extension StringsData {
         }
       }
     },
-    "settings.appearance.window.section" : {
-      "comment" : "Darstellung: Abschnitt",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fenster"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Window"
-          }
-        }
-      }
-    },
     "settings.appearance.windowMenu.section" : {
       "comment" : "Darstellung (Mac): Abschnitt Vordergrund, Menüleiste, Mini-Fenster",
       "extractionState" : "manual",
@@ -19481,24 +19427,6 @@ extension StringsData {
         }
       }
     },
-    "settings.appearance.windows.themeAccessibility" : {
-      "comment" : "Windows: UIA-Name einer Themenkarte",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thema {theme}"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Theme {theme}"
-          }
-        }
-      }
-    },
     "settings.appearance.windows.themeContrastHelp" : {
       "comment" : "Windows: Themenkarte Kontrast",
       "extractionState" : "manual",
@@ -19513,24 +19441,6 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Opaque surfaces, easy to read."
-          }
-        }
-      }
-    },
-    "settings.appearance.windows.themeHelp" : {
-      "comment" : "Windows: Einstellungen → Darstellung, unter den Themenkarten",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ein Thema setzt alle Werte darunter auf einmal; danach lässt sich jeder einzeln ändern."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A theme sets all values below at once; you can then change each one separately."
           }
         }
       }
@@ -19657,24 +19567,6 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "What the icon in the notification area and its tooltip show."
-          }
-        }
-      }
-    },
-    "settings.appearance.windows.trayTitle" : {
-      "comment" : "Windows: Einstellungen → Darstellung, Abschnitt (Gegenstück zur Menüleiste am Mac)",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Infobereich"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notification area"
           }
         }
       }
@@ -27283,7 +27175,6 @@ extension StringsData {
         "settings.appearance.display.section",
         "settings.appearance.glow.help",
         "settings.appearance.glow.title",
-        "settings.appearance.hero.section",
         "settings.appearance.heroValue.help",
         "settings.appearance.heroValue.title",
         "settings.appearance.lively.help",
@@ -27303,7 +27194,6 @@ extension StringsData {
         "settings.appearance.mini.title",
         "settings.appearance.mini.turnOff",
         "settings.appearance.mini.turnOn",
-        "settings.appearance.motion.section",
         "settings.appearance.preview.accessibility",
         "settings.appearance.preview.modePicker",
         "settings.appearance.preview.room",
@@ -27333,7 +27223,6 @@ extension StringsData {
         "settings.appearance.unit.points",
         "settings.appearance.weather.help",
         "settings.appearance.weather.title",
-        "settings.appearance.window.section",
         "settings.appearance.windowMenu.section",
         "settings.appearance.windowNotify.section",
         "settings.appearance.windows.blurHelp",
@@ -27347,9 +27236,7 @@ extension StringsData {
         "settings.appearance.windows.reduceMotionSystem",
         "settings.appearance.windows.resetAccessibility",
         "settings.appearance.windows.schemeHelp",
-        "settings.appearance.windows.themeAccessibility",
         "settings.appearance.windows.themeContrastHelp",
-        "settings.appearance.windows.themeHelp",
         "settings.appearance.windows.themeMinimalHelp",
         "settings.appearance.windows.themeNeonHelp",
         "settings.appearance.windows.themeNightHelp",
@@ -27357,7 +27244,6 @@ extension StringsData {
         "settings.appearance.windows.transparencyAccessibility",
         "settings.appearance.windows.trayAccessibility",
         "settings.appearance.windows.trayHelp",
-        "settings.appearance.windows.trayTitle",
         "settings.connection.accountHeader",
         "settings.connection.accountRemove",
         "settings.connection.accountTitle",
@@ -28738,7 +28624,6 @@ extension StringsData {
         "settings.appearance.display.section": [],
         "settings.appearance.glow.help": [],
         "settings.appearance.glow.title": [],
-        "settings.appearance.hero.section": [],
         "settings.appearance.heroValue.help": [],
         "settings.appearance.heroValue.title": [],
         "settings.appearance.lively.help": [],
@@ -28758,7 +28643,6 @@ extension StringsData {
         "settings.appearance.mini.title": [],
         "settings.appearance.mini.turnOff": [],
         "settings.appearance.mini.turnOn": [],
-        "settings.appearance.motion.section": [],
         "settings.appearance.preview.accessibility": [],
         "settings.appearance.preview.modePicker": [],
         "settings.appearance.preview.room": ["value"],
@@ -28788,7 +28672,6 @@ extension StringsData {
         "settings.appearance.unit.points": ["value"],
         "settings.appearance.weather.help": [],
         "settings.appearance.weather.title": [],
-        "settings.appearance.window.section": [],
         "settings.appearance.windowMenu.section": [],
         "settings.appearance.windowNotify.section": [],
         "settings.appearance.windows.blurHelp": [],
@@ -28802,9 +28685,7 @@ extension StringsData {
         "settings.appearance.windows.reduceMotionSystem": [],
         "settings.appearance.windows.resetAccessibility": [],
         "settings.appearance.windows.schemeHelp": [],
-        "settings.appearance.windows.themeAccessibility": ["theme"],
         "settings.appearance.windows.themeContrastHelp": [],
-        "settings.appearance.windows.themeHelp": [],
         "settings.appearance.windows.themeMinimalHelp": [],
         "settings.appearance.windows.themeNeonHelp": [],
         "settings.appearance.windows.themeNightHelp": [],
@@ -28812,7 +28693,6 @@ extension StringsData {
         "settings.appearance.windows.transparencyAccessibility": [],
         "settings.appearance.windows.trayAccessibility": [],
         "settings.appearance.windows.trayHelp": [],
-        "settings.appearance.windows.trayTitle": [],
         "settings.connection.accountHeader": [],
         "settings.connection.accountRemove": [],
         "settings.connection.accountTitle": [],
@@ -31660,10 +31540,6 @@ public enum L {
                 /// Glow
                 public static var title: String { Localizer.text("settings.appearance.glow.title") }
             }
-            public enum Hero {
-                /// Large temperature
-                public static var section: String { Localizer.text("settings.appearance.hero.section") }
-            }
             public enum HeroValue {
                 /// Which temperature is shown large; the other one appears small below it.
                 public static var help: String { Localizer.text("settings.appearance.heroValue.help") }
@@ -31715,10 +31591,6 @@ public enum L {
                 public static var turnOff: String { Localizer.text("settings.appearance.mini.turnOff") }
                 /// Turn on
                 public static var turnOn: String { Localizer.text("settings.appearance.mini.turnOn") }
-            }
-            public enum Motion {
-                /// Motion
-                public static var section: String { Localizer.text("settings.appearance.motion.section") }
             }
             public enum Preview {
                 /// Appearance preview
@@ -31798,10 +31670,6 @@ public enum L {
                 /// Weather effects
                 public static var title: String { Localizer.text("settings.appearance.weather.title") }
             }
-            public enum Window {
-                /// Window
-                public static var section: String { Localizer.text("settings.appearance.window.section") }
-            }
             public enum WindowMenu {
                 /// Window and menu bar
                 public static var section: String { Localizer.text("settings.appearance.windowMenu.section") }
@@ -31833,12 +31701,8 @@ public enum L {
                 public static var resetAccessibility: String { Localizer.text("settings.appearance.windows.resetAccessibility") }
                 /// Light, dark, or same as Windows.
                 public static var schemeHelp: String { Localizer.text("settings.appearance.windows.schemeHelp") }
-                /// Theme {theme}
-                public static func themeAccessibility(theme: String) -> String { Localizer.text("settings.appearance.windows.themeAccessibility", ["theme": theme]) }
                 /// Opaque surfaces, easy to read.
                 public static var themeContrastHelp: String { Localizer.text("settings.appearance.windows.themeContrastHelp") }
-                /// A theme sets all values below at once; you can then change each one separately.
-                public static var themeHelp: String { Localizer.text("settings.appearance.windows.themeHelp") }
                 /// Thin type, almost colorless.
                 public static var themeMinimalHelp: String { Localizer.text("settings.appearance.windows.themeMinimalHelp") }
                 /// Glowing edges, vivid colors.
@@ -31853,8 +31717,6 @@ public enum L {
                 public static var trayAccessibility: String { Localizer.text("settings.appearance.windows.trayAccessibility") }
                 /// What the icon in the notification area and its tooltip show.
                 public static var trayHelp: String { Localizer.text("settings.appearance.windows.trayHelp") }
-                /// Notification area
-                public static var trayTitle: String { Localizer.text("settings.appearance.windows.trayTitle") }
             }
         }
         public enum Connection {

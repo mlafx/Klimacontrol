@@ -18325,24 +18325,6 @@
         }
       }
     },
-    "settings.appearance.hero.section" : {
-      "comment" : "Darstellung: Abschnitt",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Große Temperatur"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Large temperature"
-          }
-        }
-      }
-    },
     "settings.appearance.heroValue.help" : {
       "comment" : "Darstellung: Kurzinfo Groß angezeigt",
       "extractionState" : "manual",
@@ -18681,24 +18663,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Turn on"
-          }
-        }
-      }
-    },
-    "settings.appearance.motion.section" : {
-      "comment" : "Darstellung: Abschnitt",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bewegung"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Motion"
           }
         }
       }
@@ -19225,24 +19189,6 @@
         }
       }
     },
-    "settings.appearance.window.section" : {
-      "comment" : "Darstellung: Abschnitt",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fenster"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Window"
-          }
-        }
-      }
-    },
     "settings.appearance.windowMenu.section" : {
       "comment" : "Darstellung (Mac): Abschnitt Vordergrund, Menüleiste, Mini-Fenster",
       "extractionState" : "manual",
@@ -19477,24 +19423,6 @@
         }
       }
     },
-    "settings.appearance.windows.themeAccessibility" : {
-      "comment" : "Windows: UIA-Name einer Themenkarte",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thema {theme}"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Theme {theme}"
-          }
-        }
-      }
-    },
     "settings.appearance.windows.themeContrastHelp" : {
       "comment" : "Windows: Themenkarte Kontrast",
       "extractionState" : "manual",
@@ -19509,24 +19437,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Opaque surfaces, easy to read."
-          }
-        }
-      }
-    },
-    "settings.appearance.windows.themeHelp" : {
-      "comment" : "Windows: Einstellungen → Darstellung, unter den Themenkarten",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ein Thema setzt alle Werte darunter auf einmal; danach lässt sich jeder einzeln ändern."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A theme sets all values below at once; you can then change each one separately."
           }
         }
       }
@@ -19653,24 +19563,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "What the icon in the notification area and its tooltip show."
-          }
-        }
-      }
-    },
-    "settings.appearance.windows.trayTitle" : {
-      "comment" : "Windows: Einstellungen → Darstellung, Abschnitt (Gegenstück zur Menüleiste am Mac)",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Infobereich"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notification area"
           }
         }
       }
