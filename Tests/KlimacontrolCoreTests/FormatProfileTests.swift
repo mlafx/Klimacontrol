@@ -23,8 +23,23 @@ final class FormatProfileTests: XCTestCase {
         for v in values {
             for d in 0...4 {
                 XCTAssertEqual(Fmt.num(v, d, profile: .germany),
-                               v.formatted(.number.precision(.fractionLength(d)).locale(de)), "\(v) / \(d)")
+                               v.formatted(.number.rounded(rule: .toNearestOrAwayFromZero).precision(.fractionLength(d)).locale(de)),
+                               "\(v) / \(d)")
             }
+        }
+    }
+
+    /// Halbwerte runden weg von null (wie .NET); dieselbe Tabelle prüft die Windows-Oberfläche.
+    func testRoundingTable() throws {
+        struct Row: Decodable { let value: Double; let digits: Int; let de: String; let en: String }
+        struct Table: Decodable { let rows: [Row] }
+        let url = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("Shared/rounding-table.json")
+        let table = try JSONDecoder().decode(Table.self, from: Data(contentsOf: url))
+        XCTAssertFalse(table.rows.isEmpty)
+        for r in table.rows {
+            XCTAssertEqual(Fmt.num(r.value, r.digits, profile: .germany), r.de, "\(r.value) / \(r.digits)")
+            XCTAssertEqual(Fmt.num(r.value, r.digits, profile: .unitedStates), r.en, "\(r.value) / \(r.digits)")
         }
     }
 
@@ -106,6 +121,15 @@ final class FormatProfileTests: XCTestCase {
     }
 
     #if os(macOS)
+    func testTwelveHourDetection() {
+        XCTAssertFalse(FormatProfile.uses24Hour(template: "h a"))
+        XCTAssertFalse(FormatProfile.uses24Hour(template: "Bh:mm"))
+        XCTAssertFalse(FormatProfile.uses24Hour(template: "K a"))
+        XCTAssertTrue(FormatProfile.uses24Hour(template: "HH"))
+        XCTAssertTrue(FormatProfile.uses24Hour(template: "H 'h'"))
+        XCTAssertTrue(FormatProfile.uses24Hour(template: "HH 'Uhr'"))
+    }
+
     func testFromLocale() {
         let d = date(2026, 11, 3, 10, 0)
         let de = FormatProfile.from(locale: Locale(identifier: "de_DE"))

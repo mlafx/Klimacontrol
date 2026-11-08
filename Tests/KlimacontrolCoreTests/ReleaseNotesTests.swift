@@ -143,8 +143,10 @@ final class ReleaseNotesTests: CoreTestCase {
             WhatsNew.pending(lastSeen: seen, current: current, usedBefore: used, notes: notes).map(\.version)
         }
         XCTAssertEqual(versions("1.0.1.1", "1.0.1.2b1"), ["1.0.1.2"])
-        XCTAssertEqual(versions("1.0.1.2b1", "1.0.1.2b2"), [])
-        XCTAssertEqual(versions("1.0.1.2b2", "1.0.1.2"), [])
+        XCTAssertEqual(versions("1.0.1.2b1", "1.0.1.2b2"), ["1.0.1.2"])
+        XCTAssertEqual(versions("1.0.1.2b2", "1.0.1.2"), ["1.0.1.2"])
+        XCTAssertEqual(versions("1.0.1.2", "1.0.1.2"), [])
+        XCTAssertEqual(versions("1.0.1.2b2", "1.0.1.2b2"), [])
         XCTAssertEqual(versions(nil, "1.0.1.2b1", used: false), [])
     }
 

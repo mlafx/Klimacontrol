@@ -561,7 +561,7 @@ public final class HistoryDB: @unchecked Sendable {
     }
 
     /// CSV-Export eines Zeitraums. `readable`: Spaltennamen mit Einheit und Modus in der Sprache der Oberfläche, Zeit
-    /// „JJJJ-MM-TT HH:MM:SS“ (Ortszeit) und Dezimalzeichen des Formats – so öffnen Excel und Numbers die Datei richtig;
+    /// „JJJJ-MM-TT HH:MM:SS“ (Ortszeit) und Dezimalzeichen „,“ oder „.“ nach Format (Spaltentrenner bleibt „;“) – so öffnen Excel und Numbers die Datei richtig;
     /// der Import liest beide Formen und beide Sprachen.
     /// Liest über eine eigene Verbindung und schreibt zeilenweise in eine Zwischendatei, die am Ende das Ziel ersetzt:
     /// blockiert weder Graphen noch neue Punkte. Fehler als `CocoaError` (Lesen: `.fileReadUnknown`), damit die

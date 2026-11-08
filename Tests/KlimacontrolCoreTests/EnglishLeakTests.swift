@@ -247,7 +247,7 @@ final class EnglishLeakTests: CoreTestCase {
             FormatProfile.withProfile(.unitedStates) {
                 XCTAssertEqual(TimerOutcome.executed(powerOn: false, due: due, at: due).logMessage,
                                "Timer “Off”: air conditioner turned off at 07:00.")
-                XCTAssertEqual(ACController.logLabel(due, now: due), "today 07:00")
+                XCTAssertEqual(ACController.timerLabel(due, now: due, profile: .germany), "today 07:00")
                 XCTAssertEqual(MideaError.timeout.errorDescription, "The air conditioner is not responding.")
                 XCTAssertEqual(KeychainError.unreadable.errorDescription,
                                "The stored entry is unreadable. Enter the credentials again in the settings.")
@@ -257,7 +257,7 @@ final class EnglishLeakTests: CoreTestCase {
         Localizer.withLanguage(.de) {
             XCTAssertEqual(TimerOutcome.executed(powerOn: false, due: due, at: due).logMessage,
                            "Timer „Aus“: Anlage um 07:00 ausgeschaltet.")
-            XCTAssertEqual(ACController.logLabel(due, now: due), "heute 07:00")
+            XCTAssertEqual(ACController.timerLabel(due, now: due, profile: .germany), "heute 07:00")
             XCTAssertEqual(MideaError.timeout.errorDescription, "Die Anlage antwortet nicht.")
             XCTAssertEqual(L.Log.Level.error, "FEHLER")
         }

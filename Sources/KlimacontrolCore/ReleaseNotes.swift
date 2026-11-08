@@ -132,7 +132,9 @@ public enum WhatsNew {
         guard let cur = AppVersion(current)?.base, lastSeen != current else { return [] }
         guard notes.contains(where: { AppVersion($0.version) == cur }) else { return [] }
         let range: [ReleaseNote]
-        if let seen = lastSeen.flatMap(AppVersion.init)?.base {
+        if let seenFull = lastSeen.flatMap(AppVersion.init), seenFull.isBeta, seenFull.base == cur {
+            range = notes.filter { AppVersion($0.version) == cur }
+        } else if let seen = lastSeen.flatMap(AppVersion.init)?.base {
             range = notes.filter {
                 guard let v = AppVersion($0.version) else { return false }
                 return v > seen && v <= cur

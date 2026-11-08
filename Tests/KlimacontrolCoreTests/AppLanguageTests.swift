@@ -23,4 +23,13 @@ final class AppLanguageTests: XCTestCase {
             XCTAssertEqual(LanguageChoice(appleLanguages: choice.appleLanguages), choice)
         }
     }
+
+    func testRestartOnlyWhenEffectiveLanguageChanges() {
+        let german = ["de-DE", "en"], english = ["en-US"]
+        XCTAssertFalse(LanguageChoice.de.changesLanguage(from: .de, systemPreferred: german))
+        XCTAssertFalse(LanguageChoice.system.changesLanguage(from: .de, systemPreferred: german))
+        XCTAssertTrue(LanguageChoice.en.changesLanguage(from: .de, systemPreferred: german))
+        XCTAssertTrue(LanguageChoice.system.changesLanguage(from: .de, systemPreferred: english))
+        XCTAssertFalse(LanguageChoice.en.changesLanguage(from: .en, systemPreferred: german))
+    }
 }

@@ -34,12 +34,17 @@ public enum TimerOutcome: Equatable, Sendable {
     }
 
     /// Meldung nach dem Muster „Was ist passiert. Was tun.“
-    public var message: String {
+    public var message: String { text(profile: .current) }
+
+    /// Text fürs Protokoll in der Sprache der Oberfläche, mit 24-Stunden-Uhrzeit.
+    var logMessage: String { text(profile: .germany) }
+
+    private func text(profile: FormatProfile) -> String {
         let name = powerOn ? L.Timer.nameOn : L.Timer.nameOff
-        let time = ACController.clock(due)
+        let time = Fmt.clock(due, profile: profile)
         switch self {
         case let .executed(_, _, at):
-            let done = ACController.clock(at)
+            let done = Fmt.clock(at, profile: profile)
             return powerOn ? L.Timer.executedOn(name: name, time: done) : L.Timer.executedOff(name: name, time: done)
         case .missed:
             return L.Timer.missed(name: name, time: time)
@@ -47,25 +52,6 @@ public enum TimerOutcome: Equatable, Sendable {
             return L.Timer.failedNoDevice(name: name, time: time)
         case .failed(_, _, .unreachable):
             return L.Timer.failedUnreachable(name: name, time: time)
-        }
-    }
-}
-
-extension TimerOutcome {
-    /// Text fürs Protokoll in der Sprache der Oberfläche, mit 24-Stunden-Uhrzeit.
-    var logMessage: String {
-        let name = Localizer.text(powerOn ? "timer.nameOn" : "timer.nameOff")
-        let time = Fmt.clock(due, profile: .germany)
-        switch self {
-        case let .executed(_, _, at):
-            return Localizer.text(powerOn ? "timer.executedOn" : "timer.executedOff",
-                                  ["name": name, "time": Fmt.clock(at, profile: .germany)])
-        case .missed:
-            return Localizer.text("timer.missed", ["name": name, "time": time])
-        case .failed(_, _, .noDevice):
-            return Localizer.text("timer.failedNoDevice", ["name": name, "time": time])
-        case .failed(_, _, .unreachable):
-            return Localizer.text("timer.failedUnreachable", ["name": name, "time": time])
         }
     }
 }
@@ -128,7 +114,7 @@ extension ACController {
         let now = now ?? self.now()
         cancelTimerFire()
         onAt = date.map { Self.nextOccurrence(of: $0, after: now) }
-        AppLog.write(onAt.map { L.Log.Timer.onAt(time: Self.logLabel($0, now: now)) } ?? L.Log.Timer.onDeleted)
+        AppLog.write(onAt.map { L.Log.Timer.onAt(time: Self.timerLabel($0, now: now, profile: .germany)) } ?? L.Log.Timer.onDeleted)
         timerRuntime.tried.remove(true)
         persistTimers()
     }
@@ -154,7 +140,7 @@ extension ACController {
     }
 
     /// „heute 07:00“, „morgen 07:00“ bzw. „Mi 07:00“ – der Tag ist immer sichtbar.
-    public static func timerLabel(_ date: Date, now: Date = Date()) -> String {
+    public static func timerLabel(_ date: Date, now: Date = Date(), profile: FormatProfile = .current) -> String {
         let cal = Calendar.current
         let day: String
         if cal.isDate(date, inSameDayAs: now) {
@@ -164,22 +150,7 @@ extension ACController {
         } else {
             day = DateWords.weekdayShort(cal.component(.weekday, from: date))
         }
-        return day + " " + clock(date)
-    }
-
-    /// Wie `timerLabel`, aber mit 24-Stunden-Uhrzeit fürs Protokoll.
-    static func logLabel(_ date: Date, now: Date) -> String {
-        let cal = Calendar.current
-        let day: String
-        if cal.isDate(date, inSameDayAs: now) {
-            day = Localizer.text("date.today")
-        } else if let tomorrow = cal.date(byAdding: .day, value: 1, to: now), cal.isDate(date, inSameDayAs: tomorrow) {
-            day = Localizer.text("date.tomorrow")
-        } else {
-            let names = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
-            day = Localizer.text("date.weekdayShort." + names[cal.component(.weekday, from: date) - 1])
-        }
-        return day + " " + Fmt.clock(date, profile: .germany)
+        return day + " " + Fmt.clock(date, profile: profile)
     }
 
     /// Anzeigetexte der gesetzten Timer („heute 07:00“); nil = kein Timer.
@@ -201,7 +172,7 @@ extension ACController {
             guard let raw = settings.object(forKey: key) as? Double, raw.isFinite else { return nil }
             let t = Date(timeIntervalSince1970: raw)
             guard now.timeIntervalSince(t) <= Self.timerGrace else {
-                AppLog.write(L.Log.Timer.missed(name: powerOn ? L.Log.Timer.nameOn : L.Log.Timer.nameOff, time: Self.logLabel(t, now: now)))
+                AppLog.write(L.Log.Timer.missed(name: powerOn ? L.Log.Timer.nameOn : L.Log.Timer.nameOff, time: Self.timerLabel(t, now: now, profile: .germany)))
                 settings.removeObject(forKey: key)
                 report(.missed(powerOn: powerOn, due: t))
                 return nil

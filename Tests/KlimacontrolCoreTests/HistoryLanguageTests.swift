@@ -95,6 +95,8 @@ final class HistoryLanguageTests: XCTestCase {
         var odd = FormatProfile.unitedStates
         odd.decimalSeparator = ";"
         XCTAssertEqual(HistoryColumn.ReadableStyle(profile: odd).decimal, ",")
+        odd.decimalSeparator = "\u{066B}"
+        XCTAssertEqual(HistoryColumn.ReadableStyle(profile: odd).decimal, ",")
         odd.decimalSeparator = "ab"
         XCTAssertEqual(HistoryColumn.ReadableStyle(profile: odd).decimal, ",")
     }

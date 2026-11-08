@@ -10,7 +10,7 @@ public enum Fmt {
 
     /// Gruppen zu je drei Stellen; Sonderfälle wie die indische Gruppierung sind bewusst nicht abgebildet.
     public static func num(_ v: Double, _ digits: Int, profile: FormatProfile = .current) -> String {
-        let text = v.formatted(.number.precision(.fractionLength(digits)).locale(neutral))
+        let text = v.formatted(.number.rounded(rule: .toNearestOrAwayFromZero).precision(.fractionLength(digits)).locale(neutral))
         var out = ""
         for ch in text {
             switch ch {
@@ -118,7 +118,7 @@ public enum Fmt {
 
     /// Eine Zeile Zustand fürs Ausführliches Protokoll.
     public static func stateLine(_ s: ACState) -> String {
-L.Log.StateLine.line(
+        L.Log.StateLine.line(
             power: s.power ? L.Log.Change.on : L.Log.Change.off, mode: s.mode.title,
             target: target(s.targetTemperature, profile: .germany), indoor: temp(s.indoorTemperature, profile: .germany),
             outdoor: temp(s.outdoorTemperature, profile: .germany), fan: s.fanTitle,
@@ -127,7 +127,7 @@ L.Log.StateLine.line(
 
     /// Eine Zeile Diagnose fürs Ausführliches Protokoll (-1 bzw. nan = nicht geliefert).
     public static func diagnosticsLine(_ d: Diagnostics) -> String {
-L.Log.StateLine.diagnostics(
+        L.Log.StateLine.diagnostics(
             hz: "\(d.compressorHz ?? -1)", targetHz: "\(d.compressorTargetHz ?? -1)", watts: "\(d.compressorPowerW ?? -1)",
             amps: "\(d.currentA ?? -1)", volts: "\(d.voltageV ?? -1)", t1: "\(d.t1IndoorAir ?? .nan)", t2: "\(d.t2IndoorCoil ?? .nan)",
             t3: "\(d.t3OutdoorCoil ?? .nan)", t4: "\(d.t4OutdoorAir ?? .nan)", tp: "\(d.tpDischarge ?? -1)",

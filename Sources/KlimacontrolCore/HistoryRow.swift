@@ -73,10 +73,10 @@ struct HistoryColumn: Sendable {
         let decimal: String
         let modeTitles: [String: String]
 
-        /// Dezimalzeichen des Formats; „;“ (Spaltentrenner) oder mehrere Zeichen werden zu „,“.
+        /// Nur „.“ oder „,“ (der Import liest nur diese); jedes andere Dezimalzeichen wird zu „,“.
         init(profile: FormatProfile = .current) {
             let d = profile.decimalSeparator
-            decimal = d.count == 1 && d != ";" ? d : ","
+            decimal = d == "." ? "." : ","
             modeTitles = Dictionary(uniqueKeysWithValues: OperationalMode.allCases.map { ($0.label, $0.title) })
         }
     }

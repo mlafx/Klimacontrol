@@ -53,6 +53,15 @@ public struct FormatProfile: Codable, Equatable, Sendable {
         return try body()
     }
 
+    /// 12 Stunden, wenn das `j`-Muster außerhalb von '…' ein `h` oder `K` enthält (auch ohne `a`, z. B. "Bh:mm").
+    static func uses24Hour(template: String) -> Bool {
+        var quoted = false
+        for ch in template {
+            if ch == "'" { quoted.toggle() } else if !quoted, ch == "h" || ch == "K" { return false }
+        }
+        return true
+    }
+
     public static func from(locale: Locale) -> FormatProfile {
         let template = DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: locale) ?? "HH"
         let formatter = DateFormatter()
@@ -62,7 +71,8 @@ public struct FormatProfile: Codable, Equatable, Sendable {
             localeIdentifier: locale.identifier,
             decimalSeparator: locale.decimalSeparator ?? ".",
             groupingSeparator: locale.groupingSeparator ?? "",
-            uses24HourClock: !template.contains("a"),
+            uses24HourClock: Self.uses24Hour(template: template),
+            // Optional() nur für corelibs (Windows), wo die Symbole nicht optional sind.
             amSymbol: Optional(formatter.amSymbol) ?? "AM",
             pmSymbol: Optional(formatter.pmSymbol) ?? "PM",
             dayMonthPattern: pattern.flatMap { isValid(dayMonthPattern: $0) ? $0 : nil } ?? "dd.MM.")

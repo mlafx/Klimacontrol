@@ -237,6 +237,8 @@ private struct PowerMarks: View, Equatable {
     let time: ClosedRange<Date>?
     let tint: Color
     let range: TimeInterval
+    /// Gehört zum Vergleich: ändern sich die Formate zur Laufzeit, baut sich der Graph neu auf.
+    var format = FormatProfile.current
 
     var body: some View {
         Chart {
@@ -300,6 +302,8 @@ private struct TemperatureMarks: View, Equatable {
     let window: ChartWindow
     let range: TimeInterval
     let colors: SeriesColors
+    /// Gehört zum Vergleich: ändern sich die Formate zur Laufzeit, baut sich der Graph neu auf.
+    var format = FormatProfile.current
 
     var body: some View {
         Chart {
@@ -366,6 +370,8 @@ private struct OutdoorMarks: View, Equatable {
     let domain: ClosedRange<Double>
     let range: TimeInterval
     let color: Color
+    /// Gehört zum Vergleich: ändern sich die Formate zur Laufzeit, baut sich der Graph neu auf.
+    var format = FormatProfile.current
 
     var body: some View {
         Chart {

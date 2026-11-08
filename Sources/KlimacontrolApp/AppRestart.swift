@@ -19,6 +19,11 @@ enum AppRestart {
         return LanguageChoice(appleLanguages: domain?[languagesKey] as? [String])
     }
 
+    /// Sprachen des Systems; nicht `Locale.preferredLanguages`, das die Wahl dieser App schon enthält.
+    static func systemLanguages() -> [String] {
+        UserDefaults.standard.persistentDomain(forName: UserDefaults.globalDomain)?[languagesKey] as? [String] ?? Locale.preferredLanguages
+    }
+
     static func store(_ choice: LanguageChoice) {
         if let languages = choice.appleLanguages {
             UserDefaults.standard.set(languages, forKey: languagesKey)

@@ -25,6 +25,11 @@ public enum LanguageChoice: String, CaseIterable, Sendable {
         }
     }
 
+    /// Ändert diese Wahl die wirksame Sprache gegenüber der laufenden? Nur dann lohnt ein Neustart.
+    public func changesLanguage(from running: AppLanguage, systemPreferred: [String]) -> Bool {
+        resolve(preferred: systemPreferred) != running
+    }
+
     /// `.de`/`.en` fest, `.system` über `Localizer.resolve(preferred:)`.
     public func resolve(preferred: [String]) -> AppLanguage {
         switch self {
@@ -111,31 +116,28 @@ public enum Localizer {
     /// Text zu `key` in der aktiven Sprache (Rückfall Englisch, dann der Schlüssel selbst), Platzhalter `{name}` aus `args`.
     public static func text(_ key: String, _ args: [String: String] = [:]) -> String {
         let (lang, pseudo) = current
-        switch resolved(key, lang, pseudo) {
-        case .text(let s): return fill(s, args)
-        case .plural(let cases): return fill(cases["other"] ?? cases.values.sorted().first ?? key, args)
-        case nil: return key
-        }
+        return render(resolved(key, lang, pseudo), key, args) ?? key
     }
 
     /// Text in einer bestimmten Sprache, unabhängig von der Sprache des Prozesses (z. B. CSV-Import beider Sprachen).
     /// Rückfall Englisch, dann der Schlüssel; keine Pseudo-Sprache.
     public static func text(_ key: String, language: AppLanguage, _ args: [String: String] = [:]) -> String {
-        switch catalog.value(key, language) {
+        render(catalog.value(key, language), key, args) ?? key
+    }
+
+    /// Text bzw. Fall `other` (sonst der erste) mit eingesetzten Platzhaltern; nil, wenn der Eintrag fehlt.
+    private static func render(_ entry: LocalizedValue?, _ key: String, _ args: [String: String]) -> String? {
+        switch entry {
         case .text(let s): return fill(s, args)
         case .plural(let cases): return fill(cases["other"] ?? cases.values.sorted().first ?? key, args)
-        case nil: return key
+        case nil: return nil
         }
     }
 
     /// Text zum Schlüssel in der aktiven Sprache, nil bei unbekanntem Schlüssel (Übersetzer für `LogText`).
     static func textIfPresent(_ key: String, _ args: [String: String]) -> String? {
         let (lang, pseudo) = current
-        switch resolved(key, lang, pseudo) {
-        case .text(let s): return fill(s, args)
-        case .plural(let cases): return fill(cases["other"] ?? cases.values.sorted().first ?? key, args)
-        case nil: return nil
-        }
+        return render(resolved(key, lang, pseudo), key, args)
     }
 
     /// Macht MideaKit-Protokolltexte und Fehlertexte sprachabhängig; harmlos mehrfach aufzurufen.
@@ -232,25 +234,7 @@ public enum Localizer {
     }
 
     /// `{name}` durch `args[name]` ersetzen; unbekannte Platzhalter bleiben stehen, überzählige `args` zählen nicht.
-    static func fill(_ template: String, _ args: [String: String]) -> String {
-        guard !args.isEmpty, template.contains("{") else { return template }
-        var out = ""
-        var index = template.startIndex
-        while index < template.endIndex {
-            let ch = template[index]
-            if ch == "{", let close = template[index...].firstIndex(of: "}") {
-                let name = String(template[template.index(after: index)..<close])
-                if let value = args[name] {
-                    out += value
-                    index = template.index(after: close)
-                    continue
-                }
-            }
-            out.append(ch)
-            index = template.index(after: index)
-        }
-        return out
-    }
+    static func fill(_ template: String, _ args: [String: String]) -> String { LogText.fill(template, args) }
 }
 
 /// Eingebetteter Katalog (Inhalt in StringsData.swift).

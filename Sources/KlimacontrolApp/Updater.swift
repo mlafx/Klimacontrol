@@ -151,6 +151,7 @@ private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
     }
 
     func updater(_ updater: SPUUpdater, didAbortWithError error: any Error) {
+        AppRestart.skipQuitPrompt = false
         // Sparkle meldet „kein Update“ hier zusätzlich als Fehler – das ist kein Fehlschlag.
         let e = error as NSError
         if e.domain == SUSparkleErrorDomain, e.code == Int(SUError.noUpdateError.rawValue) { return }

@@ -45,9 +45,9 @@ final class LANClient {
     static let minRetryBudget: TimeInterval = 1.0
     /// Höchstens so viele Zusatzrahmen nach der ersten Antwort einsammeln.
     static let maxExtraFrames = 8
-    /// Lesepuffer, einmal angelegt statt je Paket (4 KB).
     /// Die Gegenstelle hat die Verbindung selbst geschlossen (Lesen lieferte 0 Byte); getrennt vom Text der Meldung.
     private var closedByPeer = false
+    /// Lesepuffer, einmal angelegt statt je Paket (4 KB).
     private var readBuffer = [UInt8](repeating: 0, count: 4096)
     private static let authLifetime: TimeInterval = 12 * 3600
     #if os(Windows)

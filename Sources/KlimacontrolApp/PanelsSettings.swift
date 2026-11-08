@@ -104,7 +104,8 @@ struct GeneralSettings: View {
                     .labelsHidden().fixedSize()
                     .accessibilityLabel(L.Settings.General.languageAccessibility)
                     .onChange(of: languageChoice) { _, choice in AppRestart.store(choice) }
-                    if languageChoice != AppRestart.startChoice, AppRestart.canRelaunch {
+                    if languageChoice.changesLanguage(from: Localizer.language, systemPreferred: AppRestart.systemLanguages()),
+                       AppRestart.canRelaunch {
                         Button(L.App.restartNow) { AppRestart.relaunch() }
                     }
                 }
