@@ -148,6 +148,7 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 | `HistoryEnergy.swift` | Verbrauch je Tag/Woche/Monat (`EnergyPeriodKind`, `EnergyPeriod`, `HistoryDB.energyPeriods`): Zählerstände an den Grenzen, Rückfall auf Messwerte |
 | `Appearance.swift` | `Appearance` (alle Darstellungswerte, Themen, robustes Decoding) |
 | `Fmt.swift` | `Fmt` (Zahlen, Zeiten, Einheiten auf Deutsch), `UserMessage` (Meldungstexte) |
+| `MainWindowLayout.swift` | Mac-Hauptfenster als reine Rechnung (`MainWindowLayout`, `MainWindowFrame`): Spaltenbreiten und Verteilung, „passt nicht“-Regel, Mindesthöhe je Größe, Graphenhöhen, Rahmen beim Ein-/Ausblenden der Spalten (laufen auch unter Windows) |
 | `UIOptions.swift` | Anzeige-Katalog: Auswahllisten, Grenzen, Standardwerte, Gültigkeit je Modus (`availability`), Lüfter-Kopfzeile, Verlaufs-Zeiträume und Lückenschwelle |
 | `UIText.swift` | Anzeige-Katalog: Rückfragen (`ConfirmPrompt`, `ForgetPrompt` für „Neu einrichten“ mit drei Knöpfen), Ergebnismeldungen (`ResultMessage`), feste Texte, Cloud-Ordner-Prüfung, `HostWords` (Mac/Windows) |
 | `UIEnergy.swift` | Anzeige-Katalog des Verbrauchs: Arten und Anzahl (`UIOptions.energyKinds`), Beschriftungen, Kurzinfos, Kosten, Summe |
@@ -170,7 +171,7 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 | `KlimacontrolApp.swift` | `@main`, Szenen (Hauptfenster, Menüleiste `MenuBarExtra`, Mini-Fenster `id: "mini"`, Einstellungen), `AppDelegate` (Rückfrage beim Beenden mit Timern), `TimerNotifier` (Mitteilungen der Timer) |
 | `AppCommands.swift` | Menüs „Anlage“/„Darstellung“ mit den Tastenkürzeln (nur aktiv in Haupt- und Menüleisten-Fenster) |
 | `FileDialogs.swift` | Dateidialoge und Hinweisfenster: Sicherung einlesen/sichern, Verlauf exportieren, Abschluss der Einrichtung, Warnung vor Cloud-Ordnern |
-| `ContentView.swift` | Hauptfenster: Spalten Verlauf · Steuerung · Diagnose, `ControlStack` (Bedienblock, auch im Menüleisten-Fenster), „Mehr …“, Effekt-Hintergrund |
+| `ContentView.swift` | Hauptfenster: `ColumnsLayout` (Spalten Verlauf · Steuerung · Diagnose nach `MainWindowLayout`), scrollende Steuerspalte mit angeheftetem Banner/Fußzeile, `ControlStack` (Bedienblock, auch im Menüleisten-Fenster), „Mehr …“, Effekt-Hintergrund |
 | `Hero.swift` | Kopf: große Zahl, `TemperatureStepper` (−/+), Verbindungszeile, Aus-/Lüften-Anzeige, Kennzahlen, Ein/Aus, Mini-Fenster-Knopf |
 | `Startup.swift` | Startanzeige bis zur ersten Antwort (zuletzt bekannte Werte, Schritte) |
 | `Controls.swift` | Bedienelemente Modus und Lüfter mit Zonen |
@@ -178,7 +179,7 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 | `ScenesSection.swift` | Szenen anwenden, sichern, löschen |
 | `MenuBar.swift` | Menüleisten-Fenster und Menüleisten-Symbol |
 | `Messages.swift` | Fehler- und Hinweisbanner (Code klein am Ende), „Adresse neu suchen“-Hinweis |
-| `WindowSupport.swift` | Fensterhelfer (Sichtbarkeit, auf dem Bildschirm halten, Vordergrund), Fokuswert der Menü-Kürzel |
+| `WindowSupport.swift` | Fensterhelfer (Sichtbarkeit, `WindowRef` mit Rahmenlogik beim Ein-/Ausblenden der Spalten, Vollbild-Zustand, Vordergrund), Fokuswert der Menü-Kürzel |
 | `Charts.swift` | Graphen (Swift Charts) für Leistung und Temperatur |
 | `EnergyChart.swift` | Abschnitt „Verbrauch“ unter den Graphen: Balken je Tag/Woche/Monat, liest im Hintergrund höchstens alle 10 min |
 | `Theme.swift` | `ThemeStyle`, `\.klimaTheme`, `.klimaCard`, `.klimaGlow`, `GlassContainer`, Farben und Symbole je Modus, `LivelyBackground`, `WeatherEffect` |
@@ -571,7 +572,7 @@ sobald sie im selben Netz antwortet.
 
 `displayName`, `refreshSeconds`, `pricePerKWh` (0–1000), `currency`, `language` (Windows; Mac: Systemsprache), `updateBetaChannel` (Mac), `connectionMode`, `beep`, `timerOffAt`, `timerOnAt`,
 `energyDayStart`, `showDiagnosticsPanel`, `historyCSV`, `credentialsBackedUp`, `appearance` (JSON),
-`loginItemDefaultOn` (Mac: „Beim Anmelden starten“ schon einmal eingetragen). Mac: in
+`loginItemDefaultOn` (Mac: „Beim Anmelden starten“ schon einmal eingetragen), `lastOpenedColumn` und `columnsBeforeFullScreen` (Mac: zuletzt geöffnete Seitenspalte; Spalten vor dem Vollbild). Mac: in
 `UserDefaults` (Domäne `de.mlafx.klimacontrol`), Windows: über die Bridge im Kern gespeichert (`UserDefaults.standard` von swift-corelibs-foundation, Datei `%LOCALAPPDATA%\Klimacontrol.exe.plist` – der Name folgt dem Prozessnamen; seit 1.0 so, darum nicht verlegen, das Setup legt den Namen der exe fest). Neue Schlüssel immer
 in `SettingsKey` anlegen, nie als String-Literal in einer Oberfläche.
 
@@ -725,6 +726,17 @@ Protokoll · Lizenzen** (Fensterhöhe 600). Rückmeldungen der Einstellungen ste
 des Hauptfensters. Oben im Reiter Allgemein steht die Sprachwahl (Systemsprache · Deutsch · English) mit dem Knopf
 „Jetzt neu starten“; die Wahl wirkt erst nach dem Neustart (Details 9.4, 13.2).
 
+**Größe und Vollbild des Hauptfensters.** Das Fenster ist in der Größe veränderbar (`contentMinSize`) und kann ins
+Vollbild. Nichts wird skaliert: Die Steuerspalte bleibt 480 pt breit, zusätzlicher Platz gehört dem Verlauf, dann der
+Diagnose (Verteilung und Grenzen in `MainWindowLayout`: Verlauf ab 460, ab 880 Graphen als 2 × 2; Diagnose 340–400;
+nur Steuerung höchstens 520). Die Mindesthöhe hängt von der Darstellungsgröße ab (470/520/600), die Höhe gehört dem
+Nutzer. Beim Einblenden einer Seitenspalte wächst das freie Fenster nur um den Fehlbetrag (Verlauf nach links,
+Diagnose nach rechts, Steuerung bleibt am Platz), beim Ausblenden nimmt es nur das selbst Angebaute zurück (`WindowRef`,
+sonst nichts: maximiert, gekachelt und Vollbild werden nicht verändert). Passen die Mindestbreiten nicht auf den
+Bildschirm, bleibt nur die zuletzt geöffnete Spalte (mit Ansage). Im Vollbild sind Verlauf und Diagnose eingeblendet
+(vorher gespeicherter Zustand kehrt beim Verlassen zurück), „Immer im Vordergrund“ ist dort ausgesetzt, der
+Fensterhintergrund ist deckend. `ControlStack` bleibt unverändert (auch im Menüleisten-Fenster).
+
 ### 9.2 Tastenkürzel
 
 Zentral in `AppCommands`, nur aktiv, wenn Haupt- oder Menüleisten-Fenster Key ist (sonst würden Eingaben in
@@ -748,6 +760,7 @@ der Tastaturnavigation); unter Windows gilt Strg+↑/↓.
 - Farben/Schriften kommen aus `ThemeStyle` (Umgebung `\.klimaTheme`), Karten über `.klimaCard`, Leuchten über
   `.klimaGlow`. Keine fest verdrahteten Farben in Ansichten.
 - Liquid Glass (`.glassEffect`) nur hinter `#available(macOS 26, *)`, darunter `.ultraThinMaterial`.
+- **Größe ändern:** Während das Fenster seine Größe ändert, bleibt die Fläche der Graphen eingefroren (`WindowRef.isResizing`), Graphenhöhen wachsen nur in 20-pt-Stufen, „Lebendig“ wird auf ein Drittel der Auflösung gezeichnet, Wetter-Teilchen skalieren mit der Fläche, über ~2 MP gelten 20 statt 30 Bilder je Sekunde.
 - **Grafikspeicher:** Jeder Neuaufbau der Swift-Charts-Graphen und jede Animation über den ganzen Zustand kostet kurz
   ~190 MB Grafikspeicher (Metal). Darum: Graphen selten neu aufbauen (Marks in Equatable-Ansichten, eigene
   `TimelineView` alle 30 s, Hover-Ebene getrennt), der Body des Hauptfensters liest `model.state` nicht direkt, und

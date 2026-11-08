@@ -15,6 +15,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 - Mac: Einstellungen → Allgemein → Updates: Vorabversionen (Beta) können bezogen werden, standardmäßig aus.
 - Windows: Setup auf Deutsch und Englisch, passend zur Anzeigesprache von Windows.
 - Signalton lässt sich im Hauptfenster unter „Weitere Funktionen“ schalten.
+- Mac: Das Hauptfenster lässt sich in der Größe ändern und im Vollbild nutzen; im Vollbild erscheinen Verlauf und Diagnose nebeneinander.
 - Mac: „Nach Updates suchen …“ meldet auch, wenn keine neue Version vorliegt oder die Suche nicht geklappt hat.
 
 ### Geändert

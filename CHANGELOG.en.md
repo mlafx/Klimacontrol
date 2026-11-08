@@ -13,6 +13,7 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 - Mac: Settings → General → Updates: pre-release (beta) versions can be received, off by default.
 - Windows: Setup in German and English, matching the Windows display language.
 - The beep can be switched on and off in the main window under “More features”.
+- Mac: The main window can be resized and used in full screen; in full screen, history and diagnostics appear side by side.
 - Mac: “Check for updates…” also reports when no new version is available or the check did not work.
 
 ### Changed
