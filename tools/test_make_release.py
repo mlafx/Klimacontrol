@@ -130,38 +130,15 @@ class ReleaseScriptTests(unittest.TestCase):
         names = {p.name for p in out.iterdir()}
         self.assertEqual(names, {
             "Klimacontrol-1.2.0.0-mac.dmg", "Klimacontrol-Windows-1.2.0.0-Setup.exe", "updateinfo-mac.xml",
-            "updateinfo-win.xml", "appcast-mac.xml", "appcast-windows.xml", "appcast-win.xml",
-            "updateinfo-mac-beta.xml", "SHA256SUMS.txt",
+            "updateinfo-win.xml", "SHA256SUMS.txt",
             "RELEASE_NOTES.md"})
         self.assertNotIn("RELEASE_NOTES.md", {f.name for f in files})
-        for feed in ("updateinfo-mac.xml", "updateinfo-win.xml", "updateinfo-mac-beta.xml"):
+        for feed in ("updateinfo-mac.xml", "updateinfo-win.xml"):
             text = (out / feed).read_text(encoding="utf-8")
             self.assertTrue(text.rstrip().endswith("-->"), feed)
             self.assertEqual(text.count("sparkle-signatures"), 1, feed)
             mr.verify_feed(self.p.tool, self.p.key_args, out / feed)
         self.p.verify(out, "1.2.0.0")
-
-    def test_legacy_feed_copies(self):
-        out, files = self.stable()
-        sums = (out / "SHA256SUMS.txt").read_text(encoding="utf-8")
-        plan = mr.publish_plan(out, "1.2.0.0", None, files, True)
-        for legacy, current in mr.LEGACY_FEEDS.items():
-            self.assertEqual((out / legacy).read_bytes(), (out / current).read_bytes())
-            self.assertIn(f"  {legacy}\n", sums)
-            self.assertIn(str(out / legacy), plan[0])
-        self.assertNotIn("appcast", (out / "RELEASE_NOTES.md").read_text(encoding="utf-8").split("### Downloads")[1].split("\n\n")[0])
-
-    def test_missing_or_different_legacy_copy_is_detected(self):
-        out, _ = self.stable()
-        saved = (out / "appcast-mac.xml").read_bytes()
-        (out / "appcast-mac.xml").unlink()
-        code, err = run_failing(self.p.verify, out, "1.2.0.0")
-        self.assertEqual(code, 1)
-        self.assertIn("appcast-mac.xml", err)
-        (out / "appcast-mac.xml").write_bytes(saved + b" ")
-        code, err = run_failing(self.p.verify, out, "1.2.0.0")
-        self.assertEqual(code, 1)
-        self.assertIn("appcast-mac.xml", err)
 
     def test_change_after_signing_is_detected(self):
         out, _ = self.stable()
@@ -200,21 +177,10 @@ class ReleaseScriptTests(unittest.TestCase):
         self.assertEqual(versions, ["1.2.0.0", "1.3.0.0b1"])
         self.p.verify(out, "1.3.0.0", 1)
 
-    def test_stable_after_beta_keeps_higher_beta_in_beta_feed(self):
-        self.stable("1.2.0.0")
-        self.p.version("1.3.0.0")
-        self.p.changelogs([("1.3.0.0", "in Arbeit", "Später"), ("1.2.0.0", "2026-11-20", "Neuer Punkt")],
-                          [("1.3.0.0", "in progress", "Later"), ("1.2.0.0", "2026-11-20", "New item")])
-        self.p.archives("1.3.0.0b1")
-        quiet(self.p.build, "1.3.0.0", beta=1)
-        out, _ = self.stable("1.2.0.1", "2026-12-01")
-        versions = [mr.item_version(i) for i in mr.extract_items((out / "updateinfo-mac-beta.xml").read_text(encoding="utf-8"))]
-        self.assertEqual(versions, ["1.2.0.1", "1.3.0.0b1"])
-
-    def test_beta_feed_of_stable_run_has_only_stable_without_newer_beta(self):
-        out, _ = self.stable()
-        versions = [mr.item_version(i) for i in mr.extract_items((out / "updateinfo-mac-beta.xml").read_text(encoding="utf-8"))]
-        self.assertEqual(versions, ["1.2.0.0"])
+    def test_stable_run_creates_no_beta_feed(self):
+        out, files = self.stable()
+        self.assertFalse((out / "updateinfo-mac-beta.xml").exists())
+        self.assertNotIn("updateinfo-mac-beta.xml", {f.name for f in files})
 
     def test_in_progress_aborts_stable_but_not_beta(self):
         self.p.version("1.2.0.0")
@@ -292,6 +258,8 @@ class ReleaseScriptTests(unittest.TestCase):
         self.assertIn("--latest", first)
         self.assertNotIn("--prerelease", first)
         self.assertFalse(any(a.endswith("updateinfo-mac-beta.xml") for a in first))
+        self.assertEqual(len(plan), 1, "stabil: kein Release beta, keine Beta-Datei")
+        self.assertFalse(any("beta" in c for c in plan[1:]))
         bad = [first + ["--prerelease"]]
         self.assertEqual(run_failing(mr.check_publish_plan, bad, None)[0], 1)
 
@@ -318,14 +286,30 @@ class ReleaseScriptTests(unittest.TestCase):
             mr.http_get, mr.http_head, mr.run_tool = saved
 
     def test_check_published_stable(self):
-        feeds = {"updateinfo-mac.xml": ["1.2.0.0"], "updateinfo-win.xml": ["1.2.0.0"], "appcast-mac.xml": ["1.2.0.0"],
-                 "appcast-windows.xml": ["1.2.0.0"], "appcast-win.xml": ["1.2.0.0"], mr.BETA_FEED: ["1.2.0.0"]}
+        feeds = {"updateinfo-mac.xml": ["1.2.0.0"], "updateinfo-win.xml": ["1.2.0.0"]}
+        self.assertEqual(self._published("1.2.0.0", feeds), 0, "ohne Beta-Kanal kein Fehler")
+        feeds[mr.BETA_FEED] = ["1.2.0.0"]
         self.assertEqual(self._published("1.2.0.0", feeds), 0)
-        del feeds["appcast-mac.xml"]
-        self.assertGreater(self._published("1.2.0.0", feeds), 0, "alter Name fehlt")
-        feeds["appcast-mac.xml"] = ["1.2.0.0"]
+        del feeds[mr.BETA_FEED]
+        del feeds["updateinfo-mac.xml"]
+        self.assertGreater(self._published("1.2.0.0", feeds), 0, "Update-Datei fehlt")
+        feeds["updateinfo-mac.xml"] = ["1.2.0.0"]
         feeds["updateinfo-win.xml"] = ["1.1.0.0"]
         self.assertGreater(self._published("1.2.0.0", feeds), 0)
+
+    def test_publish_plan_beta_creates_beta_release_and_uploads_feed(self):
+        self.stable("1.2.0.0")
+        self.p.version("1.3.0.0")
+        self.p.changelogs([("1.3.0.0", "in Arbeit", "Später"), ("1.2.0.0", "2026-11-20", "Neuer Punkt")],
+                          [("1.3.0.0", "in progress", "Later"), ("1.2.0.0", "2026-11-20", "New item")])
+        self.p.archives("1.3.0.0b1")
+        out, files = quiet(self.p.build, "1.3.0.0", beta=1)
+        plan = mr.publish_plan(out, "1.3.0.0", 1, files, False)
+        mr.check_publish_plan(plan, 1)
+        self.assertEqual(len(plan), 3)
+        self.assertIn("create", plan[1])
+        self.assertIn("upload", plan[2])
+        self.assertEqual(len(mr.publish_plan(out, "1.3.0.0", 1, files, True)), 2)
 
     def test_check_published_beta_checks_only_beta_feed_for_the_version(self):
         feeds = {"updateinfo-mac.xml": ["1.1.0.0"], "updateinfo-win.xml": ["1.1.0.0"], mr.BETA_FEED: ["1.1.0.0", "1.2.0.0b1"]}

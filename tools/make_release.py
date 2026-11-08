@@ -8,8 +8,7 @@
     python3 tools/make_release.py --rollback <kaputt> <vorige>         # Notbremse: zeigt die Befehle (--execute: ausführen)
 
 Stabile Fassung: legt releases/v<Version>/ an mit Klimacontrol-<Version>-mac.dmg, Klimacontrol-Windows-<Version>-Setup.exe,
-updateinfo-mac.xml, updateinfo-win.xml, deren byte-gleichen Kopien appcast-mac.xml, appcast-windows.xml und
-appcast-win.xml (alte Namen für die Fassungen 1.0.x), updateinfo-mac-beta.xml, SHA256SUMS.txt und RELEASE_NOTES.md (Beschreibungstext,
+updateinfo-mac.xml, updateinfo-win.xml, SHA256SUMS.txt und RELEASE_NOTES.md (Beschreibungstext,
 zweisprachig, wird nicht angehängt). Voraussetzungen: tools/VERSION, CHANGELOG.md und CHANGELOG.en.md (ab 1.2.0.0) tragen
 für die Version ein Datum (nicht „in Arbeit“), DMG und App darin sind notarisiert und geheftet, das Setup liegt vor.
 
@@ -25,9 +24,10 @@ Zum Schluss prüft verify_release_dir() den Ordner vollständig (Dateinamen, Adr
 
 --publish (nur auf ausdrücklichen Auftrag): prüft, dass der Tag noch nicht existiert, gibt jeden gh-Befehl vor dem Ausführen
 aus und legt das Release an. Stabil: --latest, ohne Update-Datei der Beta. Beta: --prerelease --latest=false. Die Beta-Update-
-Datei hängt immer am festen Vorabrelease „beta“ (wird bei Bedarf einmal angelegt, die Datei dort ersetzt).
+Datei hängt am festen Vorabrelease „beta“ (wird erst mit der ersten Beta angelegt, die Datei dort ersetzt). Ein stabiles
+Release legt „beta“ nicht an und erzeugt keine Beta-Datei.
 
---check-published prüft nach dem Veröffentlichen die Adressen, die die Apps lesen (latest und beta): Status, Version,
+--check-published prüft nach dem Veröffentlichen die Adressen, die die Apps lesen (latest, und beta, falls es dieses Release gibt): Status, Version,
 Signatur, Erreichbarkeit der Archive. Es braucht den Schlüssel (nur der Autor führt es aus) und liest nur.
 
 --rollback ist die Notbremse: kaputtes Release auf „Vorabrelease“ stellen, vorige Fassung wieder zum neuesten machen.
@@ -64,10 +64,6 @@ WINDOWS_INSTALLER_ARGS = "/SILENT /SP- /SUPPRESSMSGBOXES /NORESTART /CLOSEAPPLIC
 # Ab dieser Version ist der englische CHANGELOG-Abschnitt Pflicht.
 FIRST_ENGLISH_VERSION = "1.2.0.0"
 BETA_FEED = "updateinfo-mac-beta.xml"
-# Fassungen 1.0.x lesen ihre Update-Datei unter den alten Namen; jedes stabile Release trägt sie als byte-gleiche Kopie.
-# Mac 1.0.x: appcast-mac.xml, Windows 1.0.x: appcast-windows.xml (belegt in den Absprachen); appcast-win.xml zur Sicherheit dazu.
-LEGACY_FEEDS = {"appcast-mac.xml": "updateinfo-mac.xml", "appcast-windows.xml": "updateinfo-win.xml",
-                "appcast-win.xml": "updateinfo-win.xml"}
 _NO_BETA = 10**9
 
 
@@ -380,7 +376,7 @@ def release_notes(version, section, files, en_section=None, beta=None):
         lines += ["", "Beim ersten Start des aus dem Browser geladenen Windows-Setups zeigt Windows einen Sicherheitshinweis",
                   "(SmartScreen „Der Computer wurde durch Windows geschützt“ mit „Weitere Informationen“ → „Trotzdem ausführen“, "
                   "oder „Unbekannter Herausgeber“ mit „Ausführen“). Updates über die App zeigen ihn nicht."]
-    lines += ["", "Prüfsummen (SHA-256) stehen in `SHA256SUMS.txt`. `updateinfo-*.xml` (und `appcast-*.xml` für Fassungen 1.0.x) lesen die Apps für ihre Updates.", ""]
+    lines += ["", "Prüfsummen (SHA-256) stehen in `SHA256SUMS.txt`. `updateinfo-*.xml` lesen die Apps für ihre Updates.", ""]
     if en_section is not None:
         lines += ["---", "", "## English", ""]
         if beta:
@@ -426,20 +422,6 @@ def stable_item_from_sources(root, stable_feed=None, fetch=False):
     if not items:
         fail("In der stabilen Update-Datei steht kein Eintrag.")
     return max(items, key=lambda i: version_order(item_version(i)))
-
-
-def newest_local_beta_item(root):
-    base = root / "releases"
-    best = None
-    if base.is_dir():
-        for d in base.iterdir():
-            f = d / BETA_FEED
-            if re.fullmatch(r"v\d+\.\d+\.\d+\.\d+b\d+", d.name) and f.is_file():
-                for i in extract_items(f.read_text(encoding="utf-8")):
-                    v = item_version(i)
-                    if "b" in v and (best is None or version_order(v) > version_order(item_version(best))):
-                        best = i
-    return best
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -530,7 +512,7 @@ def verify_release_dir(out, version, beta, tool, key_args, min_macos):
         expected = {dmg, BETA_FEED, "SHA256SUMS.txt", "RELEASE_NOTES.md"}
     else:
         expected = {dmg, f"Klimacontrol-Windows-{version}-Setup.exe", "updateinfo-mac.xml", "updateinfo-win.xml",
-                    *LEGACY_FEEDS, BETA_FEED, "SHA256SUMS.txt", "RELEASE_NOTES.md"}
+                    "SHA256SUMS.txt", "RELEASE_NOTES.md"}
     present = {p.name for p in out.iterdir()}
     problems = []
     for name in sorted(present - expected):
@@ -549,27 +531,19 @@ def verify_release_dir(out, version, beta, tool, key_args, min_macos):
                               tool=tool, key_args=key_args, problems=problems)
             if win != [version]:
                 problems.append(f"updateinfo-win.xml: erwartet genau den Eintrag {version}, gefunden {win}")
-            for legacy, current in LEGACY_FEEDS.items():
-                if (out / legacy).read_bytes() != (out / current).read_bytes():
-                    problems.append(f"{legacy}: nicht byte-gleich mit {current}")
-                else:
-                    r = run_tool([str(tool), *key_args, "--verify", str(out / legacy)])
-                    if r.returncode != 0:
-                        problems.append(f"{legacy}: Signatur ungültig")
-        found = _check_feed(out / BETA_FEED, platform="mac", local_version=tag, local_archive=archive,
-                            min_macos=min_macos, tool=tool, key_args=key_args, problems=problems)
-        stables = [v for v in found if v and "b" not in v]
-        betas = [v for v in found if v and "b" in v]
-        if len(stables) != 1 or len(betas) > 1 or len(found) != len(stables) + len(betas):
-            problems.append(f"{BETA_FEED}: erwartet einen stabilen und höchstens einen Beta-Eintrag, gefunden {found}")
-        else:
-            if not beta and stables != [version]:
-                problems.append(f"{BETA_FEED}: stabiler Eintrag {stables[0]} statt {version}")
-            for b in betas:
-                if version_order(b) <= version_order(stables[0]):
-                    problems.append(f"{BETA_FEED}: Beta {b} ist nicht höher als {stables[0]}")
-            if beta and betas != [tag]:
-                problems.append(f"{BETA_FEED}: erwartet Beta {tag}, gefunden {betas}")
+        if beta:
+            found = _check_feed(out / BETA_FEED, platform="mac", local_version=tag, local_archive=archive,
+                                min_macos=min_macos, tool=tool, key_args=key_args, problems=problems)
+            stables = [v for v in found if v and "b" not in v]
+            betas = [v for v in found if v and "b" in v]
+            if len(stables) != 1 or len(betas) > 1 or len(found) != len(stables) + len(betas):
+                problems.append(f"{BETA_FEED}: erwartet einen stabilen und höchstens einen Beta-Eintrag, gefunden {found}")
+            else:
+                for b in betas:
+                    if version_order(b) <= version_order(stables[0]):
+                        problems.append(f"{BETA_FEED}: Beta {b} ist nicht höher als {stables[0]}")
+                if betas != [tag]:
+                    problems.append(f"{BETA_FEED}: erwartet Beta {tag}, gefunden {betas}")
         sums_path = out / "SHA256SUMS.txt"
         listed = {}
         for line in sums_path.read_text(encoding="utf-8").splitlines():
@@ -666,23 +640,10 @@ def build_release(root, tool, key_args, version, beta=None, stable_feed=None, fe
             encoding="utf-8", newline="\n")
         feeds.append(out / "updateinfo-win.xml")
 
-        # Beta-Datei: stabiler Eintrag dieser Fassung, dazu eine Beta nur, wenn es eine höhere gibt.
-        items = [extract_items((out / "updateinfo-mac.xml").read_text(encoding="utf-8"))[0]]
-        newer = newest_local_beta_item(root)
-        if newer is not None and version_order(item_version(newer)) > version_order(version):
-            items.append(newer)
-        (out / BETA_FEED).write_text(feed_text("Mac, Beta", items), encoding="utf-8", newline="\n")
-        feeds.append(out / BETA_FEED)
-
     # Letzter Schreibschritt an den Update-Dateien: signieren. Danach nur noch lesen.
     for feed in feeds:
         sign_feed(tool, key_args, feed)
     files += feeds
-    if not beta:
-        # Kopien der fertigen, signierten Dateien; danach wird nichts mehr verändert.
-        for legacy, current in LEGACY_FEEDS.items():
-            (out / legacy).write_bytes((out / current).read_bytes())
-            files.append(out / legacy)
 
     sums = "".join(f"{sha256(f)}  {f.name}\n" for f in files)
     write_text(out / "SHA256SUMS.txt", sums)
@@ -710,11 +671,12 @@ def publish_plan(out, version, beta, files, beta_release_exists, gh="gh"):
     else:
         plan = [base + ["create", f"v{tag}", "--repo", GH_REPO, "--target", "main",
                         "--title", f"Klimacontrol {tag}", "--notes-file", notes, "--latest"] + attach]
-    if not beta_release_exists:
-        plan.append(base + ["create", "beta", "--repo", GH_REPO, "--prerelease", "--latest=false", "--target", "main",
-                            "--title", "Beta-Kanal (Mac)",
-                            "--notes", "Trägt nur die Datei updateinfo-mac-beta.xml für den Beta-Kanal der Mac-App."])
-    plan.append(base + ["upload", "beta", str(out / BETA_FEED), "--repo", GH_REPO, "--clobber"])
+    if beta:
+        if not beta_release_exists:
+            plan.append(base + ["create", "beta", "--repo", GH_REPO, "--prerelease", "--latest=false", "--target", "main",
+                                "--title", "Beta-Kanal (Mac)",
+                                "--notes", "Trägt nur die Datei updateinfo-mac-beta.xml für den Beta-Kanal der Mac-App."])
+        plan.append(base + ["upload", "beta", str(out / BETA_FEED), "--repo", GH_REPO, "--clobber"])
     return plan
 
 
@@ -808,11 +770,12 @@ def check_published(version, tool, key_args):
                  ("latest Windows", f"{REPO}/releases/latest/download/updateinfo-win.xml", None)]
     else:
         feeds = [("latest Mac", f"{REPO}/releases/latest/download/updateinfo-mac.xml", version),
-                 ("latest Windows", f"{REPO}/releases/latest/download/updateinfo-win.xml", version),
-                 ("latest Mac (alter Name, Fassungen 1.0.x)", f"{REPO}/releases/latest/download/appcast-mac.xml", version),
-                 ("latest Windows (alter Name, Fassungen 1.0.x)", f"{REPO}/releases/latest/download/appcast-windows.xml", version),
-                 ("latest Windows (alter Name, vorsorglich)", f"{REPO}/releases/latest/download/appcast-win.xml", version),
-                 beta_feed]
+                 ("latest Windows", f"{REPO}/releases/latest/download/updateinfo-win.xml", version)]
+        # Den Beta-Kanal gibt es erst mit der ersten Beta; solange das Release „beta“ fehlt, ist das kein Fehler.
+        if http_get(beta_feed[1])[0] == 404:
+            print("beta Mac: noch kein Beta-Kanal (Release „beta“ existiert nicht)")
+        else:
+            feeds.append(beta_feed)
     with tempfile.TemporaryDirectory() as tmp:
         for label, url, expected in feeds:
             print(f"{label}: {url}")
@@ -920,8 +883,8 @@ def main(argv=None):
     else:
         print(f"Hochladen: {REPO}/releases/new?tag=v{tag} – Dateien oben anhängen, Text aus RELEASE_NOTES.md"
               + (", als Vorabrelease." if args.beta else ", „Set as the latest release“, kein Vorabrelease.")
-              + " Oder: python3 tools/make_release.py --publish. "
-              f"Die Datei {BETA_FEED} gehört an das Vorabrelease „beta“.")
+              + " Oder: python3 tools/make_release.py --publish."
+              + (f" Die Datei {BETA_FEED} gehört an das Vorabrelease „beta“." if args.beta else ""))
 
 
 if __name__ == "__main__":

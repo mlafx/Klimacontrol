@@ -242,7 +242,7 @@ Vertrag in Abschnitt 8.
 | `VERSION` | einzige Quelle der Versionsnummer (auch für Windows: `KlimacontrolTray.csproj` liest sie) |
 | `test.sh` | Swift-Tests am Mac (Scratch-Pfad außerhalb des Projekts, Protokoll in Temp-Ordner) |
 | `build_app.sh` | Mac-App universal bauen, Sparkle einbetten, signieren, optional notarisieren, DMG + ZIP; `--no-test`, `--beta <n>` (Version `<VERSION>b<n>`), `--out <Ordner>` (Probebau statt `dist/mac`); schreibt die zweisprachigen `InfoPlist.strings` (`de.lproj`/`en.lproj`) und `CFBundleLocalizations` |
-| `make_release.py` | Release-Ordner `releases/v<Version>/` bzw. Beta `releases/v<Version>b<n>/` (`--beta <n>`): Pakete, Update-Dateien (`updateinfo-mac.xml`, `-win.xml`, `-mac-beta.xml`, als letzter Schritt mit dem Update-Schlüssel signiert und geprüft; dazu die byte-gleichen Kopien `appcast-mac.xml`, `appcast-windows.xml`, `appcast-win.xml` für Fassungen 1.0.x, nie in der Beta), Prüfsummen, Release-Text (deutsch und englisch); `--publish` legt das GitHub-Release an, `--check-published` prüft die veröffentlichten Adressen (liest nur), `--rollback <kaputt> <vorige> [--execute]` ist die Notbremse |
+| `make_release.py` | Release-Ordner `releases/v<Version>/` bzw. Beta `releases/v<Version>b<n>/` (`--beta <n>`): Pakete, Update-Dateien (`updateinfo-mac.xml`, `-win.xml`, `-mac-beta.xml` nur bei `--beta`, als letzter Schritt mit dem Update-Schlüssel signiert und geprüft), Prüfsummen, Release-Text (deutsch und englisch); `--publish` legt das GitHub-Release an, `--check-published` prüft die veröffentlichten Adressen (liest nur), `--rollback <kaputt> <vorige> [--execute]` ist die Notbremse |
 | `test_make_release.py` | Selbsttest für `make_release.py` mit Probedateien und nachgebildetem `sign_update` (`python3 -I tools/test_make_release.py`; läuft auch in `ReleaseScriptTests`) |
 | `update_test_feed.py` | lokale, signierte Update-Datei zum Prüfen der Updates vor dem Release (Abschnitt 14.1); `--serve-only <Ordner>` liefert einen vorhandenen Ordner nur aus |
 | `UPDATE_PUBLIC_KEY` | öffentlicher EdDSA-Schlüssel der Updates (Mac: Info.plist, Windows: WinSparkle) |
@@ -762,6 +762,11 @@ der Tastaturnavigation); unter Windows gilt Strg+↑/↓.
 - Farben/Schriften kommen aus `ThemeStyle` (Umgebung `\.klimaTheme`), Karten über `.klimaCard`, Leuchten über
   `.klimaGlow`. Keine fest verdrahteten Farben in Ansichten.
 - Liquid Glass (`.glassEffect`) nur hinter `#available(macOS 26, *)`, darunter `.ultraThinMaterial`.
+- **Glas-Container:** `GlassContainer` (GlassEffectContainer) liegt INNERHALB der Scroll-Ansicht der Steuerspalte und
+  getrennt um die Fußzeile. Außen gezeichnet ragt Liquid Glass ohne Zuschnitt über die Fußzeile (`.clipped()`/`.mask`
+  helfen nicht).
+- macOS 26 lässt die Liquid-Glass-Tönung in nicht aktiven Fenstern verschwinden (Kacheln wirken blass): Systemverhalten,
+  kein Fehler. Screenshots für die Prüfung immer mit aktivem Fenster machen.
 - **Größe ändern:** Während das Fenster seine Größe ändert, bleibt die Fläche der Graphen eingefroren (`WindowRef.isResizing`), Graphenhöhen wachsen nur in 20-pt-Stufen, „Lebendig“ wird auf ein Drittel der Auflösung gezeichnet, Wetter-Teilchen skalieren mit der Fläche, über ~2 MP gelten 20 statt 30 Bilder je Sekunde.
 - **Grafikspeicher:** Jeder Neuaufbau der Swift-Charts-Graphen und jede Animation über den ganzen Zustand kostet kurz
   ~190 MB Grafikspeicher (Metal). Darum: Graphen selten neu aufbauen (Marks in Equatable-Ansichten, eigene
@@ -814,7 +819,7 @@ nach einem neuen Build nicht erneut nach Freigaben (Netzwerk, Schlüsselbund); a
 - **Beta-Kanal (nur Mac, ab 1.2.0.0):** Einstellungen → Allgemein → Updates: „Vorabversionen (Beta) erhalten“,
   Standard aus (`SettingsKey.updateBetaChannel`). Nur mit Schalter liefert `feedURLStringForUpdater:` die Beta-Datei
   `…/releases/download/beta/updateinfo-mac-beta.xml` (`AppUpdate.feedMacBeta`); ohne Schalter bleibt `SUFeedURL`.
-  Die Beta-Datei enthält immer die neueste stabile Fassung und die neueste Beta. Schalter aus → die App bleibt auf der
+  Die Beta-Datei enthält die neueste stabile Fassung und die neueste Beta. Solange es keine Beta gibt, existiert sie nicht (siehe 16). Schalter aus → die App bleibt auf der
   Beta bis zur nächsten stabilen Fassung.
 - Windows (WinSparkle): automatische Suche bei jedem Start erzwungen, zusätzlich Suche beim Start; jedes Update ist im
   Appcast `criticalUpdate` – WinSparkle blendet dann „Überspringen“ und „Später erinnern“ aus, nur Schließen
@@ -889,8 +894,8 @@ MideaKit-Tests als am Mac (zuletzt 130 statt 137), weil einige nur auf Darwin ü
 | `KlimacontrolBridgeTests` | `BridgeDisplayTests` (Katalog-Felder), `BridgeContractTests`: jedes Feld des echten Schnappschusses steht in `bridge-muster.json` (Gegenrichtung zu `VertragTests`); `BridgeCommandTests`: Parametertypen, Meldungen, Befehlsnamen gegen `Cmd` in C#; `BridgeEnergyTests` (`kc_energy_json`), `BridgeLocaleTests` (`kc_set_locale`, `kc_strings_json`, Befehle `language`/`currency`), `BridgeEnglishTests`, `BridgeWhatsNewTests` |
 | Windows (C#) | `CoreTests`, `LayoutTests`, `ThemeTests`, `AppearanceTextTests` (Darstellung wie am Mac), `LocalizationTests` (Textschlüssel und Katalog), `VertragTests` (Schnappschuss, Befehlsnamen, Anzeige-Katalog, keine eigenen Listen/Grenzen in der Oberfläche) |
 
-Stand zuletzt: Mac 560 Tests (MideaKit 137, Kern 382, Bridge 41; 2 übersprungen, beide bewusst: Live-Scan, echter
-Schlüsselbund). Windows zuletzt 553 Swift + 278 C# (MideaKit 130, Kern 380, Bridge 43). Zeitzonen-Tests nehmen eine feste Zone (`TimeZone(identifier:)`) oder die Ortszeit über
+Stand zuletzt (nach Release 1.2.0.0): Mac 584 Tests (MideaKit 137, Kern 406, Bridge 41; 2 übersprungen, beide bewusst: Live-Scan, echter
+Schlüsselbund). Windows zuletzt 577 Swift + 278 C# (MideaKit 130, Kern 404, Bridge 43). Zeitzonen-Tests nehmen eine feste Zone (`TimeZone(identifier:)`) oder die Ortszeit über
 `Calendar.current.timeZone`. Die Rundungstabelle `Tests/Shared/rounding-table.json` liest Swift (`#filePath`, keine
 Ressource) und C# gemeinsam.
 
@@ -1160,14 +1165,18 @@ Muster: „What happened. What to do. (code)“. „Klimacontrol“ und „Porta
 - Am Release hängen **nur das Mac-DMG und das Windows-Setup** (dazu die beiden `updateinfo-*.xml` und Prüfsummen); die ZIPs aus den
   Bauskripten sind für Tests und Handbetrieb. `make_release.py` prüft zuerst, dass DMG und App darin notarisiert und
   geheftet sind (`stapler validate`, `spctl` „Notarized Developer ID“), und bricht sonst ab, ebenso ohne Setup.
-- `make_release.py` kopiert DMG und Setup nach `releases/v<Version>/`, signiert beide, schreibt `updateinfo-mac.xml` und `updateinfo-win.xml` (Versionshinweise aus dem CHANGELOG ohne die Zeilen der anderen Plattform), danach als byte-gleiche Kopien der fertigen, signierten Dateien `appcast-mac.xml`, `appcast-windows.xml` und `appcast-win.xml` (alte Adressen der Fassungen 1.0.x; nur stabil, nie in der Beta; `--check-published` prüft sie mit),
+- `make_release.py` kopiert DMG und Setup nach `releases/v<Version>/`, signiert beide, schreibt `updateinfo-mac.xml` und `updateinfo-win.xml` (Versionshinweise aus dem CHANGELOG ohne die Zeilen der anderen Plattform),
   `SHA256SUMS.txt` und `RELEASE_NOTES.md` (Beschreibungstext mit Download-Tabelle, wird nicht angehängt).
 - GitHub erkennt Releases nicht von selbst: den Ordnerinhalt im Release-Formular hochladen (Tag `v<Version>` auf
   `main`, „latest“, kein Vorabrelease) oder `--publish` (GitHub CLI `gh`, angemeldet) – nur auf ausdrücklichen Auftrag.
 - **Beta-Releases (nur Mac):** jede Beta ist ein eigenes Vorabrelease `v<Version>b<n>` auf einem Commit des
-  Entwicklungszweigs. Das feste Vorabrelease „beta“ (Tag `beta`, wird nie verschoben) trägt nur
-  `updateinfo-mac-beta.xml`; `make_release.py` schreibt diese Datei bei jedem Release und jeder Beta neu (neueste
-  stabile + neueste Beta). Die öffentliche `updateinfo-mac.xml` wird für eine Beta nie angefasst.
+  Entwicklungszweigs. Das feste Vorabrelease „beta“ (Tag `beta`) gibt es erst mit der ersten Beta: `--publish --beta <n>` legt
+  es an und ersetzt dort `updateinfo-mac-beta.xml` (neueste stabile + neueste Beta). Ein stabiles Release legt „beta“ nicht
+  an, erzeugt und lädt keine Beta-Datei; `--check-published` prüft die Beta-Adresse nur, wenn „beta“ existiert, sonst
+  Hinweis „noch kein Beta-Kanal“. Die öffentliche `updateinfo-mac.xml` wird für eine Beta nie angefasst.
+- Veröffentlicht ist 1.2.0.0 (08.11.2026): `latest` trägt genau fünf Dateien (Mac-DMG, Windows-Setup, `updateinfo-mac.xml`,
+  `updateinfo-win.xml`, `SHA256SUMS.txt`); v1.1.0.0 bleibt bestehen. Das frühere Vorabrelease „beta“ samt Tag wurde
+  gelöscht, weil es noch keine Beta gab.
 - **Signatur der Update-Dateien:** `make_release.py` signiert DMG, Setup und zuletzt die `updateinfo-*.xml`, prüft
   jede Signatur (`sign_update --verify`) und verändert die Dateien danach nicht mehr. Zum Schluss prüft
   `verify_release_dir()` den Ordner vollständig (D3/7, läuft automatisch). Bestehende Release-Ordner werden nie
@@ -1187,7 +1196,7 @@ Installierte Fassungen ab 1.1.0.0 aktualisieren sich nur, solange diese Punkte s
 
 | Punkt | Mac | Windows |
 |---|---|---|
-| Update-Adresse | `…/releases/latest/download/updateinfo-mac.xml`; 1.0.x: `…/appcast-mac.xml` – als byte-gleiche Kopie an jedem Release, nie entfernen | `…/releases/latest/download/updateinfo-win.xml`; 1.0.x: `…/appcast-windows.xml` (ebenso `appcast-win.xml` vorsorglich) – als Kopie an jedem Release, nie entfernen |
+| Update-Adresse | `…/releases/latest/download/updateinfo-mac.xml` | `…/releases/latest/download/updateinfo-win.xml` |
 | „latest“ | immer ein stabiles Release mit beiden Dateien | ebenso |
 | Schlüssel, Signatur | derselbe EdDSA-Schlüssel (`tools/UPDATE_PUBLIC_KEY`); dieselbe Developer-ID (Team wie in der Signatur von 1.1.0.0) | derselbe EdDSA-Schlüssel |
 | Kennungen | `de.mlafx.klimacontrol`, `Klimacontrol.app` | `AppId {1EAA2BD1-F86E-420F-A62C-4057C87B34F8}`, `{localappdata}\Programs\Klimacontrol`, Registry-Pfad von WinSparkle |
@@ -1218,9 +1227,7 @@ Region, Mac „Jetzt neu starten · Später“.
 8. Nach dem Veröffentlichen: beide `latest/download`-Adressen liefern HTTP 200, die neue Version und eine gültige
    Signatur: `python3 tools/make_release.py --check-published [<Version>]` (liest nur, braucht den Schlüssel).
 
-**Befund 1.0.x:** Mac 1.0.x liest `appcast-mac.xml`, Windows 1.0.x `appcast-windows.xml`. Fehlten diese Dateien am
-„latest“-Release, bekamen 1.0.x-Installationen kein Update (404). Darum legt `make_release.py` die byte-gleichen Kopien an
-(D1), und `--check-published` prüft sie.
+Öffentlich gibt es Fassungen ab 1.1.0.0; Update-Adressen sind nur `updateinfo-mac.xml`/`updateinfo-win.xml` (und die Beta-Datei).
 
 **Mac-Update-Prüfung Schritt für Schritt** (D3/1 und D3/3):
 
@@ -1269,11 +1276,13 @@ zeigt die beiden Befehle, mit `--execute` führt es sie nacheinander aus.
 - **Die Historie ist öffentlich und wird nicht umgeschrieben:** kein Force-Push, kein Zusammenfassen, kein
   `reset` auf veröffentlichte Commits.
 - **Tags sind unveränderlich:** `v<Version>` (Release) und `v<Version>b<n>` (Beta) werden einmal gesetzt und nie
-  verschoben oder gelöscht; ebenso der Tag `beta`, der nur die Update-Datei des Beta-Kanals trägt. Veröffentlichte
+  verschoben oder gelöscht. Veröffentlichte
   Releases und ihre Dateien werden nicht gelöscht oder umbenannt (installierte Fassungen laden von dort).
-- GitHub erzwingt das mit zwei Regelsätzen: „main nur per Release-Merge“ (kein Löschen, kein Force-Push, Änderungen
-  nur per Pull Request mit Merge-Commit) und „Release-Tags unveränderlich“ (`v*` und `beta`: kein Löschen, kein
-  Verschieben). Regeln nicht abschalten, um etwas „schnell“ zu erledigen.
+- Diese Regeln gelten verbindlich als Absprache. Eine technische Erzwingung durch GitHub-Regelsätze („main nur per
+  Release-Merge“, „Release-Tags unveränderlich“) ist derzeit nicht eingerichtet (Stand 08.11.2026) und bleibt dem Autor
+  überlassen; bis dahin schützt nur die Disziplin. Nichts „schnell“ umgehen.
+- Nächste Entwicklung: neuer Zweig `entwicklung-1.3` erst auf Auftrag. `tools/VERSION` bleibt bis zur Freigabe des Autors
+  1.2.0.0; ein neuer CHANGELOG-Abschnitt entsteht erst, wenn der Autor die nächste Version festlegt.
 - Notfall nach einem fehlerhaften Release: das Release auf „Vorabrelease“ stellen und das vorige mit
   `gh release edit v<vorige Version> --latest` wieder zum neuesten machen; die Korrektur kommt als neue Version.
 
@@ -1338,7 +1347,7 @@ Voraussetzungen: Tests beider Plattformen grün, D3-Prüfungen abgehakt (Ergebni
 6. Windows, nach dem OneDrive-Abgleich und Bescheid über den Briefkasten: `powershell -ExecutionPolicy Bypass -File tools\build_windows.ps1 -Zip`
    erzeugt `dist\windows\Klimacontrol-Windows-<Version>-Setup.exe`; Windows meldet die SHA-256.
 7. Mac: `shasum -a 256 dist/windows/Klimacontrol-Windows-<Version>-Setup.exe` gegen die Meldung prüfen; `git status` sauber.
-8. `python3 tools/make_release.py` erzeugt `releases/v<Version>/`; `RELEASE_NOTES.md`, `updateinfo-*.xml` und die gleichen Kopien `appcast-*.xml` ansehen.
+8. `python3 tools/make_release.py` erzeugt `releases/v<Version>/`; `RELEASE_NOTES.md` und `updateinfo-*.xml` ansehen.
 
 Ab hier nur auf ausdrückliches Kommando des Autors (veröffentlicht):
 
@@ -1348,15 +1357,20 @@ Ab hier nur auf ausdrückliches Kommando des Autors (veröffentlicht):
 11. `git fetch origin && git tag -a v<Version> -m "Klimacontrol <Version>" origin/main && git push origin v<Version>`
     (Tag auf den Merge-Commit; `gh release create` nimmt den vorhandenen Tag).
 12. `python3 tools/make_release.py --publish` baut den Ordner neu (der alte wird zu `…alt-<Zeit>`), legt das Release als „latest“
-    an und hängt die Beta-Datei an das Vorabrelease „beta“.
+    an (ohne Vorabrelease „beta“ und ohne Beta-Datei). `make_release.py` fragt den Schlüsselbund je Lauf, und `--publish`
+    baut den Ordner neu: Der Schlüsselbund-Dialog erscheint erneut (Markus bestätigt ihn).
 13. `python3 tools/make_release.py --check-published` (D3/8).
-14. Installierte Vorversionen auf Mac und Windows beobachten (Update kommt an); Mac-Sperre frei, `erledigt` in den Briefkasten.
+14. Abschlusstest mit installierten Vorversionen auf Mac und Windows: das echte Update über `latest` kommt an (D3/1, D3/2);
+    Mac-Sperre frei, `erledigt` in den Briefkasten.
+
+Das Windows-Setup baut der Windows-Agent auf Anfrage über den Briefkasten (Schritt 6); die SHA-256 der Datei auf dem Mac
+immer gegen seine Meldung vergleichen (Schritt 7), bevor `make_release.py` läuft.
 
 Notbremse: `python3 tools/make_release.py --rollback v<Version> v<vorige>` zeigt die zwei `gh release edit`-Befehle, mit
 `--execute` werden sie ausgeführt (D4). Die Korrektur kommt als nächste Fehlerbehebungs-Version; nichts löschen, keine Tags verschieben.
 
 Beta (nur Mac): wie oben mit `tools/build_app.sh --beta <n>` und `make_release.py --beta <n>`; Tag `v<Version>b<n>`, kein Pull Request
-nach `main`, das Vorabrelease zeigt auf den Entwicklungszweig.
+nach `main`, das Vorabrelease zeigt auf den Entwicklungszweig; die erste Beta legt das Release „beta“ an (siehe 14.1).
 
 ---
 
@@ -1418,6 +1432,10 @@ Gruppe/Byte in `Diagnostics` und `Response` lesen, in `HistorySample`/CSV-Kopf n
 
 - Das Windows-Hauptfenster ist bereits in der Größe veränderbar; die Regeln des Mac-Fensters (9.1, `MainWindowLayout`)
   werden für 1.3 angeglichen.
+- Mac: Der Schalter „Vorabversionen (Beta) erhalten“ meldet bis zur ersten Beta „Suche hat nicht geklappt“, weil es die
+  Beta-Datei (und das Release „beta“) noch nicht gibt. Bekannt, kein Fehler im Release.
+- Für 1.3 vorgemerkt (QA 1.2.0.0): leere Fläche unter dem Außentemperatur-Graphen im Vollbild; die englische Verbrauchsachse
+  schneidet Tagesnamen ab; das Windows-Fenster an die Mac-Regeln angleichen; Verhalten des Mac-Beta-Schalters ohne Beta-Kanal.
 - Windows: Die Einstellungen in `%LOCALAPPDATA%\Klimacontrol.exe.plist` liest swift-corelibs-foundation; ist die Datei
   kaputt oder von einem anderen Werkzeug umgeschrieben, gelten still alle Standardwerte (seit 1.0 so). Die Datei nur als
   Text ändern, nie mit einer XML-Bibliothek neu schreiben. Robusteres Lesen ist für später vorgemerkt.
