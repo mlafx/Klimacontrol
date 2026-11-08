@@ -49,6 +49,14 @@ final class MainWindowLayoutTests: XCTestCase {
         XCTAssertTrue(M.historyUsesGrid(width: 880))
     }
 
+    func testFullScreenWidthShowsBothColumns() {
+        let both = M.Visible(history: true, diagnostics: true)
+        let r = M.resolve(wanted: both, available: 2056, lastOpened: .history)
+        XCTAssertEqual(r.shown, both)
+        XCTAssertTrue(r.hidden.isEmpty)
+        XCTAssertLessThanOrEqual(M.minimumWidth(both), 2056)
+    }
+
     func testResolveKeepsWhatFits() {
         let r = M.resolve(wanted: .init(history: true, diagnostics: true), available: 1440, lastOpened: .diagnostics)
         XCTAssertEqual(r.shown, .init(history: true, diagnostics: true))
