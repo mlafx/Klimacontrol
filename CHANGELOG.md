@@ -29,6 +29,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 
 ### Behoben
 - Zahlen mit genau halbem Rest wurden abgerundet (21,25 als 21,2), jetzt kaufmännisch gerundet.
+- Fassungen 1.0.x erhielten keine Updates mehr; sie werden jetzt auf die aktuelle Fassung gebracht.
 
 ## [1.1.0.0] – 2026-11-07
 

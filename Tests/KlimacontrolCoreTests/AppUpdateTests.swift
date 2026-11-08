@@ -73,10 +73,12 @@ final class AppUpdateTests: XCTestCase {
         XCTAssertEqual(AppUpdate.firstAutoInstallVersion, "1.1.0.0")
     }
 
-    func testReleaseScriptWritesOnlyUpdateinfoFiles() throws {
+    func testReleaseScriptWritesUpdateinfoFilesAndLegacyCopies() throws {
         let script = try String(contentsOf: root.appendingPathComponent("tools/make_release.py"), encoding: .utf8)
         XCTAssertTrue(script.contains("\"updateinfo-mac.xml\"") && script.contains("\"updateinfo-win.xml\""))
-        XCTAssertFalse(script.contains("\"appcast-"))
+        for legacy in ["appcast-mac.xml", "appcast-windows.xml", "appcast-win.xml"] {
+            XCTAssertTrue(script.contains("\"\(legacy)\""), "Alter Name \(legacy) fehlt in make_release.py (Fassungen 1.0.x)")
+        }
     }
 
     /// Öffentlicher Ed25519-Schlüssel: 32 Byte, Base64 in einer Zeile (so erwarten ihn Sparkle und WinSparkle).

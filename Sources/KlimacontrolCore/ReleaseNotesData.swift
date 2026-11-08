@@ -33,6 +33,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 
 ### Behoben
 - Zahlen mit genau halbem Rest wurden abgerundet (21,25 als 21,2), jetzt kaufmännisch gerundet.
+- Fassungen 1.0.x erhielten keine Updates mehr; sie werden jetzt auf die aktuelle Fassung gebracht.
 
 ## [1.1.0.0] – 2026-11-07
 
@@ -122,5 +123,6 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 
 ### Fixed
 - Numbers with exactly half a remainder were rounded down (21.25 as 21.2), they are now rounded half away from zero.
+- Versions 1.0.x no longer received updates; they are now updated to the current version.
 """#
 }

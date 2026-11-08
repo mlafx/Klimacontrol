@@ -8,7 +8,8 @@
     python3 tools/make_release.py --rollback <kaputt> <vorige>         # Notbremse: zeigt die Befehle (--execute: ausführen)
 
 Stabile Fassung: legt releases/v<Version>/ an mit Klimacontrol-<Version>-mac.dmg, Klimacontrol-Windows-<Version>-Setup.exe,
-updateinfo-mac.xml, updateinfo-win.xml, updateinfo-mac-beta.xml, SHA256SUMS.txt und RELEASE_NOTES.md (Beschreibungstext,
+updateinfo-mac.xml, updateinfo-win.xml, deren byte-gleichen Kopien appcast-mac.xml, appcast-windows.xml und
+appcast-win.xml (alte Namen für die Fassungen 1.0.x), updateinfo-mac-beta.xml, SHA256SUMS.txt und RELEASE_NOTES.md (Beschreibungstext,
 zweisprachig, wird nicht angehängt). Voraussetzungen: tools/VERSION, CHANGELOG.md und CHANGELOG.en.md (ab 1.2.0.0) tragen
 für die Version ein Datum (nicht „in Arbeit“), DMG und App darin sind notarisiert und geheftet, das Setup liegt vor.
 
@@ -63,6 +64,10 @@ WINDOWS_INSTALLER_ARGS = "/SILENT /SP- /SUPPRESSMSGBOXES /NORESTART /CLOSEAPPLIC
 # Ab dieser Version ist der englische CHANGELOG-Abschnitt Pflicht.
 FIRST_ENGLISH_VERSION = "1.2.0.0"
 BETA_FEED = "updateinfo-mac-beta.xml"
+# Fassungen 1.0.x lesen ihre Update-Datei unter den alten Namen; jedes stabile Release trägt sie als byte-gleiche Kopie.
+# Mac 1.0.x: appcast-mac.xml, Windows 1.0.x: appcast-windows.xml (belegt in den Absprachen); appcast-win.xml zur Sicherheit dazu.
+LEGACY_FEEDS = {"appcast-mac.xml": "updateinfo-mac.xml", "appcast-windows.xml": "updateinfo-win.xml",
+                "appcast-win.xml": "updateinfo-win.xml"}
 _NO_BETA = 10**9
 
 
@@ -375,7 +380,7 @@ def release_notes(version, section, files, en_section=None, beta=None):
         lines += ["", "Beim ersten Start des aus dem Browser geladenen Windows-Setups zeigt Windows einen Sicherheitshinweis",
                   "(SmartScreen „Der Computer wurde durch Windows geschützt“ mit „Weitere Informationen“ → „Trotzdem ausführen“, "
                   "oder „Unbekannter Herausgeber“ mit „Ausführen“). Updates über die App zeigen ihn nicht."]
-    lines += ["", "Prüfsummen (SHA-256) stehen in `SHA256SUMS.txt`. `updateinfo-*.xml` lesen die Apps für ihre Updates.", ""]
+    lines += ["", "Prüfsummen (SHA-256) stehen in `SHA256SUMS.txt`. `updateinfo-*.xml` (und `appcast-*.xml` für Fassungen 1.0.x) lesen die Apps für ihre Updates.", ""]
     if en_section is not None:
         lines += ["---", "", "## English", ""]
         if beta:
@@ -525,15 +530,13 @@ def verify_release_dir(out, version, beta, tool, key_args, min_macos):
         expected = {dmg, BETA_FEED, "SHA256SUMS.txt", "RELEASE_NOTES.md"}
     else:
         expected = {dmg, f"Klimacontrol-Windows-{version}-Setup.exe", "updateinfo-mac.xml", "updateinfo-win.xml",
-                    BETA_FEED, "SHA256SUMS.txt", "RELEASE_NOTES.md"}
+                    *LEGACY_FEEDS, BETA_FEED, "SHA256SUMS.txt", "RELEASE_NOTES.md"}
     present = {p.name for p in out.iterdir()}
     problems = []
     for name in sorted(present - expected):
         problems.append(f"unerwartete Datei: {name}")
     for name in sorted(expected - present):
         problems.append(f"fehlende Datei: {name}")
-    if any(n.startswith("appcast") for n in present):
-        problems.append("Dateien mit Namen appcast… sind nicht vorgesehen")
     if not problems:
         archive = out / dmg
         if not beta:
@@ -546,6 +549,13 @@ def verify_release_dir(out, version, beta, tool, key_args, min_macos):
                               tool=tool, key_args=key_args, problems=problems)
             if win != [version]:
                 problems.append(f"updateinfo-win.xml: erwartet genau den Eintrag {version}, gefunden {win}")
+            for legacy, current in LEGACY_FEEDS.items():
+                if (out / legacy).read_bytes() != (out / current).read_bytes():
+                    problems.append(f"{legacy}: nicht byte-gleich mit {current}")
+                else:
+                    r = run_tool([str(tool), *key_args, "--verify", str(out / legacy)])
+                    if r.returncode != 0:
+                        problems.append(f"{legacy}: Signatur ungültig")
         found = _check_feed(out / BETA_FEED, platform="mac", local_version=tag, local_archive=archive,
                             min_macos=min_macos, tool=tool, key_args=key_args, problems=problems)
         stables = [v for v in found if v and "b" not in v]
@@ -668,6 +678,11 @@ def build_release(root, tool, key_args, version, beta=None, stable_feed=None, fe
     for feed in feeds:
         sign_feed(tool, key_args, feed)
     files += feeds
+    if not beta:
+        # Kopien der fertigen, signierten Dateien; danach wird nichts mehr verändert.
+        for legacy, current in LEGACY_FEEDS.items():
+            (out / legacy).write_bytes((out / current).read_bytes())
+            files.append(out / legacy)
 
     sums = "".join(f"{sha256(f)}  {f.name}\n" for f in files)
     write_text(out / "SHA256SUMS.txt", sums)
@@ -793,7 +808,11 @@ def check_published(version, tool, key_args):
                  ("latest Windows", f"{REPO}/releases/latest/download/updateinfo-win.xml", None)]
     else:
         feeds = [("latest Mac", f"{REPO}/releases/latest/download/updateinfo-mac.xml", version),
-                 ("latest Windows", f"{REPO}/releases/latest/download/updateinfo-win.xml", version), beta_feed]
+                 ("latest Windows", f"{REPO}/releases/latest/download/updateinfo-win.xml", version),
+                 ("latest Mac (alter Name, Fassungen 1.0.x)", f"{REPO}/releases/latest/download/appcast-mac.xml", version),
+                 ("latest Windows (alter Name, Fassungen 1.0.x)", f"{REPO}/releases/latest/download/appcast-windows.xml", version),
+                 ("latest Windows (alter Name, vorsorglich)", f"{REPO}/releases/latest/download/appcast-win.xml", version),
+                 beta_feed]
     with tempfile.TemporaryDirectory() as tmp:
         for label, url, expected in feeds:
             print(f"{label}: {url}")

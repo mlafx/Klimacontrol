@@ -241,7 +241,7 @@ Vertrag in Abschnitt 8.
 | `VERSION` | einzige Quelle der Versionsnummer (auch für Windows: `KlimacontrolTray.csproj` liest sie) |
 | `test.sh` | Swift-Tests am Mac (Scratch-Pfad außerhalb des Projekts, Protokoll in Temp-Ordner) |
 | `build_app.sh` | Mac-App universal bauen, Sparkle einbetten, signieren, optional notarisieren, DMG + ZIP; `--no-test`, `--beta <n>` (Version `<VERSION>b<n>`), `--out <Ordner>` (Probebau statt `dist/mac`); schreibt die zweisprachigen `InfoPlist.strings` (`de.lproj`/`en.lproj`) und `CFBundleLocalizations` |
-| `make_release.py` | Release-Ordner `releases/v<Version>/` bzw. Beta `releases/v<Version>b<n>/` (`--beta <n>`): Pakete, Update-Dateien (`updateinfo-mac.xml`, `-win.xml`, `-mac-beta.xml`, als letzter Schritt mit dem Update-Schlüssel signiert und geprüft), Prüfsummen, Release-Text (deutsch und englisch); `--publish` legt das GitHub-Release an, `--check-published` prüft die veröffentlichten Adressen (liest nur), `--rollback <kaputt> <vorige> [--execute]` ist die Notbremse |
+| `make_release.py` | Release-Ordner `releases/v<Version>/` bzw. Beta `releases/v<Version>b<n>/` (`--beta <n>`): Pakete, Update-Dateien (`updateinfo-mac.xml`, `-win.xml`, `-mac-beta.xml`, als letzter Schritt mit dem Update-Schlüssel signiert und geprüft; dazu die byte-gleichen Kopien `appcast-mac.xml`, `appcast-windows.xml`, `appcast-win.xml` für Fassungen 1.0.x, nie in der Beta), Prüfsummen, Release-Text (deutsch und englisch); `--publish` legt das GitHub-Release an, `--check-published` prüft die veröffentlichten Adressen (liest nur), `--rollback <kaputt> <vorige> [--execute]` ist die Notbremse |
 | `test_make_release.py` | Selbsttest für `make_release.py` mit Probedateien und nachgebildetem `sign_update` (`python3 -I tools/test_make_release.py`; läuft auch in `ReleaseScriptTests`) |
 | `update_test_feed.py` | lokale, signierte Update-Datei zum Prüfen der Updates vor dem Release (Abschnitt 14.1); `--serve-only <Ordner>` liefert einen vorhandenen Ordner nur aus |
 | `UPDATE_PUBLIC_KEY` | öffentlicher EdDSA-Schlüssel der Updates (Mac: Info.plist, Windows: WinSparkle) |
@@ -1142,7 +1142,7 @@ Muster: „What happened. What to do. (code)“. „Klimacontrol“ und „Porta
 - Am Release hängen **nur das Mac-DMG und das Windows-Setup** (dazu die beiden `updateinfo-*.xml` und Prüfsummen); die ZIPs aus den
   Bauskripten sind für Tests und Handbetrieb. `make_release.py` prüft zuerst, dass DMG und App darin notarisiert und
   geheftet sind (`stapler validate`, `spctl` „Notarized Developer ID“), und bricht sonst ab, ebenso ohne Setup.
-- `make_release.py` kopiert DMG und Setup nach `releases/v<Version>/`, signiert beide, schreibt `updateinfo-mac.xml` und `updateinfo-win.xml` (Versionshinweise aus dem CHANGELOG ohne die Zeilen der anderen Plattform),
+- `make_release.py` kopiert DMG und Setup nach `releases/v<Version>/`, signiert beide, schreibt `updateinfo-mac.xml` und `updateinfo-win.xml` (Versionshinweise aus dem CHANGELOG ohne die Zeilen der anderen Plattform), danach als byte-gleiche Kopien der fertigen, signierten Dateien `appcast-mac.xml`, `appcast-windows.xml` und `appcast-win.xml` (alte Adressen der Fassungen 1.0.x; nur stabil, nie in der Beta; `--check-published` prüft sie mit),
   `SHA256SUMS.txt` und `RELEASE_NOTES.md` (Beschreibungstext mit Download-Tabelle, wird nicht angehängt).
 - GitHub erkennt Releases nicht von selbst: den Ordnerinhalt im Release-Formular hochladen (Tag `v<Version>` auf
   `main`, „latest“, kein Vorabrelease) oder `--publish` (GitHub CLI `gh`, angemeldet) – nur auf ausdrücklichen Auftrag.
@@ -1169,7 +1169,7 @@ Installierte Fassungen ab 1.1.0.0 aktualisieren sich nur, solange diese Punkte s
 
 | Punkt | Mac | Windows |
 |---|---|---|
-| Update-Adresse | `…/releases/latest/download/updateinfo-mac.xml` | `…/releases/latest/download/updateinfo-win.xml` |
+| Update-Adresse | `…/releases/latest/download/updateinfo-mac.xml`; 1.0.x: `…/appcast-mac.xml` – als byte-gleiche Kopie an jedem Release, nie entfernen | `…/releases/latest/download/updateinfo-win.xml`; 1.0.x: `…/appcast-windows.xml` (ebenso `appcast-win.xml` vorsorglich) – als Kopie an jedem Release, nie entfernen |
 | „latest“ | immer ein stabiles Release mit beiden Dateien | ebenso |
 | Schlüssel, Signatur | derselbe EdDSA-Schlüssel (`tools/UPDATE_PUBLIC_KEY`); dieselbe Developer-ID (Team wie in der Signatur von 1.1.0.0) | derselbe EdDSA-Schlüssel |
 | Kennungen | `de.mlafx.klimacontrol`, `Klimacontrol.app` | `AppId {1EAA2BD1-F86E-420F-A62C-4057C87B34F8}`, `{localappdata}\Programs\Klimacontrol`, Registry-Pfad von WinSparkle |
@@ -1285,7 +1285,7 @@ Voraussetzungen: Tests beider Plattformen grün, D3-Prüfungen abgehakt (Ergebni
 6. Windows, nach dem OneDrive-Abgleich und Bescheid über den Briefkasten: `powershell -ExecutionPolicy Bypass -File tools\build_windows.ps1 -Zip`
    erzeugt `dist\windows\Klimacontrol-Windows-<Version>-Setup.exe`; Windows meldet die SHA-256.
 7. Mac: `shasum -a 256 dist/windows/Klimacontrol-Windows-<Version>-Setup.exe` gegen die Meldung prüfen; `git status` sauber.
-8. `python3 tools/make_release.py` erzeugt `releases/v<Version>/`; `RELEASE_NOTES.md` und `updateinfo-*.xml` ansehen.
+8. `python3 tools/make_release.py` erzeugt `releases/v<Version>/`; `RELEASE_NOTES.md`, `updateinfo-*.xml` und die gleichen Kopien `appcast-*.xml` ansehen.
 
 Ab hier nur auf ausdrückliches Kommando des Autors (veröffentlicht):
 

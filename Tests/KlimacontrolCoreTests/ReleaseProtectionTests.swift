@@ -61,6 +61,8 @@ final class ReleaseProtectionTests: XCTestCase {
         let script = try text("tools/make_release.py")
         expect(script, contains: "\"updateinfo-mac.xml\"", "Name der Mac-Update-Datei")
         expect(script, contains: "\"updateinfo-win.xml\"", "Name der Windows-Update-Datei")
+        expect(script, contains: "\"appcast-mac.xml\": \"updateinfo-mac.xml\"", "alter Name der Mac-Update-Datei (Fassungen 1.0.x)")
+        expect(script, contains: "\"appcast-windows.xml\": \"updateinfo-win.xml\"", "alter Name der Windows-Update-Datei (Fassungen 1.0.x)")
         expect(script, contains: "BETA_FEED = \"updateinfo-mac-beta.xml\"", "Name der Beta-Update-Datei")
         expect(script, contains: "\"--latest\"", "stabiles Release als latest")
         // Im stabilen Zweig von publish_plan darf kein --prerelease stehen.

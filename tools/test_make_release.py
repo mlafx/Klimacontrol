@@ -130,7 +130,9 @@ class ReleaseScriptTests(unittest.TestCase):
         names = {p.name for p in out.iterdir()}
         self.assertEqual(names, {
             "Klimacontrol-1.2.0.0-mac.dmg", "Klimacontrol-Windows-1.2.0.0-Setup.exe", "updateinfo-mac.xml",
-            "updateinfo-win.xml", "updateinfo-mac-beta.xml", "SHA256SUMS.txt", "RELEASE_NOTES.md"})
+            "updateinfo-win.xml", "appcast-mac.xml", "appcast-windows.xml", "appcast-win.xml",
+            "updateinfo-mac-beta.xml", "SHA256SUMS.txt",
+            "RELEASE_NOTES.md"})
         self.assertNotIn("RELEASE_NOTES.md", {f.name for f in files})
         for feed in ("updateinfo-mac.xml", "updateinfo-win.xml", "updateinfo-mac-beta.xml"):
             text = (out / feed).read_text(encoding="utf-8")
@@ -138,6 +140,28 @@ class ReleaseScriptTests(unittest.TestCase):
             self.assertEqual(text.count("sparkle-signatures"), 1, feed)
             mr.verify_feed(self.p.tool, self.p.key_args, out / feed)
         self.p.verify(out, "1.2.0.0")
+
+    def test_legacy_feed_copies(self):
+        out, files = self.stable()
+        sums = (out / "SHA256SUMS.txt").read_text(encoding="utf-8")
+        plan = mr.publish_plan(out, "1.2.0.0", None, files, True)
+        for legacy, current in mr.LEGACY_FEEDS.items():
+            self.assertEqual((out / legacy).read_bytes(), (out / current).read_bytes())
+            self.assertIn(f"  {legacy}\n", sums)
+            self.assertIn(str(out / legacy), plan[0])
+        self.assertNotIn("appcast", (out / "RELEASE_NOTES.md").read_text(encoding="utf-8").split("### Downloads")[1].split("\n\n")[0])
+
+    def test_missing_or_different_legacy_copy_is_detected(self):
+        out, _ = self.stable()
+        saved = (out / "appcast-mac.xml").read_bytes()
+        (out / "appcast-mac.xml").unlink()
+        code, err = run_failing(self.p.verify, out, "1.2.0.0")
+        self.assertEqual(code, 1)
+        self.assertIn("appcast-mac.xml", err)
+        (out / "appcast-mac.xml").write_bytes(saved + b" ")
+        code, err = run_failing(self.p.verify, out, "1.2.0.0")
+        self.assertEqual(code, 1)
+        self.assertIn("appcast-mac.xml", err)
 
     def test_change_after_signing_is_detected(self):
         out, _ = self.stable()
@@ -294,8 +318,12 @@ class ReleaseScriptTests(unittest.TestCase):
             mr.http_get, mr.http_head, mr.run_tool = saved
 
     def test_check_published_stable(self):
-        feeds = {"updateinfo-mac.xml": ["1.2.0.0"], "updateinfo-win.xml": ["1.2.0.0"], mr.BETA_FEED: ["1.2.0.0"]}
+        feeds = {"updateinfo-mac.xml": ["1.2.0.0"], "updateinfo-win.xml": ["1.2.0.0"], "appcast-mac.xml": ["1.2.0.0"],
+                 "appcast-windows.xml": ["1.2.0.0"], "appcast-win.xml": ["1.2.0.0"], mr.BETA_FEED: ["1.2.0.0"]}
         self.assertEqual(self._published("1.2.0.0", feeds), 0)
+        del feeds["appcast-mac.xml"]
+        self.assertGreater(self._published("1.2.0.0", feeds), 0, "alter Name fehlt")
+        feeds["appcast-mac.xml"] = ["1.2.0.0"]
         feeds["updateinfo-win.xml"] = ["1.1.0.0"]
         self.assertGreater(self._published("1.2.0.0", feeds), 0)
 
