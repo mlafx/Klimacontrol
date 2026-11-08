@@ -86,9 +86,10 @@ public enum AppLog {
     public static func redact(_ text: String) -> String {
         // Schneller Vorabtest: beide Muster brauchen `:` (JSON) bzw. `=` (Formular).
         guard text.utf8.contains(where: { $0 == UInt8(ascii: ":") || $0 == UInt8(ascii: "=") }) else { return text }
-        var out = replace(redactObject, in: text, keyGroup: 1) { _, k in "\"\(k)\":\"***\"" }
-        out = replace(redactJSON, in: out, keyGroup: 1) { _, k in "\"\(k)\":\"***\"" }
-        // Formulardaten (NetHome Plus): password=…&sessionId=…
+        // Gruppe 1 = Backslash bei maskiertem JSON (`\"token\":\"x\"` in einer Zeichenkette), bleibt erhalten.
+        var out = replace(redactObject, in: text, keyGroup: 2) { e, k in "\(e)\"\(k)\(e)\":\(e)\"***\(e)\"" }
+        out = replace(redactJSON, in: out, keyGroup: 2) { e, k in "\(e)\"\(k)\(e)\":\(e)\"***\(e)\"" }
+        // Formulardaten (NetHome Plus): password=…&sessionId=…, auch mitten in einer Protokollzeile
         out = replace(redactForm, in: out, keyGroup: 2) { lead, k in "\(lead)\(k)=***" }
         return out
     }
@@ -106,14 +107,14 @@ public enum AppLog {
         Dictionary((redactKeys + redactObjects).map { ($0.lowercased(), $0) }, uniquingKeysWith: { a, _ in a })
     /// Einmal übersetzt; NSRegularExpression ist unveränderlich und threadsicher beim Suchen.
     private static let redactJSON = try! NSRegularExpression(
-        pattern: "\"(\(redactKeys.joined(separator: "|")))\"\\s*:\\s*(\"[^\"]*\"|-?[0-9][0-9.eE+-]*)",
+        pattern: "(\\\\?)\"(\(redactKeys.joined(separator: "|")))\\\\?\"\\s*:\\s*(\\\\?\"[^\"]*\"|-?[0-9][0-9.eE+-]*)",
         options: [.caseInsensitive])
     private static let redactObject = try! NSRegularExpression(
-        pattern: "\"(\(redactObjects.joined(separator: "|")))\"\\s*:\\s*\\{[^{}]*\\}", options: [.caseInsensitive])
+        pattern: "(\\\\?)\"(\(redactObjects.joined(separator: "|")))\\\\?\"\\s*:\\s*\\{[^{}]*\\}", options: [.caseInsensitive])
     private static let redactForm = try! NSRegularExpression(
-        pattern: "(^|&)(\(redactKeys.joined(separator: "|")))=[^&]*", options: [.caseInsensitive])
+        pattern: "(^|[&?\\s])(\(redactKeys.joined(separator: "|")))=[^&]*", options: [.caseInsensitive])
 
-    /// Ersetzt jeden Treffer; `make` bekommt Gruppe 1 (nur fürs Formular: Anfang/`&`) und den Schlüssel in
+    /// Ersetzt jeden Treffer; `make` bekommt Gruppe 1 (Formular: Anfang/`&`, JSON: Backslash) und den Schlüssel in
     /// Listenschreibweise.
     private static func replace(_ re: NSRegularExpression, in s: String, keyGroup: Int,
                                 _ make: (String, String) -> String) -> String {
@@ -145,7 +146,8 @@ public enum AppLog {
     public static func write(_ message: String, _ level: String = "INFO") {
         let now = Date()
         queue.async {
-            let line = "\(now.formatted(timeFormat)) \(level) \(message)\n"
+            // Zentral schwärzen; Aufrufer, die vorher kürzen (`prefix`), schwärzen selbst zuerst, damit kein Schlüsselname zerschnitten wird.
+            let line = "\(now.formatted(timeFormat)) \(level) \(redact(message))\n"
             guard let h = openHandle(now: now) else { return }
             // Ans Ende springen (ein anderer Prozess kann inzwischen angehängt haben); liefert zugleich die Größe.
             if let size = try? h.seekToEnd(), size > UInt64(maxBytes) {

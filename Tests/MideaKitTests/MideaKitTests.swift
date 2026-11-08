@@ -338,6 +338,58 @@ final class MideaKitTests: XCTestCase {
         XCTAssertFalse(f.contains("nutzer%40example.com"), "volle E-Mail nicht ins Protokoll")
     }
 
+    /// Liest das Protokoll, nachdem `body` geschrieben hat (`tail()` wartet auf die Queue).
+    private func loggedText(_ body: () -> Void) throws -> String {
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("klimacontrol-log-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        AppLog.redirect(to: dir)
+        defer { AppLog.redirect(to: nil); try? FileManager.default.removeItem(at: dir) }
+        body()
+        return AppLog.tail()
+    }
+
+    func testWriteRedactsSecretsCentrally() throws {
+        let text = try loggedText {
+            AppLog.write(#"Antwort {"token":"abc","password":"x"}"#)
+            AppLog.write("Anfrage password=geheim&sessionId=1")
+            AppLog.write(#"maskiert {\"token\":\"abc\",\"userInfo\":{\"email\":\"a@b.de\"}}"#)
+        }
+        XCTAssertFalse(text.contains("abc"), text)
+        XCTAssertFalse(text.contains("geheim"), text)
+        XCTAssertFalse(text.contains("a@b.de"), text)
+        XCTAssertTrue(text.contains(#"{"token":"***","password":"***"}"#), text)
+        XCTAssertTrue(text.contains("password=***&sessionId=***"), text)
+        XCTAssertTrue(text.contains(#"\"token\":\"***\""#), text)
+    }
+
+    func testErrorAndDebugAreRedacted() throws {
+        let before = AppLog.debugEnabled
+        AppLog.debugEnabled = true
+        defer { AppLog.debugEnabled = before }
+        let text = try loggedText {
+            AppLog.error(#"Fehler {"token":"abc"}"#)
+            AppLog.debug("Rahmen password=geheim")
+        }
+        XCTAssertFalse(text.contains("abc") || text.contains("geheim"), text)
+        XCTAssertEqual(text.components(separatedBy: "***").count - 1, 2, text)
+    }
+
+    func testNormalLogLinesStayUnchanged() throws {
+        let lines = ["Befehl: Soll 19°", "Verbindung über WLAN",
+                     "Netz-Scan über 254 Adressen: net_ac_1A2B 192.168.1.40 V3",
+                     "key ist hier nur ein Wort, token auch", "→ aa 23 ac 00 00 00 00 00 03 41 81 00 ff 03 ff 00 20: x",
+                     "Uhrzeit 12:30 Modus Kühlen"]
+        for l in lines { XCTAssertEqual(AppLog.redact(l), l) }
+        let text = try loggedText { lines.forEach { AppLog.write($0) } }
+        for l in lines { XCTAssertTrue(text.contains(" INFO \(l)\n") || text.hasSuffix(" INFO \(l)"), l) }
+    }
+
+    func testEscapedJSONRedaction() {
+        XCTAssertEqual(AppLog.redact(#"{\"token\":\"abc\",\"id\":\"7\"}"#), #"{\"token\":\"***\",\"id\":\"7\"}"#)
+        XCTAssertEqual(AppLog.redact(#"x \"userInfo\":{\"uid\":\"1\"} y"#), #"x \"userInfo\":\"***\" y"#)
+        XCTAssertEqual(AppLog.redact(#"{\"count\":5,\"uid\":12345}"#), #"{\"count\":5,\"uid\":\"***\"}"#)
+    }
+
     /// Vorkompilierte Schwärzung liefert dasselbe wie 26 Einzel-Regexe nacheinander.
     func testLogRedactionMatchesReference() {
         func reference(_ text: String) -> String {
