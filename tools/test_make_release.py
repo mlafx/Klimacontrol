@@ -271,6 +271,45 @@ class ReleaseScriptTests(unittest.TestCase):
         bad = [first + ["--prerelease"]]
         self.assertEqual(run_failing(mr.check_publish_plan, bad, None)[0], 1)
 
+    def _published(self, version, feeds):
+        """check_published mit nachgebildetem Netz: feeds = {Dateiname: [Versionen]}."""
+        def body(versions):
+            items = "".join(f'<item><sparkle:version>{v}</sparkle:version><enclosure url="https://example.com/{v}.dmg"/></item>'
+                            for v in versions)
+            return (f'<rss xmlns:sparkle="{mr.SPARKLE_NS}"><channel>{items}</channel></rss>'
+                    "<!-- sparkle-signatures:\n-->").encode()
+
+        class Done:
+            returncode = 0
+
+        def get(url):
+            name = url.rsplit("/", 1)[-1]
+            return (200, body(feeds[name])) if name in feeds else (404, b"")
+
+        saved = (mr.http_get, mr.http_head, mr.run_tool)
+        mr.http_get, mr.http_head, mr.run_tool = get, lambda url: 200, lambda cmd: Done()
+        try:
+            return quiet(mr.check_published, version, self.p.tool, self.p.key_args)
+        finally:
+            mr.http_get, mr.http_head, mr.run_tool = saved
+
+    def test_check_published_stable(self):
+        feeds = {"updateinfo-mac.xml": ["1.2.0.0"], "updateinfo-win.xml": ["1.2.0.0"], mr.BETA_FEED: ["1.2.0.0"]}
+        self.assertEqual(self._published("1.2.0.0", feeds), 0)
+        feeds["updateinfo-win.xml"] = ["1.1.0.0"]
+        self.assertGreater(self._published("1.2.0.0", feeds), 0)
+
+    def test_check_published_beta_checks_only_beta_feed_for_the_version(self):
+        feeds = {"updateinfo-mac.xml": ["1.1.0.0"], "updateinfo-win.xml": ["1.1.0.0"], mr.BETA_FEED: ["1.1.0.0", "1.2.0.0b1"]}
+        self.assertEqual(self._published("1.2.0.0b1", feeds), 0)
+        feeds[mr.BETA_FEED] = ["1.1.0.0"]
+        self.assertGreater(self._published("1.2.0.0b1", feeds), 0)
+        feeds[mr.BETA_FEED] = ["1.2.0.0b1"]
+        self.assertGreater(self._published("1.2.0.0b1", feeds), 0, "stabiler Eintrag fehlt")
+        feeds[mr.BETA_FEED] = ["1.1.0.0", "1.2.0.0b1"]
+        feeds["updateinfo-mac.xml"] = ["1.2.0.0b1"]
+        self.assertGreater(self._published("1.2.0.0b1", feeds), 0, "Beta darf nicht in der öffentlichen Datei stehen")
+
 
 if __name__ == "__main__":
     unittest.main()

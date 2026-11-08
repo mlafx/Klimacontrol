@@ -3,6 +3,7 @@
 
     python3 tools/update_test_feed.py --dmg <DMG> [--version <V>] [--port 8765] [--key-file <Datei>]
                                       [--unsigned] [--serve] [--base-url <URL>]
+    python3 tools/update_test_feed.py --serve-only <Ordner> [--port 8765]    # vorhandenen Ordner nur ausliefern
 
 Legt ~/Library/Caches/Klimacontrol-update-test/ an (ein vorhandener Ordner wird beiseite gelegt, nicht gelöscht), kopiert
 das DMG hinein, signiert es mit Sparkles sign_update, schreibt updateinfo-mac.xml (Enclosure <base-url>/<DMG>, Hinweise aus
@@ -113,8 +114,7 @@ def build_feed_dir(mr, tool, key_args, dmg, version, base_url, unsigned, out=CAC
 
 def instructions(feed_url, version, unsigned):
     d3 = ("D3/3 (unsignierte Update-Datei): Es darf KEIN Update erscheinen; im Sparkle-Protokoll steht ein Fehler zur "
-          "fehlenden bzw. ungültigen Signatur der Update-Datei." if unsigned else
-          "D3/1: Update läuft still durch; D3/3: Hinweis \"Jetzt neu starten · Später\".")
+          "fehlenden bzw. ungültigen Signatur der Update-Datei." if unsigned else "")
     return f"""
 Anleitung (nichts davon hat das Skript ausgeführt):
 
@@ -147,7 +147,9 @@ def serve(directory, port):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Lokale Update-Datei für den Update-Test D3/1 und D3/3.")
-    parser.add_argument("--dmg", type=Path, required=True, help="DMG, auf das aktualisiert werden soll")
+    parser.add_argument("--dmg", type=Path, help="DMG, auf das aktualisiert werden soll (außer mit --serve-only)")
+    parser.add_argument("--serve-only", type=Path, metavar="ORDNER",
+                        help="vorhandenen Ordner nur ausliefern (127.0.0.1), nichts bauen oder signieren")
     parser.add_argument("--version", help="Version in der Update-Datei (Standard: tools/VERSION)")
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--key-file", type=Path, help="privater EdDSA-Schlüssel als Datei statt aus dem Schlüsselbund")
@@ -157,6 +159,13 @@ def main(argv=None):
     parser.add_argument("--sign-tool", type=Path, help="nur für Proben: nachgebildetes sign_update")
     parser.add_argument("--out-dir", type=Path, default=CACHE, help="nur für Proben: anderer Ausgabeordner")
     args = parser.parse_args(argv)
+    if args.serve_only:
+        if not args.serve_only.is_dir():
+            parser.error(f"Ordner {args.serve_only} fehlt.")
+        serve(args.serve_only, args.port)
+        return
+    if not args.dmg:
+        parser.error("--dmg fehlt (oder --serve-only <Ordner>).")
     mr = load_release_tools()
     if args.key_file and not args.key_file.is_file():
         mr.fail(f"Schlüsseldatei {args.key_file} fehlt.")

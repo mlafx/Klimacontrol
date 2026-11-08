@@ -763,6 +763,13 @@ def http_head(url):
         return 0
 
 
+def _is_beta(v):
+    try:
+        return parse_version(v)[4] is not None
+    except ValueError:
+        return False
+
+
 def check_published(version, tool, key_args):
     """Liest nur. Gibt die Anzahl der Fehler zurück."""
     errors = 0
@@ -772,9 +779,19 @@ def check_published(version, tool, key_args):
         print(f"  {'ok   ' if ok else 'FEHLT'}  {text}")
         errors += 0 if ok else 1
 
-    feeds = [("latest Mac", f"{REPO}/releases/latest/download/updateinfo-mac.xml", version),
-             ("latest Windows", f"{REPO}/releases/latest/download/updateinfo-win.xml", version),
-             ("beta Mac", f"{REPO}/releases/download/beta/{BETA_FEED}", version)]
+    try:
+        is_beta = parse_version(version)[4] is not None
+    except ValueError:
+        fail(f"{version!r} ist keine Version.")
+    beta_feed = ("beta Mac", f"{REPO}/releases/download/beta/{BETA_FEED}", version)
+    if is_beta:
+        # Eine Beta liegt nur in der Beta-Datei; die öffentlichen Dateien müssen unverändert eine stabile Fassung tragen.
+        feeds = [beta_feed,
+                 ("latest Mac", f"{REPO}/releases/latest/download/updateinfo-mac.xml", None),
+                 ("latest Windows", f"{REPO}/releases/latest/download/updateinfo-win.xml", None)]
+    else:
+        feeds = [("latest Mac", f"{REPO}/releases/latest/download/updateinfo-mac.xml", version),
+                 ("latest Windows", f"{REPO}/releases/latest/download/updateinfo-win.xml", version), beta_feed]
     with tempfile.TemporaryDirectory() as tmp:
         for label, url, expected in feeds:
             print(f"{label}: {url}")
@@ -790,12 +807,19 @@ def check_published(version, tool, key_args):
                 report(False, "gültiges XML")
                 continue
             versions = [(i.findtext(_q("version")) or "").strip() for i in items]
-            report(expected in versions, f"Version {expected} enthalten (gefunden: {versions})")
+            stable = [v for v in versions if v and not _is_beta(v)]
+            if expected is None:
+                report(bool(stable), f"stabile Version enthalten (gefunden: {versions})")
+                expected = max(stable, key=version_order, default=None)
+            else:
+                report(expected in versions, f"Version {expected} enthalten (gefunden: {versions})")
+                if label == "beta Mac" and is_beta:
+                    report(bool(stable), "stabiler Eintrag enthalten")
             r = run_tool([str(tool), *key_args, "--verify", str(path)])
             report(r.returncode == 0 and b"sparkle-signatures" in body, "eingebettete Signatur gültig")
             for i in items:
                 enc = i.find("enclosure")
-                if enc is not None and (i.findtext(_q("version")) or "").strip() == expected:
+                if enc is not None and expected and (i.findtext(_q("version")) or "").strip() == expected:
                     report(http_head(enc.get("url") or "") == 200, f"Archiv erreichbar: {enc.get('url')}")
     print("Ergebnis: " + ("alles in Ordnung" if not errors else f"{errors} Fehler"))
     return errors
