@@ -27,5 +27,3 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 
 ### Fixed
 - Numbers with exactly half a remainder were rounded down (21.25 as 21.2), they are now rounded half up.
-- Mac: “Restart now” in the language selection appears only if the language actually changes.
-- Mac: “What’s new” also appears when moving from one beta to the next beta or to the final version.

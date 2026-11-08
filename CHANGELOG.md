@@ -29,8 +29,6 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 
 ### Behoben
 - Zahlen mit genau halbem Rest wurden abgerundet (21,25 als 21,2), jetzt kaufmännisch gerundet.
-- Mac: „Jetzt neu starten“ bei der Sprachwahl erscheint nur, wenn sich die Sprache tatsächlich ändert.
-- Mac: „Neu in dieser Version“ erscheint auch beim Wechsel von einer Beta auf die nächste Beta oder die fertige Fassung.
 
 ## [1.1.0.0] – 2026-11-07
 
