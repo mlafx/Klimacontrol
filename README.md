@@ -10,6 +10,14 @@ V3, Cloud-Zugriff optional.**
 </p>
 
 <p align="center">
+  <a href="#funktionen">
+    <img src="https://flagcdn.com/h24/de.png" alt="Deutsch" height="24">
+    <img src="https://img.shields.io/badge/Sprachen-Deutsch%20%C2%B7%20English-555?style=for-the-badge" alt="Sprachen: Deutsch · English" height="24">
+    <img src="https://flagcdn.com/h24/us.png" alt="English (US)" height="24">
+  </a>
+</p>
+
+<p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/Lizenz-MIT-blue" alt="Lizenz: MIT"></a>
   <img src="https://img.shields.io/badge/macOS%2015%2B%20%C2%B7%20Windows%2011-lightgrey" alt="macOS 15+ · Windows 11">
 </p>
@@ -50,6 +58,7 @@ Windows).
 | Diagnose | Verdichter, Kältekreis, Lüfter, Filterstatus und Fehlercodes live aus der Anlage |
 | Integration | Menüleiste (macOS) bzw. Infobereich (Windows), Mini-Fenster, Start bei der Anmeldung |
 | Darstellung | Hell, dunkel und mehrere Themen; Transparenz, Größe und Umfang einstellbar |
+| Sprachen | Deutsch und Englisch; nach Systemsprache oder in den Einstellungen wählbar; Zahlen, Uhrzeit und Datum nach den Regionseinstellungen |
 | Updates | Signiert (EdDSA) und automatisch; macOS installiert selbstständig, Windows nach Bestätigung |
 
 ## Voraussetzungen
