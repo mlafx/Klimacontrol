@@ -15,6 +15,21 @@ final class VersionTests: XCTestCase {
         XCTAssertTrue(head.hasPrefix("## [\(version)]"), "CHANGELOG-Kopf „\(head)“ passt nicht zu VERSION \(version)")
     }
 
+    /// Die Dateinamen der Pakete tragen die Version; „latest/download“ geht darum nicht, die Links im README
+    /// müssen beim Release mitwandern.
+    func testReadmeDownloadLinksMatchVersionFile() throws {
+        let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        let version = try String(contentsOf: root.appendingPathComponent("tools/VERSION"), encoding: .utf8)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let readme = try String(contentsOf: root.appendingPathComponent("README.md"), encoding: .utf8)
+        let base = "https://github.com/mlafx/Klimacontrol/releases/download/v\(version)/"
+        XCTAssertTrue(readme.contains(base + "Klimacontrol-\(version)-mac.dmg"), "README: Mac-Link passt nicht zu VERSION \(version)")
+        XCTAssertTrue(readme.contains(base + "Klimacontrol-Windows-\(version)-Setup.exe"),
+                      "README: Windows-Link passt nicht zu VERSION \(version)")
+        let links = readme.components(separatedBy: "/releases/download/").count - 1
+        XCTAssertEqual(links, 2, "README: unerwartete Zahl direkter Download-Links")
+    }
+
     func testEnglishChangelogHeadMatchesVersionFile() throws {
         let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
         let en = root.appendingPathComponent("CHANGELOG.en.md")

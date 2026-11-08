@@ -4,17 +4,14 @@
 V3, Cloud-Zugriff optional.**
 
 <p align="center">
-  <a href="https://github.com/mlafx/Klimacontrol/releases/latest">
-    <img src="https://img.shields.io/github/v/release/mlafx/Klimacontrol?style=for-the-badge&label=%E2%AC%87%20Herunterladen&color=2ea44f" alt="Herunterladen (neueste Version)" width="562">
-  </a>
+  <a href="https://github.com/mlafx/Klimacontrol/releases/download/v1.2.0.0/Klimacontrol-1.2.0.0-mac.dmg"><img src="https://img.shields.io/badge/Download-2ea44f?style=for-the-badge&logo=apple&logoColor=white" alt="Herunterladen für macOS (DMG)" width="260"></a><br>
+  <a href="https://github.com/mlafx/Klimacontrol/releases/download/v1.2.0.0/Klimacontrol-Windows-1.2.0.0-Setup.exe"><img src="https://img.shields.io/badge/Download-2ea44f?style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgMGgxMS40djExLjRIMHpNMTIuNiAwSDI0djExLjRIMTIuNnpNMCAxMi42aDExLjRWMjRIMHpNMTIuNiAxMi42SDI0VjI0SDEyLjZ6Ii8+PC9zdmc+" alt="Herunterladen für Windows (Setup)" width="260"></a>
 </p>
 
 <p align="center">
-  <a href="#funktionen">
-    <img src="https://flagcdn.com/h24/de.png" alt="Deutsch" height="24">
-    <img src="https://img.shields.io/badge/Sprachen-Deutsch%20%C2%B7%20English-555?style=for-the-badge" alt="Sprachen: Deutsch · English" height="24">
-    <img src="https://flagcdn.com/h24/us.png" alt="English (US)" height="24">
-  </a>
+  <a href="#funktionen"><img src="https://img.shields.io/badge/Sprachen-555?style=for-the-badge" alt="Sprachen:" height="24"></a>
+  <img src="https://flagcdn.com/h24/de.png" alt="Deutsch" height="24">
+  <img src="https://flagcdn.com/h24/us.png" alt="English (US)" height="24">
 </p>
 
 <p align="center">
