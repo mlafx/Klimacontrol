@@ -1,0 +1,18 @@
+{
+  "comment": "Gemeinsame Rundungstabelle für Swift (FormatProfileTests) und C# (Formats.cs): Halbwerte weg von null, de-DE und en-US.",
+  "rows": [
+    {"value": 0.125, "digits": 2, "de": "0,13", "en": "0.13"},
+    {"value": 21.25, "digits": 1, "de": "21,3", "en": "21.3"},
+    {"value": 0.5, "digits": 0, "de": "1", "en": "1"},
+    {"value": -0.5, "digits": 0, "de": "-1", "en": "-1"},
+    {"value": 2.5, "digits": 0, "de": "3", "en": "3"},
+    {"value": -2.5, "digits": 0, "de": "-3", "en": "-3"},
+    {"value": 1.5, "digits": 0, "de": "2", "en": "2"},
+    {"value": 0.005, "digits": 2, "de": "0,01", "en": "0.01"},
+    {"value": 0.375, "digits": 2, "de": "0,38", "en": "0.38"},
+    {"value": 1234.5, "digits": 0, "de": "1.235", "en": "1,235"},
+    {"value": 1234.125, "digits": 2, "de": "1.234,13", "en": "1,234.13"},
+    {"value": 0.0, "digits": 1, "de": "0,0", "en": "0.0"},
+    {"value": 24.0, "digits": 1, "de": "24,0", "en": "24.0"}
+  ]
+}

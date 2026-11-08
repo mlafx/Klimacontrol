@@ -264,6 +264,43 @@ final class TransportTests: XCTestCase {
         XCTAssertNil(f.last?.code)
     }
 
+    /// Ursachen aus dem echten Ablauf der Wegwahl sind Typen, keine Texte.
+    func testFailureReasonsFromRealFlow() {
+        func reasons(lanError: any Error) -> [PathFailure.Reason] {
+            let lan = FakeTransport(1)
+            let t = AutoTransport(lan: lan, cloud: nil, mode: .lan)
+            lan.fail = true
+            lan.error = lanError
+            do { _ = try t.send(Data(), retries: 0, expect: nil) } catch { return [PathFailure.from(error, path: .lan).reason] }
+            return []
+        }
+        let lan = FakeTransport(1), cloud = FakeTransport(3)
+        let auto = AutoTransport(lan: lan, cloud: cloud, mode: .auto)
+        auto.now = { Date(timeIntervalSince1970: 0) }
+        lan.fail = true
+        cloud.fail = true
+        lan.error = MideaError.busy(.otherApp)
+        cloud.error = Self.offline
+        guard case .allPathsFailed(let f)? = captured(auto) else { return XCTFail("kein Fehler") }
+        XCTAssertEqual(f.map(\.reason), [.busy(.otherApp), .applianceOffline(nextCheck: nil)])
+        XCTAssertEqual(reasons(lanError: MideaError.refused), [.refused])
+        XCTAssertEqual(reasons(lanError: MideaError.timeout), [.timeout])
+        XCTAssertEqual(reasons(lanError: MideaError.connectionFailed(.closed)), [.connection(.closed)])
+        XCTAssertEqual(reasons(lanError: MideaError.unreachable("x")), [.unreachable])
+        XCTAssertEqual(reasons(lanError: MideaError.connectionFailed("Systemtext")), [.connection(.other("Systemtext"))])
+
+        let none = AutoTransport(lan: nil, cloud: nil, mode: .auto)
+        XCTAssertThrowsError(try none.send(Data(), retries: 0, expect: nil)) { XCTAssertEqual($0 as? MideaError, .connectionFailed(.noPath)) }
+        let noLan = AutoTransport(lan: nil, cloud: cloud, mode: .lan)
+        XCTAssertThrowsError(try noLan.send(Data(), retries: 0, expect: nil)) { XCTAssertEqual($0 as? MideaError, .connectionFailed(.noLAN)) }
+        let noCloud = AutoTransport(lan: lan, cloud: nil, mode: .cloud)
+        XCTAssertThrowsError(try noCloud.send(Data(), retries: 0, expect: nil)) { XCTAssertEqual($0 as? MideaError, .connectionFailed(.noCloud)) }
+    }
+
+    private func captured(_ t: AutoTransport) -> MideaError? {
+        do { _ = try t.send(Data(), retries: 0, expect: nil); return nil } catch { return error as? MideaError }
+    }
+
     /// „Nur Cloud“ im Rückzug nach 3123: derselbe typisierte Grund wie in „Automatisch“.
     func testCloudOnlyBackoffIsTypedOffline() {
         let cloud = FakeTransport(3)

@@ -171,7 +171,7 @@ public struct DeviceConfig: Codable, Equatable, Sendable {
             return try JSONDecoder().decode(DeviceConfig.self, from: data)
         } catch {
             let aside = moveAside(url)
-            AppLog.error("\(url.lastPathComponent) unlesbar (\(error.localizedDescription)) – beiseitegelegt als \(aside)")
+            AppLog.error(LogText.t("log.device.configUnreadable", "{file} unlesbar ({error}) – beiseitegelegt als {aside}", ["file": url.lastPathComponent, "error": error.localizedDescription, "aside": aside]))
             return nil
         }
     }
@@ -199,10 +199,10 @@ public enum ConfigError: Error, LocalizedError {
 
     public var errorDescription: String? {
         switch self {
-        case .noDevice: return "Die Datei enthält keine Anlage."
-        case .unsupportedVersion(let v): return "Protokollversion V\(v) wird nicht unterstützt (nur V3)."
-        case .invalidHex: return "Token oder Schlüssel sind kein gültiges Hex (erwartet 128 bzw. 64 Zeichen)."
-        case .invalidAddress: return "Die Adresse der Anlage ist keine gültige IPv4-Adresse mit Port."
+        case .noDevice: return LogText.t("kit.config.noDevice", "Die Datei enthält keine Anlage.")
+        case .unsupportedVersion(let v): return LogText.t("kit.config.unsupportedVersion", "Protokollversion V{version} wird nicht unterstützt (nur V3).", ["version": String(v)])
+        case .invalidHex: return LogText.t("kit.config.invalidHex", "Token oder Schlüssel sind kein gültiges Hex (erwartet 128 bzw. 64 Zeichen).")
+        case .invalidAddress: return LogText.t("kit.config.invalidAddress", "Die Adresse der Anlage ist keine gültige IPv4-Adresse mit Port.")
         }
     }
 }
@@ -353,7 +353,7 @@ public final class PortaSplitDevice: @unchecked Sendable {
                     remember(result)
                     return result
                 }
-                AppLog.error("Stellbefehl nicht übernommen (Versuch \(attempt)/3): \(Self.mismatch(result, target, changed))")
+                AppLog.error(LogText.t("log.device.notApplied", "Stellbefehl nicht übernommen (Versuch {attempt}/3): {fields}", ["attempt": String(attempt), "fields": "\(Self.mismatch(result, target, changed))"]))
             }
             // Dreimal nicht übernommen: aktuellen Stand der Anlage (frischer Pull) zurückgeben und melden.
             remember(result)
@@ -368,7 +368,7 @@ public final class PortaSplitDevice: @unchecked Sendable {
         switch m {
         case .commandNotApplied, .authenticationFailed, .outcomeUnknown: return m
         case .allPathsFailed(let failures) where failures.contains(where: \.isApplianceOffline): return m
-        default: return MideaError.outcomeUnknown(m.errorDescription ?? "Keine Antwort.")
+        default: return MideaError.outcomeUnknown(m.errorDescription ?? LogText.t("kit.error.noReply", "Keine Antwort."))
         }
     }
 
@@ -379,15 +379,15 @@ public final class PortaSplitDevice: @unchecked Sendable {
         /// Name im Protokoll („Stellbefehl nicht übernommen: soll“).
         var label: String {
             switch self {
-            case .power: return "ein/aus"
-            case .mode: return "modus"
-            case .temp: return "soll"
-            case .fan: return "lüfter"
-            case .swing: return "swing"
-            case .eco: return "eco"
-            case .turbo: return "turbo"
-            case .purifier: return "ionisierer"
-            case .freeze: return "frostschutz"
+            case .power: return LogText.t("kit.control.power", "ein/aus")
+            case .mode: return LogText.t("kit.control.mode", "modus")
+            case .temp: return LogText.t("kit.control.target", "soll")
+            case .fan: return LogText.t("kit.control.fan", "lüfter")
+            case .swing: return LogText.t("kit.control.swing", "swing")
+            case .eco: return LogText.t("kit.control.eco", "eco")
+            case .turbo: return LogText.t("kit.control.turbo", "turbo")
+            case .purifier: return LogText.t("kit.control.purifier", "ionisierer")
+            case .freeze: return LogText.t("kit.control.freeze", "frostschutz")
             }
         }
 
@@ -469,7 +469,9 @@ public final class PortaSplitDevice: @unchecked Sendable {
                 applyProperties(props, to: &state)
                 readBack = props?.1[.rateSelect] != nil
                 if state.ratePercent == value { break }
-                AppLog.write("Leistungsbegrenzung \(value) % nicht übernommen – \(attempt == 0 ? "wiederhole" : "aufgegeben")")
+                AppLog.write(attempt == 0
+                    ? LogText.t("log.device.rateRetry", "Leistungsbegrenzung {value} % nicht übernommen – wiederhole", ["value": String(value)])
+                    : LogText.t("log.device.rateGaveUp", "Leistungsbegrenzung {value} % nicht übernommen – aufgegeben", ["value": String(value)]))
             }
             remember(state)
             // Nicht übernommen (z. B. 75 % bei der PortaSplit): als Fehler melden statt still den alten Wert.
@@ -497,7 +499,9 @@ public final class PortaSplitDevice: @unchecked Sendable {
                 // Ließ sich der Wert nicht zurücklesen, gilt er als übernommen (Ergebnis unbekannt).
                 applied = result?.0[prop] == nil || result?.0[prop] == on
                 if applied { break }
-                AppLog.write("\(prop) = \(on) nicht übernommen – \(attempt == 0 ? "wiederhole" : "aufgegeben")")
+                AppLog.write(attempt == 0
+                    ? LogText.t("log.device.propertyRetry", "{property} = {value} nicht übernommen – wiederhole", ["property": "\(prop)", "value": "\(on)"])
+                    : LogText.t("log.device.propertyGaveUp", "{property} = {value} nicht übernommen – aufgegeben", ["property": "\(prop)", "value": "\(on)"]))
             }
             remember(state)
             if !applied { throw MideaError.commandNotApplied(state) }
@@ -521,11 +525,11 @@ public final class PortaSplitDevice: @unchecked Sendable {
                     throw Self.unclearOutcome(error)
                 }
                 if state.displayOn != before || attempt == 1 {
-                    if state.displayOn == before { AppLog.write("Anzeige umschalten nicht übernommen – aufgegeben") }
+                    if state.displayOn == before { AppLog.write(LogText.t("log.device.displayGaveUp", "Anzeige umschalten nicht übernommen – aufgegeben")) }
                     remember(state)
                     return state
                 }
-                AppLog.write("Anzeige umschalten nicht übernommen – wiederhole einmal")
+                AppLog.write(LogText.t("log.device.displayRetry", "Anzeige umschalten nicht übernommen – wiederhole einmal"))
             }
             preconditionFailure("unerreichbar")
         }
@@ -579,7 +583,7 @@ public final class PortaSplitDevice: @unchecked Sendable {
 
     private func queryState() throws -> ACState {
         guard let s = try stateFrom(client.send(Frame.getState(), expect: 0xC0)) else {
-            throw MideaError.invalidResponse("keine Zustandsmeldung")
+            throw MideaError.invalidResponse(LogText.t("kit.device.noState", "keine Zustandsmeldung"))
         }
         return s
     }

@@ -1,6 +1,7 @@
 <UserControl x:Class="KlimacontrolTray.ScenesSection"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="clr-namespace:KlimacontrolTray"
              Margin="0,12,0,0">
   <!-- Standardmäßig eingeklappt; die Knöpfe baut ScenesSection.xaml.cs. -->
   <Expander x:Name="ScenesExpander" Expanded="Scenes_Changed" Collapsed="Scenes_Changed">
@@ -10,7 +11,7 @@
         <StackPanel>
           <ToggleButton IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                         Content="{TemplateBinding Header}" Cursor="Hand" HorizontalAlignment="Stretch"
-                        ToolTip="Szenen ein- oder ausblenden">
+                        ToolTip="{l:T main.windows.scenesToggleHelp}">
             <ToggleButton.Template>
               <ControlTemplate TargetType="ToggleButton">
                 <Border x:Name="Box" Background="Transparent" MinHeight="22" Padding="0,2">
@@ -36,7 +37,7 @@
       </ControlTemplate>
     </Expander.Template>
     <Expander.Header>
-      <TextBlock x:Name="HeaderText" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Sub}" Text="SZENEN"
+      <TextBlock x:Name="HeaderText" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Sub}" Text="{l:T main.section.scenes}"
                  TextTrimming="CharacterEllipsis"/>
     </Expander.Header>
 
@@ -47,9 +48,9 @@
           <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <TextBlock x:Name="ScenesHint" FontSize="12" Foreground="{DynamicResource Sub}" TextWrapping="Wrap" VerticalAlignment="Center"
-                   Margin="0,0,12,0" Text="Noch keine Szenen – stelle die Anlage ein und sichere den Zustand mit +."/>
+                   Margin="0,0,12,0" Text="{l:T main.scene.empty}"/>
         <Button x:Name="SceneAdd" Grid.Column="1" FontSize="12" Padding="10,4" VerticalAlignment="Top" Click="SceneAdd_Click"
-                ToolTip="Aktuellen Zustand als Szene sichern"/>
+                ToolTip="{l:T main.scene.saveHelp}"/>
       </Grid>
 
       <!-- Name der neuen Szene -->
@@ -61,14 +62,14 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
           </Grid.ColumnDefinitions>
-          <TextBlock FontSize="13" VerticalAlignment="Center" Margin="0,0,8,0" Text="Name"/>
-          <TextBox x:Name="SceneNameBox" Grid.Column="1" AutomationProperties.Name="Name der Szene" KeyDown="SceneName_KeyDown" TextChanged="SceneName_TextChanged"/>
-          <Button x:Name="SceneSaveButton" Grid.Column="2" Content="Sichern" Margin="6,0,0,0" IsEnabled="False"
+          <TextBlock FontSize="13" VerticalAlignment="Center" Margin="0,0,8,0" Text="{l:T main.scene.name}"/>
+          <TextBox x:Name="SceneNameBox" Grid.Column="1" AutomationProperties.Name="{l:T main.windows.sceneNameAccessibility}" KeyDown="SceneName_KeyDown" TextChanged="SceneName_TextChanged"/>
+          <Button x:Name="SceneSaveButton" Grid.Column="2" Content="{l:T main.scene.saveConfirm}" Margin="6,0,0,0" IsEnabled="False"
                   Style="{StaticResource Primary}" Click="SceneSave_Click"/>
-          <Button Grid.Column="3" Content="Abbrechen" Margin="6,0,0,0" Click="SceneCancel_Click"/>
+          <Button Grid.Column="3" Content="{l:T common.cancel}" Margin="6,0,0,0" Click="SceneCancel_Click"/>
         </Grid>
         <TextBlock FontSize="11" Foreground="{DynamicResource Sub}" TextWrapping="Wrap" Margin="0,6,0,0"
-                   Text="Speichert Ein/Aus, Modus, Temperatur, Lüfter, Schwenken, Eco, Ionisierer und „Außengerät leise“."/>
+                   Text="{l:T main.scene.saveMessage}"/>
       </StackPanel>
 
       <UniformGrid x:Name="SceneGrid" Columns="2" Margin="-3,6,-3,0"/>

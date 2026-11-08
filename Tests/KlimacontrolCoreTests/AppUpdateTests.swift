@@ -18,6 +18,28 @@ final class AppUpdateTests: XCTestCase {
         XCTAssertEqual(AppUpdate.checkInterval, 86_400, "Standard: einmal am Tag")
     }
 
+    /// Wie `Updates.TestFeedOverride` unter Windows: nur Loopback mit gültigem Port.
+    func testTestFeedOverrideOnlyLoopback() {
+        XCTAssertEqual(AppUpdate.testFeedOverride("http://127.0.0.1:8765/updateinfo-mac.xml"),
+                       "http://127.0.0.1:8765/updateinfo-mac.xml")
+        XCTAssertEqual(AppUpdate.testFeedOverride("http://127.0.0.1:65535/a/b-c_d.xml"), "http://127.0.0.1:65535/a/b-c_d.xml")
+        for bad in [nil, "", "http://127.0.0.1:0/x.xml", "http://127.0.0.1:65536/x.xml", "http://127.0.0.1/x.xml",
+                    "https://127.0.0.1:8765/x.xml", "http://localhost:8765/x.xml", "http://127.0.0.2:8765/x.xml",
+                    "http://127.0.0.1:8765/x.xml?y=1", "http://127.0.0.1:8765@evil.example.com/x.xml",
+                    " http://127.0.0.1:8765/x.xml", AppUpdate.feedMac] {
+            XCTAssertNil(AppUpdate.testFeedOverride(bad), String(describing: bad))
+        }
+        XCTAssertEqual(AppUpdate.testFeedVariable, "KLIMACONTROL_UPDATE_TEST_FEED")
+    }
+
+    func testBetaFeed() {
+        XCTAssertEqual(AppUpdate.feedMacBeta, "https://github.com/mlafx/Klimacontrol/releases/download/beta/updateinfo-mac-beta.xml")
+        XCTAssertFalse(AppUpdate.feedMacBeta.contains("/latest/"))
+        XCTAssertEqual(AppUpdate.feedMac(beta: false), AppUpdate.feedMac)
+        XCTAssertEqual(AppUpdate.feedMac(beta: true), AppUpdate.feedMacBeta)
+        XCTAssertEqual(AppUpdate.feedMac, "https://github.com/mlafx/Klimacontrol/releases/latest/download/updateinfo-mac.xml")
+    }
+
     func testMacBuildScriptUsesTheSameFeedIntervalAndKey() throws {
         let script = try String(contentsOf: root.appendingPathComponent("tools/build_app.sh"), encoding: .utf8)
         XCTAssertTrue(script.contains("<key>SUFeedURL</key><string>\(AppUpdate.feedMac)</string>"))
@@ -43,10 +65,20 @@ final class AppUpdateTests: XCTestCase {
         XCTAssertTrue(script.contains("WINDOWS_CRITICAL = \"\\n      <sparkle:criticalUpdate></sparkle:criticalUpdate>\""))
     }
 
-    func testReleaseScriptWritesOnlyUpdateinfoFiles() throws {
+    func testReleaseScriptSignsUpdateFilesLast() throws {
+        let script = try String(contentsOf: root.appendingPathComponent("tools/make_release.py"), encoding: .utf8)
+        XCTAssertTrue(script.contains("--verify"))
+        XCTAssertTrue(script.contains("updateinfo-mac-beta.xml"))
+        XCTAssertTrue(script.contains("FIRST_AUTO_INSTALL_VERSION = \"1.1.0.0\""))
+        XCTAssertEqual(AppUpdate.firstAutoInstallVersion, "1.1.0.0")
+    }
+
+    func testReleaseScriptWritesUpdateinfoFilesAndLegacyCopies() throws {
         let script = try String(contentsOf: root.appendingPathComponent("tools/make_release.py"), encoding: .utf8)
         XCTAssertTrue(script.contains("\"updateinfo-mac.xml\"") && script.contains("\"updateinfo-win.xml\""))
-        XCTAssertFalse(script.contains("\"appcast-"))
+        for legacy in ["appcast-mac.xml", "appcast-windows.xml", "appcast-win.xml"] {
+            XCTAssertTrue(script.contains("\"\(legacy)\""), "Alter Name \(legacy) fehlt in make_release.py (Fassungen 1.0.x)")
+        }
     }
 
     /// Öffentlicher Ed25519-Schlüssel: 32 Byte, Base64 in einer Zeile (so erwarten ihn Sparkle und WinSparkle).
@@ -55,5 +87,16 @@ final class AppUpdateTests: XCTestCase {
             .trimmingCharacters(in: .whitespacesAndNewlines)
         XCTAssertEqual(Data(base64Encoded: key)?.count, 32, "tools/UPDATE_PUBLIC_KEY")
         XCTAssertFalse(key.contains("\n"))
+    }
+
+    func testMacBuildScriptHardensUpdates() throws {
+        let script = try String(contentsOf: root.appendingPathComponent("tools/build_app.sh"), encoding: .utf8)
+        for needle in ["<key>SUVerifyUpdateBeforeExtraction</key><true/>", "<key>SURequireSignedFeed</key><true/>",
+                       "<key>CFBundleDevelopmentRegion</key><string>en</string>",
+                       "<key>CFBundleLocalizations</key><array><string>de</string><string>en</string></array>",
+                       "de.lproj/InfoPlist.strings", "en.lproj/InfoPlist.strings",
+                       "<key>SUFeedURL</key><string>\(AppUpdate.feedMac)</string>"] {
+            XCTAssertTrue(script.contains(needle), needle)
+        }
     }
 }

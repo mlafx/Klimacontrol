@@ -37,33 +37,33 @@ private struct ScenesList: View, Equatable {
                 .frame(minHeight: 22)
                 .contentShape(Rectangle())
         }
-        .alert("Szene sichern", isPresented: $naming) {
-            TextField("Name", text: $sceneName)
-            Button("Sichern") {
+        .alert(L.Main.Scene.save, isPresented: $naming) {
+            TextField(L.Main.Scene.name, text: $sceneName)
+            Button(L.Main.Scene.saveConfirm) {
                 let name = sceneName.trimmingCharacters(in: .whitespaces)
                 if !name.isEmpty { model.saveCurrentAsScene(named: name) }
                 sceneName = ""
             }
-            Button("Abbrechen", role: .cancel) { sceneName = "" }
+            Button(L.Common.cancel, role: .cancel) { sceneName = "" }
         } message: {
-            Text("Speichert Ein/Aus, Modus, Temperatur, Lüfter, Schwenken, Eco, Ionisierer und „Außengerät leise“.")
+            Text(L.Main.Scene.saveMessage)
         }
-        .confirmationDialog("Szene „\(deleting?.name ?? "")“ löschen?",
+        .confirmationDialog(L.Main.Scene.deleteTitle(name: deleting?.name ?? ""),
                             isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } })) {
-            Button("Löschen", role: .destructive) {
+            Button(L.Main.Scene.deleteConfirm, role: .destructive) {
                 if let deleting { model.deleteScene(deleting) }
                 deleting = nil
             }
-            Button("Abbrechen", role: .cancel) { deleting = nil }
+            Button(L.Common.cancel, role: .cancel) { deleting = nil }
         } message: {
-            Text("Die Szene lässt sich danach nicht wiederherstellen.")
+            Text(L.Main.Scene.deleteMessage)
         }
     }
 
     /// Eingeklappt zeigen, welche Szene gerade eingestellt ist.
     private var label: String {
-        if let first = scenes.first(where: { activeIDs.contains($0.id) }) { return "SZENEN · \(first.name) aktiv" }
-        return "SZENEN"
+        if let first = scenes.first(where: { activeIDs.contains($0.id) }) { return L.Main.Section.scenesActive(name: first.name) }
+        return L.Main.Section.scenes
     }
 
     private var scenesContent: some View {
@@ -71,14 +71,14 @@ private struct ScenesList: View, Equatable {
             HStack {
                 Spacer()
                 Button { naming = true } label: {
-                    Label("Szene sichern", systemImage: "plus").font(.caption)
+                    Label(L.Main.Scene.save, systemImage: "plus").font(.caption)
                         .frame(minHeight: 24).contentShape(Rectangle())
                 }
                     .buttonStyle(.borderless)
-                    .help("Aktuellen Zustand als Szene sichern")
+                    .help(L.Main.Scene.saveHelp)
             }
             if scenes.isEmpty {
-                Text("Noch keine Szenen – stelle die Anlage ein und sichere den Zustand mit +.")
+                Text(L.Main.Scene.empty)
                     .font(.caption).foregroundStyle(.secondary)
             } else {
                 LazyVGrid(columns: [GridItem(.flexible(), spacing: 6), GridItem(.flexible(), spacing: 6)], spacing: 6) {
@@ -92,7 +92,7 @@ private struct ScenesList: View, Equatable {
                                     .frame(width: 18)
                                 VStack(alignment: .leading, spacing: 1) {
                                     Text(scene.name).font(.callout.weight(.medium)).lineLimit(1)
-                                    Text(sceneSummary(scene)).font(.caption2)
+                                    Text(scene.summaryText).font(.caption2)
                                         .foregroundStyle(active ? theme.label(on: tint).opacity(0.85) : .secondary).lineLimit(1)
                                 }
                                 Spacer(minLength: 0)
@@ -104,10 +104,10 @@ private struct ScenesList: View, Equatable {
                         }
                         .buttonStyle(.plain)
                         .contextMenu {
-                            Button("Szene löschen …", role: .destructive) { deleting = scene }
+                            Button(L.Main.Scene.deleteMenu, role: .destructive) { deleting = scene }
                         }
-                        .accessibilityAction(named: "Szene löschen") { deleting = scene }
-                        .help(active ? "\(scene.name) ist eingestellt" : "\(scene.name) anwenden – Rechtsklick zum Löschen")
+                        .accessibilityAction(named: L.Main.Scene.deleteAction) { deleting = scene }
+                        .help(active ? L.Main.Scene.activeHelp(name: scene.name) : L.Main.Scene.applyHelp(name: scene.name))
                         .accessibilityAddTraits(active ? .isSelected : [])
                     }
                 }
@@ -116,12 +116,4 @@ private struct ScenesList: View, Equatable {
     }
 
     nonisolated static func == (a: ScenesList, b: ScenesList) -> Bool { a.scenes == b.scenes && a.activeIDs == b.activeIDs }
-
-    /// „Kühlen · 18° · Max“ – mit Modus: das Symbol allein ist bei mehreren Kühl-Szenen nicht eindeutig.
-    private func sceneSummary(_ s: ACScene) -> String {
-        guard s.powerOn else { return "Aus" }
-        let fan = FanSpeed(rawValue: s.fan)?.label ?? "\(s.fan) %"
-        let mode = OperationalMode(rawValue: s.mode)?.label
-        return [mode, Fmt.target(s.tempC), fan].compactMap { $0 }.joined(separator: " · ")
-    }
 }

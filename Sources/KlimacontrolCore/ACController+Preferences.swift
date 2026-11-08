@@ -3,7 +3,7 @@ import MideaKit
 
 /// Einstellungen: gespeichert über `SettingsStore` (Schlüssel in `SettingsKey`), Grenzen prüfen die Setter.
 extension ACController {
-    static let defaultDisplayName = "Klimaanlage"
+    static var defaultDisplayName: String { L.Message.defaultName }
     public static let backgroundRefreshSeconds = 30
 
     /// Anzeigename statt der technischen Kennung der Anlage.
@@ -24,7 +24,7 @@ extension ACController {
             guard clamped != storedRefreshSeconds else { return }
             storedRefreshSeconds = clamped
             settings.set(clamped, forKey: SettingsKey.refreshSeconds)
-            AppLog.write("Aktualisierung alle \(clamped) s")
+            AppLog.write(L.Log.Settings.refresh(seconds: String(clamped)))
             restartPolling()
         }
     }
@@ -48,17 +48,50 @@ extension ACController {
         // Wer nach Hause kommt und das Fenster öffnet, soll sofort wieder WLAN probieren statt bis zu 5 min auf den
         // Cloud-Backoff zu warten.
         if wasBackground, !background { device?.resetBackoff() }
-        AppLog.debug(background ? "Kein Fenster sichtbar – Abfrage alle \(effectiveRefreshSeconds) s" : "Fenster sichtbar")
+        AppLog.debug(background ? L.Log.Settings.backgroundPolling(seconds: String(effectiveRefreshSeconds)) : L.Log.Settings.windowVisible)
         restartPolling()
     }
 
-    /// Strompreis je kWh in Euro (0–10).
+    /// Strompreis je kWh (0–1000, Währung siehe `currency`).
     public var pricePerKWh: Double {
         get { storedPrice }
         set {
             guard let price = Self.validPrice(newValue) else { return }
             storedPrice = price
             settings.set(price, forKey: SettingsKey.pricePerKWh)
+        }
+    }
+
+    /// Währung des Strompreises, immer nachgestellt. Ungültige Werte werden ignoriert (Oberfläche zeigt `currencyHint`).
+    public var currency: String {
+        get { storedCurrency }
+        set {
+            guard let value = Self.validCurrency(newValue), value != storedCurrency else { return }
+            storedCurrency = value
+            settings.set(value, forKey: SettingsKey.currency)
+            AppLog.write(L.Log.Settings.currency(value: value))
+        }
+    }
+
+    /// Gespeicherte Sprachwahl; ändert die laufende Sprache nicht (wirkt nach Neustart).
+    public var languageChoice: LanguageChoice {
+        get { storedLanguage }
+        set {
+            guard newValue != storedLanguage else { return }
+            storedLanguage = newValue
+            settings.set(newValue.rawValue, forKey: SettingsKey.language)
+            AppLog.write(L.Log.Settings.languageAfterRestart(value: newValue.rawValue))
+        }
+    }
+
+    /// Mac: Beta-Kanal der Updates.
+    public var updateBetaChannel: Bool {
+        get { storedBetaChannel }
+        set {
+            guard newValue != storedBetaChannel else { return }
+            storedBetaChannel = newValue
+            settings.set(newValue, forKey: SettingsKey.updateBetaChannel)
+            AppLog.write(L.Log.Settings.betaChannel(state: newValue ? L.Log.Common.on : L.Log.Common.off))
         }
     }
 
@@ -70,7 +103,7 @@ extension ACController {
             storedMode = newValue
             settings.set(newValue.rawValue, forKey: SettingsKey.connectionMode)
             device?.connectionMode = newValue
-            AppLog.write("Verbindungsweg: \(newValue.label)")
+            AppLog.write(L.Log.Settings.connectionMode(mode: newValue.title))
         }
     }
 
@@ -84,7 +117,7 @@ extension ACController {
             guard newValue != history.csvEnabled else { return }
             history.csvEnabled = newValue
             settings.set(newValue, forKey: SettingsKey.historyCSV)
-            AppLog.write("Verlauf als CSV: \(newValue ? "an" : "aus")")
+            AppLog.write(L.Log.Settings.historyCSV(state: newValue ? L.Log.Common.on : L.Log.Common.off))
         }
     }
 
@@ -100,5 +133,13 @@ extension ACController {
     static func clampRefresh(_ v: Int) -> Int { min(UIOptions.refreshMax, max(UIOptions.refreshMin, v)) }
     public static func validPrice(_ v: Double?) -> Double? { v.flatMap { $0.isFinite && ($0 >= UIOptions.priceMin && $0 <= UIOptions.priceMax) ? $0 : nil } }
     /// Meldung für einen Strompreis außerhalb von `validPrice` (beide Oberflächen).
-    public static let priceHint = "Der Strompreis muss zwischen 0 und 10 € je kWh liegen. Bitte korrigieren. (price)"
+    public static var priceHint: String { L.Settings.Price.invalid }
+    public static var currencyHint: String { L.Settings.Currency.invalid }
+    /// Gültige Währung (getrimmt) oder nil: 1…`currencyMaxLength` Zeichen, nur Buchstaben oder Währungszeichen.
+    public static func validCurrency(_ text: String?) -> String? {
+        guard let value = text?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !value.isEmpty, value.count <= UIOptions.currencyMaxLength else { return nil }
+        let allowed: Set<Unicode.GeneralCategory> = [.uppercaseLetter, .lowercaseLetter, .titlecaseLetter, .modifierLetter, .otherLetter, .currencySymbol]
+        return value.unicodeScalars.allSatisfy { allowed.contains($0.properties.generalCategory) } ? value : nil
+    }
 }

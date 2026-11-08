@@ -21,7 +21,7 @@ enum CredentialCheck: Sendable {
             switch e {
             case .authenticationFailed: self = .rejected(failure)
             case .busy, .commandNotApplied: self = .busy(failure)
-            case .allPathsFailed(let paths) where paths.contains(where: { $0.reason == .busy }): self = .busy(failure)
+            case .allPathsFailed(let paths) where paths.contains(where: { $0.isBusy }): self = .busy(failure)
             case .crypto, .protocolError, .timeout, .connectionFailed, .invalidResponse, .refused, .unreachable,
                  .outcomeUnknown, .allPathsFailed:
                 self = .noAnswer(failure)

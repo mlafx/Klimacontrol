@@ -26,12 +26,12 @@ struct FooterView: View {
                     Button { showCharts.toggle() } label: {
                         HStack(spacing: 6) {
                             Image(systemName: "sidebar.left").font(.title3).symbolVariant(showCharts ? .fill : .none)
-                            Text("Verlauf")
+                            Text(L.Main.Footer.history)
                         }
                         .frame(minHeight: 30).contentShape(Rectangle())
                     }
                     .buttonStyle(.borderless)
-                    .help(showCharts ? "Verlauf ausblenden (⌘G)" : "Verlauf links einblenden (⌘G)")
+                    .help(showCharts ? L.Main.Footer.historyHide : L.Main.Footer.historyShow)
                     .accessibilityAddTraits(showCharts ? .isSelected : [])
                 }
                 BusySpinner()
@@ -45,12 +45,12 @@ struct FooterView: View {
                     Button { Task { await model.refreshNow() } } label: {
                         Image(systemName: "arrow.clockwise").font(.title3).frame(width: 30, height: 30).contentShape(Rectangle())
                     }
-                        .buttonStyle(.borderless).help("Jetzt aktualisieren – probiert alle Wege neu (⌘R)")
-                        .accessibilityLabel("Jetzt aktualisieren")
+                        .buttonStyle(.borderless).help(L.Main.Footer.refreshHelp)
+                        .accessibilityLabel(L.Main.Footer.refresh)
                 }
                 SettingsLink { Image(systemName: "gearshape").font(.title3).frame(width: 30, height: 30).contentShape(Rectangle()) }
-                    .buttonStyle(.borderless).help("Einstellungen (⌘,)")
-                    .accessibilityLabel("Einstellungen")
+                    .buttonStyle(.borderless).help(L.Main.Footer.settingsHelp)
+                    .accessibilityLabel(L.Main.Footer.settings)
             }
 
             HStack(spacing: 12) {
@@ -58,13 +58,13 @@ struct FooterView: View {
                     Button { showDiagnostics.toggle() } label: {
                         // Symbol rechts vom Text – es zeigt auf die Seite, auf der die Diagnose aufgeht.
                         HStack(spacing: 6) {
-                            Text("Diagnose")
+                            Text(L.Main.Footer.diagnostics)
                             Image(systemName: "sidebar.right").font(.title3).symbolVariant(showDiagnostics ? .fill : .none)
                         }
                         .frame(minHeight: 30).contentShape(Rectangle())
                     }
                     .buttonStyle(.borderless)
-                    .help(showDiagnostics ? "Diagnose ausblenden (⌘D)" : "Diagnose rechts einblenden (⌘D)")
+                    .help(showDiagnostics ? L.Main.Footer.diagnosticsHide : L.Main.Footer.diagnosticsShow)
                     .accessibilityAddTraits(showDiagnostics ? .isSelected : [])
                 }
             }
@@ -93,7 +93,7 @@ struct SectionTitle: View {
 
     var body: some View {
         HStack {
-            Text(text).font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+            Text(text).font(.caption.weight(.semibold)).foregroundStyle(.secondary).accessibilityAddTraits(.isHeader)
             Spacer()
             if let trailing { Text(trailing).font(.caption).foregroundStyle(.secondary).monospacedDigit() }
         }

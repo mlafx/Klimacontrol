@@ -23,6 +23,7 @@ public partial class SetupStart : UserControl
         AccountChevron.Content = Chevron();
         ManualChevron.Content = Chevron();
         BackupChevron.Content = Chevron();
+        SettingsLinkText.ToolTip = L.Tip("setup.view.windows.settingsHelp", Hotkeys.Ctrl(","));
     }
 
     static Path Accent(Path p)
@@ -84,7 +85,7 @@ public partial class SetupStart : UserControl
         if (importing) return;
         Reset();
         await Dialogs.AfterPump();
-        var dlg = new OpenFileDialog { Title = Core.Snap.Options.Texts.ImportPanelTitle, Filter = "Klimacontrol-Sicherung (*.json)|*.json|Alle Dateien|*.*" };
+        var dlg = new OpenFileDialog { Title = Core.Snap.Options.Texts.ImportPanelTitle, Filter = L.T("settings.device.windows.importFilter") };
         var owner = Owner();
         if ((owner != null ? dlg.ShowDialog(owner) : dlg.ShowDialog()) != true || importing) return;
         var replace = false;
@@ -109,7 +110,7 @@ public partial class SetupStart : UserControl
         }
         (importing, importPath, importReplace, importOther) = (true, path, replace, other);
         BackupCard.IsEnabled = false;
-        Show("Sicherung wird eingelesen und an der Anlage geprüft …", false);
+        Show(L.T("settings.device.windows.importing"), false);
         // Selbst anmelden: Das Ergebnis soll auch ankommen, wenn die Einrichtung inzwischen verschwunden ist.
         Core.Changed -= ImportChanged;
         Core.Changed += ImportChanged;
@@ -144,13 +145,13 @@ public partial class SetupStart : UserControl
                 var text = r.Text ?? r.Error ?? "";
                 // Noch auf der Startseite: Meldung unter den Karten, sonst als Hinweisfenster.
                 if (IsVisible) Show(text);
-                else await Dialogs.Warn(Owner(), "Sicherung nicht eingelesen", text);
+                else await Dialogs.Warn(Owner(), L.T("setup.view.windows.importFailedTitle"), text);
                 return;
             }
             // Eingelesen, aber an der Anlage nicht geprüft: Die Einrichtung ist dann schon weg – Hinweisfenster.
             if (r.Verified == false)
             {
-                await Dialogs.Warn(Owner(), "Sicherung eingelesen", r.Text ?? "");
+                await Dialogs.Warn(Owner(), L.T("file.importAlertTitle"), r.Text ?? "");
             }
         }
         catch (Exception ex) { App.Trace("Sicherung einlesen: " + ex.GetType().Name); }

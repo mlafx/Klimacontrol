@@ -4,6 +4,10 @@ import XCTest
 /// Die Hinweise in der App und in THIRD_PARTY_NOTICES.md müssen übereinstimmen, und jeder Lizenztext muss vollständig sein.
 final class ThirdPartyNoticesTests: XCTestCase {
     func testNoticesAreCompleteAndMatchTheMarkdownFile() throws {
+        try Localizer.withLanguage(.de) { try checkNoticesAgainstMarkdown() }
+    }
+
+    private func checkNoticesAgainstMarkdown() throws {
         let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
         let md = try String(contentsOf: root.appendingPathComponent("docs/THIRD_PARTY_NOTICES.md"), encoding: .utf8)
         XCTAssertEqual(Set(ThirdPartyNotices.all.map(\.id)).count, ThirdPartyNotices.all.count, "IDs eindeutig")
@@ -42,6 +46,30 @@ final class ThirdPartyNoticesTests: XCTestCase {
 
     /// Jeder Lizenztext steht wörtlich in THIRD_PARTY_NOTICES.md, und die Windows-Laufzeiten sind als „nur Windows“ vermerkt.
     func testLicenseTextsAppearVerbatimInTheMarkdownFile() throws {
+        try Localizer.withLanguage(.de) { try checkLicenseTexts() }
+    }
+
+    func testEnglishNoticesAreComplete() throws {
+        try Localizer.withLanguage(.en) {
+            for n in ThirdPartyNotices.all {
+                XCTAssertFalse(n.usage.isEmpty, n.id)
+                XCTAssertFalse(n.usage.hasPrefix("notices."), "Text fehlt: \(n.id)")
+                let german = Localizer.text("notices.\(ThirdPartyNotice.keyName(n.id)).usage", language: .de)
+                XCTAssertNotEqual(n.usage, german, n.id)
+                XCTAssertTrue(["All", "Mac only", "Windows only"].contains(n.platforms), n.platforms)
+                for c in n.copyright { XCTAssertFalse(c.contains("gemeinfrei"), c) }
+            }
+            XCTAssertEqual(ThirdPartyNotices.all.first { $0.id == "sparkle" }?.platforms, "Mac only")
+            XCTAssertTrue(ThirdPartyNotices.trademarkNote.hasPrefix("Klimacontrol is not a Midea product"))
+            let json = try JSONEncoder().encode(ThirdPartyNotices.all)
+            let list = try XCTUnwrap(JSONSerialization.jsonObject(with: json) as? [[String: Any]])
+            XCTAssertEqual(list.first?["platforms"] as? String, "All")
+            XCTAssertNotNil(list.first?["usage"] as? String)
+            XCTAssertNotNil(list.first?["licenseText"] as? String)
+        }
+    }
+
+    private func checkLicenseTexts() throws {
         let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
         let md = try String(contentsOf: root.appendingPathComponent("docs/THIRD_PARTY_NOTICES.md"), encoding: .utf8)
             .replacingOccurrences(of: "\r\n", with: "\n")

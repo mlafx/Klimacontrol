@@ -1,0 +1,375 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+
+namespace KlimacontrolTray;
+
+/// Spiegel von FormatProfile (Sources/KlimacontrolCore/FormatProfile.swift); gleiche Felder, gleiche JSON-Namen.
+sealed record FormatProfile(string LocaleIdentifier, string DecimalSeparator, string GroupingSeparator,
+                            bool Uses24HourClock, string AmSymbol, string PmSymbol, string DayMonthPattern)
+{
+    public static readonly FormatProfile Germany = new("de_DE", ",", ".", true, "AM", "PM", "dd.MM.");
+    public static readonly FormatProfile UnitedStates = new("en_US", ".", ",", false, "AM", "PM", "MM/dd");
+
+    /// Profil aus den Regionseinstellungen einer Kultur.
+    public static FormatProfile FromCulture(CultureInfo c)
+    {
+        var nf = c.NumberFormat;
+        var decimalSeparator = nf.NumberDecimalSeparator is { Length: > 0 and <= 4 } d ? d : ".";
+        var groupSizes = nf.NumberGroupSizes;
+        var grouping = nf.NumberGroupSeparator;
+        if (groupSizes.Length == 0 || groupSizes[0] == 0 || grouping.Length > 4 || grouping == decimalSeparator) grouping = "";
+        return new FormatProfile(
+            c.Name.Length == 0 ? "en_US" : c.Name.Replace('-', '_'),
+            decimalSeparator,
+            grouping,
+            !Uses12Hours(c.DateTimeFormat.ShortTimePattern),
+            c.DateTimeFormat.AMDesignator,
+            c.DateTimeFormat.PMDesignator,
+            DayMonthFrom(c.DateTimeFormat.ShortDatePattern) ?? "dd.MM.");
+    }
+
+    /// 12-Stunden-Uhr, wenn das Muster außerhalb von Literalen ('…', "…", \x) ein `h` enthält (wie der Kern mit `h`/`K`;
+    /// `K` ist in .NET die Zeitzone und zählt hier nicht).
+    internal static bool Uses12Hours(string pattern)
+    {
+        char? quote = null;
+        for (var i = 0; i < pattern.Length; i++)
+        {
+            var ch = pattern[i];
+            if (quote != null) { if (ch == quote) quote = null; }
+            else if (ch is '\'' or '"') quote = ch;
+            else if (ch == '\\') i++;
+            else if (ch == 'h') return true;
+        }
+        return false;
+    }
+
+    enum Kind { Letters, Literal, Separator }
+
+    readonly record struct Token(Kind Kind, char Letter, string Text)
+    {
+        public int Run => Text.Length;
+        public bool IsLetter(char c) => Kind == Kind.Letters && Letter == c;
+    }
+
+    static List<Token> Tokenize(string pattern)
+    {
+        var tokens = new List<Token>();
+        var i = 0;
+        while (i < pattern.Length)
+        {
+            var ch = pattern[i];
+            if (ch == '\'')
+            {
+                var end = pattern.IndexOf('\'', i + 1);
+                var text = end < 0 ? pattern[(i + 1)..] : pattern[(i + 1)..end];
+                tokens.Add(new Token(Kind.Literal, '\0', text));
+                i = end < 0 ? pattern.Length : end + 1;
+            }
+            else if (char.IsLetter(ch))
+            {
+                var start = i;
+                while (i < pattern.Length && pattern[i] == ch) i++;
+                tokens.Add(new Token(Kind.Letters, ch, pattern[start..i]));
+            }
+            else
+            {
+                var start = i;
+                while (i < pattern.Length && pattern[i] != '\'' && !char.IsLetter(pattern[i])) i++;
+                tokens.Add(new Token(Kind.Separator, '\0', pattern[start..i]));
+            }
+        }
+        return tokens;
+    }
+
+    /// "dd.MM.yyyy" → "dd.MM.", "M/d/yyyy" → "MM/dd", "yyyy-MM-dd" → "MM-dd"; null, wenn kein Tag oder Monat bleibt.
+    internal static string? DayMonthFrom(string shortDatePattern)
+    {
+        var tokens = Tokenize(shortDatePattern);
+
+        // Jahr (und Ära) samt einem angrenzenden Trenner entfernen.
+        while (tokens.FindIndex(t => t.IsLetter('y') || t.IsLetter('g')) is var i and >= 0)
+        {
+            var atEnd = i == tokens.Count - 1;
+            tokens.RemoveAt(i);
+            if (i == 0)
+            {
+                if (tokens.Count > 0 && tokens[0].Kind == Kind.Separator) tokens.RemoveAt(0);
+            }
+            else if (tokens[i - 1].Kind == Kind.Separator)
+            {
+                var separator = tokens[i - 1];
+                tokens.RemoveAt(i - 1);
+                // Am Ende bleibt ein Punkt am Anfang des Trenners stehen („dd.MM.yyyy“ → „dd.MM.“).
+                if (atEnd && separator.Text.StartsWith('.')) tokens.Insert(i - 1, new Token(Kind.Separator, '\0', "."));
+            }
+        }
+
+        // Wochentag (ddd und länger) samt folgendem Trenner entfernen.
+        for (var i = 0; i < tokens.Count; i++)
+        {
+            if (!(tokens[i].IsLetter('d') && tokens[i].Run >= 3)) continue;
+            tokens.RemoveAt(i);
+            if (i < tokens.Count && tokens[i].Kind == Kind.Separator) tokens.RemoveAt(i);
+            i--;
+        }
+
+        var sb = new StringBuilder();
+        foreach (var t in tokens)
+        {
+            switch (t.Kind)
+            {
+                case Kind.Letters when t.Letter == 'd': sb.Append("dd"); break;
+                case Kind.Letters when t.Letter is 'M' or 'L': sb.Append("MM"); break;
+                case Kind.Letters: sb.Append(t.Text); break;
+                case Kind.Literal: sb.Append('\'').Append(t.Text).Append('\''); break;
+                default: sb.Append(t.Text); break;
+            }
+        }
+        var result = sb.ToString().Trim();
+        return result.Contains("dd", StringComparison.Ordinal) && result.Contains("MM", StringComparison.Ordinal) ? result : null;
+    }
+}
+
+/// Zahlen, Uhrzeiten und Daten nach dem Regionsformat – gleiche Regeln wie `Fmt` im Kern.
+static class Fmt
+{
+    /// Gilt für den ganzen Prozess; `Core.Start` setzt es aus den Regionseinstellungen von Windows.
+    public static FormatProfile Profile { get; set; } = FormatProfile.Germany;
+
+    /// Gruppen zu je drei Stellen, Trenner nach Profil.
+    public static string Num(double v, int digits) => Num(v, digits, Profile);
+
+    public static string Num(double v, int digits, FormatProfile profile)
+    {
+        // Halbwerte weg von null wie im Kern (.NET rundet „N“ sonst nach der Dezimaldarstellung).
+        var rounded = digits is >= 0 and <= 15 ? Math.Round(v, digits, MidpointRounding.AwayFromZero) : v;
+        var text = rounded.ToString("N" + digits, CultureInfo.InvariantCulture);
+        var sb = new StringBuilder(text.Length + 2);
+        foreach (var ch in text)
+        {
+            switch (ch)
+            {
+                case ',': sb.Append(profile.GroupingSeparator); break;
+                case '.': sb.Append(profile.DecimalSeparator); break;
+                default: sb.Append(ch); break;
+            }
+        }
+        return sb.ToString();
+    }
+
+    // Wie Fmt.temp/Fmt.target im Kern: „21,5°“ bzw. „22°“.
+    public static string Temp(double? v) => v.HasValue ? Num(v.Value, 1) + "°" : "–";
+    public static string Target(double v) => Num(Math.Round(v, MidpointRounding.AwayFromZero), 0) + "°";
+    public static string Watts(double? v) => v.HasValue ? Num(v.Value, 0) + " W" : "–";
+    public static string Kwh(double? v) => v.HasValue ? Num(v.Value, 2) + " kWh" : "–";
+
+    /// Betrag mit nachgestellter Währung („0,30 €“); ohne Wert „–“.
+    public static string Money(double? v, string currency) => v.HasValue ? Num(v.Value, 2) + " " + currency : "–";
+
+    // Wie die Regler am Mac: Anteil 0–1 als ganze Prozent („40 %“), Unschärfe als „20 pt“; gerundet wie Swift
+    // `rounded()` (ab ,5 weg von null).
+    public static string Percent(double fraction) => Num(Math.Round(fraction * 100, MidpointRounding.AwayFromZero), 0) + " %";
+    public static string Points(double v) => Num(Math.Round(v, MidpointRounding.AwayFromZero), 0) + " pt";
+
+    public static string Clock(double epoch) => Clock(Codes.Local(epoch));
+
+    public static string Clock(DateTime local) => Clock(local, Profile);
+
+    /// 24 h „14:32“; 12 h „2:32 PM“ (Stunde ohne führende Null, 0 → 12, leeres Zeichen → „AM“/„PM“).
+    public static string Clock(DateTime local, FormatProfile profile)
+    {
+        var h = local.Hour;
+        var minutes = Pad(local.Minute);
+        if (profile.Uses24HourClock) return Pad(h) + ":" + minutes;
+        var symbol = h < 12 ? profile.AmSymbol : profile.PmSymbol;
+        if (symbol.Length == 0) symbol = h < 12 ? "AM" : "PM";
+        return $"{(h % 12 == 0 ? 12 : h % 12)}:{minutes} {symbol}";
+    }
+
+    /// Beispielzeit im Format des Profils (für Hinweise wie „z. B. 07:30“).
+    public static string ClockOf(int hour, int minute) => Clock(new DateTime(2000, 1, 1, hour, minute, 0));
+
+    public static string DayMonth(double epoch) => DayMonth(Codes.Local(epoch));
+
+    public static string DayMonth(DateTime local) => DayMonth(local, Profile);
+
+    /// Tag und Monat nach `DayMonthPattern`: `d`/`dd`, `M`/`MM`/`L`, Text in '…' wörtlich, alles andere unverändert.
+    public static string DayMonth(DateTime local, FormatProfile profile)
+    {
+        var pattern = profile.DayMonthPattern;
+        var sb = new StringBuilder();
+        var i = 0;
+        while (i < pattern.Length)
+        {
+            var ch = pattern[i];
+            if (ch == '\'')
+            {
+                i++;
+                while (i < pattern.Length && pattern[i] != '\'') sb.Append(pattern[i++]);
+                i++;
+            }
+            else if (ch is 'd' or 'M' or 'L')
+            {
+                var run = 0;
+                while (i < pattern.Length && pattern[i] == ch) { run++; i++; }
+                var value = ch == 'd' ? local.Day : local.Month;
+                sb.Append(run == 1 ? value.ToString(CultureInfo.InvariantCulture) : Pad(value));
+            }
+            else
+            {
+                sb.Append(ch);
+                i++;
+            }
+        }
+        return sb.ToString();
+    }
+
+    static string Pad(int v) => v < 10 ? "0" + v.ToString(CultureInfo.InvariantCulture) : v.ToString(CultureInfo.InvariantCulture);
+
+    /// „Mo“/„Mon“ aus dem Katalog.
+    public static string WeekdayShort(DateTime d) => L.T("date.weekdayShort." + d.DayOfWeek switch
+    {
+        DayOfWeek.Monday => "mon",
+        DayOfWeek.Tuesday => "tue",
+        DayOfWeek.Wednesday => "wed",
+        DayOfWeek.Thursday => "thu",
+        DayOfWeek.Friday => "fri",
+        DayOfWeek.Saturday => "sat",
+        _ => "sun",
+    });
+
+    public static string Ago(double? epoch)
+    {
+        if (!epoch.HasValue) return L.T("common.ago.never");
+        var s = (DateTime.Now - Codes.Local(epoch.Value)).TotalSeconds;
+        if (s < 60) return L.F("common.ago.seconds", ("seconds", Math.Max(0, (int)s).ToString(CultureInfo.InvariantCulture)));
+        if (s < 3600) return L.F("common.ago.minutes", ("minutes", ((int)(s / 60)).ToString(CultureInfo.InvariantCulture)));
+        return L.F("common.atTime", ("time", Clock(epoch.Value)));
+    }
+
+    // --- Eingaben ---
+
+    static readonly Regex Spaces = new(@"(?<=\d)[\s  ](?=\d{3}(?!\d))", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+    /// Zahl aus einem Eingabefeld. Leerzeichen, NBSP, U+202F und das Gruppenzeichen des Profils gelten nur vor genau drei
+    /// Ziffern als Tausendertrenner; ein einzelnes „,“ oder „.“ ist das Dezimalzeichen, kommen beide vor, ist es das letzte.
+    public static bool ParseNumber(string? text, out double value)
+    {
+        value = 0;
+        if (text == null) return false;
+        var s = text.Trim();
+        if (s.Length == 0) return false;
+        s = Spaces.Replace(s, "");
+        var group = Profile.GroupingSeparator;
+        if (group.Length > 0 && group != "," && group != "." && !char.IsWhiteSpace(group[0]))
+            s = Regex.Replace(s, "(?<=\\d)" + Regex.Escape(group) + "(?=\\d{3}(?!\\d))", "", RegexOptions.CultureInvariant);
+        var comma = s.LastIndexOf(',');
+        var dot = s.LastIndexOf('.');
+        if (comma >= 0 && dot >= 0)
+        {
+            var decimalAt = Math.Max(comma, dot);
+            var other = comma > dot ? '.' : ',';
+            var left = s[..decimalAt].Replace(other.ToString(), "");
+            var right = s[(decimalAt + 1)..];
+            if (left.Contains(',') || left.Contains('.') || right.Contains(',') || right.Contains('.')) return false;
+            s = left + "." + right;
+        }
+        else if (comma >= 0 || dot >= 0)
+        {
+            var sep = comma >= 0 ? ',' : '.';
+            var first = s.IndexOf(sep);
+            if (first == s.LastIndexOf(sep)) s = s.Replace(sep, '.');
+            else s = s.Replace(sep.ToString(), "");   // mehrere gleiche: Tausendertrenner („1.234.567“)
+        }
+        return double.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out value) && double.IsFinite(value);
+    }
+
+    /// Uhrzeit aus einem Eingabefeld: 24 h „7:30“/„07:30“ immer; zusätzlich 12 h mit AM/PM-Zeichen des Profils oder „am“/„pm“.
+    public static bool ParseTime(string? text, out int hour, out int minute)
+    {
+        hour = minute = 0;
+        if (text == null) return false;
+        var m = Regex.Match(text.Trim(), @"^(\d{1,2})\s*:\s*(\d{2})\s*(\S.*)?$", RegexOptions.CultureInvariant);
+        if (!m.Success) return false;
+        var h = int.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
+        var min = int.Parse(m.Groups[2].Value, CultureInfo.InvariantCulture);
+        if (min > 59) return false;
+        if (m.Groups[3].Success)
+        {
+            var suffix = m.Groups[3].Value;
+            var pm = IsMarker(suffix, Profile.PmSymbol, "pm");
+            var am = IsMarker(suffix, Profile.AmSymbol, "am");
+            if (pm == am || h < 1 || h > 12) return false;
+            h = h % 12 + (pm ? 12 : 0);
+        }
+        else if (h > 23) return false;
+        hour = h;
+        minute = min;
+        return true;
+    }
+
+    /// Vergleich ohne Leerzeichen und Punkte, Groß-/Kleinschreibung egal („a. m.“ = „a.m.“ = „AM“-Schreibweise des Profils).
+    static bool IsMarker(string text, string symbol, string fallback)
+    {
+        var t = Squash(text);
+        return t == Squash(fallback) || (Squash(symbol) is { Length: > 0 } s && t == s);
+    }
+
+    static string Squash(string text)
+    {
+        var sb = new StringBuilder(text.Length);
+        foreach (var ch in text)
+            if (ch != '.' && !char.IsWhiteSpace(ch)) sb.Append(char.ToLowerInvariant(ch));
+        return sb.ToString();
+    }
+}
+
+/// Einstellungen für Sprache und Formate beim Start.
+static class Formats
+{
+    /// Regionsformat für Zahlen und Uhrzeiten: Windows-Einstellung, mit `KLIMACONTROL_CULTURE` ersetzt.
+    public static CultureInfo RegionCulture() => TestCulture() ?? CultureInfo.CurrentCulture;
+
+    /// Anzeigesprache, die der Kern bekommt: Windows-Anzeigesprache, mit `KLIMACONTROL_CULTURE` ersetzt.
+    public static CultureInfo UiCulture() => TestCulture() ?? CultureInfo.CurrentUICulture;
+
+    /// Umgebungsvariable `KLIMACONTROL_CULTURE` (z. B. „en-US“): ersetzt Region und Sprache, nur für Tests und Screenshots.
+    public static CultureInfo? TestCulture()
+    {
+        var name = Environment.GetEnvironmentVariable("KLIMACONTROL_CULTURE");
+        if (string.IsNullOrWhiteSpace(name)) return null;
+        try { return CultureInfo.GetCultureInfo(name.Trim()); }
+        catch (CultureNotFoundException)
+        {
+            L.Log("KLIMACONTROL_CULTURE ungültig: " + name);
+            return null;
+        }
+    }
+
+    /// JSON für `kc_set_locale`: {"uiLanguage": "...", "format": {sieben Felder}}.
+    public static string LocaleJson(string uiLanguage, FormatProfile p)
+    {
+        using var stream = new System.IO.MemoryStream();
+        using (var w = new Utf8JsonWriter(stream))
+        {
+            w.WriteStartObject();
+            w.WriteString("uiLanguage", uiLanguage);
+            w.WriteStartObject("format");
+            w.WriteString("localeIdentifier", p.LocaleIdentifier);
+            w.WriteString("decimalSeparator", p.DecimalSeparator);
+            w.WriteString("groupingSeparator", p.GroupingSeparator);
+            w.WriteBoolean("uses24HourClock", p.Uses24HourClock);
+            w.WriteString("amSymbol", p.AmSymbol);
+            w.WriteString("pmSymbol", p.PmSymbol);
+            w.WriteString("dayMonthPattern", p.DayMonthPattern);
+            w.WriteEndObject();
+            w.WriteEndObject();
+        }
+        return Encoding.UTF8.GetString(stream.ToArray());
+    }
+}

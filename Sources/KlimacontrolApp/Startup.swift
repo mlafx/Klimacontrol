@@ -61,8 +61,8 @@ struct StartupView: View {
 
     private var skeleton: some View {
         VStack(spacing: 6) {
-            Text("24°").font(HeroLook(theme).font(big, monospaced: false))
-            Text("Raumtemperatur · Anlage").font(.callout)
+            Text(verbatim: "24°").font(HeroLook(theme).font(big, monospaced: false))
+            Text(L.Main.Startup.placeholder).font(.callout)
         }
         .frame(maxWidth: .infinity)
         .redacted(reason: .placeholder)

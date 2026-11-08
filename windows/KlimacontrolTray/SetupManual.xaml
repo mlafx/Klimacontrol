@@ -1,7 +1,8 @@
 <UserControl x:Class="KlimacontrolTray.SetupManual"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:KlimacontrolTray">
+             xmlns:local="clr-namespace:KlimacontrolTray"
+             xmlns:l="clr-namespace:KlimacontrolTray">
   <!-- Weg „Zugangsdaten eingeben“: Anlage, Anlagen-ID, Token, Schlüssel, ganz ohne Midea-Konto. -->
   <UserControl.Resources>
     <ResourceDictionary Source="SetupStyles.xaml"/>
@@ -9,12 +10,12 @@
 
   <StackPanel>
     <!-- Kopf: zurück zur Startseite, auch mit Esc -->
-    <TextBlock FontSize="13" HorizontalAlignment="Left" ToolTip="Zurück zur Auswahl (Esc)">
-      <Hyperlink x:Name="BackLink" Click="Back_Click">‹ Zurück</Hyperlink>
+    <TextBlock FontSize="13" HorizontalAlignment="Left" ToolTip="{l:T setup.view.windows.backHelp}">
+      <Hyperlink x:Name="BackLink" Click="Back_Click"><Run Text="{l:T setup.view.windows.back}"/></Hyperlink>
     </TextBlock>
-    <TextBlock Style="{StaticResource SetupTitle}" Margin="0,4,0,0" Text="Zugangsdaten eingeben"/>
+    <TextBlock Style="{StaticResource SetupTitle}" Margin="0,4,0,0" Text="{l:T setup.view.choice.manual.title}"/>
     <TextBlock Style="{StaticResource SetupDetail}"
-               Text="Token und Schlüssel der Anlage liegen dir vor – dann braucht es kein Midea-Konto. Für die Cloud unterwegs lässt sich ein Konto später unter Einstellungen → Verbindung nachtragen."/>
+               Text="{l:T setup.view.manual.detail}"/>
 
     <!-- 1 Anlage -->
     <Border Style="{StaticResource StepCard}">
@@ -24,13 +25,13 @@
             <Ellipse Fill="{DynamicResource Accent}" Opacity="0.2"/>
             <TextBlock Text="1" FontSize="11" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
           </Grid>
-          <TextBlock Style="{StaticResource StepTitle}" Text="Anlage"/>
+          <TextBlock Style="{StaticResource StepTitle}" Text="{l:T setup.view.step.device}"/>
         </StackPanel>
         <WrapPanel>
           <Button x:Name="ScanButton" Margin="0,0,6,6" Padding="9,5,9,6" Click="Scan_Click"
-                  ToolTip="Sucht Anlagen im WLAN"/>
+                  ToolTip="{l:T setup.view.windows.searchWifiHelp}"/>
           <Button x:Name="SubnetButton" Margin="0,0,0,6" Padding="9,5,9,6" Click="Subnet_Click"
-                  ToolTip="Fragt jede Adresse deines Netzes einzeln – hilft, wenn die normale Suche nichts findet"/>
+                  ToolTip="{l:T setup.view.search.subnetHelp}"/>
         </WrapPanel>
         <StackPanel x:Name="FoundList" Margin="0,0,0,4"/>
 
@@ -42,14 +43,14 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="64"/>
           </Grid.ColumnDefinitions>
-          <TextBlock Style="{StaticResource FieldLabel}" Text="Adresse"/>
+          <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T setup.found.address}"/>
           <Grid Grid.Column="1">
-            <TextBox x:Name="IpBox" AutomationProperties.Name="Adresse" TextChanged="Field_Changed"/>
+            <TextBox x:Name="IpBox" AutomationProperties.Name="{l:T setup.found.address}" TextChanged="Field_Changed"/>
             <TextBlock x:Name="IpHint" Style="{StaticResource Placeholder}"/>
           </Grid>
-          <TextBlock Grid.Column="2" Foreground="{DynamicResource Sub}" VerticalAlignment="Center" Margin="6,0,6,0" Text="Port"/>
+          <TextBlock Grid.Column="2" Foreground="{DynamicResource Sub}" VerticalAlignment="Center" Margin="6,0,6,0" Text="{l:T setup.found.port}"/>
           <Grid Grid.Column="3">
-            <TextBox x:Name="PortBox" AutomationProperties.Name="Port" TextChanged="Field_Changed"/>
+            <TextBox x:Name="PortBox" AutomationProperties.Name="{l:T setup.found.port}" TextChanged="Field_Changed"/>
             <TextBlock x:Name="PortHint" Style="{StaticResource Placeholder}"/>
           </Grid>
         </Grid>
@@ -62,10 +63,10 @@
             <ColumnDefinition Width="80"/>
             <ColumnDefinition/>
           </Grid.ColumnDefinitions>
-          <TextBlock Style="{StaticResource FieldLabel}" Text="Anlagen-ID"/>
+          <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T setup.found.applianceId}"/>
           <Grid Grid.Column="1">
-            <TextBox x:Name="IdBox" AutomationProperties.Name="Anlagen-ID" TextChanged="Field_Changed"/>
-            <TextBlock x:Name="IdHint" Style="{StaticResource Placeholder}" Text="aus der Suche, z. B. 123456789012345"/>
+            <TextBox x:Name="IdBox" AutomationProperties.Name="{l:T setup.found.applianceId}" TextChanged="Field_Changed"/>
+            <TextBlock x:Name="IdHint" Style="{StaticResource Placeholder}" Text="{l:T setup.view.windows.applianceIdExample}"/>
           </Grid>
         </Grid>
         <TextBlock x:Name="IdNote" Style="{StaticResource FieldNote}" Foreground="{DynamicResource Warn}"
@@ -90,7 +91,7 @@
             <Ellipse Fill="{DynamicResource Accent}" Opacity="0.2"/>
             <TextBlock Text="2" FontSize="11" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
           </Grid>
-          <TextBlock Style="{StaticResource StepTitle}" Text="Token und Schlüssel"/>
+          <TextBlock Style="{StaticResource StepTitle}" Text="{l:T setup.view.step.credentials}"/>
         </StackPanel>
 
         <!-- Token: mehrzeilig umbrechend, Enter bleibt „Verbinden“. -->
@@ -99,9 +100,9 @@
             <ColumnDefinition Width="80"/>
             <ColumnDefinition/>
           </Grid.ColumnDefinitions>
-          <TextBlock Style="{StaticResource FieldLabel}" VerticalAlignment="Top" Margin="0,6,0,0" Text="Token"/>
+          <TextBlock Style="{StaticResource FieldLabel}" VerticalAlignment="Top" Margin="0,6,0,0" Text="{l:T setup.found.token}"/>
           <Grid Grid.Column="1">
-            <TextBox x:Name="TokenBox" AutomationProperties.Name="Token" TextChanged="Field_Changed"
+            <TextBox x:Name="TokenBox" AutomationProperties.Name="{l:T setup.found.token}" TextChanged="Field_Changed"
                      FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" AcceptsReturn="False"
                      MinLines="2" MaxLines="4" VerticalScrollBarVisibility="Auto"/>
             <TextBlock x:Name="TokenHint" Style="{StaticResource PlaceholderTop}" FontFamily="Consolas" FontSize="12"/>
@@ -118,9 +119,9 @@
             <ColumnDefinition Width="80"/>
             <ColumnDefinition/>
           </Grid.ColumnDefinitions>
-          <TextBlock Style="{StaticResource FieldLabel}" VerticalAlignment="Top" Margin="0,6,0,0" Text="Schlüssel"/>
+          <TextBlock Style="{StaticResource FieldLabel}" VerticalAlignment="Top" Margin="0,6,0,0" Text="{l:T setup.found.key}"/>
           <Grid Grid.Column="1">
-            <TextBox x:Name="KeyBox" AutomationProperties.Name="Schlüssel" TextChanged="Field_Changed"
+            <TextBox x:Name="KeyBox" AutomationProperties.Name="{l:T setup.found.key}" TextChanged="Field_Changed"
                      FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" AcceptsReturn="False"
                      MaxLines="3" VerticalScrollBarVisibility="Auto"/>
             <TextBlock x:Name="KeyHint" Style="{StaticResource PlaceholderTop}" FontFamily="Consolas" FontSize="12"/>
@@ -132,7 +133,7 @@
         </StackPanel>
 
         <Button x:Name="PasteButton" HorizontalAlignment="Left" Margin="0,10,0,0" Click="Paste_Click"
-                ToolTip="Erkennt Token und Schlüssel – auch den ganzen Inhalt einer Sicherungsdatei"/>
+                ToolTip="{l:T setup.view.manual.pasteHelp}"/>
         <TextBlock x:Name="PastedNote" Style="{StaticResource Small}" Margin="0,4,0,0" Visibility="Collapsed"/>
 
         <Border x:Name="Msg2" Style="{StaticResource StepMessage}">
@@ -148,14 +149,14 @@
 
     <!-- Prüfen / Verbinden -->
     <WrapPanel Margin="0,12,0,0">
-      <Button x:Name="CheckButton" Content="Prüfen" MinWidth="80" Margin="0,0,8,6" Click="Check_Click"
-              ToolTip="Meldet sich mit diesen Zugangsdaten bei der Anlage an, ohne etwas zu speichern"/>
-      <Button x:Name="ConnectButton" Style="{StaticResource Primary}" Content="Verbinden" MinWidth="96" Margin="0,0,8,6"
+      <Button x:Name="CheckButton" Content="{l:T setup.view.windows.check}" MinWidth="80" Margin="0,0,8,6" Click="Check_Click"
+              ToolTip="{l:T setup.view.manual.testHelp}"/>
+      <Button x:Name="ConnectButton" Style="{StaticResource Primary}" Content="{l:T setup.view.connect}" MinWidth="96" Margin="0,0,8,6"
               Click="Connect_Click"/>
       <StackPanel x:Name="CheckOk" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,6" Visibility="Collapsed">
         <ContentControl x:Name="CheckOkIcon" Margin="0,0,5,0" VerticalAlignment="Center" Focusable="False"/>
         <TextBlock FontSize="12" Foreground="{DynamicResource Ok}" VerticalAlignment="Center"
-                   Text="Anlage nimmt die Zugangsdaten an"/>
+                   Text="{l:T setup.view.manual.accepted}"/>
       </StackPanel>
     </WrapPanel>
   </StackPanel>

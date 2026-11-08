@@ -87,7 +87,7 @@ extension ACController {
             try await Task.detached(priority: .userInitiated) {
                 try db.exportCSV(to: url, from: nil, until: nil, readable: true)
             }.value
-            AppLog.write("Verlauf als CSV exportiert")
+            AppLog.write(L.Log.App.csvExported)
             return UIText.historyExported(fileName: url.lastPathComponent).feedback
         } catch {
             return UIText.historyExportFailed(error).feedback

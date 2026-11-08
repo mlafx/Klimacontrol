@@ -30,7 +30,7 @@ struct TimerRow: View, Equatable {
                 }
             } else if power {
                 // Ausgeschaltet gibt es nichts auszuschalten.
-                Menu("Ausschalten in …") {
+                Menu(L.Main.Timer.offMenu) {
                     ForEach(UIOptions.offTimerChoices, id: \.minutes) { choice in
                         Button(choice.label) {
                             model.setOffTimer(in: choice.minutes)
@@ -39,7 +39,7 @@ struct TimerRow: View, Equatable {
                     }
                 }
                 .menuStyle(.borderlessButton).fixedSize()
-                .help("Schaltet die Anlage nach der gewählten Zeit aus. " + ACController.timerRequirement)
+                .help(L.Main.Timer.offHelp(requirement: ACController.timerRequirement))
             }
             Spacer()
             if model.onAt != nil {
@@ -48,7 +48,7 @@ struct TimerRow: View, Equatable {
                     chip(model.onTimerChip ?? "", "sunrise") { model.setOnTimer(at: nil) }
                 }
             } else {
-                Button("Einschalten um …") { pickingOnTime = true }
+                Button(L.Main.Timer.onButton) { pickingOnTime = true }
                     .buttonStyle(.borderless)
                     .popover(isPresented: $pickingOnTime) {
                         OnTimerPopover(close: { pickingOnTime = false })
@@ -66,7 +66,7 @@ struct TimerRow: View, Equatable {
             // Trefferfläche um das kleine Symbol herum vergrößert (sonst ~13 pt).
             Button(action: cancel) { Image(systemName: "xmark.circle.fill").padding(5).contentShape(Rectangle()) }
                 .buttonStyle(.plain).foregroundStyle(.secondary)
-                .help("Timer löschen").accessibilityLabel("Timer löschen")
+                .help(L.Main.Timer.delete).accessibilityLabel(L.Main.Timer.delete)
         }
         .foregroundStyle(theme.tint(for: mode))
     }
@@ -82,23 +82,22 @@ private struct OnTimerPopover: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            DatePicker("Uhrzeit", selection: $time, displayedComponents: .hourAndMinute)
+            DatePicker(L.Main.Timer.time, selection: $time, displayedComponents: .hourAndMinute)
                 .datePickerStyle(.field)
             // Der Tag steht immer dabei, damit niemand rätselt, ob heute oder morgen gemeint ist.
             TimelineView(.everyMinute) { ctx in
                 let at = TimerDay.next(time, after: ctx.date)
-                Label("Schaltet \(TimerDay.label(at, now: ctx.date)) um \(TimerDay.clock(at)) ein",
+                Label(L.Main.Timer.switchesOn(day: TimerDay.label(at, now: ctx.date), time: Fmt.clock(at)),
                       systemImage: "calendar")
                     .font(.callout.weight(.medium))
             }
-            Text("Mit den zuletzt benutzten Einstellungen. " + ACController.timerRequirement
-                 + " Klimacontrol hält den Mac bis dahin wach; ob es geklappt hat, meldet eine Mitteilung.")
+            Text(L.Main.Timer.onNote(requirement: ACController.timerRequirement))
                 .font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
             HStack {
                 Spacer()
-                Button("Abbrechen", action: close)
+                Button(L.Common.cancel, action: close)
                     .keyboardShortcut(.cancelAction)
-                Button("Timer setzen") {
+                Button(L.Main.Timer.set) {
                     model.setOnTimer(at: TimerDay.next(time, after: Date()))
                     TimerNotifier.shared.prepare()
                     close()
@@ -126,15 +125,12 @@ enum TimerDay {
 
     /// „heute“, „morgen“ oder Wochentag mit Datum.
     static func label(_ date: Date, now: Date = Date(), calendar: Calendar = .current) -> String {
-        if calendar.isDate(date, inSameDayAs: now) { return "heute" }
+        if calendar.isDate(date, inSameDayAs: now) { return DateWords.today }
         if let tomorrow = calendar.date(byAdding: .day, value: 1, to: now), calendar.isDate(date, inSameDayAs: tomorrow) {
-            return "morgen"
+            return DateWords.tomorrow
         }
-        return "am " + date.formatted(Date.FormatStyle().weekday(.abbreviated).day().month(.twoDigits).locale(Fmt.locale))
-    }
-
-    static func clock(_ date: Date) -> String {
-        date.formatted(Date.FormatStyle().hour(.twoDigits(amPM: .omitted)).minute(.twoDigits).locale(Fmt.locale))
+        return L.Timer.dayOn(weekday: DateWords.weekdayShort(calendar.component(.weekday, from: date)),
+                             date: Fmt.dayMonth(date, calendar: calendar))
     }
 }
 

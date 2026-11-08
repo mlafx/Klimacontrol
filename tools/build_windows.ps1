@@ -28,6 +28,29 @@ if ($conflicts) {
     $conflicts | ForEach-Object { Write-Host "  $($_.FullName)" }
     exit 1
 }
+# Katalog und Versionshinweise muessen zu den eingebetteten Swift-Dateien passen (der Mac erzeugt sie). Python:
+# "python3" ist unter Windows oft nur ein Store-Verweis ohne Python, darum jeden Kandidaten kurz probieren.
+$py = $null
+foreach ($cand in @(@("python"), @("py", "-3"), @("python3"))) {
+    try {
+        $cmd = $cand[0]; $pre = @($cand | Select-Object -Skip 1)
+        if (-not (Get-Command $cmd -ErrorAction SilentlyContinue)) { continue }
+        $v = & $cmd @pre --version
+        if ($LASTEXITCODE -eq 0 -and "$v" -match '^Python 3') { $py = $cand; break }
+    } catch { }
+}
+if (-not $py) {
+    Write-Host "Hinweis: Python 3 nicht gefunden - sync_strings.py/sync_release_notes.py --check uebersprungen."
+} else {
+    $pyCmd = $py[0]; $pyPre = @($py | Select-Object -Skip 1)
+    foreach ($script in @("tools\sync_strings.py", "tools\sync_release_notes.py")) {
+        & $pyCmd @pyPre $script --check
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "Abbruch: $script --check meldet Abweichungen. Der Mac muss die Dateien neu erzeugen (python3 $script), bevor hier gebaut wird."
+            exit 1
+        }
+    }
+}
 if ((Test-Path .agent-lock) -and -not (Select-String -Quiet -Pattern "plattform=windows" .agent-lock)) {
     Write-Host "Hinweis: .agent-lock vom Mac vorhanden - dort wird gerade gearbeitet:"
     Get-Content .agent-lock
@@ -328,7 +351,12 @@ if ($Zip) {
     if (Test-Path $zipTmp) { Remove-Item $zipTmp -Force }
     & $tar -c --format zip --options zip:compression=deflate -f $zipTmp -C $appDir Klimacontrol.exe res
     if ($LASTEXITCODE -ne 0) { Write-Host "Abbruch: tar.exe endet mit Fehler $LASTEXITCODE"; exit 1 }
-    Get-ChildItem $distWin -Filter "Klimacontrol-Windows-*.zip" -ErrorAction SilentlyContinue | Remove-Item -Force
+    # Nur ein ZIP derselben Version beiseitelegen; andere Versionen (z. B. ein veroeffentlichtes Original) bleiben.
+    if (Test-Path $zipFile) {
+        $alt = Join-Path $distWin "Klimacontrol-Windows-$version-alt-$(Get-Date -Format yyyyMMddHHmmss).zip"
+        Write-Host "Lege $([IO.Path]::GetFileName($zipFile)) beiseite: $([IO.Path]::GetFileName($alt))"
+        Move-Item $zipFile $alt
+    }
     Move-Item $zipTmp $zipFile -Force
     Write-Host "ZIP: $zipFile ($([int]((Get-Item $zipFile).Length / 1MB)) MB)"
 }
@@ -338,15 +366,23 @@ if ($Setup) {
               (Join-Path $env:ProgramFiles "Inno Setup 6\ISCC.exe")) | Where-Object { Test-Path $_ } | Select-Object -First 1
     if (-not $iscc) { Write-Host "Abbruch: Inno Setup 6 fehlt (winget install JRSoftware.InnoSetup)"; exit 1 }
     $version = (Get-Content tools\VERSION -Raw).Trim()
-    Get-ChildItem $distWin -Filter "Klimacontrol-Windows-*-Setup.exe" -ErrorAction SilentlyContinue | Remove-Item -Force
+    $setupFile = Join-Path $distWin "Klimacontrol-Windows-$version-Setup.exe"
+    # Nur ein Setup derselben Version beiseitelegen; andere Versionen (z. B. das veroeffentlichte Original) bleiben.
+    if (Test-Path $setupFile) {
+        $alt = Join-Path $distWin "Klimacontrol-Windows-$version-Setup-alt-$(Get-Date -Format yyyyMMddHHmmss).exe"
+        Write-Host "Lege $([IO.Path]::GetFileName($setupFile)) beiseite: $([IO.Path]::GetFileName($alt))"
+        Move-Item $setupFile $alt
+    }
     & $iscc /Q "/DAppVersion=$version" "/DSourceDir=$appDir" "/DOutputDir=$distWin" windows\installer\Klimacontrol.iss
     if ($LASTEXITCODE -ne 0) { Write-Host "Abbruch: Inno Setup endet mit Fehler $LASTEXITCODE"; exit 1 }
-    $setupFile = Join-Path $distWin "Klimacontrol-Windows-$version-Setup.exe"
     # Das Setup ist LZMA-komprimiert: darin findet die Suche kaum etwas; geprueft wurde der Inhalt vorher im App-Ordner
     # und in der unkomprimierten Probe. Hier bleiben Metadaten (Dateiname, Inno-Kopfdaten).
     if ((Find-Leaks @(Get-Item $setupFile) $distWin $leakRx) -gt 0) {
-        Remove-Item $setupFile -Force
-        Write-Host "Abbruch: Setup enthaelt Daten dieses Rechners (Liste oben) - Setup entfernt"; exit 1
+        # Nicht nach dist\windows: dort wird alles ausgeliefert; verworfenes Setup (mit Rechnerdaten) bleibt im Bauordner.
+        New-Item -ItemType Directory -Force $scratch | Out-Null
+        $rejected = Join-Path $scratch "Klimacontrol-Windows-$version-Setup-verworfen-$(Get-Date -Format yyyyMMddHHmmss).exe"
+        Move-Item $setupFile $rejected
+        Write-Host "Abbruch: Setup enthaelt Daten dieses Rechners (Liste oben) - Setup beiseitegelegt: $rejected"; exit 1
     }
     Write-Host "Setup: $setupFile ($([int]((Get-Item $setupFile).Length / 1MB)) MB)"
 }

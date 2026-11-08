@@ -45,6 +45,8 @@ public partial class MainWindow : Window
         Appearance.Changed += OnAppearanceChanged;
         RefreshButton.Content = Icons.Glyph(Icons.GlyphRefresh, 18);
         SettingsButton.Content = Icons.Glyph(Icons.GlyphSettings, 18);
+        RefreshButton.ToolTip = L.F("main.windows.refreshHelp", ("shortcut", Hotkeys.Ctrl("R")));
+        SettingsButton.ToolTip = L.Tip("main.footer.settings", Hotkeys.Ctrl(","));
         wantCharts = Prefs.GetBool("ShowCharts", false);
         wantDiag = Prefs.GetBool("ShowDiagnostics", false);
         // Standardlage, falls keine gemerkte Lage passt (OnSourceInitialized).
@@ -91,8 +93,8 @@ public partial class MainWindow : Window
         ChartsToggle.IsChecked = wantCharts;
         DiagToggle.IsChecked = wantDiag;
         updatingButtons = false;
-        ChartsToggle.ToolTip = wantCharts ? "Verlauf ausblenden (Strg+G)" : "Verlauf links einblenden (Strg+G)";
-        DiagToggle.ToolTip = wantDiag ? "Diagnose ausblenden (Strg+D)" : "Diagnose rechts einblenden (Strg+D)";
+        ChartsToggle.ToolTip = L.Tip(wantCharts ? "charts.hide" : "main.windows.chartsShow", Hotkeys.Ctrl("G"));
+        DiagToggle.ToolTip = L.Tip(wantDiag ? "diagnostics.panel.hide" : "main.windows.diagnosticsShow", Hotkeys.Ctrl("D"));
     }
 
     /// Maximierte oder angedockte Fenster behalten ihre Größe; nur frei liegende wachsen bzw. schrumpfen.
@@ -252,7 +254,7 @@ public partial class MainWindow : Window
     }
 
     FrameworkElement Element(Pane p) => p switch { Pane.Controls => Controls, Pane.Charts => Charts, _ => Diag };
-    static string PaneTitle(Pane p) => p switch { Pane.Controls => "Steuerung", Pane.Charts => "Verlauf", _ => "Diagnose" };
+    static string PaneTitle(Pane p) => p switch { Pane.Controls => L.T("main.windows.paneControls"), Pane.Charts => L.T("main.footer.history"), _ => L.T("main.footer.diagnostics") };
 
     void Build(List<LayoutColumn> cols)
     {
@@ -283,6 +285,7 @@ public partial class MainWindow : Window
             if (tabbed)
             {
                 var bar = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(12, 8, 12, 0) };
+                System.Windows.Automation.AutomationProperties.SetName(bar, L.T("main.windows.paneGroupName"));
                 foreach (var p in panes)
                 {
                     var rb = new RadioButton { Content = PaneTitle(p), Tag = p, GroupName = "Bereiche", Style = (Style)FindResource("PaneTab") };

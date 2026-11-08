@@ -11,7 +11,10 @@ public sealed class Snapshot
     /// Version der C-Schnittstelle (wie kc_api_version).
     public int ApiVersion { get; set; }
     public bool Configured { get; set; }
-    public string DisplayName { get; set; } = "Klimaanlage";
+    string? displayName;
+    /// Name der Anlage; fehlt er im JSON, gilt der Standardname aus dem Katalog (beim Lesen, nicht beim Anlegen:
+    /// Der Katalog ist beim ersten Schnappschuss noch nicht geladen).
+    public string DisplayName { get => displayName ?? L.T("message.defaultName"); set => displayName = value; }
     public string? DeviceName { get; set; }
     public string? Ip { get; set; }
     public int? Port { get; set; }
@@ -52,6 +55,10 @@ public sealed class Snapshot
     public double? TodayKWh { get; set; }
     public int RefreshSeconds { get; set; }
     public double Price { get; set; }
+    /// Gespeicherte Sprachwahl: "system", "de" oder "en" (wirkt nach Neustart).
+    public string Language { get; set; } = "system";
+    /// Währung des Strompreises (1–3 Zeichen).
+    public string Currency { get; set; } = "€";
     public bool Beep { get; set; }
     public bool DebugLog { get; set; }
     public bool HistoryCSV { get; set; }
@@ -135,6 +142,8 @@ public sealed class Snapshot
     public MessageInfo? NoticeDetail { get; set; }
     /// Die Darstellung entspricht dem Standard dieser Plattform („Auf Standard zurücksetzen“ ausgegraut).
     public bool AppearanceIsStandard { get; set; } = true;
+    /// Ein Aussehens-Wert weicht vom gewählten Thema ab (Größe, Umfang, Fenster-Optionen zählen nicht).
+    public bool AppearanceCustomized { get; set; }
     public string? OnTimerChip { get; set; }
     /// Rückfrage beim Beenden, solange ein App-Timer gestellt ist (null = ohne Rückfrage beenden).
     public PromptInfo? QuitPrompt { get; set; }
@@ -673,10 +682,12 @@ public sealed class FoundDevice
     /// Protokollversion (2/3) bei WLAN-Funden, 0 bei Cloud-Funden.
     public int Version { get; set; }
 
-    /// Zweite Zeile: „über Midea-Konto · online“ bzw. „192.168.1.40 · Protokoll V3 · SN …12345678“.
+    /// Zweite Zeile: „über Midea-Konto · online“ bzw. „192.168.1.40 · Protokoll V3 · SN …12345678“ (Texte aus dem
+    /// Katalog; bei WLAN-Funden immer die volle Zeile wie am Mac, auch ohne Seriennummer).
     public string Detail => CloudOnly
-        ? "über Midea-Konto · " + (CloudOnline == false ? "ausgeschaltet" : "online")
-        : Ip + (Version > 0 ? $" · Protokoll V{Version}" : "") + (Sn.Length > 0 ? " · SN …" + (Sn.Length > 8 ? Sn[^8..] : Sn) : "");
+        ? L.T(CloudOnline == false ? "setup.view.found.cloudOff" : "setup.view.found.cloudOnline")
+        : L.F("setup.view.found.lan", ("ip", Ip), ("version", Version.ToString(System.Globalization.CultureInfo.InvariantCulture)),
+              ("serial", Sn.Length > 8 ? Sn[^8..] : Sn));
 
     public override string ToString() => $"{Name}  ({Detail})";
 }
@@ -717,10 +728,11 @@ static class Codes
 {
     public const int FanAuto = 102;
 
-    public static readonly (int Value, string Label, string Icon)[] Modes =
+    /// Kein `static readonly`: Die Beschriftungen kommen beim Aufruf aus dem Katalog.
+    public static (int Value, string Label, string Icon)[] Modes => new[]
     {
-        (2, "Kühlen", Icons.Snowflake), (4, "Heizen", Icons.Flame), (3, "Trocknen", Icons.Drop),
-        (5, "Lüften", Icons.Fan), (1, "Auto", Icons.Auto),
+        (2, L.T("mode.cool"), Icons.Snowflake), (4, L.T("mode.heat"), Icons.Flame), (3, L.T("mode.dry"), Icons.Drop),
+        (5, L.T("mode.fan"), Icons.Fan), (1, L.T("mode.auto"), Icons.Auto),
     };
 
     /// Farbe je Modus (wie OperationalMode.tint in der Mac-App).
@@ -733,10 +745,10 @@ static class Codes
         _ => System.Windows.Media.Color.FromRgb(0x8C, 0x6B, 0xE6),
     };
 
-    public static string Verb(int mode) => mode switch
+    public static string Verb(int mode) => L.T(mode switch
     {
-        2 => "Kühlt", 4 => "Heizt", 3 => "Entfeuchtet", 5 => "Lüftet", _ => "Regelt automatisch",
-    };
+        2 => "mode.verb.cool", 4 => "mode.verb.heat", 3 => "mode.verb.dry", 5 => "mode.verb.fan", _ => "mode.verb.auto",
+    });
 
     public static DateTime Local(double epoch) => DateTimeOffset.FromUnixTimeMilliseconds((long)(epoch * 1000)).LocalDateTime;
     public static double Epoch(DateTime local) => new DateTimeOffset(local).ToUnixTimeMilliseconds() / 1000.0;

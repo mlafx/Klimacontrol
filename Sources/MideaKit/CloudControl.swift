@@ -184,7 +184,7 @@ public actor MideaCloudSession {
             current = newer
             loggedIn = true
         } else {
-            AppLog.write("Cloud-Sitzung ungültig – melde einmal neu an (\(AppLog.mask(account)))")
+            AppLog.write(LogText.t("log.cloud.sessionInvalid", "Cloud-Sitzung ungültig – melde einmal neu an ({account})", ["account": AppLog.mask(account)]))
             discard(clearStore: true)
             (current, loggedIn) = try await ensure(deviceId: deviceId, kind: kind, needsControl: needsControl, forceLogin: true)
         }
@@ -251,12 +251,12 @@ public actor MideaCloudSession {
     private func restoreFromStore(deviceId: UInt64?, kind: CloudKind?, needsControl: Bool) throws -> (any MideaCloudAPI)? {
         let saved: CloudSession?
         do { saved = try CloudSessionStore.lookup(account: account, deviceId: deviceId) } catch {
-            AppLog.error("Cloud: Schlüsselbund nicht lesbar – keine Neuanmeldung (\(error.localizedDescription))")
+            AppLog.error(LogText.t("log.cloud.keychainUnreadable", "Cloud: Schlüsselbund nicht lesbar – keine Neuanmeldung ({error})", ["error": error.localizedDescription]))
             throw MideaCloud.CloudError.keychainLocked
         }
         guard let s = saved, let k = s.kind, kind == nil || kind == k, kinds[k]?.stopped == nil else { return nil }
         guard now().timeIntervalSince(s.savedAt) < Self.sessionMaxAge else {
-            AppLog.write("Cloud-Sitzung abgelaufen (älter als 30 Tage) – wird nicht mehr benutzt")
+            AppLog.write(LogText.t("log.cloud.sessionExpired", "Cloud-Sitzung abgelaufen (älter als 30 Tage) – wird nicht mehr benutzt"))
             return nil
         }
         let candidate = makeAPI(k)
@@ -264,7 +264,7 @@ public actor MideaCloudSession {
         api = candidate
         restored = true
         if let deviceId = s.deviceId, !s.applianceId.isEmpty { applianceIds[cacheKey(k, deviceId)] = s.applianceId }
-        AppLog.write("Cloud-Sitzung wiederverwendet (\(k.rawValue)) – keine neue Anmeldung")
+        AppLog.write(LogText.t("log.cloud.sessionReused", "Cloud-Sitzung wiederverwendet ({kind}) – keine neue Anmeldung", ["kind": k.rawValue]))
         return candidate
     }
 
@@ -290,7 +290,7 @@ public actor MideaCloudSession {
                 st.nextLoginAt = now().addingTimeInterval(st.backoff)
                 kinds[k] = st
                 if needsControl, !candidate.canControl {
-                    lastError = MideaCloud.CloudError.sessionKeys("Sitzungsschlüssel fehlen")
+                    lastError = MideaCloud.CloudError.sessionKeys(LogText.t("kit.cloud.sessionKeysMissing", "Sitzungsschlüssel fehlen"))
                     continue
                 }
                 api = candidate
@@ -298,7 +298,7 @@ public actor MideaCloudSession {
                 freshLoginAt = now()
                 failures = 0
                 persist(candidate, deviceId: deviceId)
-                AppLog.write("Cloud-Anmeldung (\(k.rawValue)) erfolgreich für \(AppLog.mask(account))")
+                AppLog.write(LogText.t("log.cloud.loginOk", "Cloud-Anmeldung ({kind}) erfolgreich für {account}", ["kind": k.rawValue, "account": AppLog.mask(account)]))
                 return candidate
             } catch {
                 st.nextLoginAt = now().addingTimeInterval(st.backoff)
@@ -313,7 +313,7 @@ public actor MideaCloudSession {
                 if let c = error as? MideaCloud.CloudError, [.wrongCredentials, .accountLocked].contains(c.kind) {
                     stop(k, c)
                 }
-                AppLog.write("Cloud \(k.rawValue): \(error.localizedDescription)")
+                AppLog.write(LogText.t("log.cloud.kindError", "Cloud {kind}: {error}", ["kind": k.rawValue, "error": error.localizedDescription]))
                 lastError = error
             }
         }
@@ -326,7 +326,7 @@ public actor MideaCloudSession {
         guard st.stopped == nil else { return }
         st.stopped = error
         kinds[k] = st
-        AppLog.error("Cloud \(k.rawValue) gestoppt bis zur nächsten Anmeldung in den Einstellungen: \(error.localizedDescription)")
+        AppLog.error(LogText.t("log.cloud.stopped", "Cloud {kind} gestoppt bis zur nächsten Anmeldung in den Einstellungen: {error}", ["kind": k.rawValue, "error": error.localizedDescription]))
     }
 
     private func discard(clearStore: Bool) {
@@ -369,7 +369,7 @@ func withTimeBudget<T: Sendable>(_ seconds: TimeInterval, _ body: @escaping @Sen
         group.addTask { try await body() }
         group.addTask {
             try await Task.sleep(for: .seconds(seconds))
-            throw MideaCloud.CloudError.network("keine Antwort innerhalb von \(Int(seconds)) s")
+            throw MideaCloud.CloudError.network(LogText.t("kit.cloud.noReplyWithin", "keine Antwort innerhalb von {seconds} s", ["seconds": String(Int(seconds))]))
         }
         defer { group.cancelAll() }
         guard let first = try await group.next() else { throw CancellationError() }
@@ -439,7 +439,7 @@ public final class CloudControlClient: Sendable {
         let md5hex = MideaCrypto.md5(Data(appKey.utf8)).hex
         let key = Data(md5hex.prefix(16).utf8)
         guard let token = Data(hex: accessTokenHex) else {
-            throw MideaCloud.CloudError.sessionKeys("Zugangsschlüssel unlesbar")
+            throw MideaCloud.CloudError.sessionKeys(LogText.t("kit.cloud.accessKeyUnreadable", "Zugangsschlüssel unlesbar"))
         }
         return try MideaCrypto.decryptECB(key: key, token)
     }
@@ -475,12 +475,12 @@ public final class CloudControlClient: Sendable {
     static func pickAppliance(_ listAny: Any?, deviceId: UInt64, allowSingleFallback: Bool = false) throws -> String {
         let list = listAny as? [[String: Any]] ?? []
         for item in list where MideaCloud.applianceId(of: item) == "\(deviceId)" {
-            AppLog.write("Cloud: Anlage gefunden (id \(deviceId))")
+            AppLog.write(LogText.t("log.cloud.applianceFound", "Cloud: Anlage gefunden (id {id})", ["id": String(deviceId)]))
             return "\(deviceId)"
         }
         if allowSingleFallback || deviceId == 0, list.count == 1, let only = list.first,
            let id = MideaCloud.applianceId(of: only), MideaCloud.parseType("\(only["type"] ?? "")") == 0xAC {
-            AppLog.write("Cloud: einzige Klimaanlage im Konto verwendet (id \(id))")
+            AppLog.write(LogText.t("log.cloud.singleAppliance", "Cloud: einzige Klimaanlage im Konto verwendet (id {id})", ["id": id]))
             return id
         }
         throw MideaCloud.CloudError.notInAccount

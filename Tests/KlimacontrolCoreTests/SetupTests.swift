@@ -122,7 +122,7 @@ final class SetupTests: CoreTestCase {
     func testCheckDistinguishesRejectedBusyAndUnreachable() async {
         let c = makeController()
         fillManual(c)
-        var result: (any Error)? = MideaError.busy("")
+        var result: (any Error)? = MideaError.busy(.unknown)
         c.setup.probe = CredentialProbe { _ in result }
 
         let r1 = await c.setup.checkManual()
@@ -243,7 +243,7 @@ final class SetupTests: CoreTestCase {
         let hex = SetupFlow.describe(ConfigError.invalidHex, context: .manual)
         XCTAssertEqual(hex.issue, .invalidInput)
         XCTAssertFalse(hex.text.contains("Hex"), hex.text)
-        for e: any Error in [MideaError.timeout, MideaError.authenticationFailed("x"), MideaError.protocolError("y"), MideaError.busy("")] {
+        for e: any Error in [MideaError.timeout, MideaError.authenticationFailed("x"), MideaError.protocolError("y"), MideaError.busy(.unknown)] {
             let d = SetupFlow.describe(e, context: .manual)
             XCTAssertFalse(d.text.contains("Handshake") || d.text.contains("Protokollfehler"), d.text)
         }
@@ -253,7 +253,7 @@ final class SetupTests: CoreTestCase {
         let paused = SetupFlow.describe(MideaCloud.CloudError.notInAccount, context: .account)
         XCTAssertEqual(paused.issue, .cloud)
         XCTAssertTrue(paused.text.hasSuffix("(Code -1004)"), paused.text)
-        let busyPath = MideaError.allPathsFailed([PathFailure(path: .lan, reason: .busy, text: "belegt")])
+        let busyPath = MideaError.allPathsFailed([PathFailure(path: .lan, reason: .busy(.otherApp), text: "belegt")])
         XCTAssertEqual(SetupFlow.describe(busyPath, context: .manual).issue, .busy)
         let unreachable = SetupFlow.describe(MideaError.unreachable("Zeitüberschreitung beim Verbinden mit 192.168.1.40"),
                                              context: .manual)

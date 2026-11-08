@@ -39,6 +39,7 @@ public struct ACState: Equatable, Sendable {
 
     public init() {}
 
+    /// Protokoll und Datenbank (deutsch); Anzeige über `fanTitle` im Kern (`DisplayNames.swift`).
     public var fanLabel: String {
         FanSpeed(rawValue: fanSpeed)?.label ?? "\(fanSpeed) %"
     }
@@ -53,16 +54,16 @@ enum Response {
     /// Rahmen prüfen (Prüfsumme, Gerätetyp) und nach Antwort-ID zerlegen.
     static func parse(_ frame: Data) throws -> Response {
         let f = [UInt8](frame)
-        guard f.count >= 12 else { throw MideaError.invalidResponse("Rahmen zu kurz") }
+        guard f.count >= 12 else { throw MideaError.invalidResponse(LogText.t("kit.frame.tooShort", "Rahmen zu kurz")) }
         guard Frame.checksum(f[1..<(f.count - 1)]) == f[f.count - 1] else {
-            throw MideaError.invalidResponse("Prüfsumme falsch")
+            throw MideaError.invalidResponse(LogText.t("kit.frame.badChecksum", "Prüfsumme falsch"))
         }
-        guard f[2] == Frame.deviceType else { throw MideaError.invalidResponse("Gerätetyp 0x\(String(f[2], radix: 16))") }
+        guard f[2] == Frame.deviceType else { throw MideaError.invalidResponse(LogText.t("kit.frame.deviceType", "Gerätetyp 0x{type}", ["type": String(f[2], radix: 16)])) }
         // Kopf 10 Byte + mindestens 1 Byte Nutzdaten + Nachrichten-ID/CRC + Prüfsumme. Ein Rahmen mit genau 12 Byte
         // (auch über die Cloud erreichbar) hat keine Nutzdaten.
-        guard f.count >= 13 else { throw MideaError.invalidResponse("Rahmen ohne Nutzdaten") }
+        guard f.count >= 13 else { throw MideaError.invalidResponse(LogText.t("kit.frame.noPayload", "Rahmen ohne Nutzdaten")) }
         let payload = Array(f[10..<(f.count - 2)])
-        guard let kind = payload.first else { throw MideaError.invalidResponse("Rahmen ohne Nutzdaten") }
+        guard let kind = payload.first else { throw MideaError.invalidResponse(LogText.t("kit.frame.noPayload", "Rahmen ohne Nutzdaten")) }
         switch kind {
         case 0xC0 where payload.count >= 17:
             return .state(parseState(payload))

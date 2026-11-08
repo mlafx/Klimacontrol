@@ -17,8 +17,12 @@ struct ChartsPanel: View {
     let mode: OperationalMode?
     let close: () -> Void
     @AppStorage(SettingsKey.chartRange) private var range = UIOptions.chartRangeDefault
+    @Environment(WindowRef.self) private var resizing
     @State private var window = ChartWindow()
     @State private var loaded = false
+    @State private var settled = CGSize.zero
+    /// Höhe der Spalte ohne die Graphen, je Anordnung gemessen (einspaltig, Raster).
+    @State private var overhead: [Bool: Double] = [:]
 
     var body: some View {
         // Die Zeitscheibe wird ausdrücklich getrieben (alle 30 s), nicht durch zufälliges Neuzeichnen des
@@ -29,36 +33,17 @@ struct ChartsPanel: View {
     }
 
     private func content(now: Date) -> some View {
-        let w = window
-        let key = ChartWindowKey(range: range, history: history, sparse: w.data.count < 2, now: now)
-        return ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                // Schließen rechts wie bei der Diagnose – links säße es neben den Fensterknöpfen.
-                HStack {
-                    Label("Verlauf", systemImage: "chart.xyaxis.line").font(.headline)
-                    Spacer()
-                    Picker("Zeitraum", selection: $range) {
-                        ForEach(UIOptions.chartRanges, id: \.seconds) { Text($0.label).tag($0.seconds) }
-                    }
-                    .pickerStyle(.segmented).labelsHidden().fixedSize()
-                    Button(action: close) { Image(systemName: "xmark") }
-                        .buttonStyle(.borderless).help("Verlauf ausblenden (⌘G)").accessibilityLabel("Verlauf ausblenden")
-                }
-                SummaryTiles(avg: w.stats.avgWatts, peak: w.stats.peakWatts, kwh: w.stats.kWh, price: model.pricePerKWh)
-                if !loaded {
-                    Color.clear.frame(height: 120)
-                } else if w.data.count < 2 {
-                    Text("Noch zu wenig Daten – der Verlauf füllt sich mit jeder Abfrage der Anlage.")
-                        .font(.callout).foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, minHeight: 120)
-                } else {
-                    PowerChart(points: w.power, time: w.timeDomain, tint: mode.map { theme.tint(for: $0) } ?? .accentColor, range: range)
-                    TemperatureChart(window: w, range: range, colors: SeriesColors(theme))
-                    if !w.outdoor.isEmpty { OutdoorChart(window: w, range: range, color: SeriesColors(theme).outdoor) }
-                }
-                if loaded { EnergySection() }
-            }
-            .padding(20)
+        let key = ChartWindowKey(range: range, history: history, sparse: window.data.count < 2, now: now)
+        // Während das Fenster seine Größe ändert, bleibt die Fläche der Graphen eingefroren (links ausgerichtet,
+        // abgeschnitten): Jede neue Größe ließe Swift Charts alle Graphen neu aufbauen.
+        return GeometryReader { geo in
+            let size = resizing.isResizing && settled.width > 0 ? settled : geo.size
+            ScrollView { column(size: size) }
+                .frame(width: size.width, height: size.height, alignment: .topLeading)
+                .frame(width: geo.size.width, height: geo.size.height, alignment: .topLeading)
+                .clipped()
+                .onChange(of: geo.size, initial: true) { _, new in if !resizing.isResizing { settled = new } }
+                .onChange(of: resizing.isResizing) { _, now in if !now { settled = geo.size } }
         }
         .task(id: key) {
             let db = history.db
@@ -70,6 +55,81 @@ struct ChartsPanel: View {
             guard !Task.isCancelled else { return }
             if fresh != window { window = fresh }
             loaded = true
+        }
+    }
+
+    private func column(size: CGSize) -> some View {
+        let w = window
+        let grid = MainWindowLayout.historyUsesGrid(width: size.width)
+        let heights = MainWindowLayout.chartHeights(columnHeight: size.height, grid: grid, overhead: overhead[grid])
+        let inner = size.width - 40
+        let cardWidth = grid ? (inner - 16) / 2 : inner
+        let hasCharts = loaded && w.data.count >= 2
+        let colors = SeriesColors(theme)
+        let topHeight = grid ? max(heights.power, heights.temperature) : nil
+        let bottomHeight = grid ? max(heights.outdoor, heights.energy) : nil
+        let hasOutdoor = hasCharts && !w.outdoor.isEmpty
+        let applied: Double
+        if grid {
+            applied = (hasCharts ? topHeight ?? 0 : 0) + (hasOutdoor || loaded ? bottomHeight ?? 0 : 0)
+        } else {
+            applied = (hasCharts ? heights.power + heights.temperature : 0) + (hasOutdoor ? heights.outdoor : 0)
+                + (loaded ? heights.energy : 0)
+        }
+        let power = PowerChart(points: w.power, time: w.timeDomain, tint: mode.map { theme.tint(for: $0) } ?? .accentColor,
+                               range: range, height: topHeight ?? heights.power, fill: grid)
+        let temperature = TemperatureChart(window: w, range: range, colors: colors, height: topHeight ?? heights.temperature, fill: grid)
+        let outdoor = OutdoorChart(window: w, range: range, color: colors.outdoor, height: bottomHeight ?? heights.outdoor, fill: grid)
+        let energy = EnergySection(chartHeight: bottomHeight ?? heights.energy, plotWidth: (cardWidth - 24 - 50).rounded(.down), fill: grid)
+        return VStack(alignment: .leading, spacing: 16) {
+            // Schließen rechts wie bei der Diagnose – links säße es neben den Fensterknöpfen.
+            HStack {
+                Label(L.Charts.title, systemImage: "chart.xyaxis.line").font(.headline)
+                    .accessibilityAddTraits(.isHeader)
+                Spacer()
+                Picker(L.Charts.range, selection: $range) {
+                    ForEach(UIOptions.chartRanges, id: \.seconds) { Text($0.label).tag($0.seconds) }
+                }
+                .pickerStyle(.segmented).labelsHidden().fixedSize()
+                Button(action: close) { Image(systemName: "xmark") }
+                    .buttonStyle(.borderless).help(L.Charts.hideHelp).accessibilityLabel(L.Charts.hide)
+            }
+            SummaryTiles(avg: w.stats.avgWatts, peak: w.stats.peakWatts, kwh: w.stats.kWh, price: model.pricePerKWh, currency: model.currency)
+            if !loaded {
+                Color.clear.frame(height: 120)
+            } else if w.data.count < 2 {
+                Text(L.Charts.tooFew)
+                    .font(.callout).foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, minHeight: 120)
+            }
+            // Reihenfolge für VoiceOver in beiden Anordnungen gleich: Leistung, Temperatur, Außen, Verbrauch.
+            if grid {
+                Grid(alignment: .topLeading, horizontalSpacing: 16, verticalSpacing: 16) {
+                    if hasCharts {
+                        GridRow {
+                            power
+                            temperature
+                        }
+                    }
+                    GridRow {
+                        if hasCharts, !w.outdoor.isEmpty { outdoor }
+                        if loaded { energy }
+                    }
+                }
+            } else {
+                if hasCharts {
+                    power
+                    temperature
+                    if !w.outdoor.isEmpty { outdoor }
+                }
+                if loaded { energy }
+            }
+        }
+        .padding(20)
+        .frame(width: size.width, alignment: .topLeading)
+        .onGeometryChange(for: CGFloat.self) { $0.size.height.rounded(.up) } action: { h in
+            let value = max(0, Double(h) - applied)
+            if overhead[grid] != value, hasCharts { overhead[grid] = value }
         }
     }
 }
@@ -168,21 +228,30 @@ struct ChartSegment {
     }
 }
 
+/// Achsen- und Reihennamen der Graphen (VoiceOver-Namen); einmal nachgeschlagen, nicht je Punkt.
+enum ChartNames {
+    static let time = L.Charts.Axis.time
+    static let watt = L.Charts.Axis.watt
+    static let segment = L.Charts.Axis.segment
+    static let series = L.Charts.Axis.series
+    static let room = L.Charts.Series.room
+    static let target = L.Charts.Series.target
+}
+
 struct SummaryTiles: View {
     let avg: Double?
     let peak: Double?
     let kwh: Double?
     let price: Double
+    let currency: String
 
     var body: some View {
         HStack(spacing: 8) {
-            tile("bolt", "Mittel", Fmt.watts(avg), help: "Mittlere Leistung im gewählten Zeitraum")
-            tile("bolt.fill", "Spitze", Fmt.watts(peak), help: "Höchste gemessene Leistung im gewählten Zeitraum")
-            tile("sum", "Verbrauch", Fmt.kwh(kwh),
-                 help: "Aus den Messwerten des Zeitraums berechnet. Zeiten ohne Messung (App oder Mac aus) fehlen – darum kann "
-                     + "der Wert vom Zähler der Anlage („Kosten heute“ in der Übersicht) abweichen.")
-            tile("eurosign", "Kosten", Fmt.euro(kwh.map { $0 * price }),
-                 help: "Verbrauch des Zeitraums mal heutigem Strompreis (\(Fmt.num(price, 2)) € je kWh) – auch für ältere Tage.")
+            tile("bolt", L.Charts.Tile.avg, Fmt.watts(avg), help: L.Charts.Tile.avgHelp)
+            tile("bolt.fill", L.Charts.Tile.peak, Fmt.watts(peak), help: L.Charts.Tile.peakHelp)
+            tile("sum", L.Energy.title, Fmt.kwh(kwh), help: L.Charts.Tile.consumptionHelp)
+            tile("banknote", L.Charts.Tile.cost, Fmt.money(kwh.map { $0 * price }, currency: currency),
+                 help: L.Charts.Tile.costHelp(price: Fmt.num(price, 2), currency: currency))
         }
     }
 
@@ -207,15 +276,18 @@ struct PowerChart: View {
     let time: ClosedRange<Date>?
     let tint: Color
     let range: TimeInterval
+    var height = 150.0
+    var fill = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Label("Leistung", systemImage: "bolt").font(.subheadline.weight(.medium))
+            Label(L.Charts.power, systemImage: "bolt").font(.subheadline.weight(.medium))
             PowerMarks(points: points, time: time, tint: tint, range: range)
                 .equatable()
-                .frame(height: 150)
-                .chartSummary("Leistung", points.compactMap(\.power)) { Fmt.watts($0) }
+                .frame(height: height)
+                .chartSummary(L.Charts.power, points.compactMap(\.power)) { Fmt.watts($0) }
         }
+        .frame(maxHeight: fill ? .infinity : nil, alignment: .top)
         .padding(12)
         .plainCard(radius: 14)
     }
@@ -228,6 +300,8 @@ private struct PowerMarks: View, Equatable {
     let time: ClosedRange<Date>?
     let tint: Color
     let range: TimeInterval
+    /// Gehört zum Vergleich: ändern sich die Formate zur Laufzeit, baut sich der Graph neu auf.
+    var format = FormatProfile.current
 
     var body: some View {
         Chart {
@@ -235,14 +309,14 @@ private struct PowerMarks: View, Equatable {
                 ForEach(seg.points.indices, id: \.self) { i in
                     let s = seg.points[i]
                     // Nicht stapeln: Lauf und Lücken-Brücke teilen sich ihre Nahtpunkte.
-                    AreaMark(x: .value("Zeit", s.time), y: .value("Watt", s.power ?? 0),
-                             series: .value("Abschnitt", seg.id), stacking: .unstacked)
+                    AreaMark(x: .value(ChartNames.time, s.time), y: .value(ChartNames.watt, s.power ?? 0),
+                             series: .value(ChartNames.segment, seg.id), stacking: .unstacked)
                         .foregroundStyle(.linearGradient(colors: [tint.opacity(0.45), tint.opacity(0.05)],
                                                          startPoint: .top, endPoint: .bottom))
                         .interpolationMethod(seg.gap ? .linear : .monotone)
                         .opacity(seg.gap ? ChartSegment.gapOpacity : 1)
-                    LineMark(x: .value("Zeit", s.time), y: .value("Watt", s.power ?? 0),
-                             series: .value("Abschnitt", seg.id))
+                    LineMark(x: .value(ChartNames.time, s.time), y: .value(ChartNames.watt, s.power ?? 0),
+                             series: .value(ChartNames.segment, seg.id))
                         .foregroundStyle(tint)
                         .interpolationMethod(seg.gap ? .linear : .monotone)
                         .opacity(seg.gap ? ChartSegment.gapOpacity : 1)
@@ -251,6 +325,7 @@ private struct PowerMarks: View, Equatable {
         }
         .chartYAxisLabel("W")
         .chartXScale(domain: time ?? Date().addingTimeInterval(-range)...Date())
+        .timeAxis(range: range)
         .chartOverlay { proxy in
             HoverOverlay(proxy: proxy, points: points) { p in
                 p.power.map { w in
@@ -267,6 +342,8 @@ struct TemperatureChart: View {
     let window: ChartWindow
     let range: TimeInterval
     var colors = SeriesColors()
+    var height = 180.0
+    var fill = false
 
     // Neutrale Reihenfarben: Orange/Grün/Blau stehen für die Modi Heizen/Entfeuchten/Kühlen.
     static let indoorColor = SeriesColors.indoorBase
@@ -275,12 +352,13 @@ struct TemperatureChart: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Label("Temperatur", systemImage: "thermometer.medium").font(.subheadline.weight(.medium))
+            Label(L.Charts.temperature, systemImage: "thermometer.medium").font(.subheadline.weight(.medium))
             TemperatureMarks(window: window, range: range, colors: colors)
                 .equatable()
-                .frame(height: 180)
-                .chartSummary("Raumtemperatur", window.indoor.compactMap(\.indoor)) { Fmt.temp($0) }
+                .frame(height: height)
+                .chartSummary(L.Appearance.Hero.room, window.indoor.compactMap(\.indoor)) { Fmt.temp($0) }
         }
+        .frame(maxHeight: fill ? .infinity : nil, alignment: .top)
         .padding(12)
         .plainCard(radius: 14)
     }
@@ -290,14 +368,16 @@ private struct TemperatureMarks: View, Equatable {
     let window: ChartWindow
     let range: TimeInterval
     let colors: SeriesColors
+    /// Gehört zum Vergleich: ändern sich die Formate zur Laufzeit, baut sich der Graph neu auf.
+    var format = FormatProfile.current
 
     var body: some View {
         Chart {
             ForEach(ChartSegment.split(window.indoor, range: range), id: \.id) { seg in
                 ForEach(seg.points.indices, id: \.self) { i in
                     let s = seg.points[i]
-                    LineMark(x: .value("Zeit", s.time), y: .value("°C", s.indoor ?? 0), series: .value("Reihe", "Raum \(seg.id)"))
-                        .foregroundStyle(by: .value("Reihe", "Raum"))
+                    LineMark(x: .value(ChartNames.time, s.time), y: .value("°C", s.indoor ?? 0), series: .value(ChartNames.series, "\(ChartNames.room) \(seg.id)"))
+                        .foregroundStyle(by: .value(ChartNames.series, ChartNames.room))
                         .interpolationMethod(seg.gap ? .linear : .monotone)
                         .opacity(seg.gap ? ChartSegment.gapOpacity : 1)
                 }
@@ -305,25 +385,26 @@ private struct TemperatureMarks: View, Equatable {
             ForEach(ChartSegment.split(window.target, range: range), id: \.id) { seg in
                 ForEach(seg.points.indices, id: \.self) { i in
                     let s = seg.points[i]
-                    LineMark(x: .value("Zeit", s.time), y: .value("°C", s.target ?? 0), series: .value("Reihe", "Soll \(seg.id)"))
-                        .foregroundStyle(by: .value("Reihe", "Soll"))
+                    LineMark(x: .value(ChartNames.time, s.time), y: .value("°C", s.target ?? 0), series: .value(ChartNames.series, "\(ChartNames.target) \(seg.id)"))
+                        .foregroundStyle(by: .value(ChartNames.series, ChartNames.target))
                         .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
                         .interpolationMethod(seg.gap ? .linear : .stepEnd)
                         .opacity(seg.gap ? ChartSegment.gapOpacity : 1)
                 }
             }
         }
-        .chartForegroundStyleScale(["Raum": colors.indoor, "Soll": colors.target])
+        .chartForegroundStyleScale([ChartNames.room: colors.indoor, ChartNames.target: colors.target])
         .chartLegend(position: .bottom, alignment: .leading)
         .chartYAxisLabel("°C")
         .chartYScale(domain: window.insideRange ?? UIOptions.chartTemperatureAxis)
         .chartXScale(domain: window.timeDomain ?? Date().addingTimeInterval(-range)...Date())
+        .timeAxis(range: range)
         .chartOverlay { proxy in
             HoverOverlay(proxy: proxy, points: window.indoor) { p in
                 p.indoor.map { y in
                     HoverPick(y: y, color: colors.indoor,
                               label: HoverLabel(value: Fmt.temp(y), time: p.time, range: range,
-                                                extra: [p.target.map { "Soll " + Fmt.target($0) }].compactMap { $0 }))
+                                                extra: [p.target.map { L.Charts.hoverTarget(target: Fmt.target($0)) }].compactMap { $0 }))
                 }
             }
         }
@@ -335,15 +416,18 @@ struct OutdoorChart: View {
     let window: ChartWindow
     let range: TimeInterval
     var color = SeriesColors.outdoorBase
+    var height = 120.0
+    var fill = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Label("Außentemperatur", systemImage: "sun.max").font(.subheadline.weight(.medium))
+            Label(L.Charts.outdoor, systemImage: "sun.max").font(.subheadline.weight(.medium))
             OutdoorMarks(points: window.outdoor, time: window.timeDomain, domain: window.outsideRange ?? UIOptions.chartOutdoorAxis, range: range, color: color)
                 .equatable()
-                .frame(height: 120)
-                .chartSummary("Außentemperatur", window.outdoor.compactMap(\.outdoor)) { Fmt.temp($0) }
+                .frame(height: height)
+                .chartSummary(L.Charts.outdoor, window.outdoor.compactMap(\.outdoor)) { Fmt.temp($0) }
         }
+        .frame(maxHeight: fill ? .infinity : nil, alignment: .top)
         .padding(12)
         .plainCard(radius: 14)
     }
@@ -355,19 +439,21 @@ private struct OutdoorMarks: View, Equatable {
     let domain: ClosedRange<Double>
     let range: TimeInterval
     let color: Color
+    /// Gehört zum Vergleich: ändern sich die Formate zur Laufzeit, baut sich der Graph neu auf.
+    var format = FormatProfile.current
 
     var body: some View {
         Chart {
             ForEach(ChartSegment.split(points, range: range), id: \.id) { seg in
                 ForEach(seg.points.indices, id: \.self) { i in
                     let s = seg.points[i]
-                    AreaMark(x: .value("Zeit", s.time), yStart: .value("°C", domain.lowerBound),
-                             yEnd: .value("°C", s.outdoor ?? 0), series: .value("Abschnitt", seg.id))
+                    AreaMark(x: .value(ChartNames.time, s.time), yStart: .value("°C", domain.lowerBound),
+                             yEnd: .value("°C", s.outdoor ?? 0), series: .value(ChartNames.segment, seg.id))
                         .foregroundStyle(.linearGradient(colors: [color.opacity(0.30), color.opacity(0.03)],
                                                          startPoint: .top, endPoint: .bottom))
                         .interpolationMethod(seg.gap ? .linear : .monotone)
                         .opacity(seg.gap ? ChartSegment.gapOpacity : 1)
-                    LineMark(x: .value("Zeit", s.time), y: .value("°C", s.outdoor ?? 0), series: .value("Abschnitt", seg.id))
+                    LineMark(x: .value(ChartNames.time, s.time), y: .value("°C", s.outdoor ?? 0), series: .value(ChartNames.segment, seg.id))
                         .foregroundStyle(color)
                         .interpolationMethod(seg.gap ? .linear : .monotone)
                         .opacity(seg.gap ? ChartSegment.gapOpacity : 1)
@@ -377,6 +463,7 @@ private struct OutdoorMarks: View, Equatable {
         .chartYAxisLabel("°C")
         .chartYScale(domain: domain)
         .chartXScale(domain: time ?? Date().addingTimeInterval(-range)...Date())
+        .timeAxis(range: range)
         .chartOverlay { proxy in
             HoverOverlay(proxy: proxy, points: points) { p in
                 p.outdoor.map { y in
@@ -495,8 +582,7 @@ struct HoverLabel: View {
     }
 
     private var timeText: String {
-        let style = Date.FormatStyle().hour(.twoDigits(amPM: .omitted)).minute(.twoDigits).locale(Fmt.locale)
-        let t = time.formatted(style)
+        let t = Fmt.clock(time)
         guard range > 86400 else { return t }
         return time.formatted(Date.FormatStyle().weekday(.abbreviated).locale(Fmt.locale)) + " " + t
     }
@@ -507,9 +593,9 @@ extension View {
     func chartSummary(_ title: String, _ values: [Double], _ format: (Double) -> String) -> some View {
         let text: String
         if let last = values.last, let lo = values.min(), let hi = values.max() {
-            text = "zuletzt \(format(last)), niedrigster \(format(lo)), höchster \(format(hi))"
+            text = L.Charts.summary(last: format(last), low: format(lo), high: format(hi))
         } else {
-            text = "keine Daten"
+            text = L.Charts.summaryNone
         }
         return accessibilityElement(children: .ignore)
             .accessibilityLabel(title)
@@ -524,5 +610,23 @@ extension View {
                 .fill(Color.primary.opacity(0.05))
                 .overlay(RoundedRectangle(cornerRadius: radius).strokeBorder(Color.primary.opacity(0.08), lineWidth: 0.5))
         )
+    }
+}
+
+extension View {
+    /// Zeitachse mit den Formaten des Kerns: Die automatische Beschriftung von Charts mischt Sprache und Region
+    /// („7 Nov at 22:00“) und wird abgeschnitten.
+    func timeAxis(range: TimeInterval) -> some View {
+        chartXAxis {
+            AxisMarks(values: .automatic(desiredCount: range > 86400 ? 7 : 6)) { value in
+                AxisGridLine()
+                AxisTick()
+                AxisValueLabel {
+                    if let d = value.as(Date.self) {
+                        Text(range > 86400 ? Fmt.dayMonth(d) : Fmt.clock(d))
+                    }
+                }
+            }
+        }
     }
 }

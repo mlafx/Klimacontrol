@@ -4,8 +4,9 @@ import MideaKit
 import Observation
 import Sparkle
 
-/// Updates über Sparkle: immer automatisch laden und installieren, kein Überspringen, kein Abschalten. Feed und
-/// Schlüssel stehen in der Info.plist (`tools/build_app.sh`).
+/// Updates über Sparkle: immer automatisch laden, kein Überspringen, kein Abschalten. Ein geladenes Update
+/// installiert die App auf Wunsch sofort („Jetzt neu starten“), sonst beim Beenden. Feed und Schlüssel stehen in der
+/// Info.plist (`tools/build_app.sh`); nur der Beta-Kanal setzt die Adresse über den Delegate.
 @MainActor
 @Observable
 final class AppUpdater {
@@ -18,6 +19,16 @@ final class AppUpdater {
     private(set) var canCheck = false
     /// Satz zur letzten Suche (Katalogtext), nil = noch nichts gesucht.
     private(set) var status: String?
+    /// Version des geladenen, noch nicht installierten Updates.
+    private(set) var readyVersion: String?
+    @ObservationIgnored private var installBlock: (() -> Void)?
+    @ObservationIgnored private var remindAt = Date.distantPast
+    @ObservationIgnored private var asking = false
+    @ObservationIgnored private var retryTask: Task<Void, Never>?
+    @ObservationIgnored private var reminderTimer: Timer?
+    @ObservationIgnored private var wakeObserver: (any NSObjectProtocol)?
+
+    var hasPendingInstall: Bool { installBlock != nil }
 
     /// Nur im fertigen Bundle mit Schlüssel – bei `swift run` meldete Sparkle sonst beim Start einen Fehler.
     var available: Bool { controller != nil }
@@ -39,43 +50,145 @@ final class AppUpdater {
             Task { @MainActor in self?.canCheck = updater.canCheckForUpdates }
         }
         delegate.onStatus = { [weak self] in self?.status = $0 }
-        AppLog.write("Updates: automatisch laden und installieren (\(AppUpdate.feedMac))")
+        delegate.onManualResult = { [weak self] title, message in self?.showManualResult(title: title, message: message) }
+        delegate.onReady = { [weak self] version, install in self?.updateIsReady(version: version, install: install) }
+        AppLog.write(L.Log.Updates.automatic(state: UpdaterDelegate.betaEnabled ? L.Log.Common.on : L.Log.Common.off, feed: AppUpdate.feedMac(beta: UpdaterDelegate.betaEnabled)))
+    }
+
+    /// Nach dem Einschalten des Beta-Kanals sofort suchen; beim Ausschalten bleibt die Fassung, bis eine neuere stabile kommt.
+    func betaChannelChanged(to on: Bool) {
+        AppLog.write(L.Log.Updates.betaChannel(state: on ? L.Log.Common.on : L.Log.Common.off))
+        if on { checkForUpdates() }
+    }
+
+    /// Installiert das geladene Update und startet die App neu, ohne die Timer-Rückfrage.
+    func installNow() {
+        guard let block = installBlock else { return }
+        AppLog.write(L.Log.Updates.installNow(version: readyVersion ?? "?"))
+        installBlock = nil
+        AppRestart.skipQuitPrompt = true
+        block()
+    }
+
+    private func updateIsReady(version: String, install: @escaping () -> Void) {
+        installBlock = install
+        readyVersion = version
+        status = L.Updates.Mac.ready(version: version)
+        remindAt = Date()
+        startReminders()
+        Task { @MainActor in self.askIfDue() }
+    }
+
+    /// Wanduhr statt Zeitschaltuhr, damit die Erinnerung auch nach dem Ruhezustand pünktlich kommt.
+    private func startReminders() {
+        if reminderTimer == nil {
+            reminderTimer = Timer.scheduledTimer(withTimeInterval: 15 * 60, repeats: true) { [weak self] _ in
+                Task { @MainActor in self?.askIfDue() }
+            }
+        }
+        if wakeObserver == nil {
+            wakeObserver = NSWorkspace.shared.notificationCenter.addObserver(
+                forName: NSWorkspace.didWakeNotification, object: nil, queue: .main) { [weak self] _ in
+                Task { @MainActor in self?.askIfDue() }
+            }
+        }
+    }
+
+    private func askIfDue() {
+        guard installBlock != nil, !asking, Date() >= remindAt, let version = readyVersion else { return }
+        if NSApp.modalWindow != nil {
+            retryTask?.cancel()
+            retryTask = Task { @MainActor in
+                try? await Task.sleep(for: .seconds(60))
+                if !Task.isCancelled { self.askIfDue() }
+            }
+            return
+        }
+        asking = true
+        defer { asking = false }
+        let alert = NSAlert()
+        alert.messageText = L.Updates.Mac.promptTitle
+        alert.informativeText = L.Updates.Mac.promptMessage(version: version)
+        alert.addButton(withTitle: L.App.restartNow)
+        alert.addButton(withTitle: L.Updates.Restart.later)
+        NSApp.activate()
+        if alert.runModal() == .alertFirstButtonReturn {
+            installNow()
+        } else {
+            remindAt = Date().addingTimeInterval(24 * 3600)
+            AppLog.write(L.Log.Updates.remind)
+        }
     }
 
     /// Stiller Weg ohne Sparkle-Dialog (der „Überspringen“ anböte).
     func checkForUpdates() {
         guard let controller else { return }
         status = UIText.updatesChecking
+        delegate.userInitiated = true
         controller.updater.checkForUpdatesInBackground()
+    }
+
+    private func showManualResult(title: String, message: String) {
+        let alert = NSAlert()
+        alert.messageText = title
+        alert.informativeText = message
+        alert.addButton(withTitle: L.Common.ok)
+        NSApp.activate()
+        alert.runModal()
     }
 }
 
 @MainActor
 private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
     var onStatus: ((String) -> Void)?
+    var onReady: ((String, @escaping () -> Void) -> Void)?
+    var onManualResult: ((String, String) -> Void)?
+    /// Nur eine vom Nutzer angestoßene Suche meldet ihr Ergebnis in einem Fenster; Hintergrundsuchen bleiben still.
+    var userInitiated = false
+
+    /// Der Mac-Kern speichert den Schalter in den UserDefaults.
+    static var betaEnabled: Bool { UserDefaults.standard.bool(forKey: SettingsKey.updateBetaChannel) }
+
+    /// Ohne Beta nil: dann gelten `SUFeedURL` aus den Einstellungen (Testumleitung per `defaults write`) und die
+    /// Info.plist. Sparkle fragt den Delegate zuerst.
+    func feedURLString(for updater: SPUUpdater) -> String? {
+        if let test = AppUpdate.testFeedOverride(ProcessInfo.processInfo.environment[AppUpdate.testFeedVariable]) {
+            return test
+        }
+        return Self.betaEnabled ? AppUpdate.feedMacBeta : nil
+    }
 
     func updater(_ updater: SPUUpdater, didFindValidUpdate item: SUAppcastItem) {
-        AppLog.write("Updates: Version \(item.displayVersionString) gefunden")
-        onStatus?(UIText.updatesInstalling(version: item.displayVersionString))
+        AppLog.write(L.Log.Updates.found(version: item.displayVersionString))
+        userInitiated = false
+        onStatus?(L.Updates.Mac.downloading(version: item.displayVersionString))
     }
 
     func updaterDidNotFindUpdate(_ updater: SPUUpdater) {
         onStatus?(UIText.updatesCurrent)
+        guard userInitiated else { return }
+        userInitiated = false
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
+        onManualResult?(UIText.updatesManualCurrentTitle, UIText.updatesManualCurrentMessage(version: version))
     }
 
     func updater(_ updater: SPUUpdater, didAbortWithError error: any Error) {
+        AppRestart.skipQuitPrompt = false
         // Sparkle meldet „kein Update“ hier zusätzlich als Fehler – das ist kein Fehlschlag.
         let e = error as NSError
         if e.domain == SUSparkleErrorDomain, e.code == Int(SUError.noUpdateError.rawValue) { return }
-        AppLog.write("Updates: abgebrochen (\(error.localizedDescription))")
+        AppLog.write(L.Log.Updates.aborted(error: error.localizedDescription))
         onStatus?(UIText.updatesFailed)
+        guard userInitiated else { return }
+        userInitiated = false
+        onManualResult?(UIText.updatesManualFailedTitle, UIText.updatesManualFailedMessage)
     }
 
-    /// Die App läuft meist dauerhaft in der Menüleiste; ohne das käme die neue Version erst beim nächsten Beenden.
+    /// Sparkle installiert beim Beenden ohnehin; true meldet, dass die App den sofortigen Weg über den Block anbietet.
     func updater(_ updater: SPUUpdater, willInstallUpdateOnQuit item: SUAppcastItem,
                  immediateInstallationBlock immediateInstallHandler: @escaping () -> Void) -> Bool {
-        AppLog.write("Updates: installiere Version \(item.displayVersionString) sofort")
-        immediateInstallHandler()
+        AppLog.write(L.Log.Updates.downloaded(version: item.displayVersionString))
+        onReady?(item.displayVersionString, immediateInstallHandler)
         return true
     }
 }

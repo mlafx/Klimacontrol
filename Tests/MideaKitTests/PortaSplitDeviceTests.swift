@@ -139,7 +139,7 @@ final class PortaSplitDeviceTests: XCTestCase {
         XCTAssertLessThanOrEqual(try lan.budgeted(4), 2)
         lan.deadline = Date().addingTimeInterval(-1)
         XCTAssertThrowsError(try lan.budgeted(4)) { error in
-            XCTAssertEqual(error as? MideaError, .connectionFailed(LANClient.budgetHint))
+            XCTAssertEqual(error as? MideaError, .connectionFailed(.budget))
         }
     }
 
@@ -246,7 +246,7 @@ final class PortaSplitDeviceTests: XCTestCase {
     // MARK: „Belegt“
 
     func testBusyMessageNamesBothApps() {
-        let text = MideaError.busy(LANClient.busyHint).errorDescription ?? ""
+        let text = MideaError.busy(.otherApp).errorDescription ?? ""
         XCTAssertTrue(text.contains("belegt"))
         XCTAssertTrue(text.contains("Klimacontrol-App"))
         XCTAssertTrue(text.contains("Midea-App"))

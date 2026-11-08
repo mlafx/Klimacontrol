@@ -343,7 +343,7 @@ sealed class NotifyArea : IDisposable
         if (string.IsNullOrWhiteSpace(text)) return true;
         if (!TryParseHotkey(text, out var mods, out var vk))
         {
-            LogHotkeyOnce(text, "nicht lesbar");
+            LogHotkeyOnce(text, "nicht lesbar"); // kein Anzeigetext: Protokoll
             return false;
         }
         if (RegisterHotKey(source.Handle, HotkeyId, mods | MOD_NOREPEAT, vk)) { failedHotkey = null; return true; }
@@ -370,17 +370,9 @@ sealed class NotifyArea : IDisposable
         return vk != 0;
     }
 
-    /// Anzeigeform wie in Windows-Menüs: "Ctrl+Alt+K" → "Strg+Alt+K"; leer bei ungültig/aus.
-    public static string HotkeyDisplay(string? text)
-    {
-        if (string.IsNullOrWhiteSpace(text) || !SettingsWindow.TryParseHotkey(text, out var m, out var key)) return "";
-        var s = "";
-        if (m.HasFlag(ModifierKeys.Control)) s += "Strg+";
-        if (m.HasFlag(ModifierKeys.Alt)) s += "Alt+";
-        if (m.HasFlag(ModifierKeys.Shift)) s += "Umschalt+";
-        if (m.HasFlag(ModifierKeys.Windows)) s += "Win+";
-        return s + (key is >= Key.D0 and <= Key.D9 ? ((char)('0' + (key - Key.D0))).ToString() : key.ToString());
-    }
+    /// Anzeigeform wie in Windows-Menüs: "Ctrl+Alt+K" → "Strg+Alt+K" bzw. "Ctrl+Alt+K"; leer bei ungültig/aus.
+    public static string HotkeyDisplay(string? text) =>
+        string.IsNullOrWhiteSpace(text) || !SettingsWindow.TryParseHotkey(text, out var m, out var key) ? "" : Hotkeys.Display(m, key);
 
     public void Dispose()
     {
@@ -397,4 +389,48 @@ sealed class NotifyArea : IDisposable
         source.RemoveHook(Hook);
         source.Dispose();
     }
+}
+
+/// Tastennamen in der Sprache der App (Katalog `keys.windows.*`). Gespeichert wird das Kürzel weiter als „Ctrl+Alt+K“.
+static class Hotkeys
+{
+    /// „Strg+Alt+“ usw. (mit abschließendem Plus), leer ohne Modifikatoren.
+    public static string Mods(ModifierKeys mods)
+    {
+        var text = "";
+        if (mods.HasFlag(ModifierKeys.Control)) text += L.T("keys.windows.ctrl") + "+";
+        if (mods.HasFlag(ModifierKeys.Alt)) text += L.T("keys.windows.alt") + "+";
+        if (mods.HasFlag(ModifierKeys.Shift)) text += L.T("keys.windows.shift") + "+";
+        if (mods.HasFlag(ModifierKeys.Windows)) text += L.T("keys.windows.win") + "+";
+        return text;
+    }
+
+    public static string KeyName(Key key) => key switch
+    {
+        >= Key.D0 and <= Key.D9 => ((char)('0' + (key - Key.D0))).ToString(),
+        >= Key.NumPad0 and <= Key.NumPad9 => L.F("keys.windows.numpad", ("digit", (key - Key.NumPad0).ToString(System.Globalization.CultureInfo.InvariantCulture))),
+        Key.Space => L.T("keys.windows.space"),
+        Key.Enter => L.T("keys.windows.enter"),
+        Key.Back => L.T("keys.windows.backspace"),
+        Key.Delete => L.T("keys.windows.delete"),
+        Key.Insert => L.T("keys.windows.insert"),
+        Key.Home => L.T("keys.windows.home"),
+        Key.End => L.T("keys.windows.end"),
+        Key.PageUp => L.T("keys.windows.pageUp"),
+        Key.PageDown => L.T("keys.windows.pageDown"),
+        Key.Up => "↑",
+        Key.Down => "↓",
+        Key.Left => "←",
+        Key.Right => "→",
+        Key.OemComma => ",",
+        Key.OemPeriod => ".",
+        Key.OemMinus => "-",
+        Key.OemPlus => "+",
+        _ => key.ToString(),
+    };
+
+    public static string Display(ModifierKeys mods, Key key) => Mods(mods) + KeyName(key);
+
+    /// „Strg+P“ bzw. „Ctrl+P“ für Kurzinfos.
+    public static string Ctrl(string key) => L.T("keys.windows.ctrl") + "+" + key;
 }

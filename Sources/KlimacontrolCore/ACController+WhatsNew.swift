@@ -7,9 +7,9 @@ extension ACController {
     func loadWhatsNew() {
         let seen = settings.object(forKey: SettingsKey.lastSeenVersion) as? String
         let usedBefore = DeviceConfig.load(from: paths.config) != nil
-        guard ReleaseNotes.numbers(appVersion) != nil else { return }
+        guard AppVersion(appVersion) != nil else { return }
         pendingReleaseNotes = WhatsNew.pending(lastSeen: seen, current: appVersion, usedBefore: usedBefore,
-                                               notes: ReleaseNotes.parse(ReleaseNotes.changelog))
+                                               notes: ReleaseNotes.all(for: Localizer.language))
         whatsNew = ReleaseNotes.notes(pendingReleaseNotes, for: .current)
         if whatsNew.isEmpty, seen != appVersion { settings.set(appVersion, forKey: SettingsKey.lastSeenVersion) }
     }

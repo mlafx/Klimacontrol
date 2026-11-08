@@ -88,8 +88,7 @@ public enum CloudAccountError: Error, LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .notSaved:
-            return "Das Midea-Konto wurde nicht im Schlüsselbund gespeichert. Prüfe den Zugriff auf den Schlüsselbund "
-                + "und melde dich noch einmal an."
+            return HostWords.current.isWindows ? L.Message.Account.Windows.notSaved : L.Message.Account.notSaved
         }
     }
 }

@@ -6,12 +6,12 @@ extension ACController {
     /// Meldet sich einmal mit dem MSmartHome-Konto an, prüft es und legt es im Geheimnisspeicher ab.
     /// Erfolg → nil, sonst die Fehlermeldung. Das Passwort steht nie im Protokoll.
     public func cloudLogin(account: String, password: String) async -> String? {
-        guard !cloudLoginRunning else { return "Anmeldung läuft bereits." }
+        guard !cloudLoginRunning else { return L.Message.Account.running }
         guard let cfg = config, cfg.deviceId != 0 else {
-            return "Für die Cloud fehlt die Anlagen-ID. Richte die Anlage zuerst über die Suche im WLAN ein."
+            return L.Message.Account.noId
         }
         let creds = CloudCredentials(account: account.trimmingCharacters(in: .whitespacesAndNewlines), password: password)
-        guard !creds.account.isEmpty, !password.isEmpty else { return "Konto und Passwort eingeben." }
+        guard !creds.account.isEmpty, !password.isEmpty else { return L.Message.Account.missingInput }
         cloudLoginRunning = true
         defer { cloudLoginRunning = false }
         let startGeneration = configGeneration
@@ -19,17 +19,17 @@ extension ACController {
         do {
             try await accounts.verify(creds, cfg)
         } catch {
-            AppLog.error("Cloud-Login fehlgeschlagen: \(error.localizedDescription)")
+            AppLog.error(L.Log.Account.loginFailed(error: error.localizedDescription))
             return UserMessage.from(error).text
         }
         // Inzwischen eine andere Anlage eingerichtet, vergessen oder abgemeldet? Dann nichts übernehmen.
         // (Stellbefehle zählen hier nicht – nur Einrichtungswechsel.)
         guard configGeneration == startGeneration, config == cfg, cloudAccount == startAccount else {
-            return "Die Einrichtung hat sich während der Anmeldung geändert. Bitte melde dich noch einmal an."
+            return L.Message.Account.setupChanged
         }
         do { try accounts.save(creds) } catch {
-            AppLog.error("Cloud-Konto nicht gespeichert: \(error.localizedDescription)")
-            return error.localizedDescription
+            AppLog.error(L.Log.Keychain.accountNotSaved(error: error.localizedDescription))
+            return UserMessage.from(error).text
         }
         cloudAccount = creds.account
         connectionMode = UIText.modeAfterAccountLogin(connectionMode)
@@ -44,6 +44,6 @@ extension ACController {
         cloudAccount = nil
         if connectionMode == .cloud { connectionMode = .auto }
         if let cfg = config { use(cfg) }
-        AppLog.write("Cloud-Konto entfernt")
+        AppLog.write(L.Log.Account.removed)
     }
 }

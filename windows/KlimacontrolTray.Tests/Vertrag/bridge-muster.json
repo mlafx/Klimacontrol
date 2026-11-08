@@ -7,7 +7,7 @@
     "nextRefreshLine": "Live aus der Anlage · alle 30 s · nächste Abfrage in 12 s"
   },
   "snapshot": {
-    "apiVersion": 2,
+    "apiVersion": 3,
     "beep": true,
     "cloudAccount": "ma***@example.com",
     "cloudLoginRunning": false,
@@ -57,6 +57,8 @@
     "path": "WLAN",
     "port": 6444,
     "price": 0.35,
+    "language": "system",
+    "currency": "€",
     "refreshSeconds": 30,
     "scenes": [
         {"active": true, "id": "A1B2", "mode": 2, "name": "Abends", "summary": "Kühlen · 24° · Auto"}
@@ -187,7 +189,8 @@
       "purifier": {"enabled": true, "why": null},
       "freezeProtection": {"enabled": false, "why": "Hält 8 °C – nur im Heizbetrieb"},
       "selfClean": {"enabled": true, "why": "Selbstreinigung: trocknet und reinigt das Innengerät (ca. 15 Min.)"},
-      "display": {"enabled": true, "why": "Temperaturanzeige an der Anlage"}
+      "display": {"enabled": true, "why": "Temperaturanzeige an der Anlage"},
+      "sound": {"enabled": true, "why": null}
     },
     "connectionTooltip": "Wohnzimmer · 192.168.1.40:6444 · lokal",
     "uiConnectionState": "live",
@@ -205,6 +208,7 @@
                       "accessibility": "Zuletzt bekannte Werte, Stand 14:32: 24°"},
     "noticeDetail": {"what": "Timer gestellt.", "todo": "", "code": null},
     "appearanceIsStandard": false,
+    "appearanceCustomized": true,
     "onTimerChip": "Ein morgen 07:00",
     "quitPrompt": {"title": "Klimacontrol beenden?", "message": "Timer „Aus“ heute um 22:30 ist gestellt.", "cancel": "Geöffnet lassen",
                    "confirm": "Trotzdem beenden", "warning": false},

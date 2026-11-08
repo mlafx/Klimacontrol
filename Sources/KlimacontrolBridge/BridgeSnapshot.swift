@@ -139,6 +139,9 @@ struct Snapshot: Encodable {
     var costPerHour, todayKWh: Double?
     var refreshSeconds: Int
     var price: Double
+    /// Gespeicherte Sprachwahl ("system", "de", "en"; wirkt nach Neustart) und Währung des Strompreises.
+    var language: String
+    var currency: String
     var beep: Bool
     var debugLog: Bool
     var historyCSV: Bool
@@ -210,6 +213,7 @@ struct Snapshot: Encodable {
     var noticeDetail: MessageDTO? = nil
     /// Die Darstellung entspricht dem Standard dieser Plattform („Auf Standard zurücksetzen“ ausgegraut).
     var appearanceIsStandard = true
+    var appearanceCustomized = false
     var onTimerChip: String? = nil
     /// Rückfrage beim Beenden, solange ein App-Timer gestellt ist (nil = ohne Rückfrage beenden).
     var quitPrompt: PromptDTO? = nil
@@ -279,14 +283,14 @@ func phaseName(_ p: ConnectPhase) -> String {
     let s = c.state.map {
         StateDTO(power: $0.power, swing: $0.swing == .vertical, eco: $0.eco, turbo: $0.turbo, purifier: $0.purifier,
                  sleep: $0.sleep, displayOn: $0.displayOn, filterAlert: $0.filterAlert, mode: $0.mode.rawValue,
-                 modeLabel: $0.mode.label, fan: $0.fanSpeed, fanLabel: $0.fanLabel, target: $0.targetTemperature,
+                 modeLabel: $0.mode.title, fan: $0.fanSpeed, fanLabel: $0.fanTitle, target: $0.targetTemperature,
                  indoor: $0.indoorTemperature, outdoor: $0.outdoorTemperature, powerWatts: $0.powerWatts,
                  totalKWh: $0.totalEnergyKWh, ratePercent: $0.ratePercent, outSilent: $0.outSilent,
                  selfClean: $0.selfClean, ieco: $0.ieco, sound: $0.sound, freezeProtection: $0.freezeProtection,
                  errorCode: $0.errorCode)
     }
     let setup = c.setup
-    let modes = ConnectionMode.allCases.map { [$0.rawValue, $0.label] }
+    let modes = ConnectionMode.allCases.map { [$0.rawValue, $0.title] }
     let manual = setup.path == .manual
         ? ManualDTO(ip: setup.manual.ip, port: setup.manual.port, deviceId: setup.manual.deviceId,
                     token: setup.manual.token, key: setup.manual.key, name: setup.manual.name,
@@ -314,9 +318,10 @@ func phaseName(_ p: ConnectPhase) -> String {
                     t3OutdoorCoil: $0.t3OutdoorCoil, t4OutdoorAir: $0.t4OutdoorAir, defrost: $0.defrost,
                     condensatePump: $0.condensatePump)
         },
-        scenes: c.scenes.map { SceneDTO(id: $0.id, name: $0.name, summary: $0.summary, active: c.isActive($0), mode: $0.mode) },
+        scenes: c.scenes.map { SceneDTO(id: $0.id, name: $0.name, summary: $0.summaryText, active: c.isActive($0), mode: $0.mode) },
         offAt: c.offAt?.timeIntervalSince1970, onAt: c.onAt?.timeIntervalSince1970,
         costPerHour: c.costPerHour, todayKWh: c.todayKWh, refreshSeconds: c.refreshSeconds, price: c.pricePerKWh,
+        language: c.languageChoice.rawValue, currency: c.currency,
         beep: c.beep, debugLog: results.debugLog, historyCSV: c.historyCSV, historyRevision: c.history.revision,
         setup: SetupDTO(scanning: setup.scanning, cloudScanning: setup.cloudScanning, busy: setup.busy,
                         subnetScanning: setup.subnetScanning,
@@ -360,8 +365,7 @@ func phaseName(_ p: ConnectPhase) -> String {
     snap.onTimerLabel = c.onTimerLabel
     snap.offTimerLabel = c.offTimerLabel
     snap.appearance = c.appearance
-    // Der Kerntext nennt den Mac; unter Windows passt „Rechner“.
-    snap.timerRequirement = ACController.timerRequirement.replacingOccurrences(of: "der Mac", with: "der Rechner")
+    snap.timerRequirement = ACController.timerRequirement
     snap.applyDisplay(c)
     let news = c.whatsNew(for: .windows)
     if !news.isEmpty {

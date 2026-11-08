@@ -11,11 +11,13 @@ import KlimacontrolCore
 // - Befehle als JSON {"cmd": "...", ...}. Passwörter darin werden nie protokolliert.
 // - Beim Start kc_api_version() mit der eigenen Erwartung vergleichen (Stand von exe und DLL gleich?).
 // - Fehlt ein Pflichtparameter oder ist er falsch, liefert kc_command eine Fehlermeldung statt eines Standardwerts.
+// - kc_set_locale(json) vor kc_init: Sprache und Formate des Systems. kc_strings_json() liefert die Texte der aktiven Sprache.
 
 /// Version der C-Schnittstelle. Erhöhen bei jeder Änderung an Funktionen, Befehlen oder Feldern des Schnappschusses,
 /// auf die sich die Oberfläche verlässt. 1 = ohne kc_api_version, 2 = Pflichtparameter,
-/// `apiVersion`/`jsonError` im Schnappschuss, `manual` nur im Weg „Zugangsdaten“ gefüllt.
-let bridgeAPIVersion: Int32 = 2
+/// `apiVersion`/`jsonError` im Schnappschuss, `manual` nur im Weg „Zugangsdaten“ gefüllt, 3 = die Oberfläche ruft
+/// `kc_set_locale` und `kc_strings_json` (Sprache und Texte aus dem Katalog); `language`/`currency` im Schnappschuss.
+let bridgeAPIVersion: Int32 = 3
 
 @MainActor var controller: ACController?
 
@@ -67,7 +69,7 @@ private func cString(_ s: String) -> UnsafeMutablePointer<CChar> {
         return text
     } catch {
         if !jsonErrorLogged {
-            AppLog.error("Bridge: Daten für die Oberfläche nicht kodierbar (\(type(of: value))): \(error)")
+            AppLog.error(L.Log.Bridge.encodeFailed(type: "\(type(of: value))", error: "\(error)"))
             jsonErrorLogged = true
         }
         return fallback
@@ -215,7 +217,7 @@ public func kc_history_stats_json(_ seconds: Double) -> UnsafeMutablePointer<CCh
 public func kc_energy_json(_ kind: UnsafePointer<CChar>?, _ count: Int32) -> UnsafeMutablePointer<CChar> {
     let name = kind.map { String(cString: $0) }
     return mainCString {
-        guard let c = controller else { return #"{"error":"Nicht gestartet."}"# }
+        guard let c = controller else { return encode(EnergyErrorDTO(error: L.Bridge.notStarted), fallback: #"{"error":"error"}"#) }
         return energyJSON(c, kind: name, count: Int(count))
     }
 }
@@ -249,4 +251,54 @@ public func kc_command(_ text: UnsafePointer<CChar>?) -> UnsafeMutablePointer<CC
     let command = text.map { String(cString: $0) }
     let message: String? = MainActor.assumeIsolated { handleCommand(command, on: controller) }
     return message.map(cString)
+}
+
+// MARK: Sprache und Formate
+
+private struct LocaleDTO: Decodable {
+    let uiLanguage: String
+    let format: JSONValue?
+}
+
+/// Setzt Sprache und Format aus dem JSON von `kc_set_locale`. nil = übernommen, sonst Meldung. Die Sprache legt nur
+/// der erste Aufruf fest, das Format gilt bei jedem Aufruf neu.
+@MainActor func applyLocale(_ text: String?, settings: any SettingsStore) -> String? {
+    guard let text, let dto = try? JSONDecoder().decode(LocaleDTO.self, from: Data(text.utf8)) else {
+        return L.Bridge.localeUnreadable
+    }
+    let choice = LanguageChoice(stored: settings.object(forKey: SettingsKey.language) as? String)
+    Localizer.configure(choice.resolve(preferred: [dto.uiLanguage]))
+    guard let format = dto.format, let data = try? JSONEncoder().encode(format),
+          let profile = FormatProfile.decode(data) else {
+        return L.Bridge.formatInvalid
+    }
+    FormatProfile.setCurrent(profile)
+    return nil
+}
+
+private struct StringsDTO: Encodable {
+    var language: String
+    var pseudo: Bool
+    var strings: [String: LocalizedValue]
+}
+
+@MainActor func stringsJSON() -> String {
+    encode(StringsDTO(language: Localizer.language.rawValue, pseudo: Localizer.isPseudo, strings: Localizer.table()),
+           fallback: "{}")
+}
+
+/// Sprache und Formate setzen – vor `kc_init` aufrufen. JSON: `{"uiLanguage": "de-DE", "format": {"localeIdentifier":
+/// "de_DE", "decimalSeparator": ",", "groupingSeparator": ".", "uses24HourClock": true, "amSymbol": "AM",
+/// "pmSymbol": "PM", "dayMonthPattern": "dd.MM."}}`. Rückgabe nil = übernommen, sonst Meldung (mit `kc_free` freigeben).
+@_cdecl("kc_set_locale")
+public func kc_set_locale(_ json: UnsafePointer<CChar>?) -> UnsafeMutablePointer<CChar>? {
+    let text = json.map { String(cString: $0) }
+    let message: String? = MainActor.assumeIsolated { applyLocale(text, settings: UserDefaults.standard) }
+    return message.map(cString)
+}
+
+/// Alle Texte der aktiven Sprache: `{"language", "pseudo", "strings": {Schlüssel: Text | {"one", "other", …}}}`.
+@_cdecl("kc_strings_json")
+public func kc_strings_json() -> UnsafeMutablePointer<CChar> {
+    cString(MainActor.assumeIsolated { stringsJSON() })
 }

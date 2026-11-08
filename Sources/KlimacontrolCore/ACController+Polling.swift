@@ -58,9 +58,9 @@ extension ACController {
         if effectiveRefreshSeconds < 5 {
             return await refreshFast(device)
         }
-        AppLog.debug("Abfrage gestartet")
+        AppLog.debug(L.Log.Polling.started)
         guard await perform(staleAware: true, { try await device.refresh() }).succeeded else { return false }
-        if let s = state { AppLog.debug("Zustand: " + Fmt.stateLine(s)) }
+        if let s = state { AppLog.debug(L.Log.Polling.state(line: Fmt.stateLine(s))) }
         rememberDayStart()
         guard diagnosticsDue else { return true }
         // Zweiter Innenfühler (Zusatzabfrage) nur, wenn jemand die Diagnose sieht – der Verlauf braucht ihn nicht.
@@ -68,7 +68,7 @@ extension ACController {
             d.dropStandbyPlaceholders(power: state?.power ?? true)
             diagnostics = d
             lastDiagnostics = now() // erst nach dem Lesen: sonst galt eine alte Diagnose als frisch
-            AppLog.debug("Diagnose: " + Fmt.diagnosticsLine(d))
+            AppLog.debug(L.Log.Polling.diagnostics(line: Fmt.diagnosticsLine(d)))
         }
         return true
     }
@@ -82,7 +82,7 @@ extension ACController {
     func refreshFast(_ device: any ACDevice) async -> Bool {
         let block = Self.fastCycle[fastStep % Self.fastCycle.count]
         fastStep += 1
-        AppLog.debug("Schnellabruf (Block \(block == 0 ? "Eigenschaften+Verbrauch" : "Gruppe \(block)"))")
+        AppLog.debug(block == 0 ? L.Log.Polling.fastProperties : L.Log.Polling.fastGroup(group: String(block)))
         guard await perform(staleAware: true, { try await device.refreshFast(extras: block == 0) }).succeeded else {
             return false
         }

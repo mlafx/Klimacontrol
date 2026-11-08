@@ -32,33 +32,33 @@ static class Dialogs
     public static async Task<int> Ask(Window? owner, string title, string text, params string[] buttons)
     {
         await AfterPump();
-        return Show(owner, DialogWindow.Kind.Question, title, text, buttons.Length > 0 ? buttons : new[] { "OK", "Abbrechen" }).Result;
+        return Show(owner, DialogWindow.Kind.Question, title, text, buttons.Length > 0 ? buttons : new[] { L.T("common.ok"), L.T("common.cancel") }).Result;
     }
 
     /// Wie `Ask`, dazu ein Häkchen (zu Beginn gesetzt) mit der Beschriftung `option` → Index des Knopfs und Stand des Häkchens.
     public static async Task<(int Result, bool Option)> AskWithOption(Window? owner, string title, string text, string option, params string[] buttons)
     {
         await AfterPump();
-        return Show(owner, DialogWindow.Kind.Question, title, text, buttons.Length > 0 ? buttons : new[] { "OK" }, option);
+        return Show(owner, DialogWindow.Kind.Question, title, text, buttons.Length > 0 ? buttons : new[] { L.T("common.ok") }, option);
     }
 
     public static async Task Info(Window? owner, string title, string text)
     {
         await AfterPump();
-        _ = Show(owner, DialogWindow.Kind.Info, title, text, new[] { "OK" });
+        _ = Show(owner, DialogWindow.Kind.Info, title, text, new[] { L.T("common.ok") });
     }
 
     public static async Task Warn(Window? owner, string title, string text)
     {
         await AfterPump();
-        _ = Show(owner, DialogWindow.Kind.Warning, title, text, new[] { "OK" });
+        _ = Show(owner, DialogWindow.Kind.Warning, title, text, new[] { L.T("common.ok") });
     }
 
     /// Wie `Ask`, aber mit Warnsymbol (z. B. vor „Neu einrichten“) → Index des Knopfs, -1 = Esc/Schließen.
     public static async Task<int> AskWarn(Window? owner, string title, string text, params string[] buttons)
     {
         await AfterPump();
-        return Show(owner, DialogWindow.Kind.Warning, title, text, buttons.Length > 0 ? buttons : new[] { "OK", "Abbrechen" }).Result;
+        return Show(owner, DialogWindow.Kind.Warning, title, text, buttons.Length > 0 ? buttons : new[] { L.T("common.ok"), L.T("common.cancel") }).Result;
     }
 
     static (int Result, bool Option) Show(Window? owner, DialogWindow.Kind kind, string title, string text, string[] buttons, string? option = null)

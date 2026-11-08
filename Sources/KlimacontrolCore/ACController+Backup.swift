@@ -19,7 +19,7 @@ extension ACController {
         if cfg.hasLAN {
             let check = await checkExclusively(cfg)
             if case .rejected(let error) = check {
-                AppLog.error("Sicherung von der Anlage abgelehnt: \(error.localizedDescription)")
+                AppLog.error(L.Log.Backup.rejected(error: error.localizedDescription))
                 throw BackupImportError.rejected
             }
             if case .accepted = check { verified = true } else { verified = false }
@@ -41,7 +41,7 @@ extension ACController {
         // Bisherige Einrichtung nicht überschreiben, sondern beiseitelegen (Papierkorb bzw. umbenennen).
         if let old = DeviceConfig.load(from: paths.config), old != cfg {
             do { try platform.discard(paths.config) } catch {
-                AppLog.error("Bisherige Einrichtung nicht beiseitegelegt: \(error.localizedDescription)")
+                AppLog.error(L.Log.Backup.notSetAside(error: error.localizedDescription))
                 throw error
             }
         }
@@ -58,9 +58,10 @@ extension ACController {
             }
         }
         clearConnectionError()
-        AppLog.write("Sicherung eingelesen: \(cfg.name) @ \(cfg.ip)"
-                     + (verified.map { $0 ? ", an der Anlage geprüft" : ", Anlage nicht erreichbar (ungeprüft)" } ?? "")
-                     + (result.scenesSkipped > 0 ? ", \(result.scenesSkipped) Szenen nicht übernommen" : ""))
+        AppLog.write(L.Log.Backup.restored(
+            name: cfg.name, ip: cfg.ip,
+            verified: verified.map { $0 ? L.Log.Backup.verified : L.Log.Backup.unverified } ?? "",
+            skipped: result.scenesSkipped > 0 ? L.Log.Backup.scenesSkipped(count: String(result.scenesSkipped)) : ""))
         return result
     }
 
@@ -70,7 +71,7 @@ extension ACController {
         guard let cfg = config else { throw BackupImportError.nothingToExport }
         try cfg.exportBackup(to: url, scenes: scenes)
         setCredentialsBackedUp(true)
-        AppLog.write("Zugangsdaten exportiert nach \(url.lastPathComponent)")
+        AppLog.write(L.Log.Backup.exported(file: url.lastPathComponent))
         if Self.isCloudSynced(url) {
             showNotice(UIText.cloudFolderNotice)
         }
@@ -123,13 +124,11 @@ public enum BackupImportError: Error, LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .otherDevice(let backup, let current):
-            return "Die Sicherung gehört zu einer anderen Anlage („\(backup)“, eingerichtet ist „\(current)“). "
-                + "Wähle die passende Sicherung oder bestätige, dass du die Anlage wechseln willst."
+            return L.Message.Backup.otherDevice(backup: backup, current: current)
         case .rejected:
-            return "Die Anlage hat die Zugangsdaten aus der Sicherung abgelehnt. Die bisherige Einrichtung bleibt. "
-                + "Wähle eine neuere Sicherung."
+            return L.Message.Backup.rejected
         case .nothingToExport:
-            return "Es ist noch keine Anlage eingerichtet. Richte zuerst eine Anlage ein."
+            return L.Message.Backup.nothingToExport
         }
     }
 }

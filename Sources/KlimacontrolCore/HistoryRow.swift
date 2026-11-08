@@ -34,14 +34,20 @@ struct HistoryColumn: Sendable {
     }
 
     let name: String
-    let label: String
-    let unit: String?
     let kind: Kind
     /// Wert aus Zustand und Diagnose (nil = unbekannt).
     let read: @Sendable (ACState, Diagnostics) -> HistoryValue?
 
-    /// Spaltenname im lesbaren Export, z. B. „Leistung (W)“.
-    var readableName: String { unit.map { "\(label) (\($0))" } ?? label }
+    /// Katalog-Schlüssel des lesbaren Spaltennamens (`soll_c` → `history.column.sollC`).
+    private var catalogKey: String {
+        let parts = name.split(separator: "_").map(String.init)
+        return "history.column." + (parts.first ?? name) + parts.dropFirst().map(\.capitalized).joined()
+    }
+
+    /// Spaltenname im lesbaren Export in der Sprache der Oberfläche, z. B. „Leistung (W)“ / „Power (W)“.
+    var readableName: String { Localizer.text(catalogKey) }
+
+    func readableName(in language: AppLanguage) -> String { Localizer.text(catalogKey, language: language) }
 
     /// Spaltendefinition für `CREATE TABLE`/`ALTER TABLE`. NUMERIC: ganze Zahlen bleiben ganz, Kommazahlen Kommazahlen.
     var sqlDefinition: String {
@@ -53,70 +59,110 @@ struct HistoryColumn: Sendable {
     }
 
     /// CSV-Feld → Wert. Leer = unbekannt, Unlesbares = unbekannt (nie 0). Dezimalkomma wird wie ein Punkt gelesen.
+    /// Ein Modus in der Sprache der Oberfläche (deutsch oder englisch) wird zum deutschen Namen der Datenbank.
     func parse(_ field: String) -> HistoryValue? {
         let f = field.trimmingCharacters(in: .whitespaces)
         guard !f.isEmpty else { return nil }
-        if kind == .text { return .text(f) }
+        if kind == .text { return .text(name == "modus" ? HistoryColumn.modeLabel(fromTitle: f) : f) }
         if let v = Int64(f) { return .int(v) }
         return Double(f.replacingOccurrences(of: ",", with: ".")).flatMap { $0.isFinite ? .real($0) : nil }
     }
 
+    /// Wie der lesbare Export Zahlen und Modus schreibt.
+    struct ReadableStyle: Sendable {
+        let decimal: String
+        let modeTitles: [String: String]
+
+        /// Nur „.“ oder „,“ (der Import liest nur diese); jedes andere Dezimalzeichen wird zu „,“.
+        init(profile: FormatProfile = .current) {
+            let d = profile.decimalSeparator
+            decimal = d == "." ? "." : ","
+            modeTitles = Dictionary(uniqueKeysWithValues: OperationalMode.allCases.map { ($0.label, $0.title) })
+        }
+    }
+
     /// Feld im Export aus dem Text, den SQLite für den gespeicherten Wert liefert.
-    func exportField(_ sqliteText: String, readable: Bool) -> String {
-        readable && kind == .number ? sqliteText.replacingOccurrences(of: ".", with: ",") : sqliteText
+    func exportField(_ sqliteText: String, style: ReadableStyle?) -> String {
+        guard let style else { return sqliteText }
+        switch kind {
+        case .number: return style.decimal == "." ? sqliteText : sqliteText.replacingOccurrences(of: ".", with: style.decimal)
+        case .text: return name == "modus" ? style.modeTitles[sqliteText] ?? sqliteText : sqliteText
+        case .time: return sqliteText
+        }
+    }
+
+    /// Deutscher Modusname zu einem Anzeigenamen in einer der beiden Sprachen; Unbekanntes bleibt unverändert.
+    static func modeLabel(fromTitle text: String) -> String {
+        for language in AppLanguage.allCases {
+            for mode in OperationalMode.allCases
+            where Localizer.text("mode.\(modeKey(mode))", language: language).caseInsensitiveCompare(text) == .orderedSame {
+                return mode.label
+            }
+        }
+        return text
+    }
+
+    private static func modeKey(_ mode: OperationalMode) -> String {
+        switch mode {
+        case .auto: "auto"
+        case .cool: "cool"
+        case .dry: "dry"
+        case .heat: "heat"
+        case .fan: "fan"
+        }
     }
 }
 
 extension HistoryColumn {
-    static let time = HistoryColumn(name: "zeit", label: "Zeit", unit: "Ortszeit", kind: .time) { _, _ in nil }
+    static let time = HistoryColumn(name: "zeit", kind: .time) { _, _ in nil }
 
     /// Wertespalten (ohne Zeit), in der Reihenfolge von AGENTS.md Anhang B.
     static let data: [HistoryColumn] = [
-        flag("ein", "Eingeschaltet") { s, _ in s.power },
-        HistoryColumn(name: "modus", label: "Modus", unit: nil, kind: .text) { s, _ in .text(s.mode.label) },
-        real("soll_c", "Soll", "°C") { s, _ in s.targetTemperature },
-        real("innen_c", "Innen", "°C") { s, _ in s.indoorTemperature },
-        real("aussen_c", "Außen", "°C") { s, _ in s.outdoorTemperature },
-        int("luefter", "Lüfter", "%") { s, _ in s.fanSpeed },
-        flag("eco", "Eco") { s, _ in s.eco },
-        flag("turbo", "Turbo") { s, _ in s.turbo },
-        flag("aussen_leise", "Außen leise") { s, _ in s.outSilent },
-        real("leistung_w", "Leistung", "W") { s, _ in s.powerWatts },
-        real("gesamt_kwh", "Zähler gesamt", "kWh") { s, _ in s.totalEnergyKWh },
-        int("verdichter_hz", "Verdichter", "Hz") { _, d in d.compressorHz },
-        int("verdichter_soll_hz", "Verdichter Soll", "Hz") { _, d in d.compressorTargetHz },
-        int("strom_a", "Strom", "A") { _, d in d.currentA },
-        int("spannung_v", "Spannung", "V") { _, d in d.voltageV },
-        int("verdichter_w", "Verdichter", "W") { _, d in d.compressorPowerW },
-        real("t1", "T1 Innenluft", "°C") { _, d in d.t1IndoorAir },
-        real("t2", "T2 Wärmetauscher innen", "°C") { _, d in d.t2IndoorCoil },
-        real("t3", "T3 Wärmetauscher außen", "°C") { _, d in d.t3OutdoorCoil },
-        real("t4", "T4 Außenluft", "°C") { _, d in d.t4OutdoorAir },
-        int("tp", "Tp Heißgas", "°C") { _, d in d.tpDischarge },
-        int("eev", "Expansionsventil", "Schritte") { _, d in d.eevOpening },
-        int("luefter_innen_upm", "Lüfter innen", "U/min") { _, d in d.indoorFanRpm },
-        int("luefter_aussen_upm", "Lüfter außen", "U/min") { _, d in d.outdoorFanRpm },
-        flag("kondensatpumpe", "Kondensatpumpe") { _, d in d.condensatePump },
-        flag("abtauen", "Abtauen") { _, d in d.defrost },
-        int("zaehler_roh", "Zähler roh", nil) { _, d in d.energyCounterRaw },
+        flag("ein") { s, _ in s.power },
+        HistoryColumn(name: "modus", kind: .text) { s, _ in .text(s.mode.label) },
+        real("soll_c") { s, _ in s.targetTemperature },
+        real("innen_c") { s, _ in s.indoorTemperature },
+        real("aussen_c") { s, _ in s.outdoorTemperature },
+        int("luefter") { s, _ in s.fanSpeed },
+        flag("eco") { s, _ in s.eco },
+        flag("turbo") { s, _ in s.turbo },
+        flag("aussen_leise") { s, _ in s.outSilent },
+        real("leistung_w") { s, _ in s.powerWatts },
+        real("gesamt_kwh") { s, _ in s.totalEnergyKWh },
+        int("verdichter_hz") { _, d in d.compressorHz },
+        int("verdichter_soll_hz") { _, d in d.compressorTargetHz },
+        int("strom_a") { _, d in d.currentA },
+        int("spannung_v") { _, d in d.voltageV },
+        int("verdichter_w") { _, d in d.compressorPowerW },
+        real("t1") { _, d in d.t1IndoorAir },
+        real("t2") { _, d in d.t2IndoorCoil },
+        real("t3") { _, d in d.t3OutdoorCoil },
+        real("t4") { _, d in d.t4OutdoorAir },
+        int("tp") { _, d in d.tpDischarge },
+        int("eev") { _, d in d.eevOpening },
+        int("luefter_innen_upm") { _, d in d.indoorFanRpm },
+        int("luefter_aussen_upm") { _, d in d.outdoorFanRpm },
+        flag("kondensatpumpe") { _, d in d.condensatePump },
+        flag("abtauen") { _, d in d.defrost },
+        int("zaehler_roh") { _, d in d.energyCounterRaw },
     ]
 
     /// Alle Spalten, Zeit zuerst.
     static let all = [time] + data
 
-    private static func real(_ name: String, _ label: String, _ unit: String,
+    private static func real(_ name: String,
                              _ value: @escaping @Sendable (ACState, Diagnostics) -> Double?) -> HistoryColumn {
-        HistoryColumn(name: name, label: label, unit: unit, kind: .number) { value($0, $1).map(HistoryValue.real) }
+        HistoryColumn(name: name, kind: .number) { value($0, $1).map(HistoryValue.real) }
     }
 
-    private static func int(_ name: String, _ label: String, _ unit: String?,
+    private static func int(_ name: String,
                             _ value: @escaping @Sendable (ACState, Diagnostics) -> Int?) -> HistoryColumn {
-        HistoryColumn(name: name, label: label, unit: unit, kind: .number) { value($0, $1).map(HistoryValue.integer) }
+        HistoryColumn(name: name, kind: .number) { value($0, $1).map(HistoryValue.integer) }
     }
 
-    private static func flag(_ name: String, _ label: String,
+    private static func flag(_ name: String,
                              _ value: @escaping @Sendable (ACState, Diagnostics) -> Bool?) -> HistoryColumn {
-        HistoryColumn(name: name, label: label, unit: "1/0", kind: .number) { value($0, $1).map { .int($0 ? 1 : 0) } }
+        HistoryColumn(name: name, kind: .number) { value($0, $1).map { .int($0 ? 1 : 0) } }
     }
 }
 

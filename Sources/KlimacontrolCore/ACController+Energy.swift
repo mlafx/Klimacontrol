@@ -15,7 +15,7 @@ public struct TodayEnergy: Equatable, Sendable {
     /// „seit 08:14“, wenn nicht ab Mitternacht gezählt wird; sonst nil.
     public var sinceLabel: String? {
         guard !fromMidnight else { return nil }
-        return since.map { "seit " + ACController.clock($0) }
+        return since.map { L.Cost.since(time: ACController.clock($0)) }
     }
 }
 
@@ -138,7 +138,7 @@ extension ACController {
         let stored = storedDayStart()
         if let s = currentDayStart(day: day) {
             guard total + Self.counterJitterKWh < s.kWh else { return }
-            AppLog.write("Zählerstand zurückgesprungen (\(s.kWh) → \(total) kWh) – Tagesverbrauch zählt ab jetzt neu")
+            AppLog.write(L.Log.Energy.meterJump(old: "\(s.kWh)", new: "\(total)"))
             saveDayStart(DayStart(day: day, kWh: total, device: id, since: now, fromMidnight: false))
             return
         }

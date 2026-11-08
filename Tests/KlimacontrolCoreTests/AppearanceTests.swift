@@ -46,6 +46,54 @@ final class AppearanceTests: CoreTestCase {
         XCTAssertEqual(Appearance.preset(.minimal).accent, .custom)
     }
 
+    func testIsCustomized() {
+        for theme in Appearance.Theme.allCases {
+            XCTAssertFalse(Appearance.preset(theme).isCustomized, "\(theme)")
+            var a = Appearance.preset(theme)
+            a.transparency = a.transparency > 0.5 ? 0.3 : 0.9
+            XCTAssertTrue(a.isCustomized, "\(theme) Transparenz")
+            a = Appearance.preset(theme)
+            a.accent = a.accent == .byMode ? .system : .byMode
+            XCTAssertTrue(a.isCustomized, "\(theme) Farbe")
+            a = Appearance.preset(theme)
+            a.glow = a.glow > 0.5 ? 0.1 : 0.9
+            XCTAssertTrue(a.isCustomized, "\(theme) Leuchten")
+            a = Appearance.preset(theme)
+            a.size = .large
+            a.scope = .simple
+            a.hero = .room
+            a.menuBarText = .roomTarget
+            a.menuBarAnimated = true
+            a.alwaysOnTop = true
+            a.reduceMotion = true
+            XCTAssertFalse(a.isCustomized, "\(theme) Bedienwerte zählen nicht")
+        }
+        var a = Appearance.preset(.night)
+        a.transparency = 0.15000000000000002
+        XCTAssertFalse(a.isCustomized, "Rundung des Reglers")
+        a.transparency = 7
+        XCTAssertTrue(a.isCustomized)
+        a.transparency = .nan
+        XCTAssertTrue(a.isCustomized)
+    }
+
+    func testApplyThemeClearsCustomized() {
+        let c = makeController()
+        var a = c.appearance
+        a.glow = 0.7
+        a.size = .large
+        c.setAppearance(a)
+        XCTAssertTrue(c.appearanceIsCustomized)
+        c.applyTheme(c.appearance.theme)
+        XCTAssertFalse(c.appearanceIsCustomized)
+        XCTAssertEqual(c.appearance.size, .large)
+        a = c.appearance
+        a.blur = 3
+        c.setAppearance(a)
+        c.applyTheme(.neon)
+        XCTAssertFalse(c.appearanceIsCustomized)
+    }
+
     func testApplyingThemeKeepsLayout() {
         var a = Appearance.standard
         a.size = .large

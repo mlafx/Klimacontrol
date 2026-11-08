@@ -10,9 +10,12 @@ using Xunit;
 
 namespace KlimacontrolTray.Tests;
 
-/// Reiter „Darstellung“: gleiche Texte, Reihenfolgen und Reglerschritte wie am Mac. Die Mac-Texte stehen im Kern
-/// (`Appearance.<Enum>.label` in Sources/KlimacontrolCore/Appearance.swift); unter Windows bleiben die Kernnamen nur
-/// Werte (`Tag`) und erscheinen nie als Anzeige.
+/// Reiter „Darstellung“: gleiche Texte, Reihenfolgen und Reglerschritte wie am Mac. Die Mac-Texte stehen im Katalog des
+/// Kerns; `Appearance.<Enum>.label` in Sources/KlimacontrolCore/Appearance.swift nennt nur den Schlüssel
+/// (`L.Appearance.Scheme.system` → `appearance.scheme.system`). Unter Windows bleiben die Kernnamen nur Werte (`Tag`) und
+/// erscheinen nie als Anzeige. Übergang bis zum Umbau der Einstellungen: statt `{l:T schlüssel}` darf noch der deutsche
+/// Katalogtext als Literal stehen.
+[Collection("Global")]
 public class AppearanceTextTests
 {
     static readonly XNamespace X = "http://schemas.microsoft.com/winfx/2006/xaml";
@@ -37,17 +40,19 @@ public class AppearanceTextTests
 
     static string ReadLf(string path) => File.ReadAllText(path).Replace("\r\n", "\n");
 
-    /// Swift-Enums der Darstellung: Name → Fälle in Reihenfolge von `allCases` mit ihrem `label`.
-    static Dictionary<string, List<(string Value, string Label)>> MacEnums()
+    static string LowerFirst(string s) => char.ToLowerInvariant(s[0]) + s[1..];
+
+    /// Swift-Enums der Darstellung: Name → Fälle in Reihenfolge von `allCases` mit dem Schlüssel ihres `label`.
+    static Dictionary<string, List<(string Value, string Key)>> MacEnums()
     {
         var swift = ReadLf(Repo("Sources", "KlimacontrolCore", "Appearance.swift"));
-        var result = new Dictionary<string, List<(string Value, string Label)>>();
+        var result = new Dictionary<string, List<(string Value, string Key)>>();
         var enumRx = new Regex(@"public enum (?<name>\w+): String[^{]*\{(?<body>.*?)\n    \}", RegexOptions.Singleline);
         foreach (Match e in enumRx.Matches(swift))
         {
             var body = e.Groups["body"].Value;
-            var labels = Regex.Matches(body, @"case \.(\w+): ""([^""]*)""")
-                .ToDictionary(m => m.Groups[1].Value, m => m.Groups[2].Value);
+            var labels = Regex.Matches(body, @"case \.(\w+): L\.Appearance\.(\w+)\.(\w+)")
+                .ToDictionary(m => m.Groups[1].Value, m => "appearance." + LowerFirst(m.Groups[2].Value) + "." + m.Groups[3].Value);
             if (labels.Count == 0) continue;
             var decl = Regex.Match(body, @"\n\s*case (?<cases>\w+(?:, *\w+)*)\n");
             Assert.True(decl.Success, $"Fälle von Appearance.{e.Groups["name"].Value} nicht gefunden");
@@ -61,7 +66,16 @@ public class AppearanceTextTests
     static XElement AppearanceTab()
     {
         var doc = XDocument.Load(Repo("windows", "KlimacontrolTray", "SettingsWindow.xaml"));
-        return doc.Descendants().Single(e => e.Name.LocalName == "TabItem" && (string?)e.Attribute("Header") == "Darstellung");
+        return doc.Descendants().Single(e => e.Name.LocalName == "TabItem"
+            && (string?)e.Attribute("Header") is "Darstellung" or "{l:T settings.tabs.appearance}");
+    }
+
+    /// Anzeige passt zum Schlüssel: `{l:T schlüssel}` oder (Übergang) der deutsche Katalogtext.
+    static void AssertShows(string key, string? shown, string where)
+    {
+        Assert.NotNull(shown);
+        if (shown!.Trim() == "{l:T " + key + "}") return;
+        if (Catalog.Available) Assert.True(shown == Catalog.Text(key, "de"), $"{where}: „{shown}“ statt {{l:T {key}}}");
     }
 
     static XElement Named(XElement root, string name) =>
@@ -74,10 +88,11 @@ public class AppearanceTextTests
         var tab = AppearanceTab();
         foreach (var (box, enumName) in Boxes)
         {
-            var items = Named(tab, box).Elements().Where(e => e.Name.LocalName == "ComboBoxItem")
-                .Select(i => ((string)i.Attribute("Tag")!, (string)i.Attribute("Content")!)).ToList();
+            var items = Named(tab, box).Elements().Where(e => e.Name.LocalName == "ComboBoxItem").ToList();
             Assert.True(mac.ContainsKey(enumName), $"Appearance.{enumName} fehlt im Kern");
-            Assert.Equal(mac[enumName], items);
+            Assert.Equal(mac[enumName].Select(c => c.Value), items.Select(i => (string)i.Attribute("Tag")!));
+            for (var n = 0; n < items.Count; n++)
+                AssertShows(mac[enumName][n].Key, (string?)items[n].Attribute("Content"), box + " " + mac[enumName][n].Value);
         }
     }
 
@@ -88,16 +103,16 @@ public class AppearanceTextTests
         var tab = AppearanceTab();
         var radios = tab.Descendants().Where(e => e.Name.LocalName == "RadioButton").ToList();
 
-        var themes = radios.Where(r => ((string?)r.Attribute("Style"))?.Contains("ThemeChoice") == true)
-            .Select(r => ((string)r.Attribute("Tag")!,
-                          (string)r.Descendants().First(t => t.Name.LocalName == "TextBlock").Attribute("Text")!))
-            .ToList();
-        Assert.Equal(mac["Theme"], themes);
+        var themes = radios.Where(r => ((string?)r.Attribute("Style"))?.Contains("ThemeTile") == true).ToList();
+        Assert.Equal(mac["Theme"].Select(c => c.Value), themes.Select(r => (string)r.Attribute("Tag")!));
+        for (var n = 0; n < themes.Count; n++)
+            // Der Name der Kachel entsteht in SettingsWindow.Appearance.cs aus "appearance.theme." + Tag.
+            Assert.Equal("appearance.theme." + mac["Theme"][n].Value, mac["Theme"][n].Key);
 
-        var swatches = radios.Where(r => ((string?)r.Attribute("Style"))?.Contains("Swatch") == true)
-            .Select(r => ((string)r.Attribute("Tag")!, (string)r.Attribute("ToolTip")!))
-            .ToList();
-        Assert.Equal(mac["CustomColor"], swatches);
+        var swatches = radios.Where(r => ((string?)r.Attribute("Style"))?.Contains("Swatch") == true).ToList();
+        Assert.Equal(mac["CustomColor"].Select(c => c.Value), swatches.Select(r => (string)r.Attribute("Tag")!));
+        for (var n = 0; n < swatches.Count; n++)
+            AssertShows(mac["CustomColor"][n].Key, (string?)swatches[n].Attribute("ToolTip"), "Farbe " + mac["CustomColor"][n].Value);
     }
 
     [Fact]

@@ -113,7 +113,7 @@ public final class SetupFlow {
         guard !scanning else { return }
         let target = ip?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         if !target.isEmpty, !DeviceConfig.isIPv4(target) {
-            fail("„\(target)“ ist keine IP-Adresse. Bitte vier Zahlen mit Punkten eingeben (Beispiel: 192.168.1.40).", .invalidInput)
+            fail(L.Setup.invalidIp(target: target), .invalidInput)
             return
         }
         scanning = true
@@ -172,9 +172,7 @@ public final class SetupFlow {
             if found.isEmpty {
                 fail(nothingFound, .nothingFound)
             } else {
-                fail("Gefunden, aber keine Klimaanlage: " + found.map(\.name).joined(separator: ", ")
-                     + ". Klimacontrol richtet nur Klimaanlagen ein – ist die Klimaanlage eingeschaltet und im selben WLAN?",
-                     .notAirConditioner)
+                fail(L.Setup.NotAirConditioner.lan(names: found.map(\.name).joined(separator: ", ")), .notAirConditioner)
             }
         }
     }
@@ -229,11 +227,9 @@ public final class SetupFlow {
         }
         if ac.isEmpty {
             if list.isEmpty {
-                fail("In diesem Midea-Konto ist keine Anlage eingerichtet. Bitte das Konto verwenden, mit dem die Anlage "
-                     + "in der MSmartHome-App eingerichtet ist.", .cloud)
+                fail(L.Setup.noApplianceInAccount, .cloud)
             } else {
-                fail("Im Midea-Konto ist keine Klimaanlage, nur: " + list.map(\.name).joined(separator: ", ")
-                     + ". Bitte das Konto verwenden, in dem die Klimaanlage eingerichtet ist.", .notAirConditioner)
+                fail(L.Setup.NotAirConditioner.account(names: list.map(\.name).joined(separator: ", ")), .notAirConditioner)
             }
         }
     }

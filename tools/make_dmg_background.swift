@@ -1,4 +1,4 @@
-// Hintergrund des Installations-DMG: Titel, eine Zeile Anleitung und ein Pfeil von der App zu „Programme“.
+// Hintergrund des Installations-DMG: Titel, Anleitung in Deutsch und Englisch und ein Pfeil von der App zu „Programme“.
 // Aufruf (aus build_app.sh): swift tools/make_dmg_background.swift <Ausgabe.png> <Skalierung 1|2>
 // Maße und Symbolpositionen müssen zu build_app.sh passen (Fenster 640 × 380, Symbole bei x 160 und 480, y 210).
 import AppKit
@@ -32,10 +32,12 @@ func draw(_ text: String, font: NSFont, color: NSColor, centerY: CGFloat) {
                             withAttributes: attrs)
 }
 
-draw("Klimacontrol installieren", font: .systemFont(ofSize: 26, weight: .bold),
+draw("Klimacontrol", font: .systemFont(ofSize: 26, weight: .bold),
      color: NSColor(srgbRed: 0.13, green: 0.14, blue: 0.16, alpha: 1), centerY: 62)
 draw("Ziehe Klimacontrol in den Ordner „Programme“.", font: .systemFont(ofSize: 14, weight: .regular),
-     color: NSColor(srgbRed: 0.42, green: 0.44, blue: 0.48, alpha: 1), centerY: 96)
+     color: NSColor(srgbRed: 0.42, green: 0.44, blue: 0.48, alpha: 1), centerY: 94)
+draw("Drag Klimacontrol to “Programme” (Applications).", font: .systemFont(ofSize: 12, weight: .regular),
+     color: NSColor(srgbRed: 0.42, green: 0.44, blue: 0.48, alpha: 1), centerY: 116)
 
 // Pfeil zwischen den Symbolen (Symbolmitten bei x 160 und 480, Breite 128 → Lücke von 224 bis 416).
 let arrowColor = NSColor(srgbRed: 0.20, green: 0.47, blue: 0.93, alpha: 1)

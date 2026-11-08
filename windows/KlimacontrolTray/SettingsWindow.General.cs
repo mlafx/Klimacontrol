@@ -33,7 +33,7 @@ public partial class SettingsWindow
         var format = p.FractionDigitsMax > 0
             ? "0." + new string('0', p.FractionDigitsMin) + new string('#', Math.Max(0, p.FractionDigitsMax - p.FractionDigitsMin))
             : "0.##";
-        return s.Price.ToString(format, De);
+        return s.Price.ToString(format, CultureInfo.InvariantCulture).Replace(".", Fmt.Profile.DecimalSeparator, StringComparison.Ordinal);
     }
 
     /// Auswahl des Abfrage-Abstands nach der Liste des Kerns, einmal angelegt (Tag 0 = „Eigener Wert“). Dazu die festen
@@ -43,7 +43,7 @@ public partial class SettingsWindow
         if (RefreshBox.Items.Count > 0 || r.Choices.Count == 0) return;
         foreach (var c in r.Choices) RefreshBox.Items.Add(new ComboBoxItem { Content = c.Label, Tag = (int)c.Seconds });
         RefreshBox.Items.Add(new ComboBoxItem { Content = r.CustomLabel, Tag = 0 });
-        CustomRefreshTitle.Text = r.CustomLabel.Replace(" …", "", StringComparison.Ordinal);
+        CustomRefreshTitle.Text = L.T("settings.general.customTitle");
         CustomRefreshHelp.Text = r.CustomHelp;
         RefreshWarnText.Text = r.Warning;
     }
@@ -51,14 +51,14 @@ public partial class SettingsWindow
     void Price_Click(object sender, RoutedEventArgs e)
     {
         // Grenzen und Meldung kommen aus dem Kern (`price`); hier nur die Zahl lesen.
-        var text = PriceBox.Text.Trim().Replace(',', '.');
-        if (!double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var p))
+        if (!Fmt.ParseNumber(PriceBox.Text.Trim(), out var p))
         {
-            Warn("Strompreis nicht übernommen", "Der Wert ist keine Zahl. Bitte einen Preis wie 0,30 eingeben. (price)");
+            Warn(L.T("settings.general.windows.priceFailedTitle"),
+                 L.F("settings.general.windows.priceNotNumber", ("example", Fmt.Num(0.30, 2))));
             return;
         }
         var err = Core.Send(Cmd.Price, ("value", p));
-        if (err != null) Warn("Strompreis nicht übernommen", err);
+        if (err != null) Warn(L.T("settings.general.windows.priceFailedTitle"), err);
     }
 
     void Price_KeyDown(object sender, KeyEventArgs e)
@@ -85,8 +85,9 @@ public partial class SettingsWindow
         var limits = Core.Snap.Options.Refresh;
         if (!int.TryParse(CustomRefreshBox.Text.Trim(), out var secs) || secs < limits.Min || secs > limits.Max)
         {
-            Warn("Abfrage-Abstand nicht übernommen",
-                 $"Der Wert liegt außerhalb des erlaubten Bereichs. Bitte eine ganze Zahl von {limits.Min} bis {limits.Max} Sekunden eingeben.");
+            Warn(L.T("settings.general.windows.refreshFailedTitle"),
+                 L.F("settings.general.windows.refreshOutOfRange",
+                     ("min", limits.Min.ToString(CultureInfo.InvariantCulture)), ("max", limits.Max.ToString(CultureInfo.InvariantCulture))));
             return;
         }
         Core.Send(Cmd.RefreshSeconds, ("value", secs));
@@ -109,7 +110,7 @@ public partial class SettingsWindow
         {
             Title = Core.Snap.Options.Texts.ExportHistoryPanelTitle,
             FileName = Core.Snap.Options.Texts.ExportHistoryFileName,
-            Filter = "CSV (*.csv)|*.csv",
+            Filter = L.T("settings.general.windows.csvFilter"),
             InitialDirectory = Dialogs.SaveFolder(),
         };
         if (dlg.ShowDialog(this) != true) return;
@@ -117,7 +118,7 @@ public partial class SettingsWindow
         var err = Core.Send(Cmd.ExportHistoryStart, ("path", dlg.FileName), ("readable", true));
         if (err != null) { Result(HistoryResult, err, false); return; }
         exportSeq.Pending = Path.GetFileName(dlg.FileName);
-        Result(HistoryResult, "Exportiere …", true);
+        Result(HistoryResult, L.T("settings.general.windows.exporting"), true);
     }
 
     void RenderExport(Snapshot s)
@@ -125,7 +126,7 @@ public partial class SettingsWindow
         if (!exportSeq.Advance(s.ExportSeq)) return;
         if (exportSeq.Pending is not { } name) return;
         exportSeq.Pending = null;
-        Result(HistoryResult, s.ExportError ?? s.ExportText ?? $"Verlauf gespeichert als „{name}“.", s.ExportError == null);
+        Result(HistoryResult, s.ExportError ?? s.ExportText ?? L.F("result.historyExported", ("name", name)), s.ExportError == null);
     }
 
     // Der Run-Wert startet diese exe mit --tray. Der Haken ist nur an, wenn er auf genau diese exe zeigt; sonst
@@ -178,8 +179,8 @@ public partial class SettingsWindow
             var where = target ?? value;
             var gone = target != null && !File.Exists(target);
             AutostartHint.Text = gone
-                ? $"Der Autostart zeigt auf eine Datei, die es nicht mehr gibt ({where}). Darum startet Klimacontrol beim Anmelden nicht. Haken setzen, um diese Klimacontrol-Datei einzutragen."
-                : $"Der Autostart zeigt auf eine andere Klimacontrol-Datei ({where}). Haken setzen, um stattdessen diese hier einzutragen.";
+                ? L.F("settings.general.windows.autostartMissing", ("path", where))
+                : L.F("settings.general.windows.autostartOther", ("path", where));
             AutostartHint.Visibility = Visibility.Visible;
         }
         else
@@ -203,15 +204,15 @@ public partial class SettingsWindow
         {
             App.Trace($"Autostart nicht geändert: {e.Message}");
             return on
-                ? "Klimacontrol ließ sich nicht in den Autostart eintragen. Windows hat den Zugriff verweigert. In den Windows-Einstellungen unter Apps → Autostart prüfen."
-                : "Klimacontrol ließ sich nicht aus dem Autostart austragen. Windows hat den Zugriff verweigert. In den Windows-Einstellungen unter Apps → Autostart ausschalten.";
+                ? L.T("settings.general.windows.autostartAddFailed")
+                : L.T("settings.general.windows.autostartRemoveFailed");
         }
     }
 
     void RenderUpdates()
     {
         var on = Updates.Running;
-        UpdateVersionText.Text = $"Version {App.Version}";
+        UpdateVersionText.Text = L.F("settings.general.versionTitle", ("version", App.Version));
         var texts = Core.Snap.Options.Texts;
         UpdateHelpText.Text = texts.UpdatesHelp;
         UpdateHelpText.Visibility = texts.UpdatesHelp.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -225,7 +226,7 @@ public partial class SettingsWindow
     void Autostart_Click(object sender, RoutedEventArgs e)
     {
         if (SelfPath == null) { RenderAutostart(); return; }
-        Warn("Autostart nicht geändert", WriteAutostart(AutostartBox.IsChecked == true));
+        Warn(L.T("settings.general.windows.autostartFailedTitle"), WriteAutostart(AutostartBox.IsChecked == true));
         RenderAutostart();
     }
 
@@ -281,44 +282,12 @@ public partial class SettingsWindow
         return string.Join("+", parts);
     }
 
-    /// Anzeige in deutscher Schreibweise: „Strg+Alt+K“, „Strg+Umschalt+1“.
+    /// Anzeige in der Sprache der App: „Strg+Alt+K“ bzw. „Ctrl+Alt+K“, „Strg+Umschalt+1“.
     static string DisplayHotkey(string stored) =>
-        TryParseHotkey(stored, out var mods, out var key) ? DisplayMods(mods) + DisplayKey(key) : stored;
+        TryParseHotkey(stored, out var mods, out var key) ? Hotkeys.Display(mods, key) : stored;
 
     /// „Strg+Alt+“ usw. (mit abschließendem Plus), leer ohne Modifikatoren.
-    static string DisplayMods(ModifierKeys mods)
-    {
-        var text = "";
-        if (mods.HasFlag(ModifierKeys.Control)) text += "Strg+";
-        if (mods.HasFlag(ModifierKeys.Alt)) text += "Alt+";
-        if (mods.HasFlag(ModifierKeys.Shift)) text += "Umschalt+";
-        if (mods.HasFlag(ModifierKeys.Windows)) text += "Win+";
-        return text;
-    }
-
-    static string DisplayKey(Key key) => key switch
-    {
-        >= Key.D0 and <= Key.D9 => ((char)('0' + (key - Key.D0))).ToString(),
-        >= Key.NumPad0 and <= Key.NumPad9 => $"Ziffernblock {key - Key.NumPad0}",
-        Key.Space => "Leertaste",
-        Key.Enter => "Eingabe",
-        Key.Back => "Rücktaste",
-        Key.Delete => "Entf",
-        Key.Insert => "Einfg",
-        Key.Home => "Pos1",
-        Key.End => "Ende",
-        Key.PageUp => "Bild↑",
-        Key.PageDown => "Bild↓",
-        Key.Up => "↑",
-        Key.Down => "↓",
-        Key.Left => "←",
-        Key.Right => "→",
-        Key.OemComma => ",",
-        Key.OemPeriod => ".",
-        Key.OemMinus => "-",
-        Key.OemPlus => "+",
-        _ => key.ToString(),
-    };
+    static string DisplayMods(ModifierKeys mods) => Hotkeys.Mods(mods);
 
     /// Auswahlliste: Vorschläge, ggf. das gespeicherte eigene Kürzel, „Eigene Kombination …“, „Aus“.
     void RenderHotkey()
@@ -326,12 +295,16 @@ public partial class SettingsWindow
         var current = CurrentHotkey;
         var known = current.Length == 0 || TryParseHotkey(current, out _, out _);
         var items = HotkeyPresets
-            .Select(h => new ComboBoxItem { Content = h == DefaultHotkey ? $"{DisplayHotkey(h)} (Standard)" : DisplayHotkey(h), Tag = h })
+            .Select(h => new ComboBoxItem
+            {
+                Content = h == DefaultHotkey ? L.F("keys.windows.standardSuffix", ("shortcut", DisplayHotkey(h))) : DisplayHotkey(h),
+                Tag = h,
+            })
             .ToList();
         if (current.Length > 0 && known && !HotkeyPresets.Contains(current, StringComparer.OrdinalIgnoreCase))
             items.Add(new ComboBoxItem { Content = DisplayHotkey(current), Tag = current });
-        items.Add(new ComboBoxItem { Content = "Eigene Kombination …", Tag = HotkeyCustomTag });
-        items.Add(new ComboBoxItem { Content = "Aus", Tag = "" });
+        items.Add(new ComboBoxItem { Content = L.T("keys.windows.custom"), Tag = HotkeyCustomTag });
+        items.Add(new ComboBoxItem { Content = L.T("keys.windows.none"), Tag = "" });
         var was = updating;
         updating = true;
         try
@@ -348,8 +321,8 @@ public partial class SettingsWindow
         Prefs.Set("FlyoutHotkey", value);
         ((App)Application.Current).ApplyHotkey();
         Result(HotkeyResult, value.Length == 0
-            ? "✓ Kein Tastenkürzel. Das Fenster öffnet sich mit einem Klick auf das Symbol im Infobereich."
-            : $"✓ {DisplayHotkey(value)} öffnet das Fenster am Infobereich – in jedem Programm.", true);
+            ? L.T("settings.general.windows.hotkeyOff")
+            : L.F("settings.general.windows.hotkeyOn", ("shortcut", DisplayHotkey(value))), true);
         RenderHotkey();
     }
 
@@ -370,7 +343,7 @@ public partial class SettingsWindow
     {
         recordingHotkey = true;
         HotkeyRecordPanel.Visibility = Visibility.Visible;
-        HotkeyRecordBox.Text = "Tasten drücken …";
+        HotkeyRecordBox.Text = L.T("settings.general.windows.pressKeys");
         HotkeyResult.Visibility = Visibility.Collapsed;
         HotkeyRecordBox.Focus();
     }
@@ -403,15 +376,15 @@ public partial class SettingsWindow
         if (key is Key.LeftCtrl or Key.RightCtrl or Key.LeftAlt or Key.RightAlt or Key.LeftShift or Key.RightShift
             or Key.LWin or Key.RWin)
         {
-            HotkeyRecordBox.Text = mods == ModifierKeys.None ? "Tasten drücken …" : DisplayMods(mods) + "…";
+            HotkeyRecordBox.Text = mods == ModifierKeys.None ? L.T("settings.general.windows.pressKeys") : DisplayMods(mods) + "…";
             return;
         }
         if (!IsUsableHotkey(mods, key))
         {
-            HotkeyRecordBox.Text = "Tasten drücken …";
+            HotkeyRecordBox.Text = L.T("settings.general.windows.pressKeys");
             Result(HotkeyResult, key == Key.F12
-                ? "F12 ist unter Windows reserviert. Bitte eine andere Taste wählen."
-                : "Diese Kombination geht nicht. Bitte mit Strg, Alt oder Win zusammen drücken, z. B. Strg+Alt+K.", false);
+                ? L.T("settings.general.windows.hotkeyF12")
+                : L.F("settings.general.windows.hotkeyInvalid", ("example", DisplayHotkey(DefaultHotkey))), false);
             return;
         }
         var value = FormatHotkey(mods, key);

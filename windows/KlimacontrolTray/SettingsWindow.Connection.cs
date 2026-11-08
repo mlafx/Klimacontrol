@@ -54,7 +54,7 @@ public partial class SettingsWindow
     {
         var running = Core.Snap.CloudLoginRunning;
         CloudLoginButton.IsEnabled = !running && CloudUser.Text.Trim().Length > 0 && CloudPass.Password.Length > 0;
-        CloudLoginButton.Content = running ? "Melde an …" : "Anmelden und speichern";
+        CloudLoginButton.Content = running ? L.T("settings.connection.signingIn") : L.T("settings.connection.signIn");
     }
 
     void CloudInput_Changed(object sender, RoutedEventArgs e) => UpdateLoginButton();

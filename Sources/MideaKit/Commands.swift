@@ -5,6 +5,7 @@ import Synchronization
 public enum OperationalMode: Int, CaseIterable, Sendable {
     case auto = 1, cool = 2, dry = 3, heat = 4, fan = 5
 
+    /// Protokoll und Datenbank (deutsch); Anzeige über `title` im Kern (`DisplayNames.swift`).
     public var label: String {
         switch self {
         case .auto: return "Auto"
@@ -19,6 +20,7 @@ public enum OperationalMode: Int, CaseIterable, Sendable {
 public enum FanSpeed: Int, CaseIterable, Sendable {
     case silent = 20, low = 40, medium = 60, high = 80, max = 100, auto = 102
 
+    /// Protokoll und Datenbank (deutsch); Anzeige über `title` im Kern (`DisplayNames.swift`).
     public var label: String {
         switch self {
         case .silent: return "Leise"

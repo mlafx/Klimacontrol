@@ -57,17 +57,17 @@ public enum Discovery {
                 if let err = s.send(message, toIPv4: target, port: port) { lastError = err } else { sentAny = true }
             }
         }
-        AppLog.debug("Suche: Broadcast an \(target) Port 6445 und 20086 (je 3×), warte \(Int(timeout)) s")
+        AppLog.debug(LogText.t("log.discovery.broadcast", "Suche: Broadcast an {target} Port 6445 und 20086 (je 3×), warte {seconds} s", ["target": target, "seconds": String(Int(timeout))]))
         guard sentAny else {
-            throw MideaError.connectionFailed(NetSocket.isUnreachable(lastError)
-                ? LANClient.localNetworkHint : "Suche nicht möglich: \(NetSocket.describe(lastError))")
+            throw MideaError.connectionFailed(.other(NetSocket.isUnreachable(lastError)
+                ? LANClient.localNetworkHint : LogText.t("kit.discovery.searchFailed", "Suche nicht möglich: {error}", ["error": NetSocket.describe(lastError)])))
         }
 
         var found: [String: DiscoveredDevice] = [:]
         var buf = [UInt8](repeating: 0, count: 2048)
-        collect(s, until: Date().addingTimeInterval(timeout), into: &found, buf: &buf, label: "Suche", stop: stop)
+        collect(s, until: Date().addingTimeInterval(timeout), into: &found, buf: &buf, label: LogText.t("log.discovery.labelSearch", "Suche"), stop: stop)
         let list = found.values.sorted { $0.ip < $1.ip }
-        AppLog.write("Suche an \(target): \(list.isEmpty ? "nichts gefunden" : list.map { "\($0.name) \($0.ip) V\($0.version)" }.joined(separator: ", "))")
+        AppLog.write(LogText.t("log.discovery.result", "Suche an {target}: {result}", ["target": target, "result": foundText(list)]))
         return list
     }
 
@@ -78,34 +78,34 @@ public enum Discovery {
     /// eine neue IP darf darum erst nach gelungenem Handshake mit gespeichertem Token übernommen werden.
     static func parse(_ data: Data, ip: String) throws -> DiscoveredDevice {
         var p = [UInt8](data)
-        guard p.count >= 8 else { throw MideaError.invalidResponse("Discovery-Antwort zu kurz") }
+        guard p.count >= 8 else { throw MideaError.invalidResponse(LogText.t("kit.discovery.tooShort", "Discovery-Antwort zu kurz")) }
         let version: Int
         if p[0] == 0x83 && p[1] == 0x70 {
             version = 3
             // 8 Byte Kopf + V2-Paket + 16 Byte Anhang
             // Längenfeld des 8370-Kopfs (Bytes 2–3, ohne die 8 Byte Kopf) muss ins Paket passen.
             let outer = (Int(p[2]) << 8 | Int(p[3])) + 8
-            guard outer >= 8 + 56 + 16, outer <= p.count else { throw MideaError.invalidResponse("Discovery-Antwort zu kurz") }
+            guard outer >= 8 + 56 + 16, outer <= p.count else { throw MideaError.invalidResponse(LogText.t("kit.discovery.tooShort", "Discovery-Antwort zu kurz")) }
             p = Array(p[8..<(outer - 16)])
         } else if p[0] == 0x5A && p[1] == 0x5A {
             version = 2
         } else {
-            throw MideaError.invalidResponse("Unbekanntes Gerät (V1 wird nicht unterstützt)")
+            throw MideaError.invalidResponse(LogText.t("kit.discovery.unknownDevice", "Unbekanntes Gerät (V1 wird nicht unterstützt)"))
         }
-        guard p.count >= 56, p[0] == 0x5A, p[1] == 0x5A else { throw MideaError.invalidResponse("Discovery-Antwort zu kurz") }
+        guard p.count >= 56, p[0] == 0x5A, p[1] == 0x5A else { throw MideaError.invalidResponse(LogText.t("kit.discovery.tooShort", "Discovery-Antwort zu kurz")) }
         // Längenfeld des V2-Pakets: muss zum Inhalt passen (überzählige Bytes am Ende werden ignoriert).
         let length = Int(p[4]) | Int(p[5]) << 8
         guard length >= 56 + 16, length <= p.count, (length - 56) % 16 == 0 else {
-            throw MideaError.invalidResponse("Discovery-Antwort mit falscher Länge")
+            throw MideaError.invalidResponse(LogText.t("kit.discovery.badLength", "Discovery-Antwort mit falscher Länge"))
         }
         p = Array(p[0..<length])
         guard MideaCrypto.sign(Data(p[0..<(length - 16)])) == Data(p[(length - 16)...]) else {
-            throw MideaError.invalidResponse("Discovery-Antwort mit falscher Signatur")
+            throw MideaError.invalidResponse(LogText.t("kit.discovery.badSignature", "Discovery-Antwort mit falscher Signatur"))
         }
         var id: UInt64 = 0
         for (i, b) in p[20..<26].enumerated() { id |= UInt64(b) << (8 * UInt64(i)) }
         let plain = [UInt8](try MideaCrypto.decryptECB(Data(p[40..<(length - 16)])))
-        guard plain.count > 41 else { throw MideaError.invalidResponse("Steckbrief zu kurz") }
+        guard plain.count > 41 else { throw MideaError.invalidResponse(LogText.t("kit.discovery.profileTooShort", "Steckbrief zu kurz")) }
         let port = UInt16(plain[4]) | UInt16(plain[5]) << 8
         let sn = DeviceConfig.cleanText(String(decoding: plain[8..<40], as: UTF8.self), fallback: "")
         let nameLen = Int(plain[40])
@@ -129,24 +129,29 @@ public enum Discovery {
         }
     }
 
+    private static func foundText(_ list: [DiscoveredDevice]) -> String {
+        list.isEmpty ? LogText.t("log.discovery.nothing", "nichts gefunden")
+            : list.map { "\($0.name) \($0.ip) V\($0.version)" }.joined(separator: ", ")
+    }
+
     static func findBlocking(deviceId: UInt64, timeout: TimeInterval) throws -> DiscoveredDevice? {
         let match: (DiscoveredDevice) -> Bool = { $0.deviceId == deviceId && DeviceConfig.isIPv4($0.ip) }
         var firstError: (any Error)?
         do {
             if let d = try scanBlocking(target: "255.255.255.255", timeout: timeout, stop: match).first(where: match) {
-                AppLog.write("Anlage \(deviceId) per Broadcast gefunden unter \(d.ip)")
+                AppLog.write(LogText.t("log.discovery.foundBroadcast", "Anlage {id} per Broadcast gefunden unter {ip}", ["id": String(deviceId), "ip": d.ip]))
                 return d
             }
         } catch { firstError = error }
         do {
             if let d = try scanSubnetBlocking(timeout: timeout, progress: nil, stop: match).first(where: match) {
-                AppLog.write("Anlage \(deviceId) per Netz-Scan gefunden unter \(d.ip)")
+                AppLog.write(LogText.t("log.discovery.foundScan", "Anlage {id} per Netz-Scan gefunden unter {ip}", ["id": String(deviceId), "ip": d.ip]))
                 return d
             }
         } catch {
             if let firstError { throw firstError }
         }
-        AppLog.write("Anlage \(deviceId) im Netz nicht gefunden")
+        AppLog.write(LogText.t("log.discovery.notFound", "Anlage {id} im Netz nicht gefunden", ["id": String(deviceId)]))
         return nil
     }
 
@@ -181,9 +186,9 @@ public enum Discovery {
             targets += (net.hosts + [net.broadcast]).filter { seen.insert($0).inserted }
         }
         guard !targets.isEmpty else {
-            throw MideaError.connectionFailed("Kein aktives Netz gefunden – ist der Rechner mit WLAN oder Ethernet verbunden?")
+            throw MideaError.connectionFailed(.other(LogText.t("kit.discovery.noNetwork", "Kein aktives Netz gefunden – ist der Rechner mit WLAN oder Ethernet verbunden?")))
         }
-        AppLog.debug("Netz-Scan: \(nets.map { "\($0.ip)/\($0.mask)" }.joined(separator: ", ")) → \(targets.count) Adressen, warte \(Int(timeout)) s")
+        AppLog.debug(LogText.t("log.discovery.scanPlan", "Netz-Scan: {nets} → {count} Adressen, warte {seconds} s", ["nets": nets.map { "\($0.ip)/\($0.mask)" }.joined(separator: ", "), "count": String(targets.count), "seconds": String(Int(timeout))]))
 
         let s = try NetSocket.udpBroadcast() // Broadcast-Flag für die gerichtete Broadcast-Adresse
         defer { s.close() }
@@ -196,16 +201,16 @@ public enum Discovery {
             // Alle 32 Adressen kurz Antworten einsammeln, damit weder Sende- noch Empfangspuffer überlaufen.
             if sent % 32 == 0 || sent == targets.count {
                 progress?(sent, targets.count)
-                if collect(s, until: Date().addingTimeInterval(0.005), into: &found, buf: &buf, label: "Netz-Scan", stop: stop) {
+                if collect(s, until: Date().addingTimeInterval(0.005), into: &found, buf: &buf, label: LogText.t("log.discovery.labelScan", "Netz-Scan"), stop: stop) {
                     break
                 }
             }
         }
         if stop == nil || !found.values.contains(where: { stop!($0) }) {
-            collect(s, until: Date().addingTimeInterval(timeout), into: &found, buf: &buf, label: "Netz-Scan", stop: stop)
+            collect(s, until: Date().addingTimeInterval(timeout), into: &found, buf: &buf, label: LogText.t("log.discovery.labelScan", "Netz-Scan"), stop: stop)
         }
         let list = found.values.sorted { $0.ip < $1.ip }
-        AppLog.write("Netz-Scan über \(targets.count) Adressen: \(list.isEmpty ? "nichts gefunden" : list.map { "\($0.name) \($0.ip) V\($0.version)" }.joined(separator: ", "))")
+        AppLog.write(LogText.t("log.discovery.scanResult", "Netz-Scan über {count} Adressen: {result}", ["count": String(targets.count), "result": foundText(list)]))
         return list
     }
 
@@ -217,14 +222,14 @@ public enum Discovery {
         while deadline.timeIntervalSinceNow > 0 {
             guard s.wait(timeoutMs: Int32(max(0, deadline.timeIntervalSinceNow * 1000))) > 0 else { break }
             guard let (n, ip) = s.receiveFrom(into: &buf), n > 0, n <= buf.count, found[ip] == nil else { continue }
-            AppLog.debug("\(label): Antwort von \(ip) (\(n) Byte) \(Data(buf[0..<min(n, 64)]).hex)…")
+            AppLog.debug(LogText.t("log.discovery.reply", "{label}: Antwort von {ip} ({bytes} Byte) {hex}…", ["label": label, "ip": ip, "bytes": String(n), "hex": Data(buf[0..<min(n, 64)]).hex]))
             do {
                 let dev = try parse(Data(buf[0..<n]), ip: ip)
                 found[ip] = dev
-                AppLog.debug("\(label): \(dev.name) \(ip) Typ 0x\(String(dev.type, radix: 16)) V\(dev.version) Port \(dev.port) id \(dev.deviceId) SN \(dev.sn)")
+                AppLog.debug(LogText.t("log.discovery.device", "{label}: {name} {ip} Typ 0x{type} V{version} Port {port} id {id} SN {sn}", ["label": label, "name": dev.name, "ip": ip, "type": String(dev.type, radix: 16), "version": String(dev.version), "port": String(dev.port), "id": String(dev.deviceId), "sn": dev.sn]))
                 if let stop, stop(dev) { return true }
             } catch {
-                AppLog.debug("\(label): Antwort von \(ip) nicht lesbar: \(error.localizedDescription)")
+                AppLog.debug(LogText.t("log.discovery.unreadable", "{label}: Antwort von {ip} nicht lesbar: {error}", ["label": label, "ip": ip, "error": error.localizedDescription]))
             }
         }
         return false

@@ -18,14 +18,14 @@ enum V2Packet {
 
     static func decode(_ data: Data) throws -> Data {
         let packet = Data(data)
-        guard packet.count >= 6 else { throw MideaError.protocolError("Paket zu kurz") }
-        guard packet[0] == 0x5A, packet[1] == 0x5A else { throw MideaError.protocolError("Unbekanntes Paket \(packet.prefix(8).hex)") }
+        guard packet.count >= 6 else { throw MideaError.protocolError(LogText.t("kit.packet.tooShort", "Paket zu kurz")) }
+        guard packet[0] == 0x5A, packet[1] == 0x5A else { throw MideaError.protocolError(LogText.t("kit.packet.unknownPacket", "Unbekanntes Paket {data}", ["data": packet.prefix(8).hex])) }
         let length = Int(packet[4]) | Int(packet[5]) << 8
-        guard packet.count >= length, length >= 56 else { throw MideaError.protocolError("Paket abgeschnitten") }
-        guard (length - 56) % 16 == 0 else { throw MideaError.protocolError("Paketlänge passt nicht") }
+        guard packet.count >= length, length >= 56 else { throw MideaError.protocolError(LogText.t("kit.packet.truncated", "Paket abgeschnitten")) }
+        guard (length - 56) % 16 == 0 else { throw MideaError.protocolError(LogText.t("kit.packet.lengthMismatch", "Paketlänge passt nicht")) }
         let body = packet.prefix(length)
         guard MideaCrypto.sign(body.prefix(length - 16)) == body.suffix(16) else {
-            throw MideaError.protocolError("MD5-Signatur stimmt nicht")
+            throw MideaError.protocolError(LogText.t("kit.packet.badMd5", "MD5-Signatur stimmt nicht"))
         }
         return try MideaCrypto.decryptECB(Data(body[40..<(length - 16)]))
     }
@@ -69,7 +69,7 @@ struct V3Codec {
     }
 
     mutating func encodeEncrypted(_ data: Data) throws -> Data {
-        guard let key = localKey else { throw MideaError.protocolError("Nicht angemeldet") }
+        guard let key = localKey else { throw MideaError.protocolError(LogText.t("kit.packet.notLoggedIn", "Nicht angemeldet")) }
         let remainder = (data.count + 2) % 16
         let pad = remainder == 0 ? 0 : 16 - remainder
         let hdr = header(length: data.count + pad + 32, extra: UInt8(pad << 4) | PacketType.encryptedRequest.rawValue)
@@ -80,10 +80,10 @@ struct V3Codec {
 
     /// Sitzungsschlüssel aus der Handshake-Antwort (64 Byte: 32 verschlüsselt + 32 SHA256).
     static func localKey(key: Data, response: Data) throws -> Data {
-        guard response.count == 64 else { throw MideaError.authenticationFailed("Handshake-Antwort hat \(response.count) statt 64 Byte") }
+        guard response.count == 64 else { throw MideaError.authenticationFailed(LogText.t("kit.packet.handshakeSize", "Handshake-Antwort hat {count} statt 64 Byte", ["count": String(response.count)])) }
         let plain = try MideaCrypto.decryptCBC(key: key, Data(response.prefix(32)))
         guard MideaCrypto.sha256(plain) == Data(response.suffix(32)) else {
-            throw MideaError.authenticationFailed("Token oder Schlüssel passen nicht zur Anlage")
+            throw MideaError.authenticationFailed(LogText.t("kit.packet.tokenMismatch", "Token oder Schlüssel passen nicht zur Anlage"))
         }
         return Data(zip(plain, key).map { $0 ^ $1 })
     }
@@ -107,7 +107,7 @@ struct V3Codec {
             guard buffer.count - i >= 6 else { break scan }
             let total = (Int(buffer[i + 2]) << 8 | Int(buffer[i + 3])) + 8
             guard total <= Self.maxPacketLength else {
-                AppLog.debug("8370-Kopf mit unsinniger Länge \(total) verworfen")
+                AppLog.debug(LogText.t("log.packet.badHeader", "8370-Kopf mit unsinniger Länge {length} verworfen", ["length": String(total)]))
                 i += 2
                 continue
             }
@@ -121,28 +121,28 @@ struct V3Codec {
 
     func decode(_ packet: Data) throws -> (PacketType, Data) {
         let p = [UInt8](packet)
-        guard p.count >= 8, p[0] == 0x83, p[1] == 0x70 else { throw MideaError.protocolError("Ungültiger Paketanfang") }
-        guard p[4] == 0x20 else { throw MideaError.protocolError("Ungültiges Kennbyte") }
-        guard let type = PacketType(rawValue: p[5] & 0xF) else { throw MideaError.protocolError("Unbekannter Pakettyp") }
+        guard p.count >= 8, p[0] == 0x83, p[1] == 0x70 else { throw MideaError.protocolError(LogText.t("kit.packet.badStart", "Ungültiger Paketanfang")) }
+        guard p[4] == 0x20 else { throw MideaError.protocolError(LogText.t("kit.packet.badMarker", "Ungültiges Kennbyte")) }
+        guard let type = PacketType(rawValue: p[5] & 0xF) else { throw MideaError.protocolError(LogText.t("kit.packet.unknownType", "Unbekannter Pakettyp")) }
         switch type {
         case .handshakeResponse:
             return (type, Data(p[8...]))
         case .encryptedResponse:
-            guard let key = localKey else { throw MideaError.protocolError("Nicht angemeldet") }
-            guard p.count >= 6 + 32 + 16 else { throw MideaError.protocolError("Paket zu kurz") }
+            guard let key = localKey else { throw MideaError.protocolError(LogText.t("kit.packet.notLoggedIn", "Nicht angemeldet")) }
+            guard p.count >= 6 + 32 + 16 else { throw MideaError.protocolError(LogText.t("kit.packet.tooShort", "Paket zu kurz")) }
             let hdr = Data(p[0..<6])
             let plain = try MideaCrypto.decryptCBC(key: key, Data(p[6..<(p.count - 32)]))
             guard MideaCrypto.sha256(hdr + plain) == Data(p[(p.count - 32)...]) else {
-                throw MideaError.protocolError("SHA256 der Antwort stimmt nicht")
+                throw MideaError.protocolError(LogText.t("kit.packet.badSha", "SHA256 der Antwort stimmt nicht"))
             }
             let pad = Int(p[5] >> 4)
             // Nur die Anlage selbst kann das auslösen (SHA256 vorher geprüft) – trotzdem nie abstürzen.
-            guard plain.count >= 2 + pad else { throw MideaError.protocolError("Füllbytes passen nicht zur Paketlänge") }
+            guard plain.count >= 2 + pad else { throw MideaError.protocolError(LogText.t("kit.packet.paddingMismatch", "Füllbytes passen nicht zur Paketlänge")) }
             return (type, Data(plain[2..<(plain.count - pad)]))
         case .error:
-            throw MideaError.protocolError("Die Anlage meldet einen Fehler (Token abgelaufen oder Verbindung belegt)")
+            throw MideaError.protocolError(LogText.t("kit.packet.deviceError", "Die Anlage meldet einen Fehler (Token abgelaufen oder Verbindung belegt)"))
         default:
-            throw MideaError.protocolError("Unerwarteter Pakettyp \(type)")
+            throw MideaError.protocolError(LogText.t("kit.packet.unexpectedType", "Unerwarteter Pakettyp {type}", ["type": "\(type)"]))
         }
     }
 

@@ -123,8 +123,10 @@ final class BridgeDisplayTests: XCTestCase {
         a.glow = 0.5
         controller.setAppearance(a)
         XCTAssertEqual(try json()["appearanceIsStandard"] as? Bool, false)
+        XCTAssertEqual(try json()["appearanceCustomized"] as? Bool, true)
         controller.resetAppearance()
         XCTAssertEqual(try json()["appearanceIsStandard"] as? Bool, true)
+        XCTAssertEqual(try json()["appearanceCustomized"] as? Bool, false)
     }
 
     func testImportResultCarriesTextAndPrompt() throws {

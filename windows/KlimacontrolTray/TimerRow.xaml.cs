@@ -19,16 +19,15 @@ public partial class TimerRow : UserControl
 {
     static Core Core => Core.Shared;
 
-    /// Rückfall, falls der Kern keine Voraussetzung liefert (älterer Kern).
-    const string FallbackRequirement = "Klimacontrol muss dafür geöffnet bleiben und der PC eingeschaltet sein.";
+    /// Rückfall, falls der Kern keine Voraussetzung liefert.
+    static string FallbackRequirement => L.T("timer.requirement");
     /// Erklärtext unter dem Uhrzeitfeld mit der Voraussetzung aus dem Kern; beim Zeichnen nachgeführt.
     string hint = HintText("");
 
     static string Requirement(string fromCore) => string.IsNullOrWhiteSpace(fromCore) ? FallbackRequirement : fromCore.Trim();
 
     static string HintText(string requirement) =>
-        "Mit den zuletzt benutzten Einstellungen. " + Requirement(requirement) + " Klimacontrol hält den Rechner bis dahin wach.";
-    static readonly CultureInfo De = CultureInfo.GetCultureInfo("de-DE");
+        L.F("main.timer.windows.onNote", ("requirement", Requirement(requirement)));
 
     readonly ContextMenu offMenu = new() { Placement = PlacementMode.Bottom };
     /// Weckt genau dann, wenn sich die angezeigte Restzeit um eine Minute ändert, und um Mitternacht („morgen“ → „heute“).
@@ -48,14 +47,16 @@ public partial class TimerRow : UserControl
         OnChipIcon.Content = onIcon;
         OffClear.Content = Icons.Make(Icons.Close, 9, null, 1.8);
         OnClear.Content = Icons.Make(Icons.Close, 9, null, 1.8);
-        OnTimerButton.Content = "Einschalten um …";
+        OnTimerButton.Content = L.T("main.timer.onButton");
+        OnTimeBox.Text = Fmt.ClockOf(7, 0);
+        OnTimeBox.ToolTip = L.F("main.timer.windows.timeHelp", ("example", Fmt.ClockOf(7, 30)));
         // Pfeil wie bei Windows-Menüknöpfen: der Knopf öffnet eine Auswahl.
         var chevron = Icons.Glyph(((char)0xE70D).ToString(), 9);
         chevron.Margin = new Thickness(6, 1, 0, 0);
         OffTimerButton.Content = new StackPanel
         {
             Orientation = Orientation.Horizontal,
-            Children = { new TextBlock { Text = "Ausschalten in …", VerticalAlignment = VerticalAlignment.Center }, chevron },
+            Children = { new TextBlock { Text = L.T("main.timer.offMenu"), VerticalAlignment = VerticalAlignment.Center }, chevron },
         };
         TimerHint.Text = hint;
 
@@ -152,7 +153,7 @@ public partial class TimerRow : UserControl
             if (TimerHint.Text == hint) TimerHint.Text = newHint;
             hint = newHint;
         }
-        var offTip = "Schaltet die Anlage nach der gewählten Zeit aus. " + Requirement(s.TimerRequirement);
+        var offTip = L.F("main.timer.offHelp", ("requirement", Requirement(s.TimerRequirement)));
         if (!Equals(OffTimerButton.ToolTip, offTip)) OffTimerButton.ToolTip = offTip;
 
         var off = s.OffAt;
@@ -163,7 +164,7 @@ public partial class TimerRow : UserControl
         {
             OffChipText.Text = s.OffTimerChip ?? "";
             OffChipText.Foreground = offIcon.Stroke = tint;
-            OffChip.ToolTip = $"Schaltet {s.OffTimerLabel ?? "um " + Fmt.Clock(off.Value)} aus";
+            OffChip.ToolTip = L.F("main.timer.windows.switchesOff", ("when", s.OffTimerLabel ?? L.F("common.atTime", ("time", Fmt.Clock(off.Value)))));
         }
 
         var on = s.OnAt;
@@ -185,9 +186,9 @@ public partial class TimerRow : UserControl
     /// „heute“, „morgen“ oder Wochentag mit Datum („am Mi., 07.11.“).
     static string DayLabel(DateTime at, DateTime now)
     {
-        if (at.Date == now.Date) return "heute";
-        if (at.Date == now.Date.AddDays(1)) return "morgen";
-        return "am " + at.ToString("ddd, dd.MM.", De);
+        if (at.Date == now.Date) return L.T("date.today");
+        if (at.Date == now.Date.AddDays(1)) return L.T("date.tomorrow");
+        return L.F("main.timer.windows.onWeekdayDate", ("weekday", Fmt.WeekdayShort(at)), ("date", Fmt.DayMonth(at)));
     }
 
     /// Nächster Zeitpunkt mit dieser Uhrzeit: heute, liegt sie schon zurück, morgen (so rechnet auch der Kern).
@@ -258,12 +259,12 @@ public partial class TimerRow : UserControl
     {
         if (!TryParseTime(OnTimeBox.Text, out var t))
         {
-            ShowHint("Das ist keine Uhrzeit. Bitte Stunde und Minute eingeben, z. B. 07:30.");
+            ShowHint(L.F("main.timer.windows.invalidTime", ("example", Fmt.ClockOf(7, 30))));
             OnTimeBox.Focus();
             OnTimeBox.SelectAll();
             return;
         }
-        OnTimeBox.Text = $"{t.Hours:00}:{t.Minutes:00}";
+        OnTimeBox.Text = Fmt.ClockOf(t.Hours, t.Minutes);
         // Nur Stunde und Minute: das nächste Vorkommen (heute bzw. morgen) rechnet der Kern.
         Core.Send(Cmd.OnTimer, ("hour", t.Hours), ("minute", t.Minutes));
         ClosePicker();
@@ -298,7 +299,7 @@ public partial class TimerRow : UserControl
         if (!TryParseTime(OnTimeBox.Text, out var t)) { OnDayText.Text = ""; OnDayText.Visibility = Visibility.Collapsed; return; }
         var now = DateTime.Now;
         var at = NextAt(t, now);
-        var text = $"Schaltet {DayLabel(at, now)} um {at:HH:mm} ein";
+        var text = L.F("main.timer.switchesOn", ("day", DayLabel(at, now)), ("time", Fmt.Clock(at)));
         OnDayText.Visibility = Visibility.Visible;
         if (OnDayText.Text == text) return;
         OnDayText.Text = text;
@@ -320,13 +321,17 @@ public partial class TimerRow : UserControl
         else if (e.Key == Key.Escape) { ClosePicker(); e.Handled = true; }
     }
 
-    /// Nimmt „7:30“, „07:30“, „7.30“, „730“, „0730“ und „7“ (= 7:00).
+    static readonly System.Text.RegularExpressions.Regex DotBetweenDigits = new(@"(?<=\d)\.(?=\d)", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+    /// Nimmt „7:30“, „07:30“, „7.30“, „730“, „0730“, „7“ (= 7:00) und mit AM/PM („7:30 PM“), wo das Format es kennt.
     static bool TryParseTime(string text, out TimeSpan time)
     {
-        var x = text.Trim().Replace('.', ':');
+        var x = DotBetweenDigits.Replace(text.Trim(), ":");
         if (x.Length > 0 && x.All(char.IsDigit))
             x = x.Length <= 2 ? x + ":00" : x.Length <= 4 ? x[..^2] + ":" + x[^2..] : x;
-        return TimeSpan.TryParseExact(x, new[] { @"h\:mm", @"hh\:mm" }, CultureInfo.InvariantCulture, out time)
-               && time >= TimeSpan.Zero && time.TotalHours < 24;
+        time = default;
+        if (!Fmt.ParseTime(x, out var hour, out var minute)) return false;
+        time = new TimeSpan(hour, minute, 0);
+        return true;
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,7 +31,6 @@ public partial class ChartsPanel : UserControl
 
     static ChartOptions Chart => Core.Shared.Snap.Options.Chart;
     static readonly DoubleCollection GridDash = Frozen(new DoubleCollection { 2, 3 }), StepDash = Frozen(new DoubleCollection { 3, 2 });
-    static readonly CultureInfo De = CultureInfo.GetCultureInfo("de-DE");
 
     /// Deckkraft einer Lücke (Linie und Fläche).
     const double GapOpacity = 0.22;
@@ -80,6 +78,8 @@ public partial class ChartsPanel : UserControl
     {
         InitializeComponent();
         CloseButton.Content = Icons.Make(Icons.Close, 11, null, 1.6);
+        CloseButton.ToolTip = L.Tip("charts.hide", Hotkeys.Ctrl("G"));
+        System.Windows.Automation.AutomationProperties.SetAcceleratorKey(CloseButton, Hotkeys.Ctrl("G"));
         foreach (var (cc, icon, size) in new[] { (TitleIcon, Icons.Chart, 15.0), (PowerIcon, Icons.Bolt, 13.0), (TempIcon, Icons.Thermometer, 13.0), (OutdoorIcon, Icons.Sun, 13.0) })
         {
             cc.SetResourceReference(ForegroundProperty, "Sub");
@@ -87,10 +87,10 @@ public partial class ChartsPanel : UserControl
         }
         EnsureRanges();
         // Kennzahlen einmal anlegen, danach nur die Werte setzen.
-        tileValues[0] = Tile(Icons.Bolt, false, "Mittel");
-        tileValues[1] = Tile(Icons.Bolt, true, "Spitze");
-        tileValues[2] = Tile(SumIcon, false, "Verbrauch");
-        tileValues[3] = Tile(EuroIcon, false, "Kosten");
+        tileValues[0] = Tile(Icons.Bolt, false, L.T("charts.tile.avg"));
+        tileValues[1] = Tile(Icons.Bolt, true, L.T("charts.tile.peak"));
+        tileValues[2] = Tile(SumIcon, false, L.T("energy.title"));
+        tileValues[3] = Tile(EuroIcon, false, L.T("charts.tile.cost"));
 
         // Wertanzeige (Linie je Graph; Punkt und Kasten im Graphen unter der Maus) einmal anlegen; ZIndex hält sie
         // über den Graphen, auch wenn diese neu gezeichnet werden.
@@ -170,7 +170,7 @@ public partial class ChartsPanel : UserControl
             var secs = r.Seconds;
             var b = new RadioButton { Content = r.Label, Tag = secs, FontSize = 12, Padding = new Thickness(7, 3, 7, 3), Margin = new Thickness(2, 0, 0, 0) };
             if (look != null) b.Style = look;
-            System.Windows.Automation.AutomationProperties.SetName(b, "Zeitraum " + r.Label);
+            System.Windows.Automation.AutomationProperties.SetName(b, L.F("charts.windows.rangeName", ("label", r.Label)));
             b.Checked += (_, _) =>
             {
                 if (updatingRange || range == secs) return;
@@ -278,6 +278,13 @@ public partial class ChartsPanel : UserControl
         Arm();
     }
 
+    /// Uhrzeit, über einen Tag Zeitraum mit Wochentag davor.
+    static string When(double t)
+    {
+        var local = Codes.Local(t);
+        return range > 86400 ? Fmt.WeekdayShort(local) + " " + Fmt.Clock(local) : Fmt.Clock(local);
+    }
+
     /// Soll nur bei eingeschalteter Anlage (ausgeschaltet gibt es kein Ziel).
     static double? TargetOf(Sample s) => s.On ? s.Target : null;
 
@@ -289,7 +296,7 @@ public partial class ChartsPanel : UserControl
         tileValues[0].Text = Fmt.Watts(s.AvgWatts);
         tileValues[1].Text = Fmt.Watts(s.PeakWatts);
         tileValues[2].Text = Fmt.Kwh(s.KWh);
-        tileValues[3].Text = Fmt.Euro(s.KWh * Core.Shared.Snap.Price);
+        tileValues[3].Text = Fmt.Money(s.KWh * Core.Shared.Snap.Price, Core.Shared.Snap.Currency);
     }
 
     TextBlock Tile(string icon, bool filled, string title)
@@ -446,7 +453,11 @@ public partial class ChartsPanel : UserControl
                 var x = X(t, w);
                 ctx.BeginFigure(new Point(x, Pad), false, false);
                 ctx.LineTo(new Point(x, h - Bottom), true, false);
-                c.Children.Add(Label(Codes.Local(t).ToString(range > 86400 ? "ddd HH:mm" : "HH:mm", De), x - 18, h - Bottom + 4));
+                // Mittig unter der Marke: 12-h-Zeiten und Wochentage sind breiter als „HH:mm“.
+                var tick = Label(When(t), x - 18, h - Bottom + 4);
+                tick.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                Canvas.SetLeft(tick, Math.Clamp(x - tick.DesiredSize.Width / 2, 0, Math.Max(0, w - tick.DesiredSize.Width)));
+                c.Children.Add(tick);
             }
         vertical.Freeze();
         c.Children.Add(GridPath(vertical, GridDash));
@@ -653,10 +664,10 @@ public partial class ChartsPanel : UserControl
             // Großer Wert mit Einheit („21,5 °C“); im Temperaturgraph darunter „Soll 22°“.
             value = Fmt.Temp(v).Replace("°", " °C");
             color = hc == TempCanvas ? IndoorColor : OutdoorColor;
-            if (hc == TempCanvas && TargetOf(s) is { } target) extra = "Soll " + Fmt.Target(target);
+            if (hc == TempCanvas && TargetOf(s) is { } target) extra = L.F("charts.hoverTarget", ("target", Fmt.Target(target)));
         }
         hoverValue.Text = value;
-        hoverWhen.Text = Codes.Local(s.T).ToString(range > 86400 ? "ddd HH:mm" : "HH:mm", De);
+        hoverWhen.Text = When(s.T);
         hoverExtra.Text = extra;
         hoverExtra.Visibility = extra.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
         foreach (FrameworkElement el in new FrameworkElement[] { hoverLabel, hoverDot })

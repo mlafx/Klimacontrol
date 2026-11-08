@@ -23,8 +23,9 @@ public enum SettingsTab { General, Appearance, Connection, Device, Log, Licenses
 public partial class SettingsWindow : Window
 {
     static Core Core => Core.Shared;
-    static readonly CultureInfo De = CultureInfo.GetCultureInfo("de-DE");
     bool updating;
+    // Sprachwahl beim Start der App: weicht die gespeicherte Wahl davon ab, wirkt sie erst nach einem Neustart.
+    static string? startLanguage;
 
     /// Zähler eines langlaufenden Kern-Befehls (`LoginSeq`, `RelocateSeq`, `ExportSeq`, `ImportSeq`): merkt den
     /// zuletzt gesehenen Stand, damit jedes Ergebnis genau einmal erscheint und keins von vor dem Öffnen des Fensters.
@@ -58,10 +59,14 @@ public partial class SettingsWindow : Window
         relocateSeq = new SeqWatch(Core.Snap.RelocateSeq);
         importSeq = new SeqWatch<PendingImport>(Core.Snap.ImportSeq);
         exportSeq = new SeqWatch<string>(Core.Snap.ExportSeq);
+        startLanguage ??= Core.Snap.Language;
         InitializeComponent();
         Theme.AttachWindow(this);
         Icon = TrayIcon.WindowIcon();
-        VersionText.Text = $"Klimacontrol {App.Version} für Windows · Daten in {Native.SupportDir()}";
+        VersionText.Text = L.F("settings.general.windows.versionLine", ("version", App.Version), ("folder", Native.SupportDir()));
+        InWindowKeysRun.Text = L.F("settings.general.windows.inWindowKeys", ("ctrl", L.T("keys.windows.ctrl")));
+        IconKeysRun.Text = L.F("settings.general.windows.iconKeys", ("win", L.T("keys.windows.win")), ("shift", L.T("keys.windows.shift")));
+        NameAppearanceChoices();
         RenderUpdates();
         NameBox.Text = Core.Snap.DisplayName;
         PriceBox.Text = PriceText(Core.Snap);
@@ -120,9 +125,15 @@ public partial class SettingsWindow : Window
         if (!CustomRefreshBox.IsKeyboardFocusWithin) CustomRefreshBox.Text = s.RefreshSeconds.ToString(CultureInfo.InvariantCulture);
         RefreshWarn.Visibility = Show(s.RefreshSeconds < s.Options.Refresh.WarnBelow);
         HistoryCsvBox.IsChecked = s.HistoryCSV;
+        SelectTag(LanguageBox, s.Language);
+        RestartButton.Visibility = Show(s.Language != startLanguage);
+        PriceUnit.Text = L.F("settings.general.pricePerKWh", ("currency", s.Currency));
+        AutomationProperties.SetName(PriceBox, L.F("settings.general.priceAccessibility", ("currency", s.Currency)));
+        if (!CurrencyBox.IsKeyboardFocusWithin) CurrencyBox.Text = s.Currency;
 
         // Darstellung: „Auf Standard zurücksetzen“ nur, wenn etwas vom Standard abweicht (sagt der Kern).
         LookResetButton.IsEnabled = !s.AppearanceIsStandard;
+        RenderThemeTiles(s.AppearanceCustomized);
 
         // Verbindung
         var lan = HasLan(s);
@@ -154,7 +165,7 @@ public partial class SettingsWindow : Window
         DevicePanel.Visibility = Show(s.Configured);
         RenderSetAside(s);
         DeviceNameText.Text = s.DeviceName ?? "–";
-        AddressText.Text = lan ? s.Ip : "über Midea-Konto";
+        AddressText.Text = lan ? s.Ip : L.T("settings.device.viaAccount");
         // Nur mit Anlagen-ID: die Suche findet die Anlage über ihre ID.
         RelocateRow.Visibility = Show(HasDeviceId(s));
         RenderRelocate(s);
@@ -166,7 +177,7 @@ public partial class SettingsWindow : Window
         PortText.Text = s.Port?.ToString(CultureInfo.InvariantCulture) ?? "";
         DeviceIdText.Text = s.DeviceId ?? "";
         IdentifierText.Text = string.IsNullOrEmpty(s.DeviceIdentifier) ? "–" : s.DeviceIdentifier;
-        CredentialsText.Text = lan ? "gespeichert, nur für dich lesbar" : "keine – Steuerung über das Midea-Konto";
+        CredentialsText.Text = lan ? L.T("settings.device.credentials.stored") : L.T("settings.device.credentials.none");
         RenderBackupState(s, lan);
         RenderImport(s);
         RenderExport(s);
@@ -176,8 +187,8 @@ public partial class SettingsWindow : Window
         DebugBox.IsChecked = s.DebugLog;
         EventsOnlyBox.IsEnabled = s.DebugLog;
         DebugHint.Text = s.DebugLog
-            ? "An: zusätzlich jede Nachricht an die Anlage und an Midea – groß, die Datei wird alle paar Stunden neu begonnen."
-            : "Aus (Standard): Start, Verbindungsweg, Befehle, Fehler und Timer stehen trotzdem im Protokoll.";
+            ? L.T("settings.log.detailed.on")
+            : L.T("settings.log.detailed.off");
         if (debugChanged && logRaw != null && IsVisible && CurrentTab == SettingsTab.Log) LoadLog(force: true);
     }
 
@@ -219,7 +230,7 @@ public partial class SettingsWindow : Window
     }
 
     /// Fehlerrückgabe eines Kern-Befehls anzeigen (der Kern liefert den Text, nil = in Ordnung).
-    void WarnIfFailed(string? error) => Warn("Nicht übernommen", error);
+    void WarnIfFailed(string? error) => Warn(L.T("settings.windows.notApplied"), error);
 
     /// Rückfrage des Kerns (Titel, Text, Knöpfe); true nur beim Bestätigen (Esc/Abbrechen = false).
     async Task<bool> Confirm(PromptInfo p) =>
@@ -228,10 +239,61 @@ public partial class SettingsWindow : Window
 
     /// Rückfrage mit benanntem Knopf; true nur bei diesem Knopf (Esc/Abbrechen = false).
     async Task<bool> Confirm(string title, string text, string action) =>
-        await Dialogs.Ask(this, title, text, action, "Abbrechen") == 0;
+        await Dialogs.Ask(this, title, text, action, L.T("common.cancel")) == 0;
 
     /// Datei im Explorer markieren; fehlt sie, den Ordner öffnen (App.ShowInExplorer findet auch umgeleitete Pfade).
     static void ShowInExplorer(string path) => App.ShowInExplorer(path);
 
     void OpenMain_Click(object sender, RoutedEventArgs e) => ((App)Application.Current).ShowMain();
+
+    void Language_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (updating || LanguageBox.SelectedItem is not ComboBoxItem { Tag: string tag }) return;
+        if (tag == Core.Snap.Language) return;
+        var err = Core.Send(Cmd.Language, ("value", tag));
+        if (err != null)
+        {
+            Result(LanguageResult, err, false);
+            Render();
+            return;
+        }
+        LanguageResult.Visibility = Visibility.Collapsed;
+    }
+
+    void Restart_Click(object sender, RoutedEventArgs e) => ((App)Application.Current).Restart();
+
+    void Currency_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter) ApplyCurrency();
+    }
+
+    void Currency_LostFocus(object sender, KeyboardFocusChangedEventArgs e) => ApplyCurrency();
+
+    /// Währung übernehmen (Enter, Fokusverlust); Fehlertext vom Kern, das Feld springt dann auf den gültigen Wert zurück.
+    void ApplyCurrency()
+    {
+        if (updating) return;
+        var text = CurrencyBox.Text.Trim();
+        if (text == Core.Snap.Currency) return;
+        var err = Core.Send(Cmd.Currency, ("value", text));
+        if (err != null)
+        {
+            Result(CurrencyResult, err, false);
+            CurrencyBox.Text = Core.Snap.Currency;
+            return;
+        }
+        CurrencyResult.Visibility = Visibility.Collapsed;
+    }
+
+    /// UIA-Namen der Farbkreise (Name + Auswahl, daher im Code); die Themenkacheln benennt `RenderThemeTiles`.
+    void NameAppearanceChoices()
+    {
+        void Swatch(RadioButton r, string color) =>
+            AutomationProperties.SetName(r, L.F("settings.appearance.windows.customColorName", ("color", color)));
+        Swatch(SwatchOrange, L.T("appearance.color.orange"));
+        Swatch(SwatchBlue, L.T("appearance.color.blue"));
+        Swatch(SwatchGreen, L.T("appearance.color.green"));
+        Swatch(SwatchPurple, L.T("appearance.color.purple"));
+        Swatch(SwatchGrey, L.T("appearance.color.gray"));
+    }
 }

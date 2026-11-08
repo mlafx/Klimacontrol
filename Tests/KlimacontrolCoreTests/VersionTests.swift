@@ -14,4 +14,27 @@ final class VersionTests: XCTestCase {
                                  "kein Versionseintrag im CHANGELOG")
         XCTAssertTrue(head.hasPrefix("## [\(version)]"), "CHANGELOG-Kopf „\(head)“ passt nicht zu VERSION \(version)")
     }
+
+    func testEnglishChangelogHeadMatchesVersionFile() throws {
+        let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        let en = root.appendingPathComponent("CHANGELOG.en.md")
+        guard FileManager.default.fileExists(atPath: en.path) else {
+            try ChangelogParityTests.skipOrFail(root: root)
+            throw XCTSkip("CHANGELOG.en.md fehlt noch")
+        }
+        func head(_ url: URL) throws -> String {
+            let text = try String(contentsOf: url, encoding: .utf8)
+            return String(try XCTUnwrap(text.split(separator: "\n").first { $0.hasPrefix("## [") }))
+        }
+        let version = try String(contentsOf: root.appendingPathComponent("tools/VERSION"), encoding: .utf8)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let english = try head(en)
+        let german = try head(root.appendingPathComponent("CHANGELOG.md"))
+        XCTAssertTrue(english.hasPrefix("## [\(version)]"), english)
+        if german.hasSuffix("– in Arbeit") {
+            XCTAssertTrue(english.hasSuffix("– in progress"), english)
+        } else {
+            XCTAssertEqual(english.split(separator: "–").last, german.split(separator: "–").last, english)
+        }
+    }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace KlimacontrolTray;
 
@@ -50,7 +51,7 @@ public partial class SettingsWindow
         lookUpdating = true;
         try
         {
-            foreach (var r in themeChoices) r.IsChecked = r.Tag as string == a.Theme;
+            RenderThemeTiles(Core.Snap.AppearanceCustomized);
 
             SelectTag(LookModeBox, a.Mode);
             SelectTag(LookColorsBox, a.Colors);
@@ -92,6 +93,64 @@ public partial class SettingsWindow
             LookTrayAnimatedBox.IsChecked = a.TrayAnimated;
         }
         finally { lookUpdating = false; }
+    }
+
+    /// Fünf Kacheln mit Mini-Vorschau aus der Palette und dem Ziffernstil des Themas; die gewählte trägt bei Abweichung
+    /// „angepasst“. Der Zustand „ausgewählt“ steht auch für die Sprachausgabe (UIA-Auswahl und Status) bereit.
+    void RenderThemeTiles(bool customized)
+    {
+        var selected = Appearance.Current.Theme;
+        var wasUpdating = lookUpdating;
+        lookUpdating = true;
+        try
+        {
+            foreach (var r in themeChoices)
+            {
+                if (r.Tag is not string tag) continue;
+                var on = tag == selected;
+                r.IsChecked = on;
+                var name = L.T("appearance.theme." + tag);
+                var dark = tag is "night" or "neon" || Theme.SystemDark;
+                var p = Theme.PaletteFor(tag, dark);
+                var (family, weight) = Theme.DigitFontFor(tag switch
+                {
+                    "night" or "minimal" => "thin",
+                    "neon" or "contrast" => "bold",
+                    _ => "normal",
+                });
+                var panel = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center };
+                panel.Children.Add(new TextBlock
+                {
+                    Text = "24°", FontFamily = family, FontWeight = weight, FontSize = 26,
+                    Foreground = new SolidColorBrush(p.Accent), HorizontalAlignment = HorizontalAlignment.Center,
+                });
+                panel.Children.Add(new TextBlock
+                {
+                    Text = name, FontSize = 12, FontWeight = on ? FontWeights.SemiBold : FontWeights.Normal,
+                    Foreground = new SolidColorBrush(p.Fg), HorizontalAlignment = HorizontalAlignment.Center,
+                    TextTrimming = TextTrimming.CharacterEllipsis,
+                });
+                var status = "";
+                if (on)
+                {
+                    var selectedText = L.T("settings.appearance.theme.selected");
+                    var customText = L.T("settings.appearance.theme.customized");
+                    status = customized ? selectedText + ", " + customText : selectedText;
+                    if (customized)
+                        panel.Children.Add(new TextBlock
+                        {
+                            Text = customText, FontSize = 10, Foreground = new SolidColorBrush(p.Sub),
+                            HorizontalAlignment = HorizontalAlignment.Center, TextTrimming = TextTrimming.CharacterEllipsis,
+                        });
+                }
+                r.Background = new SolidColorBrush(p.Bg);
+                r.Content = panel;
+                System.Windows.Automation.AutomationProperties.SetName(r, name);
+                System.Windows.Automation.AutomationProperties.SetItemStatus(r, status);
+            }
+            LookRestoreRow.Visibility = Show(customized);
+        }
+        finally { lookUpdating = wasUpdating; }
     }
 
     void RenderSliderTexts()
@@ -168,12 +227,18 @@ public partial class SettingsWindow
         else if (box == LookTrayAnimatedBox) Look(a => a with { TrayAnimated = on });
     }
 
+    void LookRestore_Click(object sender, RoutedEventArgs e)
+    {
+        FlushSliders();
+        Appearance.ApplyTheme(Appearance.Current.Theme);
+    }
+
     async void LookReset_Click(object sender, RoutedEventArgs e)
     {
         FlushSliders();
-        if (await Confirm("Darstellung zurücksetzen?",
-                "Alle Werte dieses Reiters kommen auf das gewohnte Aussehen zurück.",
-                "Zurücksetzen"))
+        if (await Confirm(L.T("settings.appearance.reset.title"),
+                L.T("settings.appearance.reset.message"),
+                L.T("settings.appearance.reset.confirm")))
             Appearance.Reset();
     }
 }

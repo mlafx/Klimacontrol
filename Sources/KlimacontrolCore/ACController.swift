@@ -17,7 +17,12 @@ public final class ACController {
     // MARK: Anlage und Werte
 
     public internal(set) var config: DeviceConfig?
-    public internal(set) var state: ACState?
+    public internal(set) var state: ACState? {
+        didSet { if (state != nil) != hasState { hasState = state != nil } }
+    }
+    /// Ob es einen Zustand gibt; ändert sich nur bei Wechsel zwischen „kein Zustand“ und „Zustand“, damit Ansichten,
+    /// die nur das wissen wollen, nicht bei jeder Abfrage neu rechnen.
+    public internal(set) var hasState = false
     public internal(set) var diagnostics: Diagnostics?
     public internal(set) var deviceIdentifier: String?
     /// Zeitpunkt der nächsten automatischen Abfrage (für den Countdown in der Diagnose).
@@ -99,6 +104,9 @@ public final class ACController {
     var storedRefreshSeconds: Int
     var storedPrice: Double
     var storedMode: ConnectionMode
+    var storedCurrency: String
+    var storedLanguage: LanguageChoice
+    var storedBetaChannel: Bool
     var storedBeep: Bool
     /// Darstellung (beobachtet); ändern nur über `setAppearance`/`applyTheme`/`resetAppearance`.
     public internal(set) var appearance: Appearance = .standard
@@ -171,6 +179,7 @@ public final class ACController {
     ///   - dependencies: Ablagen, Betriebssystem, Anlage, Midea-Konto, Uhr.
     ///   - autostart: false für Tests – dann keine Einrichtung laden, keine Abfrage- und Timer-Schleife, keine Suche im Netz.
     public init(appVersion: String, dependencies deps: CoreDependencies, autostart: Bool = true) {
+        Localizer.installLogTranslator()
         self.appVersion = appVersion
         settings = deps.settings
         paths = deps.paths
@@ -197,6 +206,9 @@ public final class ACController {
         storedPrice = Self.validPrice(stored.object(forKey: SettingsKey.pricePerKWh) as? Double) ?? 0.30
         // Alte Bluetooth-Werte („ble“, „blePreferred“) werden zu „Automatisch“.
         storedMode = ConnectionMode(stored: stored.object(forKey: SettingsKey.connectionMode) as? String)
+        storedCurrency = Self.validCurrency(stored.object(forKey: SettingsKey.currency) as? String) ?? UIOptions.currencyDefault
+        storedLanguage = LanguageChoice(stored: stored.object(forKey: SettingsKey.language) as? String)
+        storedBetaChannel = stored.object(forKey: SettingsKey.updateBetaChannel) as? Bool ?? false
         storedBeep = stored.object(forKey: SettingsKey.beep) as? Bool ?? true
         appearance = Self.loadAppearance(from: stored)
         credentialsBackedUp = stored.object(forKey: SettingsKey.credentialsBackedUp) as? Bool ?? false
@@ -204,16 +216,16 @@ public final class ACController {
         loadTimers()
         loadWhatsNew()
         if let aside = loadedScenes.movedAside {
-            showNotice("Die Szenen-Datei war beschädigt und wurde als „\(aside)“ beiseitegelegt. Lesbare Szenen sind übernommen.")
+            showNotice(L.Message.Scenes.movedAside(name: aside))
         }
         guard autostart else { return }
         if let cfg = DeviceConfig.load(from: paths.config) {
-            AppLog.write("Klimacontrol \(appVersion) gestartet – Anlage \(cfg.name) @ \(cfg.ip)")
+            AppLog.write(L.Log.Core.started(version: appVersion, name: cfg.name, ip: cfg.ip))
             // Startanzeige: zuletzt bekannte Werte (höchstens 1 Tag alt) abgeblendet mit „Stand HH:MM“.
             lastKnown = history.window(86400).last
             use(cfg)
         } else {
-            AppLog.write("Klimacontrol \(appVersion) gestartet – noch keine Anlage eingerichtet")
+            AppLog.write(L.Log.Core.startedNoDevice(version: appVersion))
         }
         startTimerLoop()
     }

@@ -37,6 +37,14 @@ final class DisplayCatalogTests: CoreTestCase {
 
     // MARK: Optionen und Grenzen
 
+    func testWindowColumnTexts() {
+        XCTAssertEqual(UIText.columnControls, "Steuerung")
+        XCTAssertEqual(UIText.columnName(.history), "Verlauf")
+        XCTAssertEqual(UIText.columnName(.diagnostics), "Diagnose")
+        XCTAssertEqual(UIText.columnHidden(.history), "Verlauf ausgeblendet, weil der Bildschirm zu schmal ist.")
+        XCTAssertEqual(UIText.columnHidden(.diagnostics), "Diagnose ausgeblendet, weil der Bildschirm zu schmal ist.")
+    }
+
     func testOptionLists() {
         XCTAssertEqual(UIOptions.temperatureMin, 16)
         XCTAssertEqual(UIOptions.temperatureMax, 30)
@@ -96,7 +104,7 @@ final class DisplayCatalogTests: CoreTestCase {
             XCTAssertEqual(enabled(.turbo, m), m == .cool || m == .heat, "Turbo nur Kühlen/Heizen")
             XCTAssertEqual(enabled(.outdoorSilent, m), m == .cool || m == .heat, "Außengerät leise nur Kühlen/Heizen")
             XCTAssertEqual(enabled(.freezeProtection, m), m == .heat, "Frostschutz nur Heizen")
-            for f in [UIOptions.ComfortFeature.swing, .ieco, .purifier, .selfClean, .display] { XCTAssertTrue(enabled(f, m)) }
+            for f in [UIOptions.ComfortFeature.swing, .ieco, .purifier, .selfClean, .display, .sound] { XCTAssertTrue(enabled(f, m)) }
         }
     }
 
@@ -465,6 +473,25 @@ final class DisplayCatalogTests: CoreTestCase {
         XCTAssertTrue(c.appearanceIsStandard)
     }
 
+    func testAppearanceTabTexts() {
+        XCTAssertEqual(L.Settings.Appearance.Display.section, "Anzeige")
+        XCTAssertEqual(L.Settings.Appearance.WindowMenu.section, "Fenster und Menüleiste")
+        XCTAssertEqual(L.Settings.Appearance.WindowNotify.section, "Fenster und Infobereich")
+        XCTAssertEqual(L.Settings.Appearance.Customize.title, "Anpassen")
+        XCTAssertEqual(L.Settings.Appearance.Theme.customized, "angepasst")
+        XCTAssertEqual(L.Settings.Appearance.Theme.restore, "Thema wiederherstellen")
+        XCTAssertEqual(L.Settings.Appearance.Theme.selected, "ausgewählt")
+    }
+
+    func testAppearanceIsCustomized() throws {
+        let c = try controller(now: local())
+        XCTAssertFalse(c.appearanceIsCustomized)
+        change(c) { $0.glow = 0.5 }
+        XCTAssertTrue(c.appearanceIsCustomized)
+        c.applyTheme(c.appearance.theme)
+        XCTAssertFalse(c.appearanceIsCustomized)
+    }
+
     // MARK: Meldungen und Rückfragen
 
     func testBackupImportedMessages() {
@@ -631,6 +658,37 @@ final class DisplayCatalogTests: CoreTestCase {
         XCTAssertTrue(UIText.accountFooter(signedIn: false, host: .windows).contains("Windows-Anmeldeinformationsverwaltung"))
     }
 
+    func testKeychainMessagesNameTheStoreOfTheHost() {
+        let unavailable = KeychainError.unavailable(-25293)
+        XCTAssertEqual(UserMessage.from(unavailable, host: .mac).text,
+                       "Der Schlüsselbund ist gesperrt oder hat den Zugriff abgelehnt. Mac entsperren bzw. den Zugriff erlauben und erneut versuchen. (Status -25293)")
+        XCTAssertEqual(UserMessage.from(unavailable, host: .windows).text,
+                       "Die Anmeldeinformationsverwaltung ist gesperrt oder hat den Zugriff abgelehnt. Windows entsperren bzw. den Zugriff erlauben und erneut versuchen. (Status -25293)")
+        XCTAssertEqual(UserMessage.from(KeychainError.saveFailed(-1), host: .mac).what,
+                       "Die Zugangsdaten konnten nicht im Schlüsselbund gespeichert werden.")
+        XCTAssertEqual(UserMessage.from(KeychainError.saveFailed(-1), host: .windows).what,
+                       "Die Zugangsdaten konnten nicht in der Anmeldeinformationsverwaltung gespeichert werden.")
+        XCTAssertEqual(keychainLockedText(host: .mac),
+                       "Der Schlüsselbund ist gesperrt. Mac entsperren; Klimacontrol versucht es danach von selbst wieder.")
+        XCTAssertEqual(keychainLockedText(host: .windows),
+                       "Die Anmeldeinformationsverwaltung ist gesperrt. Windows entsperren; Klimacontrol versucht es danach von selbst wieder.")
+        Localizer.withLanguage(.en) {
+            XCTAssertEqual(UserMessage.from(unavailable, host: .windows).what, "Windows Credential Manager is locked or denied access.")
+            XCTAssertEqual(keychainLockedText(host: .windows),
+                           "Windows Credential Manager is locked. Unlock Windows; Klimacontrol will then try again on its own.")
+        }
+    }
+
+    func testNoMacWordsInWindowsVariantsOfKeychainTexts() {
+        let windowsTexts = [
+            L.Message.Keychain.Windows.Unavailable.what, L.Message.Keychain.Windows.Unavailable.todo,
+            L.Message.Keychain.Windows.SaveFailed.what, L.Message.Account.Windows.notSaved, L.Reason.Cloud.Windows.keychainLocked,
+        ]
+        for text in windowsTexts {
+            XCTAssertFalse(text.contains("Schlüsselbund") || text.contains("Mac"), text)
+        }
+    }
+
     // MARK: Hinweise mit Code
 
     func testNoticeKeepsTextAndCodeApart() throws {
@@ -653,7 +711,7 @@ final class DisplayCatalogTests: CoreTestCase {
 
     func testUpdateTexts() {
         XCTAssertEqual(UIText.updatesHelp(host: .mac),
-                       "Updates werden automatisch geladen und installiert. Klimacontrol startet danach kurz neu.")
+                       "Updates werden automatisch geladen. Danach fragt Klimacontrol, ob es gleich neu starten soll; sonst wird beim Beenden installiert.")
         XCTAssertEqual(UIText.updatesHelp(host: .windows),
                        "Klimacontrol sucht täglich nach Updates und fragt vor der Installation.")
         XCTAssertEqual(UIText.updatesChecking, "Suche nach Updates …")
@@ -662,6 +720,11 @@ final class DisplayCatalogTests: CoreTestCase {
                        "Version 1.2.3.4 wird geladen und installiert. Klimacontrol startet danach neu.")
         XCTAssertEqual(UIText.updatesFailed, "Die Suche nach Updates hat nicht geklappt. Später erneut versuchen.")
         XCTAssertEqual(UIText.updatesCheckButton, "Jetzt suchen …")
+        XCTAssertEqual(UIText.updatesManualCurrentTitle, "Klimacontrol ist aktuell.")
+        XCTAssertEqual(UIText.updatesManualCurrentMessage(version: "1.2.3.4"), "Version 1.2.3.4 ist die neueste Version.")
+        XCTAssertEqual(UIText.updatesManualFailedTitle, "Nach Updates suchen hat nicht geklappt.")
+        XCTAssertEqual(UIText.updatesManualFailedMessage,
+                       "Die Update-Information konnte nicht geladen oder geprüft werden. Später erneut versuchen.")
     }
 
     func testWhatsNewTexts() {

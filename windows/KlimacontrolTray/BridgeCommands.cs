@@ -41,6 +41,8 @@ public static class Cmd
     public const string DisplayName = "displayName";
     public const string RefreshSeconds = "refreshSeconds";
     public const string Price = "price";
+    public const string Language = "language";
+    public const string Currency = "currency";
     public const string DebugLog = "debugLog";
     public const string HistoryCsv = "historyCSV";
     public const string DiagnosticsVisible = "diagnosticsVisible";

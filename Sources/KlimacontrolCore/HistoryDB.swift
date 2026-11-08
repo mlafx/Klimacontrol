@@ -129,7 +129,7 @@ public final class HistoryDB: @unchecked Sendable {
             try Self.setupSchema(c)
             return c
         } catch let error as HistoryDBError {
-            AppLog.error("Verlaufsdatenbank nicht zu öffnen (\(error.code)): \(error.message)")
+            AppLog.error(L.Log.History.openFailed(code: "\(error.code)", message: error.message))
             throw error
         }
     }
@@ -143,7 +143,7 @@ public final class HistoryDB: @unchecked Sendable {
         for suffix in ["", "-wal", "-shm"] {
             try? FileManager.default.moveItem(at: sibling(suffix), to: sibling(".defekt-\(stamp)\(suffix)"))
         }
-        AppLog.error("Verlaufsdatenbank defekt – beiseitegelegt als \(url.lastPathComponent).defekt-\(stamp)")
+        AppLog.error(L.Log.History.damaged(file: "\(url.lastPathComponent).defekt-\(stamp)"))
     }
 
     /// Tabellen anlegen; neue Spalten aus `HistoryColumn.all` an eine bestehende Tabelle anhängen.
@@ -168,7 +168,7 @@ public final class HistoryDB: @unchecked Sendable {
         do {
             return try work(connection)
         } catch {
-            AppLog.error("Verlauf (SQLite): \(error)")
+            AppLog.error(L.Log.History.sqlite(error: "\(error)"))
             return nil
         }
     }
@@ -371,8 +371,9 @@ public final class HistoryDB: @unchecked Sendable {
             if let n = importFile(file) { rows += n } else { unreadable += 1 }
         }
         finishImport(addedRows: rows, complete: unreadable == 0)
-        AppLog.write("Verlauf: \(rows) Zeilen aus \(files.count - unreadable) CSV-Datei(en) in die Datenbank übernommen"
-                     + (unreadable > 0 ? " – \(unreadable) Datei(en) nicht lesbar, nächster Versuch beim nächsten Start" : ""))
+        AppLog.write(L.Log.History.imported(
+            rows: String(rows), files: String(files.count - unreadable),
+            unreadable: unreadable > 0 ? L.Log.History.importUnreadable(count: String(unreadable)) : ""))
     }
 
     /// Eine CSV-Datei in Stapeln übernehmen. Gibt die Zahl neuer Zeilen zurück; nil = Datei nicht lesbar.
@@ -404,7 +405,7 @@ public final class HistoryDB: @unchecked Sendable {
                     for row in batch {
                         stmt.reset()
                         stmt.bind(row.bindings)
-                        do { try stmt.forEachRow { _ in } } catch { AppLog.error("Verlauf (SQLite): \(error)") }
+                        do { try stmt.forEachRow { _ in } } catch { AppLog.error(L.Log.History.sqlite(error: "\(error)")) }
                     }
                 }
                 return c.totalChanges - before
@@ -559,8 +560,9 @@ public final class HistoryDB: @unchecked Sendable {
         try exportCSV(to: target, from: nil, until: nil, readable: false)
     }
 
-    /// CSV-Export eines Zeitraums. `readable`: deutsche Spaltennamen mit Einheit, Zeit „JJJJ-MM-TT HH:MM:SS“
-    /// (Ortszeit) und Dezimalkomma – so öffnen Excel und Numbers die Datei richtig; der Import liest beide Formen.
+    /// CSV-Export eines Zeitraums. `readable`: Spaltennamen mit Einheit und Modus in der Sprache der Oberfläche, Zeit
+    /// „JJJJ-MM-TT HH:MM:SS“ (Ortszeit) und Dezimalzeichen „,“ oder „.“ nach Format (Spaltentrenner bleibt „;“) – so öffnen Excel und Numbers die Datei richtig;
+    /// der Import liest beide Formen und beide Sprachen.
     /// Liest über eine eigene Verbindung und schreibt zeilenweise in eine Zwischendatei, die am Ende das Ziel ersetzt:
     /// blockiert weder Graphen noch neue Punkte. Fehler als `CocoaError` (Lesen: `.fileReadUnknown`), damit die
     /// Oberflächen dieselben Meldungen zeigen.
@@ -595,9 +597,10 @@ public final class HistoryDB: @unchecked Sendable {
         #endif
         guard created, let h = try? FileHandle(forWritingTo: tmp) else { throw CocoaError(.fileWriteNoPermission) }
         do {
+            let style = readable ? HistoryColumn.ReadableStyle() : nil
             var buffer = readable ? HistoryLog.readableHeader : HistoryLog.header
             try stmt.forEachRow { s in
-                buffer += exportLine(s, readable: readable)
+                buffer += exportLine(s, style: style)
                 if buffer.utf8.count >= 1 << 16 {
                     try h.write(contentsOf: Data(buffer.utf8))
                     buffer = ""
@@ -614,12 +617,12 @@ public final class HistoryDB: @unchecked Sendable {
     }
 
     /// Eine Ergebniszeile als CSV-Zeile: Zeit technisch (ISO 8601) oder lesbar (Ortszeit), Werte wie SQLite sie
-    /// ausgibt, lesbar mit Dezimalkomma.
-    private static func exportLine(_ s: SQLStatement, readable: Bool) -> String {
+    /// ausgibt, lesbar mit Dezimalzeichen des Formats und Modus in der Sprache der Oberfläche.
+    private static func exportLine(_ s: SQLStatement, style: HistoryColumn.ReadableStyle?) -> String {
         let t = s.date(0)
-        var fields = [readable ? HistoryLog.readableTime(t) : HistoryLog.isoString(t)]
+        var fields = [style != nil ? HistoryLog.readableTime(t) : HistoryLog.isoString(t)]
         for (i, column) in HistoryColumn.data.enumerated() {
-            fields.append(column.exportField(s.text(Int32(i + 1)), readable: readable))
+            fields.append(column.exportField(s.text(Int32(i + 1)), style: style))
         }
         return fields.joined(separator: ";") + "\n"
     }

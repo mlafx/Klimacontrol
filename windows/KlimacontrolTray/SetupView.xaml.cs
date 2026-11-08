@@ -111,7 +111,7 @@ public partial class SetupView : UserControl
                 choice = await Dialogs.Ask(DialogOwner(), p.Title, text, buttons);
             var save = c.OfferBackup && choice == 0;
             if (lan && Core.Send(Cmd.ApplySuggestedMode) is { } err)
-                await Dialogs.Warn(DialogOwner(), "Verbindungsweg nicht geändert", err);
+                await Dialogs.Warn(DialogOwner(), L.T("setup.view.windows.modeFailedTitle"), err);
             if (save) await SaveBackup();
         }
         catch (Exception ex) { App.Trace("Abschluss der Einrichtung: " + ex.GetType().Name); }
@@ -131,7 +131,7 @@ public partial class SetupView : UserControl
             {
                 Title = texts.ExportBackupPanelTitle,
                 FileName = texts.ExportBackupFileName,
-                Filter = "Klimacontrol-Sicherung (*.json)|*.json",
+                Filter = L.T("settings.device.windows.backupFilter"),
                 InitialDirectory = folder,
             };
             var owner = DialogOwner();
@@ -144,7 +144,7 @@ public partial class SetupView : UserControl
             }
             if (Core.Send(Cmd.ExportBackup, ("path", dlg.FileName)) is { } err)
             {
-                await Dialogs.Warn(DialogOwner(), "Nicht gesichert", err);
+                await Dialogs.Warn(DialogOwner(), L.T("file.notBackedUpTitle"), err);
                 return null;
             }
             return dlg.FileName;

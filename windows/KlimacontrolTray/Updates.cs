@@ -1,7 +1,9 @@
 using System;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Win32;
@@ -70,6 +72,19 @@ static class Updates
 
     static T Fn<T>(string name) where T : Delegate => Marshal.GetDelegateForFunctionPointer<T>(NativeLibrary.GetExport(lib, name));
 
+    static readonly Regex TestFeedPattern = new(@"^http://127\.0\.0\.1:([0-9]{1,5})/[A-Za-z0-9._/-]*\z",
+        RegexOptions.CultureInvariant);
+
+    /// Nur für die Update-Prüfungen vor dem Release (D3): Die Variable KLIMACONTROL_UPDATE_TEST_FEED darf den Feed auf
+    /// einen lokalen Server umbiegen. Nur Loopback mit Port; ohne die Variable oder mit anderem Wert bleibt es wirkungslos.
+    internal static string? TestFeedOverride(string? value)
+    {
+        if (value == null) return null;
+        var m = TestFeedPattern.Match(value);
+        if (!m.Success) return null;
+        return int.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture) is >= 1 and <= 65535 ? value : null;
+    }
+
     /// Startet WinSparkle; ohne Setup-Installation, DLL, Feed oder Schlüssel bleibt alles aus.
     /// `quit` beendet die App geordnet (wie „Beenden“), aufgerufen auf dem UI-Thread.
     public static void Start(string feedUrl, int checkInterval, Action quit)
@@ -82,7 +97,8 @@ static class Updates
         try
         {
             Fn<SetUtf8VoidFn>("win_sparkle_set_registry_path")(RegistryPath);
-            Fn<SetUtf8VoidFn>("win_sparkle_set_appcast_url")(feedUrl);
+            Fn<SetUtf8VoidFn>("win_sparkle_set_appcast_url")(
+                TestFeedOverride(Environment.GetEnvironmentVariable("KLIMACONTROL_UPDATE_TEST_FEED")) ?? feedUrl);
             if (Fn<SetUtf8Fn>("win_sparkle_set_eddsa_public_key")(key) == 0)
             {
                 App.Trace("Updates: öffentlicher Schlüssel ungültig");
@@ -90,7 +106,7 @@ static class Updates
             }
             // Version genau wie tools/VERSION: WinSparkle vergleicht sie mit sparkle:version im Appcast.
             Fn<SetDetailsFn>("win_sparkle_set_app_details")("Klimacontrol", "Klimacontrol", App.Version);
-            Fn<SetUtf8VoidFn>("win_sparkle_set_lang")("de");
+            Fn<SetUtf8VoidFn>("win_sparkle_set_lang")(L.Language == "de" ? "de" : "en");
             if (checkInterval > 0) Fn<SetIntFn>("win_sparkle_set_update_check_interval")(checkInterval);
             // Nicht abschaltbar (Entscheidung des Autors): eine früher gewählte Abwahl oder übersprungene Version
             // zählt nicht mehr.

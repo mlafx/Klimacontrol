@@ -86,8 +86,9 @@ struct HeroView: View {
                     // VoiceOver: „Solltemperatur 26°, Heizt · noch 2,0° bis zum Ziel“ statt einer nackten Zahl.
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel(roomBig
-                        ? "Raumtemperatur \(Fmt.temp(state.indoorTemperature)), Solltemperatur \(Fmt.target(state.targetTemperature)), \(goal)"
-                        : "Solltemperatur \(Fmt.target(state.targetTemperature)), \(goal)")
+                        ? L.Main.Hero.a11yRoomTarget(room: Fmt.temp(state.indoorTemperature),
+                                                     target: Fmt.target(state.targetTemperature), goal: goal)
+                        : L.Main.Hero.a11yTarget(target: Fmt.target(state.targetTemperature), goal: goal))
                 }
 
                 Slider(value: Binding(
@@ -103,8 +104,8 @@ struct HeroView: View {
                     Text(Fmt.target(UIOptions.temperatureMax)).font(.caption2).foregroundStyle(.secondary)
                 }
                 .tint(tint)
-                .accessibilityLabel("Solltemperatur")
-                .accessibilityValue(Fmt.num(state.targetTemperature, 0) + " Grad")
+                .accessibilityLabel(L.Main.Hero.targetTemperature)
+                .accessibilityValue(L.Main.Hero.degrees(value: Fmt.num(state.targetTemperature, 0)))
             } else {
                 OffSummary(staleSince: staleSince, look: look)
             }
@@ -177,10 +178,10 @@ struct ReadingsStrip: View {
         // Alte Werte: abgeblendet, und die Leistung fällt weg – eine alte Wattzahl liest sich wie jetzt.
         let stale = model.uiStaleSince != nil
         HStack(spacing: 0) {
-            item("thermometer.medium", "Raum", Fmt.temp(state.indoorTemperature), stale: stale)
-            if state.power { item("sun.max", "Außen", Fmt.temp(state.outdoorTemperature), stale: stale) }
+            item("thermometer.medium", L.Main.Reading.room, Fmt.temp(state.indoorTemperature), stale: stale)
+            if state.power { item("sun.max", L.Main.Reading.outdoor, Fmt.temp(state.outdoorTemperature), stale: stale) }
             if !stale {
-                item("bolt", "Leistung", Fmt.watts(state.powerWatts), stale: false)
+                item("bolt", L.Main.Reading.power, Fmt.watts(state.powerWatts), stale: false)
                     .help(model.powerCostHelp)
             }
             let cost = model.costLine
@@ -218,8 +219,8 @@ struct PowerButton: View {
         }
         .buttonStyle(.plain)
         // ⌘P liegt im Menü „Anlage“ (AppCommands) – nicht hier, der Knopf steht in Fenster und Menüleiste zugleich.
-        .help(on ? "Ausschalten (⌘P)" : "Einschalten (⌘P)")
-        .accessibilityLabel(on ? "Ausschalten" : "Einschalten")
+        .help(on ? L.Main.Power.turnOffHelp : L.Main.Power.turnOnHelp)
+        .accessibilityLabel(on ? L.Main.Power.turnOff : L.Main.Power.turnOn)
     }
 }
 
@@ -236,8 +237,8 @@ struct MiniWindowButton: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .help("Mini-Fenster öffnen")
-        .accessibilityLabel("Mini-Fenster öffnen")
+        .help(L.Main.Mini.open)
+        .accessibilityLabel(L.Main.Mini.open)
     }
 }
 
@@ -275,8 +276,8 @@ struct StepButton: View {
         .opacity(enabled ? 1 : 0.35)
         // Kein nacktes ↑/↓ (nimmt ScrollView, Regler und Tastaturnavigation die Pfeile weg und schickt bei
         // jedem Druck einen Befehl): Das Kürzel ⌘↑/⌘↓ liegt im Menü „Anlage“.
-        .help(symbol == "plus" ? "Wärmer (⌘↑)" : "Kälter (⌘↓)")
-        .accessibilityLabel(symbol == "plus" ? "Wärmer" : "Kälter")
+        .help(symbol == "plus" ? L.Main.Step.warmerHelp : L.Main.Step.coolerHelp)
+        .accessibilityLabel(symbol == "plus" ? L.Main.Step.warmer : L.Main.Step.cooler)
     }
 }
 

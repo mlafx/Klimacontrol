@@ -35,43 +35,44 @@ extension ACController {
 
     public func connectionLine(now: Date) -> String {
         switch uiConnectionState {
-        case .deviceOff: return "Anlage ausgeschaltet oder ohne Strom" + lastSeen(now: now)
+        case .deviceOff: return L.Status.deviceOff + lastSeen(now: now)
         // Startfehler: noch nie geantwortet.
-        case .noConnection: return (state == nil ? "Nicht erreichbar" : "Keine Verbindung") + lastSeen(now: now)
-        case .connecting: return "Verbinde …" + lastSeen(now: now)
+        case .noConnection: return (state == nil ? L.Status.notReachable : L.Status.noConnection) + lastSeen(now: now)
+        case .connecting: return L.Status.connecting + lastSeen(now: now)
         case .notConfigured: return ""
         case .live: break
         }
-        guard let t = lastUpdate else { return "Verbinde …" }
+        guard let t = lastUpdate else { return L.Status.connecting }
         let secs = Int(now.timeIntervalSince(t))
-        let via = connectionPath.map { "Verbunden über \($0.rawValue)" } ?? "Verbunden"
-        return secs < 60 ? "\(via) · gerade aktualisiert" : "\(via) · vor \(secs / 60) min aktualisiert"
+        let via = connectionPath.map { L.Status.connectedVia(path: $0.title) } ?? L.Status.connected
+        return secs < 60 ? L.Status.justRefreshed(via: via) : L.Status.refreshedAgo(via: via, min: "\(secs / 60)")
     }
 
     /// „· zuletzt vor N min“ – wann die Anlage zuletzt geantwortet hat (leer, wenn noch nie).
     private func lastSeen(now: Date) -> String {
         guard let t = lastUpdate else { return "" }
         let secs = Int(now.timeIntervalSince(t))
-        return secs < 60 ? " · zuletzt vor weniger als 1 min" : " · zuletzt vor \(secs / 60) min"
+        return " · " + (secs < 60 ? L.Status.lastSeenNow : L.Status.lastSeenAgo(min: "\(secs / 60)"))
     }
 
     /// Kurzinfo der Verbindungszeile: Adresse bei WLAN-Einrichtung, sonst „über Midea-Konto“; leer ohne Einrichtung.
     public var connectionTooltip: String {
         guard let c = config else { return "" }
-        return c.hasLAN ? "\(c.name) · \(c.ip):\(c.port) · lokal" : "\(c.name) · über Midea-Konto"
+        return c.hasLAN ? L.Status.tooltipLocal(name: c.name, address: "\(c.ip):\(c.port)")
+            : L.Status.tooltipAccount(name: c.name)
     }
 
     /// Status im Reiter „Verbindung“.
     public var connectionStatus: ConnectionStatus {
         let text: String
         if deviceOffNotice {
-            text = "Anlage ausgeschaltet oder ohne Strom"
+            text = L.Status.deviceOff
         } else if lastRefreshFailed {
-            text = "Keine Verbindung"
+            text = L.Status.noConnection
         } else if let path = connectionPath {
-            text = "Verbunden über \(path.rawValue)"
+            text = L.Status.connectedVia(path: path.title)
         } else {
-            text = "Verbinde …"
+            text = L.Status.connecting
         }
         return ConnectionStatus(text: text, connected: !lastRefreshFailed && connectionPath != nil)
     }
@@ -79,7 +80,7 @@ extension ACController {
     // MARK: Alte Werte
 
     /// „Stand 14:32 · nicht aktuell“, solange die Werte nicht live sind; sonst nil.
-    public var staleText: String? { uiStaleSince.map { Fmt.stand($0, now: now()) + " · nicht aktuell" } }
+    public var staleText: String? { uiStaleSince.map { L.Status.stale(stand: Fmt.stand($0, now: now())) } }
 
     // MARK: Große Zahl
 
@@ -100,7 +101,7 @@ extension ACController {
         if !s.power { return stale ?? UIText.offCaption }
         if s.mode == .fan { return stale ?? UIText.fanModeCaption }
         let goal = stale ?? goalLine
-        return roomIsBig ? "Soll \(Fmt.target(s.targetTemperature)) · \(goal)" : goal
+        return roomIsBig ? L.Status.heroTarget(target: Fmt.target(s.targetTemperature), goal: goal) : goal
     }
 
     /// Hinweis unter der Raumtemperatur bei ausgeschalteter Anlage; sonst nil.
@@ -112,19 +113,26 @@ extension ACController {
     /// wenn der Zähler nicht zur gemessenen Leistung passt.
     public var costLine: CostLine {
         guard let e = todayEnergy else {
-            return CostLine(title: "Kosten heute", value: "unbekannt",
-                            help: "Tagesverbrauch unbekannt – der Zähler der Anlage hat noch keinen Wert geliefert.")
+            return CostLine(title: L.Cost.title, value: L.Cost.unknown, help: L.Cost.unknownHelp)
         }
-        let title = e.sinceLabel.map { "Kosten " + $0 } ?? "Kosten heute"
-        let euro = Fmt.euro(e.kWh * pricePerKWh)
-        let since = e.fromMidnight ? " seit Mitternacht" : (e.sinceLabel.map { " " + $0 } ?? "")
-        var help = "\(Fmt.kwh(e.kWh)) laut Zähler der Anlage\(since) · Zähler gesamt \(Fmt.kwh(state?.totalEnergyKWh))"
-        if e.plausible == false { help += "\nUnsicher: Der Zähler passt nicht zur gemessenen Leistung." }
-        return CostLine(title: title, value: e.plausible == false ? euro + " · unsicher" : euro, help: help)
+        let title = e.sinceLabel.map { L.Cost.titleSince(since: $0) } ?? L.Cost.title
+        let money = Fmt.money(e.kWh * pricePerKWh, currency: currency)
+        let kwh = Fmt.kwh(e.kWh)
+        let total = Fmt.kwh(state?.totalEnergyKWh)
+        var help: String
+        if e.fromMidnight {
+            help = L.Cost.helpMidnight(kwh: kwh, total: total)
+        } else if let label = e.sinceLabel {
+            help = L.Cost.helpSince(kwh: kwh, since: label, total: total)
+        } else {
+            help = L.Cost.helpPlain(kwh: kwh, total: total)
+        }
+        if e.plausible == false { help += "\n" + L.Cost.unsureHelp }
+        return CostLine(title: title, value: e.plausible == false ? L.Cost.unsureValue(cost: money) : money, help: help)
     }
 
     /// Kurzinfo zur Leistung: „Kosten bei dieser Leistung: 0,12 € pro Stunde“.
-    public var powerCostHelp: String { "Kosten bei dieser Leistung: \(Fmt.euro(costPerHour)) pro Stunde" }
+    public var powerCostHelp: String { L.Cost.perHour(cost: Fmt.money(costPerHour, currency: currency)) }
 
     // MARK: Menüleiste
 
@@ -151,13 +159,13 @@ extension ACController {
         guard let off = offAt else { return nil }
         let m = max(0, Int(off.timeIntervalSince(now) / 60.0 + 0.5))
         let left = m < 60 ? "\(m) min" : (m % 60 == 0 ? "\(m / 60) h" : "\(m / 60) h \(m % 60) min")
-        return "Aus in \(left)"
+        return L.Status.offTimer(left: left)
     }
 
     public var offTimerChip: String? { offTimerChip(now: now()) }
 
     /// Chip „Ein morgen 07:00“; nil ohne Timer.
-    public var onTimerChip: String? { onTimerLabel.map { "Ein \($0)" } }
+    public var onTimerChip: String? { onTimerLabel.map { L.Status.onTimer(label: $0) } }
 
     /// Rückfrage beim Beenden, solange ein Timer gestellt ist; sonst nil.
     public func quitPrompt() -> ConfirmPrompt? { UIText.quitPrompt(off: offAt, on: onAt, now: now()) }
@@ -174,13 +182,14 @@ extension ACController {
     /// Zuletzt bekannte Werte (höchstens 7 Tage alt); `sample` = `lastKnown` oder letzter Verlaufspunkt.
     public func startupValues(from sample: HistorySample?, now: Date) -> StartupValues? {
         guard let s = sample, now.timeIntervalSince(s.time) < 7 * 86400 else { return nil }
-        let main = s.on && s.target != nil ? s.target.map(Fmt.target) ?? "–" : Fmt.temp(s.indoor)
+        let main = s.on && s.target != nil ? s.target.map { Fmt.target($0) } ?? "–" : Fmt.temp(s.indoor)
         let stand = Fmt.stand(s.time, now: now)
         var extras: [String] = []
-        if s.on { extras.append("Raum \(Fmt.temp(s.indoor))") }
-        extras.append("Außen \(Fmt.temp(s.outdoor))")
-        return StartupValues(main: main, caption: stand + " · " + (s.on ? "Solltemperatur" : "Raumtemperatur · aus"),
-                             extras: extras, accessibility: "Zuletzt bekannte Werte, \(stand): \(main)")
+        if s.on { extras.append(L.Status.startupRoom(temp: Fmt.temp(s.indoor))) }
+        extras.append(L.Status.startupOutdoor(temp: Fmt.temp(s.outdoor)))
+        let caption = s.on ? L.Status.startupTarget(stand: stand) : L.Status.startupRoomOff(stand: stand)
+        return StartupValues(main: main, caption: caption, extras: extras,
+                             accessibility: L.Status.startupAccessibility(stand: stand, main: main))
     }
 
     public var startupValues: StartupValues? { startupValues(from: lastKnown, now: now()) }
@@ -193,7 +202,7 @@ extension ACController {
     /// „Live aus der Anlage · alle 30 s · nächste Abfrage in 12 s“.
     public func nextRefreshLine(now: Date) -> String {
         let secs = nextRefresh.map { max(0, Int($0.timeIntervalSince(now).rounded(.up))) }
-        return "Live aus der Anlage · alle \(refreshSeconds) s · nächste Abfrage in \(secs.map { "\($0) s" } ?? "…")"
+        return L.Status.nextRefresh(seconds: "\(refreshSeconds)", next: secs.map { "\($0) s" } ?? "…")
     }
 
     public var nextRefreshLine: String { nextRefreshLine(now: now()) }
@@ -207,4 +216,7 @@ extension ACController {
 
     /// Die Darstellung entspricht `Appearance.standard` dieser Plattform („Auf Standard zurücksetzen“ ausgegraut).
     public var appearanceIsStandard: Bool { UIOptions.isStandard(appearance) }
+
+    /// Das Aussehen weicht vom gewählten Thema ab („angepasst“, „Thema wiederherstellen“).
+    public var appearanceIsCustomized: Bool { appearance.isCustomized }
 }

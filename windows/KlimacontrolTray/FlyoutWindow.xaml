@@ -2,6 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:KlimacontrolTray"
+        xmlns:l="clr-namespace:KlimacontrolTray"
         Title="Klimacontrol" Width="400" MinWidth="400" MaxWidth="400" SizeToContent="Height" WindowStyle="None" AllowsTransparency="True"
         Background="{DynamicResource Bg}" BorderBrush="{DynamicResource Line}" BorderThickness="1"
         ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True"
@@ -29,8 +30,8 @@
     </ScrollViewer>
     <Border Grid.Row="1" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="16,8">
       <Grid>
-        <Button HorizontalAlignment="Left" FontSize="12" Padding="10,4" Content="Klimacontrol öffnen" Click="Open_Click"/>
-        <Button HorizontalAlignment="Right" FontSize="12" Padding="10,4" Content="Beenden" Click="Quit_Click"/>
+        <Button HorizontalAlignment="Left" FontSize="12" Padding="10,4" Content="{l:T settings.appearance.mini.openApp}" Click="Open_Click"/>
+        <Button HorizontalAlignment="Right" FontSize="12" Padding="10,4" Content="{l:T menu.quit}" Click="Quit_Click"/>
       </Grid>
     </Border>
   </Grid>

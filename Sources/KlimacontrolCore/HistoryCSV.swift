@@ -7,10 +7,17 @@ extension HistoryLog {
     /// Kopfzeile von `verlauf.csv` und des technischen Exports.
     public static let header = HistoryColumn.all.map(\.name).joined(separator: ";") + "\n"
 
-    /// Kopfzeile des lesbaren Exports (deutsche Spaltennamen mit Einheit).
-    public static let readableHeader = HistoryColumn.all.map(\.readableName).joined(separator: ";") + "\n"
+    /// Kopfzeile des lesbaren Exports (Spaltennamen mit Einheit in der Sprache der Oberfläche).
+    public static var readableHeader: String { HistoryColumn.all.map(\.readableName).joined(separator: ";") + "\n" }
 
-    private static let technicalNames = Dictionary(uniqueKeysWithValues: HistoryColumn.all.map { ($0.readableName, $0.name) })
+    /// Lesbare Spaltennamen beider Sprachen → technischer Name (zur Lesbarkeit beim Import).
+    private static let technicalNames: [String: String] = {
+        var names: [String: String] = [:]
+        for language in AppLanguage.allCases {
+            for column in HistoryColumn.all { names[column.readableName(in: language)] = column.name }
+        }
+        return names
+    }()
 
     /// Spaltenname aus einer Kopfzeile (technisch oder lesbar) → technischer Name; Unbekanntes bleibt, wie es ist.
     static func technicalName(_ name: String) -> String { technicalNames[name] ?? name }

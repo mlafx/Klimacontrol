@@ -5,119 +5,115 @@ import SwiftUI
 
 // MARK: - Einstellungen → Darstellung
 
-/// Reiter „Darstellung“: Thema, Farben, Hintergrund, große Zahl, Bewegung, Fenster, Menüleiste. Jede Änderung wirkt
+/// Reiter „Darstellung“: Thema (Kacheln), Anzeige, Fenster und Menüleiste; Feinheiten unter „Anpassen“. Jede Änderung wirkt
 /// sofort (Live-Vorschau oben und alle Fenster) und wird dauerhaft gespeichert (`ACController.setAppearance`).
 struct AppearanceSettings: View {
     @Environment(ACController.self) var model
     @Environment(\.openWindow) private var openWindow
     @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
     @State private var confirmReset = false
+    @AppStorage("appearance.customizeOpen") private var customizeOpen = false
 
     var body: some View {
         let a = model.appearance
+        let reduced = !a.motionAllowed(systemReduceMotion: systemReduceMotion)
         Form {
             Section { AppearancePreview() }
 
-            Section("Thema") {
-                SettingRow(title: "Thema", help: "Setzt alle Werte darunter auf einmal; danach lässt sich jeder einzeln ändern.") {
-                    Picker("Thema", selection: Binding(get: { a.theme }, set: { model.applyTheme($0) })) {
-                        ForEach(Appearance.Theme.allCases, id: \.self) { Text($0.label).tag($0) }
-                    }
-                    .labelsHidden().fixedSize()
-                }
-            }
-
-            Section("Farben") {
-                SettingRow(title: "Modus", help: "Hell, dunkel oder wie der Mac.") {
-                    Picker("Modus", selection: bind(\.scheme)) {
+            Section {
+                ThemeTiles(selected: a.theme, customized: model.appearanceIsCustomized) { model.applyTheme($0) }
+                SettingRow(title: L.Settings.Appearance.Scheme.title, help: L.Settings.Appearance.Scheme.help(computer: HostWords.current.computer)) {
+                    Picker(L.Settings.Appearance.Scheme.title, selection: bind(\.scheme)) {
                         ForEach(Appearance.Scheme.allCases, id: \.self) { Text($0.label).tag($0) }
                     }
                     .pickerStyle(.segmented).labelsHidden().fixedSize()
                 }
-                SettingRow(title: "Farben", help: "Nach Modus: Blau beim Kühlen, Orange beim Heizen usw.") {
-                    Picker("Farben", selection: bind(\.accent)) {
-                        ForEach(Appearance.Accent.allCases, id: \.self) { Text($0.label).tag($0) }
+                if model.appearanceIsCustomized {
+                    SettingRow(title: L.Settings.Appearance.Theme.restore, help: L.Settings.Appearance.Theme.restoreHelp) {
+                        Button(L.Settings.Appearance.Theme.restore) { model.applyTheme(a.theme) }
                     }
-                    .labelsHidden().fixedSize()
                 }
-                if a.accent == .custom {
-                    SettingRow(title: "Eigene Farbe", help: "Gilt für alle Modi.") { ColorSwatches(selection: bind(\.customColor)) }
-                }
+            } header: {
+                Text(L.Settings.Appearance.Theme.title)
+            } footer: {
+                Text(L.Settings.Appearance.Theme.help).font(.caption).foregroundStyle(.secondary)
             }
 
-            Section("Hintergrund") {
-                SettingRow(title: "Hintergrund", help: "Glas lässt den Schreibtisch durchscheinen, Matt ist ruhig und deckend.") {
-                    Picker("Hintergrund", selection: bind(\.background)) {
-                        ForEach(Appearance.Background.allCases, id: \.self) { Text($0.label).tag($0) }
-                    }
-                    .pickerStyle(.segmented).labelsHidden().fixedSize()
-                }
-                PercentSlider(title: "Transparenz", help: "Wie stark Karten und Fenster durchscheinen.",
-                              value: bind(\.transparency), range: Appearance.transparencyRange)
-                SettingRow(title: "Unschärfe", help: "Wie weich der Hintergrund hinter den Karten verschwimmt.") {
-                    HStack {
-                        Slider(value: bind(\.blur), in: Appearance.blurRange, step: 1).frame(width: 160)
-                            .accessibilityLabel("Unschärfe")
-                            .accessibilityValue("\(Int(a.blur)) Punkt")
-                        Text("\(Int(a.blur)) pt").monospacedDigit().foregroundStyle(.secondary).frame(width: 44, alignment: .trailing)
-                    }
-                }
-            }
-
-            Section("Große Temperatur") {
-                PercentSlider(title: "Leuchten", help: "Schein in der Modusfarbe um die große Zahl.",
-                              value: bind(\.glow), range: Appearance.glowRange)
-                segmented("Größe", "Größe der großen Zahl und der Bedienelemente.", \.size, Appearance.SizeClass.allCases) { $0.label }
-                segmented("Ziffernstil", "Form der großen Zahl.", \.digits, Appearance.DigitStyle.allCases) { $0.label }
-                segmented("Groß angezeigt", "Welche Temperatur groß steht; die andere steht klein darunter.",
+            Section(L.Settings.Appearance.Display.section) {
+                segmented(L.Settings.Appearance.Size.title, L.Settings.Appearance.Size.help, \.size, Appearance.SizeClass.allCases) { $0.label }
+                segmented(L.Settings.Appearance.HeroValue.title, L.Settings.Appearance.HeroValue.help,
                           \.hero, Appearance.HeroValue.allCases) { $0.label }
-                segmented("Umfang", "Einfach: nur Ein/Aus, Modus, Temperatur, Lüfter und Timer, der Rest unter „Mehr …“.",
+                segmented(L.Settings.Appearance.Scope.title, L.Settings.Appearance.Scope.help,
                           \.scope, Appearance.Scope.allCases) { $0.label }
             }
 
-            Section {
-                toggle("Lebendiger Hintergrund", "Langsam fließende Farben, solange die Anlage arbeitet.", \.lively)
-                    .disabled(!a.motionAllowed(systemReduceMotion: systemReduceMotion))
-                toggle("Wetter-Effekte", "Schneeflocken beim Kühlen, aufsteigende Wärme beim Heizen – dezent.", \.weather)
-                    .disabled(!a.motionAllowed(systemReduceMotion: systemReduceMotion))
-                toggle("Animationen reduzieren", "Schaltet lebendigen Hintergrund und Wetter-Effekte immer ab.", \.reduceMotion)
-            } header: {
-                Text("Bewegung")
-            } footer: {
-                if systemReduceMotion {
-                    Text("„Bewegung reduzieren“ ist in den Systemeinstellungen eingeschaltet – Effekte bleiben aus.")
-                        .font(.caption).foregroundStyle(.secondary)
-                }
-            }
-
-            Section("Fenster") {
-                toggle("Immer im Vordergrund", "Das Hauptfenster bleibt über anderen Fenstern.", \.alwaysOnTop)
-                SettingRow(title: "Mini-Fenster", help: "Kleines schwebendes Fenster mit Temperatur und Ein/Aus (⇧⌘M).") {
-                    Button("Öffnen") { openWindow(id: "mini") }
-                }
-            }
-
-            Section("Menüleiste") {
-                SettingRow(title: "Anzeige", help: "Was neben dem Symbol in der Menüleiste steht.") {
-                    Picker("Anzeige in der Menüleiste", selection: bind(\.menuBarText)) {
+            Section(L.Settings.Appearance.WindowMenu.section) {
+                toggle(L.Settings.Appearance.AlwaysOnTop.title, L.Settings.Appearance.AlwaysOnTop.help, \.alwaysOnTop)
+                SettingRow(title: L.Settings.Appearance.MenuBar.title, help: L.Settings.Appearance.MenuBar.help) {
+                    Picker(L.Settings.Appearance.MenuBar.accessibility, selection: bind(\.menuBarText)) {
                         ForEach(Appearance.MenuBarText.allCases, id: \.self) { Text($0.label).tag($0) }
                     }
                     .labelsHidden().fixedSize()
                 }
-                toggle("Symbol farbig", "Symbol in der Modusfarbe statt einfarbig.", \.menuBarColored)
-                toggle("Symbol animiert", "Der Lüfter dreht sich, solange die Anlage läuft.", \.menuBarAnimated)
+                toggle(L.Settings.Appearance.MenuBarColored.title, L.Settings.Appearance.MenuBarColored.help, \.menuBarColored)
+                SettingRow(title: L.Settings.Appearance.Mini.title, help: L.Settings.Appearance.Mac.miniHelp) {
+                    Button(L.Settings.Appearance.Mini.open) { openWindow(id: "mini") }
+                }
+            }
+
+            Section {
+                DisclosureGroup(isExpanded: $customizeOpen) {
+                    SettingRow(title: L.Settings.Appearance.Colors.title, help: L.Settings.Appearance.Accent.help) {
+                        Picker(L.Settings.Appearance.Colors.title, selection: bind(\.accent)) {
+                            ForEach(Appearance.Accent.allCases, id: \.self) { Text($0.label).tag($0) }
+                        }
+                        .labelsHidden().fixedSize()
+                    }
+                    if a.accent == .custom {
+                        SettingRow(title: L.Settings.Appearance.CustomColor.title, help: L.Settings.Appearance.CustomColor.help) { ColorSwatches(selection: bind(\.customColor)) }
+                    }
+                    SettingRow(title: L.Settings.Appearance.Background.title, help: L.Settings.Appearance.Background.help) {
+                        Picker(L.Settings.Appearance.Background.title, selection: bind(\.background)) {
+                            ForEach(Appearance.Background.allCases, id: \.self) { Text($0.label).tag($0) }
+                        }
+                        .pickerStyle(.segmented).labelsHidden().fixedSize()
+                    }
+                    PercentSlider(title: L.Settings.Appearance.Transparency.title, help: L.Settings.Appearance.Transparency.help,
+                                  value: bind(\.transparency), range: Appearance.transparencyRange)
+                    SettingRow(title: L.Settings.Appearance.Blur.title, help: L.Settings.Appearance.Blur.help) {
+                        HStack {
+                            Slider(value: bind(\.blur), in: Appearance.blurRange, step: 1).frame(width: 160)
+                                .accessibilityLabel(L.Settings.Appearance.Blur.title)
+                                .accessibilityValue(L.Settings.Appearance.Accessibility.points(count: Int(a.blur)))
+                            Text(L.Settings.Appearance.Unit.points(value: Fmt.num(a.blur, 0))).monospacedDigit().foregroundStyle(.secondary).frame(width: 44, alignment: .trailing)
+                        }
+                    }
+                    PercentSlider(title: L.Settings.Appearance.Glow.title, help: L.Settings.Appearance.Glow.help,
+                                  value: bind(\.glow), range: Appearance.glowRange)
+                    segmented(L.Settings.Appearance.Digits.title, L.Settings.Appearance.Digits.help, \.digits, Appearance.DigitStyle.allCases) { $0.label }
+                    toggle(L.Settings.Appearance.Lively.title, L.Settings.Appearance.Lively.help, \.lively).disabled(reduced)
+                    toggle(L.Settings.Appearance.Weather.title, L.Settings.Appearance.Weather.help, \.weather).disabled(reduced)
+                    toggle(L.Settings.Appearance.MenuBarAnimated.title, L.Settings.Appearance.MenuBarAnimated.help, \.menuBarAnimated)
+                    toggle(L.Settings.Appearance.ReduceMotion.title, L.Settings.Appearance.ReduceMotion.help, \.reduceMotion)
+                    if systemReduceMotion {
+                        Text(L.Settings.Appearance.Mac.reduceMotionSystem)
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                } label: {
+                    SettingRow(title: L.Settings.Appearance.Customize.title, help: L.Settings.Appearance.Customize.help) { EmptyView() }
+                }
             }
 
             Section {
                 HStack {
                     Spacer()
-                    Button("Auf Standard zurücksetzen …") { confirmReset = true }
+                    Button(L.Settings.Appearance.Reset.button) { confirmReset = true }
                         .disabled(model.appearanceIsStandard)
-                        .confirmationDialog("Darstellung zurücksetzen?", isPresented: $confirmReset) {
-                            Button("Zurücksetzen", role: .destructive) { model.resetAppearance() }
-                            Button("Abbrechen", role: .cancel) {}
+                        .confirmationDialog(L.Settings.Appearance.Reset.title, isPresented: $confirmReset) {
+                            Button(L.Settings.Appearance.Reset.confirm, role: .destructive) { model.resetAppearance() }
+                            Button(L.Common.cancel, role: .cancel) {}
                         } message: {
-                            Text("Alle Werte dieses Reiters kommen auf das gewohnte Aussehen zurück.")
+                            Text(L.Settings.Appearance.Reset.message)
                         }
                 }
             }
@@ -151,6 +147,60 @@ struct AppearanceSettings: View {
     }
 }
 
+/// Fünf Themenkacheln mit Mini-Vorschau im eigenen Aussehen des Themas (ohne Animation und Diagramme).
+private struct ThemeTiles: View {
+    @Environment(\.colorScheme) private var systemScheme
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    let selected: Appearance.Theme
+    let customized: Bool
+    let choose: (Appearance.Theme) -> Void
+
+    var body: some View {
+        HStack(spacing: 10) {
+            ForEach(Appearance.Theme.allCases, id: \.self) { theme in
+                tile(theme)
+            }
+        }
+        .padding(.vertical, 2)
+    }
+
+    private func tile(_ theme: Appearance.Theme) -> some View {
+        let preset = Appearance.preset(theme)
+        let scheme: ColorScheme = switch preset.scheme {
+        case .system: systemScheme
+        case .light: .light
+        case .dark: .dark
+        }
+        let style = ThemeStyle(appearance: preset, mode: .cool, colorScheme: scheme, reduceMotion: reduceMotion)
+        let on = theme == selected
+        let shape = RoundedRectangle(cornerRadius: 10, style: .continuous)
+        return Button { choose(theme) } label: {
+            VStack(spacing: 4) {
+                Text(Fmt.target(24))
+                    .font(style.heroFont(size: 26))
+                    .foregroundStyle(style.tint)
+                    .klimaGlow(style.tint)
+                    .lineLimit(1).minimumScaleFactor(0.6)
+                Text(theme.label).font(.caption.weight(on ? .semibold : .regular)).foregroundStyle(.primary).lineLimit(1)
+                if on && customized {
+                    Text(L.Settings.Appearance.Theme.customized).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+                }
+            }
+            .frame(maxWidth: .infinity, minHeight: 72)
+            .padding(.horizontal, 4).padding(.vertical, 8)
+            .background(shape.fill(style.windowBackground))
+            .overlay(shape.strokeBorder(on ? Color.accentColor : Color.secondary.opacity(0.3), lineWidth: on ? 2.5 : 1))
+            .contentShape(shape)
+            .environment(\.colorScheme, scheme)
+            .environment(\.klimaTheme, style)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(theme.label)
+        .accessibilityValue(on ? (customized ? "\(L.Settings.Appearance.Theme.selected), \(L.Settings.Appearance.Theme.customized)" : L.Settings.Appearance.Theme.selected) : "")
+        .accessibilityAddTraits(on ? .isSelected : [])
+    }
+}
+
 /// Regler 0–100 % mit Zahl daneben.
 private struct PercentSlider: View {
     let title: String
@@ -163,8 +213,8 @@ private struct PercentSlider: View {
             HStack {
                 Slider(value: $value, in: range, step: 0.05).frame(width: 160)
                     .accessibilityLabel(title)
-                    .accessibilityValue("\(Int((value * 100).rounded())) Prozent")
-                Text("\(Int((value * 100).rounded())) %").monospacedDigit().foregroundStyle(.secondary)
+                    .accessibilityValue(L.Settings.Appearance.Accessibility.percent(value: Fmt.num(value * 100, 0)))
+                Text(L.Settings.Appearance.Unit.percent(value: Fmt.num(value * 100, 0))).monospacedDigit().foregroundStyle(.secondary)
                     .frame(width: 44, alignment: .trailing)
             }
         }
@@ -206,11 +256,11 @@ private struct AppearancePreview: View {
         let heroIsRoom = theme.appearance.hero == .room && room != nil
         VStack(spacing: 10) {
             HStack {
-                Text("Vorschau").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+                Text(L.Settings.Appearance.Preview.title).font(.caption.weight(.semibold)).foregroundStyle(.secondary)
                 Spacer()
-                Picker("Vorschau als", selection: $mode) {
-                    Label("Kühlen", systemImage: OperationalMode.cool.symbol).tag(OperationalMode.cool)
-                    Label("Heizen", systemImage: OperationalMode.heat.symbol).tag(OperationalMode.heat)
+                Picker(L.Settings.Appearance.Preview.modePicker, selection: $mode) {
+                    Label(OperationalMode.cool.title, systemImage: OperationalMode.cool.symbol).tag(OperationalMode.cool)
+                    Label(OperationalMode.heat.title, systemImage: OperationalMode.heat.symbol).tag(OperationalMode.heat)
                 }
                 .pickerStyle(.segmented).labelsHidden().fixedSize()
             }
@@ -220,7 +270,7 @@ private struct AppearancePreview: View {
                         .font(theme.heroFont(size: 56))
                         .foregroundStyle(tint)
                         .klimaGlow(tint)
-                    Text(heroIsRoom ? "Soll \(Fmt.target(target))" : "Raum \(Fmt.temp(room))")
+                    Text(heroIsRoom ? L.Settings.Appearance.Preview.target(value: Fmt.target(target)) : L.Settings.Appearance.Preview.room(value: Fmt.temp(room)))
                         .font(.callout).foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity)
@@ -247,7 +297,7 @@ private struct AppearancePreview: View {
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Vorschau der Darstellung")
+        .accessibilityLabel(L.Settings.Appearance.Preview.accessibility)
     }
 }
 
@@ -287,7 +337,7 @@ struct MiniWindowView: View {
             .buttonStyle(.plain)
             .klimaCard(tint: on ? tint : nil, radius: 17, interactive: true)
             .disabled(s == nil)
-            .accessibilityLabel(on ? "Ausschalten" : "Einschalten")
+            .accessibilityLabel(on ? L.Settings.Appearance.Mini.turnOff : L.Settings.Appearance.Mini.turnOn)
         }
         .padding(14)
         .frame(width: 150, height: 150)
@@ -300,7 +350,7 @@ struct MiniWindowView: View {
                     Image(systemName: "xmark.circle.fill").font(.system(size: 14)).foregroundStyle(.secondary)
                 }
                 .buttonStyle(.plain).padding(10)
-                .accessibilityLabel("Mini-Fenster schließen")
+                .accessibilityLabel(L.Settings.Appearance.Mini.close)
             }
         }
         .onHover { hover = $0 }
@@ -309,8 +359,8 @@ struct MiniWindowView: View {
             NSApp.activate()
         }
         .contextMenu {
-            Button("Klimacontrol öffnen") { openWindow(id: "main"); NSApp.activate() }
-            Button("Mini-Fenster schließen") { dismissWindow(id: "mini") }
+            Button(L.Settings.Appearance.Mini.openApp) { openWindow(id: "main"); NSApp.activate() }
+            Button(L.Settings.Appearance.Mini.close) { dismissWindow(id: "mini") }
         }
         .accessibilityElement(children: .contain)
         .background(VisibilityProbe { model.setUIVisible("mini", $0) })

@@ -10,6 +10,15 @@ struct KlimacontrolApp: App {
     @State private var model: ACController
 
     init() {
+        // Sprache und Formate vor dem Controller, damit schon seine erste Anzeige im richtigen Format steht.
+        _ = AppRestart.startChoice
+        let preferred = Bundle.preferredLocalizations(from: AppLanguage.allCases.map(\.rawValue), forPreferences: nil)
+        Localizer.configure(Localizer.resolve(preferred: preferred))
+        FormatProfile.setCurrent(.from(locale: .autoupdatingCurrent))
+        NotificationCenter.default.addObserver(forName: NSLocale.currentLocaleDidChangeNotification, object: nil,
+                                               queue: .main) { _ in
+            FormatProfile.setCurrent(.from(locale: .autoupdatingCurrent))
+        }
         _model = State(initialValue: ACController(
             appVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"))
         // Früh starten, damit Sparkle den täglichen Takt auch ohne geöffnete Einstellungen einhält.
@@ -19,17 +28,23 @@ struct KlimacontrolApp: App {
     var body: some Scene {
         // Einmalig verknüpfen: Rückfrage beim Beenden (aktive Timer) und Mitteilungen der Timer.
         let _ = appDelegate.attach(model)
-        Window("Klimacontrol", id: "main") {
+        Window(L.App.Window.main, id: "main") {
             MainWindowRoot()
                 .environment(model)
         }
-        .windowResizability(.contentSize)
+        .windowResizability(.contentMinSize)
+        .windowIdealSize(.fitToContent)
+        .defaultWindowPlacement { content, context in
+            let ideal = content.sizeThatFits(.unspecified)
+            let area = context.defaultDisplay.visibleRect
+            return WindowPlacement(.center, size: CGSize(width: min(ideal.width, area.width), height: min(ideal.height, area.height)))
+        }
         .windowStyle(.hiddenTitleBar)
         .windowBackgroundDragBehavior(.enabled)
         .commands { AppCommands(model: model) }
 
         // Mini-Fenster: rahmenlos, schwebt immer (Darstellung → Fenster).
-        Window("Mini-Fenster", id: "mini") {
+        Window(L.App.Window.mini, id: "mini") {
             MiniWindowView()
                 .klimaThemeRoot()
                 .environment(model)
@@ -71,19 +86,26 @@ struct KlimacontrolApp: App {
 /// Wurzel des Hauptfensters. Liest nur die Darstellung, nicht den Zustand der Anlage –
 /// sonst rechnete jede Abfrage das ganze Fenster neu.
 private struct MainWindowRoot: View {
+    @State private var window = WindowRef()
+
     var body: some View {
-        WindowChrome { ContentView().fixedSize() }.klimaThemeRoot().modifier(WhatsNewOpener())
+        WindowChrome { ContentView() }
+            .environment(window)
+            .background(WindowReader(ref: window))
+            .klimaThemeRoot()
+            .modifier(WhatsNewOpener())
     }
 }
 
 private struct WindowChrome<Content: View>: View {
     @Environment(ACController.self) private var model
+    @Environment(WindowRef.self) private var window
     @Environment(\.klimaTheme) private var theme
     @ViewBuilder let content: () -> Content
 
     var body: some View {
         content()
-            .containerBackground(theme.windowBackground, for: .window)
+            .containerBackground(window.isFullScreen ? AnyShapeStyle(theme.opaqueWindowBackground) : theme.windowBackground, for: .window)
             .background(WindowLevelSetter(floating: model.appearance.alwaysOnTop))
     }
 }
@@ -117,7 +139,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         case .none, .wait: return
         case .register:
             if !LoginItem.enabled {
-                AppLog.write("Beim Anmelden starten: Standard beim ersten Start")
+                AppLog.write(L.Log.App.loginItemDefault)
                 _ = LoginItem.set(true)
             }
         }
@@ -126,6 +148,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// Ein gestellter Timer würde mit dem Beenden still verfallen – vorher fragen.
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        if AppRestart.skipQuitPrompt { return .terminateNow }
         guard let prompt = model?.quitPrompt() else { return .terminateNow }
         NSApp.activate()
         return runConfirm(prompt) ? .terminateNow : .terminateCancel
@@ -148,8 +171,8 @@ final class TimerNotifier {
         guard !asked, let center else { return }
         asked = true
         center.requestAuthorization(options: [.alert, .sound]) { granted, error in
-            if let error { AppLog.debug("Mitteilungen: \(error.localizedDescription)") }
-            if !granted { AppLog.write("Mitteilungen für Timer nicht erlaubt") }
+            if let error { AppLog.debug(L.Log.App.notificationsError(error: error.localizedDescription)) }
+            if !granted { AppLog.write(L.Log.App.notificationsDenied) }
         }
     }
 

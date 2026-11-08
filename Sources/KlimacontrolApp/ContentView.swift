@@ -8,70 +8,227 @@ import SwiftUI
 // Verlauf und Diagnose sind eigene Spalten zum Einblenden. Ist die Anlage aus, bleibt nur,
 // was zum Einschalten führt (Ein-Knopf, Modus, Szenen, Timer). Nie die ganze Oberfläche skalieren.
 
+enum ColumnRole: Hashable { case history, control, diagnostics }
+
+private struct ColumnRoleKey: LayoutValueKey {
+    static let defaultValue = ColumnRole.control
+}
+
+/// Verteilt die Breite nach den Regeln des Kerns (`MainWindowLayout`): Steuerung fest, Verlauf links und Diagnose
+/// rechts bekommen den Rest. Mindestgröße = Mindestbreiten der gezeigten Spalten, Mindesthöhe nach Darstellungsgröße;
+/// die ideale Größe ist die Summe der Mindestbreiten und die Höhe der Steuerspalte.
+struct ColumnsLayout: Layout {
+    let minHeight: Double
+    let topInset: Double
+
+    private func visible(_ subviews: Subviews) -> MainWindowLayout.Visible {
+        MainWindowLayout.Visible(history: subviews.contains { $0[ColumnRoleKey.self] == .history },
+                                 diagnostics: subviews.contains { $0[ColumnRoleKey.self] == .diagnostics })
+    }
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let minWidth = MainWindowLayout.minimumWidth(visible(subviews))
+        let width = proposal.width.map { max(Double($0), minWidth) } ?? minWidth
+        let height: Double
+        if let h = proposal.height {
+            height = max(Double(h), minHeight)
+        } else {
+            let control = subviews.first { $0[ColumnRoleKey.self] == .control }
+            let ideal = control?.sizeThatFits(ProposedViewSize(width: MainWindowLayout.controlWidth, height: nil)).height ?? 0
+            height = max(minHeight, Double(ideal) + topInset)
+        }
+        return CGSize(width: width, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let w = MainWindowLayout.widths(total: Double(bounds.width), visible: visible(subviews))
+        // Steuerung allein in einem breiten Fenster (maximiert, gekachelt): mittig statt links.
+        let lead = w.history == 0 && w.diagnostics == 0 ? w.margin / 2 : 0
+        let height = max(0, bounds.height - topInset)
+        func place(_ role: ColumnRole, x: Double, width: Double) {
+            guard let v = subviews.first(where: { $0[ColumnRoleKey.self] == role }) else { return }
+            v.place(at: CGPoint(x: bounds.minX + x, y: bounds.minY + topInset), anchor: .topLeading,
+                    proposal: ProposedViewSize(width: width, height: height))
+        }
+        place(.history, x: 0, width: w.history)
+        place(.control, x: lead + w.history, width: w.control)
+        place(.diagnostics, x: w.history + w.control, width: w.diagnostics)
+    }
+}
+
+/// Steuerspalte: Inhalt scrollt, Meldungen und Fußzeile bleiben darunter. Passt der Inhalt, folgt die Fußzeile direkt
+/// auf ihn; ist das Fenster niedriger, sitzt sie am unteren Rand.
+private struct StickyFooterLayout: Layout {
+    let contentHeight: CGFloat
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let width = proposal.width ?? MainWindowLayout.controlWidth
+        let footer = subviews[1].sizeThatFits(ProposedViewSize(width: width, height: nil)).height
+        let natural = contentHeight + footer
+        return CGSize(width: width, height: proposal.height.map { min(natural, max(0, $0)) } ?? natural)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let footer = subviews[1].sizeThatFits(ProposedViewSize(width: bounds.width, height: nil)).height
+        let scroll = max(0, min(contentHeight, bounds.height - footer))
+        subviews[0].place(at: bounds.origin, anchor: .topLeading, proposal: ProposedViewSize(width: bounds.width, height: scroll))
+        subviews[1].place(at: CGPoint(x: bounds.minX, y: bounds.minY + scroll), anchor: .topLeading,
+                          proposal: ProposedViewSize(width: bounds.width, height: footer))
+    }
+}
+
 struct ContentView: View {
     @Environment(ACController.self) var model
+    @Environment(WindowRef.self) private var window
     @AppStorage(SettingsKey.showDiagnosticsPanel) private var showDiagnostics = false
     @AppStorage(SettingsKey.showChartsPanel) private var showCharts = false
+    @AppStorage(SettingsKey.lastOpenedColumn) private var lastOpenedRaw = ""
+    @AppStorage(SettingsKey.columnsBeforeFullScreen) private var beforeFullScreen = ""
     @Environment(\.klimaTheme) private var theme
-    @State private var window = WindowRef()
+
+    /// Was gezeigt wird: gewünschte Spalten, soweit sie auf den Bildschirm passen (Regel im Kern).
+    private var resolution: MainWindowLayout.Resolution {
+        let configured = model.config != nil
+        let wanted = MainWindowLayout.Visible(history: showCharts && configured,
+                                              diagnostics: showDiagnostics && configured && model.hasState)
+        return MainWindowLayout.resolve(wanted: wanted, available: window.availableWidth,
+                                        lastOpened: MainWindowLayout.Column(rawValue: lastOpenedRaw))
+    }
 
     var body: some View {
-        HStack(alignment: .top, spacing: 0) {
-            if showCharts, model.config != nil {
-                ChartsColumn { showCharts = false }
+        let shown = resolution.shown
+        let fade: AnyTransition = theme.motionAllowed ? .opacity.animation(.easeOut(duration: 0.2)) : .identity
+        ColumnsLayout(minHeight: MainWindowLayout.minimumHeight(model.appearance.size),
+                      topInset: window.isFullScreen ? Self.fullScreenTopInset : 0) {
+            if shown.history {
+                ChartsColumn { SideColumns.set(.history, false) }
                     .environment(model.history)
-                    .frame(width: 460)
-                    .transition(.move(edge: .leading).combined(with: .opacity))
-                Divider().padding(.vertical, 16)
+                    .overlay(alignment: .trailing) { SideDivider() }
+                    .accessibilityElement(children: .contain)
+                    .accessibilityLabel(UIText.columnHistory)
+                    .layoutValue(key: ColumnRoleKey.self, value: .history)
+                    .transition(fade)
             }
-            // Glas-Container nur um die Steuerung: Umfasste er auch den Verlauf, rechnete jedes Neuzeichnen der
-            // Graphen alle Glasflächen des Fensters neu.
-            mainColumn
-                .frame(width: 480)
-                .modifier(GlassContainer())
-            if showDiagnostics, model.config != nil {
-                DiagnosticsColumn { showDiagnostics = false }
-                    .transition(.move(edge: .trailing).combined(with: .opacity))
+            ControlColumn()
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel(UIText.columnControls)
+                .layoutValue(key: ColumnRoleKey.self, value: .control)
+            if shown.diagnostics {
+                DiagnosticsColumn { SideColumns.set(.diagnostics, false) }
+                    .overlay(alignment: .leading) { SideDivider() }
+                    .accessibilityElement(children: .contain)
+                    .accessibilityLabel(UIText.columnDiagnostics)
+                    .layoutValue(key: ColumnRoleKey.self, value: .diagnostics)
+                    .transition(fade)
             }
         }
         // Menü-Kürzel (⌘↑/⌘↓/⌘P) nur, wenn dieses Fenster Key ist – nicht in den Textfeldern der Einstellungen.
         .focusedSceneValue(\.klimacontrolControls, true)
-        .onChange(of: showDiagnostics, initial: true) { _, visible in model.diagnosticsVisible = visible }
-        .animation(.snappy(duration: 0.25), value: showDiagnostics)
-        .animation(.snappy(duration: 0.25), value: showCharts)
-        // Verlauf erscheint links: Fenster um dessen Breite nach links rücken, damit die Steuerung an ihrem Platz
-        // bleibt. KeepOnScreen holt es zurück, falls es dabei über den linken Rand ginge.
-        .onChange(of: showCharts) { _, visible in
-            guard model.config != nil else { return }
-            window.shift(by: visible ? -461 : 461)
+        .focusedSceneValue(\.klimacontrolFullScreen, window.isFullScreen)
+        .onChange(of: shown.diagnostics, initial: true) { _, visible in model.diagnosticsVisible = visible }
+        .onChange(of: shown) { old, new in window.columnsChanged(from: old, to: new) }
+        .onChange(of: shown, initial: true) { _, new in window.setControlsOnly(!new.history && !new.diagnostics) }
+        .onChange(of: resolution.hidden, initial: true) { _, hidden in hide(hidden) }
+        .onChange(of: model.appearance.size, initial: true) { _, size in
+            window.ensureMinimumHeight(MainWindowLayout.minimumHeight(size))
         }
+        .onChange(of: window.isFullScreen) { _, full in fullScreenChanged(full) }
+        .onAppear { restoreAfterInterruptedFullScreen() }
         // Lebendiger Hintergrund und Wetter-Effekte hinter dem ganzen Fenster (nur, wenn eingeschaltet).
         .background { EffectsBackdrop() }
-        .background(WindowReader(ref: window))
-        .background(KeepOnScreen())
         .background(VisibilityProbe { model.setUIVisible("main", $0) })
     }
 
-    // Dieser Body liest `model.state` nicht – jede Abfrage rechnet nur die Leser-Ansichten darunter neu
-    // (LiveColumn, ChartsColumn, DiagnosticsColumn, FooterHost). Die Graphen treiben ihre Zeitscheibe selbst.
-    private var mainColumn: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            if model.config == nil {
-                SetupView()
-            } else {
-                LiveColumn()
-            }
-            if let msg = model.uiMessage {
-                MessageBanner(message: msg, quiet: model.uiDeviceOff,
-                              retry: model.lastRefreshFailed ? { Task { await model.refreshNow() } } : nil)
-                RelocateHint()
-            }
-            if let note = model.noticeMessage {
-                NoticeBanner(message: note)
-            }
-            FooterHost(showDiagnostics: $showDiagnostics, showCharts: $showCharts)
+    /// Abstand oben im Vollbild: Die eingeblendete Menüleiste soll nichts verdecken.
+    private static let fullScreenTopInset = 24.0
+
+    private func hide(_ hidden: [MainWindowLayout.Column]) {
+        for column in hidden {
+            SideColumns.set(column, false)
+            let text = UIText.columnHidden(column)
+            model.showNotice(text)
+            AccessibilityNotification.Announcement(text).post()
         }
-        .padding(20)
+    }
+
+    /// Im Vollbild sind Verlauf und Diagnose eingeblendet, ohne die Wahl des Nutzers zu ändern.
+    private func fullScreenChanged(_ full: Bool) {
+        if full {
+            beforeFullScreen = (showCharts ? "1" : "0") + "," + (showDiagnostics ? "1" : "0")
+            if model.config != nil {
+                SideColumns.set(.diagnostics, true)
+                SideColumns.set(.history, true)
+            }
+        } else {
+            restoreAfterInterruptedFullScreen()
+        }
+    }
+
+    private func restoreAfterInterruptedFullScreen() {
+        guard !window.isFullScreen, !beforeFullScreen.isEmpty else { return }
+        let parts = beforeFullScreen.split(separator: ",")
+        beforeFullScreen = ""
+        guard parts.count == 2 else { return }
+        SideColumns.set(.diagnostics, parts[1] == "1")
+        SideColumns.set(.history, parts[0] == "1")
+    }
+}
+
+private struct SideDivider: View {
+    @Environment(\.klimaTheme) private var theme
+
+    var body: some View {
+        Rectangle().fill(theme.separator).frame(width: 1).padding(.vertical, 16).accessibilityHidden(true)
+    }
+}
+
+/// Steuerung (Kopf bis Timer) in einer Scroll-Ansicht, darunter Meldungen und Fußzeile. Dieser Body liest `model.state`
+/// nicht – jede Abfrage rechnet nur die Leser-Ansichten darunter neu (LiveColumn, ChartsColumn, DiagnosticsColumn,
+/// FooterHost). Die Graphen treiben ihre Zeitscheibe selbst.
+private struct ControlColumn: View {
+    @Environment(ACController.self) var model
+    @Environment(\.klimaTheme) private var theme
+    @State private var contentHeight: CGFloat = 0
+
+    /// Höhe vor der ersten Messung (Erstgröße des Fensters).
+    private static let firstGuess: CGFloat = 760
+
+    var body: some View {
+        StickyFooterLayout(contentHeight: contentHeight > 0 ? contentHeight : Self.firstGuess) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    if model.config == nil {
+                        SetupView()
+                    } else {
+                        LiveColumn()
+                    }
+                }
+                // Glas-Container innerhalb der Scroll-Ansicht: Außen zeichnete er die Glasflächen ohne Zuschnitt über die
+                // Fußzeile. Nur um die Steuerung, sonst rechnete jedes Neuzeichnen der Graphen alle Glasflächen neu.
+                .modifier(GlassContainer())
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
+                .padding(.bottom, 12)
+                .onGeometryChange(for: CGFloat.self) { $0.size.height.rounded(.up) } action: { contentHeight = $0 }
+            }
+            .scrollBounceBehavior(.basedOnSize)
+            .modifier(ScrollEdgeHint())
+            VStack(alignment: .leading, spacing: 12) {
+                if let msg = model.uiMessage {
+                    MessageBanner(message: msg, quiet: model.uiDeviceOff,
+                                  retry: model.lastRefreshFailed ? { Task { await model.refreshNow() } } : nil)
+                    RelocateHint()
+                }
+                if let note = model.noticeMessage {
+                    NoticeBanner(message: note)
+                }
+                FooterHost()
+            }
+            .modifier(GlassContainer())
+            .lineLimit(3)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 20)
+        }
         .controlSize(theme.controlSize)
         // VoiceOver: Fehler und Hinweise ansagen (ein gescheiterter Befehl setzt die Anzeige sonst stumm zurück).
         .onChange(of: model.message) { _, text in announce(text) }
@@ -81,6 +238,17 @@ struct ContentView: View {
     private func announce(_ text: String?) {
         guard let text, !text.isEmpty else { return }
         AccessibilityNotification.Announcement(text).post()
+    }
+}
+
+/// Weicher Rand unten als Hinweis, dass die Steuerung weiterläuft (macOS 26).
+private struct ScrollEdgeHint: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(macOS 26, *) {
+            content.scrollEdgeEffectStyle(.soft, for: .bottom)
+        } else {
+            content
+        }
     }
 }
 
@@ -153,11 +321,11 @@ struct MoreSection<Content: View>: View {
             VStack(alignment: .leading, spacing: 14) { content() }
                 .padding(.top, 6)
         } label: {
-            Text(expanded ? "Weniger" : "Mehr …").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+            Text(expanded ? L.Main.More.less : L.Main.More.more).font(.caption.weight(.semibold)).foregroundStyle(.secondary)
                 .frame(minHeight: 22)
                 .contentShape(Rectangle())
         }
-        .accessibilityHint("Zeigt Kennzahlen, Komfort und Szenen")
+        .accessibilityHint(L.Main.More.hint)
     }
 }
 
@@ -205,19 +373,18 @@ private struct ChartsColumn: View {
     }
 }
 
-/// Diagnose rechts, nur mit Zustand.
+/// Diagnose rechts, nur mit Zustand; oben ausgerichtet, scrollt.
 private struct DiagnosticsColumn: View {
     @Environment(ACController.self) var model
     let close: () -> Void
 
     var body: some View {
         if let s = model.state {
-            HStack(alignment: .top, spacing: 0) {
-                Divider().padding(.vertical, 16)
-                DiagnosticsPanel(state: s, close: close)
-                    .equatable()
-                    .frame(width: 340)
-            }
+            DiagnosticsPanel(state: s, close: close)
+                .equatable()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        } else {
+            Color.clear
         }
     }
 }
@@ -225,11 +392,12 @@ private struct DiagnosticsColumn: View {
 /// Fußzeile: liest nur, ob ein Zustand da ist.
 private struct FooterHost: View {
     @Environment(ACController.self) var model
-    @Binding var showDiagnostics: Bool
-    @Binding var showCharts: Bool
+    @AppStorage(SettingsKey.showDiagnosticsPanel) private var showDiagnostics = false
+    @AppStorage(SettingsKey.showChartsPanel) private var showCharts = false
 
     var body: some View {
         FooterView(hasState: model.state != nil, hasConfig: model.config != nil,
-                   showDiagnostics: $showDiagnostics, showCharts: $showCharts)
+                   showDiagnostics: Binding(get: { showDiagnostics }, set: { SideColumns.set(.diagnostics, $0) }),
+                   showCharts: Binding(get: { showCharts }, set: { SideColumns.set(.history, $0) }))
     }
 }

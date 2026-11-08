@@ -15,19 +15,22 @@ public enum UIOptions {
         public let seconds: Int
     }
 
-    public static let refreshChoices: [RefreshChoice] = [
-        RefreshChoice(label: "5 Sekunden", seconds: 5), RefreshChoice(label: "10 Sekunden", seconds: 10),
-        RefreshChoice(label: "30 Sekunden", seconds: 30), RefreshChoice(label: "1 Minute", seconds: 60),
-        RefreshChoice(label: "5 Minuten", seconds: 300),
-    ]
+    public static var refreshChoices: [RefreshChoice] {
+        [
+            RefreshChoice(label: L.Common.seconds(count: 5), seconds: 5),
+            RefreshChoice(label: L.Common.seconds(count: 10), seconds: 10),
+            RefreshChoice(label: L.Common.seconds(count: 30), seconds: 30),
+            RefreshChoice(label: L.Common.minutes(count: 1), seconds: 60),
+            RefreshChoice(label: L.Common.minutes(count: 5), seconds: 300),
+        ]
+    }
     public static let refreshMin = 1
     public static let refreshMax = 600
-    public static let refreshCustomLabel = "Eigener Wert …"
-    public static let refreshCustomHelp = "1 bis 600 Sekunden."
+    public static var refreshCustomLabel: String { L.Options.Refresh.custom }
+    public static var refreshCustomHelp: String { L.Options.Refresh.customHelp }
     /// Darunter bleibt die Verbindung dauerhaft offen, andere Apps kommen nicht an die Anlage.
     public static let refreshWarnBelow = 8
-    public static let refreshWarning =
-        "Unter 8 s bleibt die Verbindung dauerhaft offen – andere Apps (z. B. die Midea-App) kommen dann nicht an die Anlage."
+    public static var refreshWarning: String { L.Options.Refresh.warning }
 
     /// Warnung zum eingestellten Takt, nil ab `refreshWarnBelow`.
     public static func refreshWarning(forSeconds s: Int) -> String? { s < refreshWarnBelow ? refreshWarning : nil }
@@ -38,7 +41,9 @@ public enum UIOptions {
     // MARK: Strompreis
 
     public static let priceMin = 0.0
-    public static let priceMax = 10.0
+    public static let priceMax = 1000.0
+    public static let currencyDefault = "€"
+    public static let currencyMaxLength = 3
     public static let priceFractionDigitsMin = 2
     public static let priceFractionDigitsMax = 4
 
@@ -57,8 +62,10 @@ public enum UIOptions {
         public let label: String
     }
 
-    public static let offTimerChoices: [OffTimerChoice] = [30, 60, 120, 180, 240, 360, 480].map {
-        OffTimerChoice(minutes: $0, label: $0 < 60 ? "\($0) Minuten" : "\($0 / 60) Stunde\($0 == 60 ? "" : "n")")
+    public static var offTimerChoices: [OffTimerChoice] {
+        [30, 60, 120, 180, 240, 360, 480].map {
+            OffTimerChoice(minutes: $0, label: $0 < 60 ? L.Common.minutes(count: $0) : L.Common.hours(count: $0 / 60))
+        }
     }
 
     // MARK: Lüfter
@@ -69,15 +76,18 @@ public enum UIOptions {
     }
 
     /// Sprungmarken an ihrer Position auf der Skala (1 % ganz links, daneben Leise = 20 %).
-    public static let fanMarks: [FanMark] = [
-        FanMark(label: "1 %", value: 1), FanMark(label: "Leise", value: 20), FanMark(label: "Niedrig", value: 40),
-        FanMark(label: "Mittel", value: 60), FanMark(label: "Hoch", value: 80), FanMark(label: "Max", value: 100),
-    ]
+    public static var fanMarks: [FanMark] {
+        [
+            FanMark(label: L.Fan.percent(value: "1"), value: 1), FanMark(label: FanSpeed.silent.title, value: 20),
+            FanMark(label: FanSpeed.low.title, value: 40), FanMark(label: FanSpeed.medium.title, value: 60),
+            FanMark(label: FanSpeed.high.title, value: 80), FanMark(label: FanSpeed.max.title, value: 100),
+        ]
+    }
     /// Lage des Reglerknopfs bei „Auto“ (die Anlage regelt selbst).
     public static let fanAutoKnob = 60
 
-    public static let fanLockedText = "regelt die Anlage beim Trocknen"
-    public static let fanAutoHelp = "Lüfter regelt die Anlage selbst"
+    public static var fanLockedText: String { L.Options.Fan.locked }
+    public static var fanAutoHelp: String { L.Options.Fan.autoHelp }
 
     /// Kopfzeile des Lüfters: „automatisch“, „Außengerät leise · 1 %“, „Turbo · 100 %“, „Mittel · 60 %“, „37 %“;
     /// beim Trocknen der feste Text. Eine Funktion, die an ist, ohne dass der Lüfter in ihrer Zone steht (Kachel,
@@ -88,26 +98,27 @@ public enum UIOptions {
         let auto = s.fanSpeed == FanSpeed.auto.rawValue
         let quietOn = zones && s.outSilent == true
         let turboOn = zones && s.turbo
-        if zones, !auto, s.fanSpeed == 1, quietOn { return "Außengerät leise · 1 %" }
-        if zones, !auto, s.fanSpeed == 100, turboOn { return "Turbo · 100 %" }
+        if zones, !auto, s.fanSpeed == 1, quietOn { return L.Options.Fan.quietOutdoorOne }
+        if zones, !auto, s.fanSpeed == 100, turboOn { return L.Options.Fan.turboMax }
         let base: String
         if auto {
-            base = "automatisch"
+            base = L.Options.Fan.autoCaption
         } else {
             let name = fanMarks.first { $0.value == s.fanSpeed && $0.value != 1 }?.label
-            base = name.map { "\($0) · \(s.fanSpeed) %" } ?? "\(s.fanSpeed) %"
+            base = name.map { L.Options.Fan.level(name: $0, value: "\(s.fanSpeed)") } ?? L.Fan.percent(value: "\(s.fanSpeed)")
         }
-        return base + (turboOn ? " · Turbo" : "") + (quietOn ? " · Außengerät leise" : "")
+        var text = base
+        if turboOn { text = L.Options.Fan.withTurbo(base: text) }
+        if quietOn { text = L.Options.Fan.withQuiet(base: text) }
+        return text
     }
 
     public static func fanQuietZoneHelp(on: Bool) -> String {
-        on ? "Außengerät leise ist an – Klick: zusätzlich Lüfter auf 1 %"
-           : "Außengerät leise: 1 % und leises Außengerät – nur beim Kühlen und Heizen"
+        on ? L.Options.Fan.quietZoneHelpOn : L.Options.Fan.quietZoneHelpOff
     }
 
     public static func fanTurboZoneHelp(on: Bool) -> String {
-        on ? "Turbo ist an – Klick: zusätzlich Lüfter auf 100 %"
-           : "Turbo: 100 % und Turbo – nur beim Kühlen und Heizen"
+        on ? L.Options.Fan.turboZoneHelpOn : L.Options.Fan.turboZoneHelpOff
     }
 
     // MARK: Zugangsdaten und Adresse (Einrichtung)
@@ -116,10 +127,10 @@ public enum UIOptions {
     public static let keyLength = 64
     public static let defaultPort = 6444
     public static let addressPlaceholder = "192.168.1.20"
-    public static let addressExample = "z. B. 192.168.1.20"
-    public static let addressOrHostPrompt = "oder Adresse, z. B. 192.168.1.20"
-    public static let tokenPrompt = "128 Zeichen (0–9, a–f)"
-    public static let keyPrompt = "64 Zeichen (0–9, a–f)"
+    public static var addressExample: String { L.Options.Address.example }
+    public static var addressOrHostPrompt: String { L.Options.Address.orHost }
+    public static var tokenPrompt: String { L.Options.Token.prompt }
+    public static var keyPrompt: String { L.Options.Key.prompt }
 
     // MARK: Verlauf (Graphen)
 
@@ -128,10 +139,12 @@ public enum UIOptions {
         public let seconds: Double
     }
 
-    public static let chartRanges: [ChartRange] = [
-        ChartRange(label: "1 h", seconds: 3600), ChartRange(label: "6 h", seconds: 6 * 3600),
-        ChartRange(label: "24 h", seconds: 86400), ChartRange(label: "7 Tage", seconds: 7 * 86400),
-    ]
+    public static var chartRanges: [ChartRange] {
+        [
+            ChartRange(label: "1 h", seconds: 3600), ChartRange(label: "6 h", seconds: 6 * 3600),
+            ChartRange(label: "24 h", seconds: 86400), ChartRange(label: L.Common.days(count: 7), seconds: 7 * 86400),
+        ]
+    }
     public static let chartRangeDefault = 6 * 3600.0
     /// Die Datenbank mittelt auf etwa so viele Zeitfenster.
     public static let chartWindowCount = 600
@@ -151,7 +164,7 @@ public enum UIOptions {
 
     /// Schalter, die nicht in jedem Modus gelten.
     public enum ComfortFeature: String, CaseIterable, Sendable {
-        case swing, eco, turbo, outdoorSilent, ieco, purifier, freezeProtection, selfClean, display
+        case swing, eco, turbo, outdoorSilent, ieco, purifier, freezeProtection, selfClean, display, sound
     }
 
     public struct Availability: Equatable, Sendable {
@@ -167,34 +180,28 @@ public enum UIOptions {
         case .eco: return mode == .cool
         case .turbo, .outdoorSilent: return mode == .cool || mode == .heat
         case .freezeProtection: return mode == .heat
-        case .swing, .ieco, .purifier, .selfClean, .display: return true
+        case .swing, .ieco, .purifier, .selfClean, .display, .sound: return true
         }
     }
 
     public static func availability(_ f: ComfortFeature, mode: OperationalMode) -> Availability {
         let on = isAvailable(f, in: mode)
         switch f {
-        case .swing: return Availability(enabled: on, why: "Lamellen schwenken auf und ab")
-        case .eco: return Availability(enabled: on, why: "Eco gibt es nur beim Kühlen")
-        case .turbo:
-            return Availability(enabled: on, why: on
-                ? "Turbo an/aus – die Lüfterstufe bleibt. Ganz rechts am Lüfter: Turbo und 100 % zusammen"
-                : "Turbo gibt es nur beim Kühlen und Heizen")
+        case .swing: return Availability(enabled: on, why: L.Availability.swing)
+        case .eco: return Availability(enabled: on, why: L.Availability.eco)
+        case .turbo: return Availability(enabled: on, why: on ? L.Availability.turboOn : L.Availability.turboOff)
         case .outdoorSilent:
-            return Availability(enabled: on, why: on
-                ? "Verdichter und Lüfter draußen gedrosselt – die Lüfterstufe bleibt. Ganz links am Lüfter: zusätzlich 1 %"
-                : "Außengerät leise wirkt nur beim Kühlen und Heizen")
-        case .ieco:
-            return Availability(enabled: on, why: "iECO = Sparprogramm der Anlage, begrenzt die Leistungsaufnahme in jedem Modus (Eco oben gilt nur beim Kühlen)")
+            return Availability(enabled: on, why: on ? L.Availability.outdoorSilentOn : L.Availability.outdoorSilentOff)
+        case .ieco: return Availability(enabled: on, why: L.Availability.ieco)
         case .purifier: return Availability(enabled: on, why: nil)
-        case .freezeProtection: return Availability(enabled: on, why: "Hält 8 °C – nur im Heizbetrieb")
-        case .selfClean:
-            return Availability(enabled: on, why: "Selbstreinigung: trocknet und reinigt das Innengerät (ca. 15 Min.)")
-        case .display: return Availability(enabled: on, why: "Temperaturanzeige an der Anlage")
+        case .freezeProtection: return Availability(enabled: on, why: L.Availability.freezeProtection)
+        case .selfClean: return Availability(enabled: on, why: L.Availability.selfClean)
+        case .display: return Availability(enabled: on, why: L.Availability.display)
+        case .sound: return Availability(enabled: on, why: nil)
         }
     }
 
-    public static let rateHelp = "Begrenzt die Leistungsaufnahme der Anlage – leiser und sparsamer, kühlt/heizt aber langsamer"
+    public static var rateHelp: String { L.Options.rateHelp }
 
     // MARK: Darstellung
 

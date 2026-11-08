@@ -38,9 +38,9 @@ public struct ManualCredentials: Equatable, Sendable {
     /// Was noch fehlt bzw. falsch ist – je Feld ein kurzer Satz für die Anzeige am Feld.
     public var problems: [String: String] {
         var p: [String: String] = [:]
-        if !ipValid { p["ip"] = "Keine IPv4-Adresse (Beispiel: 192.168.1.40)." }
-        if !portValid { p["port"] = "Port 1–65535 (meist 6444)." }
-        if !deviceIdValid { p["deviceId"] = "Anlagen-ID als Zahl (steht nach der Suche schon da)." }
+        if !ipValid { p["ip"] = L.Setup.Problem.ip }
+        if !portValid { p["port"] = L.Setup.Problem.port }
+        if !deviceIdValid { p["deviceId"] = L.Setup.Problem.deviceId }
         if !tokenValid { p["token"] = Self.lengthProblem(tokenHex, of: 128) }
         if !keyValid { p["key"] = Self.lengthProblem(keyHex, of: 64) }
         return p
@@ -48,8 +48,8 @@ public struct ManualCredentials: Equatable, Sendable {
 
     /// „37 von 128 Zeichen.“ bzw. Hinweis auf falsche Zeichen (erlaubt sind 0–9 und a–f).
     static func lengthProblem(_ s: String, of n: Int) -> String {
-        if !s.allSatisfy(\.isHexDigit) { return "\(s.count) von \(n) Zeichen – erlaubt sind nur 0–9 und a–f." }
-        return "\(s.count) von \(n) Zeichen."
+        if !s.allSatisfy(\.isHexDigit) { return L.Setup.Problem.lengthChars(count: String(s.count), total: String(n)) }
+        return L.Setup.Problem.length(count: String(s.count), total: String(n))
     }
 }
 
@@ -114,8 +114,7 @@ extension SetupFlow {
             error = nil
             return parsed.found
         }
-        fail("In der Zwischenablage stehen keine Zugangsdaten. Bitte Token (128 Zeichen) und Schlüssel (64 Zeichen) "
-             + "kopieren und erneut einfügen.", .invalidInput)
+        fail(L.Setup.pasteEmpty, .invalidInput)
         return nil
     }
 
@@ -125,23 +124,23 @@ extension SetupFlow {
         if let data = text.data(using: .utf8),
            let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
             let d = (obj["devices"] as? [[String: Any]])?.first ?? obj
-            if let v = d["ip"] as? String { c.ip = v; found.append("Adresse") }
-            if let v = d["port"] { c.port = "\(v)"; found.append("Port") }
-            if let v = d["deviceId"] ?? d["id"] { c.deviceId = "\(v)"; found.append("Anlagen-ID") }
-            if let v = d["token"] as? String { c.token = v; found.append("Token") }
-            if let v = d["key"] as? String { c.key = v; found.append("Schlüssel") }
+            if let v = d["ip"] as? String { c.ip = v; found.append(L.Setup.Found.address) }
+            if let v = d["port"] { c.port = "\(v)"; found.append(L.Setup.Found.port) }
+            if let v = d["deviceId"] ?? d["id"] { c.deviceId = "\(v)"; found.append(L.Setup.Found.applianceId) }
+            if let v = d["token"] as? String { c.token = v; found.append(L.Setup.Found.token) }
+            if let v = d["key"] as? String { c.key = v; found.append(L.Setup.Found.key) }
             if let v = (d["discoveredName"] ?? d["name"]) as? String { c.name = v }
         } else {
             let words = text.components(separatedBy: CharacterSet.alphanumerics.union(CharacterSet(charactersIn: ".")).inverted)
                 .filter { !$0.isEmpty }
-            if let t = words.first(where: { $0.count == 128 && $0.allSatisfy(\.isHexDigit) }) { c.token = t; found.append("Token") }
-            if let k = words.first(where: { $0.count == 64 && $0.allSatisfy(\.isHexDigit) }) { c.key = k; found.append("Schlüssel") }
-            if let ip = words.first(where: DeviceConfig.isIPv4) { c.ip = ip; found.append("Adresse") }
+            if let t = words.first(where: { $0.count == 128 && $0.allSatisfy(\.isHexDigit) }) { c.token = t; found.append(L.Setup.Found.token) }
+            if let k = words.first(where: { $0.count == 64 && $0.allSatisfy(\.isHexDigit) }) { c.key = k; found.append(L.Setup.Found.key) }
+            if let ip = words.first(where: DeviceConfig.isIPv4) { c.ip = ip; found.append(L.Setup.Found.address) }
             if let id = words.first(where: { $0.count >= 10 && $0.count <= 20 && $0.allSatisfy(\.isNumber) }) {
-                c.deviceId = id; found.append("Anlagen-ID")
+                c.deviceId = id; found.append(L.Setup.Found.applianceId)
             }
         }
-        return found.isEmpty ? nil : (c, found.joined(separator: ", "))
+        return found.isEmpty ? nil : (c, found.joined(separator: L.Setup.Found.separator))
     }
 
     /// Eingaben als geprüfte Einrichtung; wirft mit lesbarer Meldung, wenn etwas fehlt.
@@ -186,7 +185,7 @@ extension SetupFlow {
             let fresh = manualCheckOK == true && manualCheckedAt.map { now().timeIntervalSince($0) < Self.reuseSeconds } == true
             if !fresh, !(await check(cfg)) { return false }
             try sink.adopt(cfg)
-            AppLog.write("Anlage mit eingegebenen Zugangsdaten eingerichtet: \(cfg.name) @ \(cfg.ip)")
+            AppLog.write(L.Log.Session.manualSetup(name: cfg.name, ip: cfg.ip))
             // Ohne Konto gibt es keinen Cloud-Weg und die Zugangsdaten liegen nur hier.
             completion = SetupCompletion(path: .manual, suggestLANOnly: sink.connectionMode != .lan,
                                          offerBackup: true, note: Self.completionNoteManual)
@@ -212,8 +211,7 @@ extension SetupFlow {
         return false
     }
 
-    static let rejectedManual = "Die Anlage nimmt diese Zugangsdaten nicht an. Bitte prüfen, ob Token und Schlüssel "
-        + "zu dieser Anlage (Anlagen-ID) gehören, oder sie neu holen."
+    static var rejectedManual: String { L.Setup.rejectedManual }
 }
 
 struct ManualError: Error, LocalizedError {
@@ -230,11 +228,9 @@ extension SetupFlow {
     /// Zusatzsatz, wenn die Suche nichts findet: Freigabe bzw. Firewall und Gast-WLAN.
     nonisolated static var networkHint: String {
         #if os(Windows)
-        return "Lässt die Windows-Firewall Klimacontrol zu, und ist das Netzwerk als „Privat“ eingestellt? "
-            + "Ein Gast-WLAN trennt Geräte oft voneinander."
+        return L.Setup.NetworkHint.windows
         #else
-        return "Darf Klimacontrol ins lokale Netzwerk (Systemeinstellungen › Datenschutz & Sicherheit › Lokales Netzwerk)? "
-            + "Ein Gast-WLAN trennt Geräte oft voneinander."
+        return L.Setup.NetworkHint.mac
         #endif
     }
 
@@ -246,29 +242,21 @@ extension SetupFlow {
     static func nothingFoundText(target: String?, asked: Int?, path: SetupPath?) -> String {
         let withAccount = path != .manual
         if let target {
-            return "An der Adresse \(target) antwortet keine Anlage. Stimmt die Adresse, und ist die Anlage eingeschaltet? "
-                + (withAccount ? "Sonst „Netz durchsuchen“ oder mit dem Konto aus Schritt 1 in der Cloud suchen."
-                               : "Sonst „Netz durchsuchen“.")
+            return withAccount ? L.Setup.NothingFound.Target.account(target: target)
+                : L.Setup.NothingFound.Target.manual(target: target)
         }
         if let asked {
-            return "Keine Anlage im Netz gefunden (\(asked) Adressen gefragt). Ist die Anlage eingeschaltet und im selben WLAN? "
-                + networkHint + " "
-                + (withAccount ? "Sonst mit dem Konto aus Schritt 1 in der Cloud suchen."
-                               : "Sonst die IP-Adresse der Anlage eingeben (steht in der Übersicht des Routers).")
+            return withAccount ? L.Setup.NothingFound.Asked.account(asked: String(asked), hint: networkHint)
+                : L.Setup.NothingFound.Asked.manual(asked: String(asked), hint: networkHint)
         }
-        return "Keine Anlage im WLAN gefunden. Ist die Anlage eingeschaltet und der Rechner im selben WLAN? " + networkHint + " "
-            + (withAccount ? "Sonst „Netz durchsuchen“, mit dem Konto aus Schritt 1 in der Cloud suchen oder die IP-Adresse eingeben."
-                           : "Sonst „Netz durchsuchen“ oder die IP-Adresse eingeben.")
+        return withAccount ? L.Setup.NothingFound.None.account(hint: networkHint)
+            : L.Setup.NothingFound.None.manual(hint: networkHint)
     }
 
-    static let completionNoteManual = "Eingerichtet ohne Midea-Konto: Klimacontrol spricht nur im WLAN mit der Anlage, "
-        + "nichts geht an Midea. Token und Schlüssel liegen nur auf diesem Rechner – am besten jetzt sichern. "
-        + "Empfohlener Verbindungsweg: „Nur WLAN“."
+    static var completionNoteManual: String { L.Setup.Completion.manual }
 
     static func completionNote(cloudOnly: Bool) -> String {
-        cloudOnly
-            ? "Eingerichtet über die Midea-Cloud: Befehle gehen über Midea, bis die Anlage im WLAN antwortet."
-            : "Eingerichtet über das Midea-Konto: Gesteuert wird im WLAN, solange die Anlage dort antwortet."
+        cloudOnly ? L.Setup.Completion.cloudOnly : L.Setup.Completion.account
     }
 
     /// Fehler → (Text, Art). Ohne Fachwörter; Codes klein am Ende.
@@ -277,47 +265,45 @@ extension SetupFlow {
         if let e = error as? MideaCloud.CloudError { return describeCloud(e, context: context) }
         if let e = error as? ConfigError {
             switch e {
-            case .invalidHex: return ("Token oder Schlüssel sind unvollständig. Bitte 128 bzw. 64 Zeichen (0–9, a–f) eingeben.", .invalidInput)
-            case .invalidAddress: return ("Die Adresse ist keine IP-Adresse. Bitte z. B. 192.168.1.40 eingeben.", .invalidInput)
-            default: return ((e.errorDescription ?? "Die Angaben passen nicht.") + " Bitte die Eingaben prüfen.", .invalidInput)
+            case .invalidHex: return (L.Setup.Config.invalidHex, .invalidInput)
+            case .invalidAddress: return (L.Setup.Config.invalidAddress, .invalidInput)
+            case .noDevice: return (L.Setup.Config.noDevice, .invalidInput)
+            case .unsupportedVersion(let v): return (L.Setup.Config.unsupportedVersion(version: String(v)), .invalidInput)
             }
         }
         if let e = error as? MideaError { return describeDevice(e, context: context) }
         return (error.localizedDescription, .other)
     }
 
-    static let busyText = "Die Anlage ist gerade belegt – vermutlich durch die Midea-App oder ein offenes Diagnosefenster "
-        + "von Klimacontrol. Die andere App schließen und in einer Minute erneut versuchen."
+    static var busyText: String { L.Setup.busy }
 
     static func describeDevice(_ e: MideaError, context: Context) -> (text: String, issue: SetupIssue) {
         switch e {
         case .authenticationFailed:
             return (context == .manual ? rejectedManual
-                    : "Die Anlage nimmt Token und Schlüssel nicht an. Ist sie in genau diesem Konto eingerichtet?", .rejected)
+                    : L.Setup.Device.rejected, .rejected)
         case .timeout:
-            return ("Die Anlage antwortet nicht. Ist sie eingeschaltet und im selben WLAN? Dann erneut versuchen.", .unreachable)
-        case .allPathsFailed(let failures) where failures.contains(where: { $0.reason == .busy }):
+            return (L.Setup.Device.timeout, .unreachable)
+        case .allPathsFailed(let failures) where failures.contains(where: { $0.isBusy }):
             return (busyText, .busy)
         case .connectionFailed, .refused, .unreachable, .outcomeUnknown, .allPathsFailed:
             // Abgewiesen ohne Beleg für „belegt“ (falsche oder alte Adresse) wie jede andere fehlende Verbindung.
-            var msg = e.connectionDetail ?? ""
+            var msg = e.connectionDetailText ?? ""
             if case .outcomeUnknown(let reason) = e { msg = reason }
-            let detail = DeviceConfig.cleanText(msg, fallback: "")
+            let cleaned = DeviceConfig.cleanText(msg, fallback: "")
+            let detail = cleaned.isEmpty ? "" : " (\(cleaned))"
             if context == .general {
-                return ("Die Suche im Netz klappt nicht\(detail.isEmpty ? "" : " (\(detail))"). Ist der Rechner mit dem WLAN "
-                        + "verbunden? " + networkHint, .unreachable)
+                return (L.Setup.Device.searchFailed(detail: detail, hint: networkHint), .unreachable)
             }
-            return ("Keine Verbindung zur Anlage\(detail.isEmpty ? "" : " (\(detail))"). Ist der Rechner im selben WLAN "
-                    + "wie die Anlage? Dann erneut versuchen.", .unreachable)
+            return (L.Setup.Device.noConnection(detail: detail), .unreachable)
         case .busy:
             return (busyText, .busy)
         case .commandNotApplied:
             return (busyText, .busy)
         case .crypto(let code):
-            return ("Die Antwort der Anlage ließ sich nicht lesen. Bitte erneut versuchen; bleibt es so, Token und "
-                    + "Schlüssel neu holen. (Code \(code))", .other)
+            return (L.Setup.Device.crypto(code: String(code)), .other)
         case .protocolError, .invalidResponse:
-            return ("Die Anlage hat unerwartet geantwortet. Bitte erneut versuchen; bleibt es so, steht mehr im Protokoll.", .other)
+            return (L.Setup.Device.unexpected, .other)
         }
     }
 
@@ -326,30 +312,25 @@ extension SetupFlow {
         case .api(let code, let msg):
             switch e.kind {
             case .wrongCredentials:
-                return ("E-Mail oder Passwort stimmen nicht. Bitte die Anmeldedaten der MSmartHome-App verwenden. (Code \(code))",
-                        .accountLogin)
+                return (L.Setup.Cloud.wrongCredentials(code: String(code)), .accountLogin)
             case .serviceUnavailable:
-                return ("Midea gibt über diesen Zugang gerade keine Zugangsdaten aus. Später erneut versuchen oder den Weg "
-                        + "„Zugangsdaten“ nehmen. (Code 9999)", .cloud)
+                return (L.Setup.Cloud.serviceUnavailable, .cloud)
             case .applianceOffline:
-                return ("Midea meldet die Anlage als offline. Ist sie eingeschaltet und mit dem WLAN verbunden? (Code 3123)",
-                        .unreachable)
+                return (L.Setup.Cloud.applianceOffline, .unreachable)
             default:
-                let m = DeviceConfig.cleanText(msg, fallback: "unbekannter Fehler")
-                return ("Midea meldet einen Fehler: \(m). Später erneut versuchen. (Code \(code))", .cloud)
+                let m = DeviceConfig.cleanText(msg, fallback: L.Setup.Cloud.unknownError)
+                return (L.Setup.Cloud.error(message: m, code: String(code)), .cloud)
             }
         case .noToken:
             return (context == .cloudSearch
-                    ? "In diesem Midea-Konto ist keine Anlage eingerichtet. Bitte das Konto der MSmartHome-App verwenden."
-                    : "Midea kennt diese Anlage nicht. Ist sie in diesem MSmartHome-Konto eingerichtet?", .cloud)
+                    ? L.Setup.Cloud.noTokenSearch : L.Setup.Cloud.noToken, .cloud)
         case .network:
-            return ("Midea ist gerade nicht erreichbar. Bitte die Internetverbindung prüfen und erneut versuchen.", .network)
+            return (L.Setup.Cloud.network, .network)
         case .tokenRejected:
-            return ("Die Anlage nimmt die Zugangsdaten aus dem Konto nicht an. Ist sie in genau diesem Konto eingerichtet?",
-                    .rejected)
+            return (L.Setup.Cloud.tokenRejected, .rejected)
         case .notInAccount, .badReply, .sessionKeys, .incompleteLogin, .paused, .keychainLocked:
-            let m = DeviceConfig.cleanText(e.message, fallback: "unbekannter Fehler")
-            return ("Midea meldet einen Fehler: \(m). Später erneut versuchen. (Code \(e.code))", .cloud)
+            let m = DeviceConfig.cleanText(e.displayMessage, fallback: L.Setup.Cloud.unknownError)
+            return (L.Setup.Cloud.error(message: m, code: String(e.code)), .cloud)
         }
     }
 }

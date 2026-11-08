@@ -21,6 +21,8 @@ public partial class DiagnosticsPanel : UserControl
         pulse.SetResourceReference(System.Windows.Shapes.Shape.StrokeProperty, "Fg");
         TitleIcon.Content = pulse;
         CloseButton.Content = Icons.Make(Icons.Close, 11, null, 1.6);
+        CloseButton.ToolTip = L.Tip("diagnostics.panel.hide", Hotkeys.Ctrl("D"));
+        System.Windows.Automation.AutomationProperties.SetAcceleratorKey(CloseButton, Hotkeys.Ctrl("D"));
         // Timer nur solange geladen und sichtbar, sonst hielte er ein geschlossenes Fenster im Speicher fest.
         tick.Tick += (_, _) => RenderLive();
         IsVisibleChanged += (_, _) =>
@@ -69,7 +71,7 @@ public partial class DiagnosticsPanel : UserControl
         {
             if (loading == null)
             {
-                loading = new TextBlock { Text = "Diagnosedaten werden geladen …", FontSize = 12, Margin = new Thickness(0, 12, 0, 0) };
+                loading = new TextBlock { Text = L.T("diagnostics.panel.loading"), FontSize = 12, Margin = new Thickness(0, 12, 0, 0) };
                 loading.SetResourceReference(TextBlock.ForegroundProperty, "Sub");
                 Sections.Children.Insert(0, loading);
             }
@@ -86,39 +88,46 @@ public partial class DiagnosticsPanel : UserControl
         HintsText.Text = string.Join("\n", s.MaintenanceHints);
         HintsText.Visibility = s.MaintenanceHints.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
         var heating = st.Mode == 4;
+        var rpm = L.T("diagnostics.panel.unitRpm");
         // Technische Herkunft (Eigenschaftscodes) nur im Tooltip, nicht im Text.
         (string Label, string Value, string? Help)[][] sections =
         {
             new (string, string, string?)[]
             {
-                ("Leistungsaufnahme", N(d.CompressorPowerW, "W"), null),
-                ("Frequenz", $"{N(d.CompressorHz, "Hz")}  (Soll {N(d.CompressorTargetHz, "Hz")})", null),
-                ("Strom · Spannung", $"{N(d.CurrentA, "A")} · {N(d.VoltageV, "V")}", "Die Anlage meldet den Strom nur in ganzen Ampere."),
-                ("Lüfter außen", N(d.OutdoorFanRpm, "U/min"), null),
-                ("Abtauen", Flag(d.Defrost, "läuft", "nein"), null),
+                (L.T("diagnostics.panel.power"), N(d.CompressorPowerW, "W"), null),
+                (L.T("diagnostics.panel.frequency"), L.F("diagnostics.panel.withTarget", ("value", N(d.CompressorHz, "Hz")), ("target", N(d.CompressorTargetHz, "Hz"))), null),
+                (L.T("diagnostics.panel.currentVoltage"), $"{N(d.CurrentA, "A")} · {N(d.VoltageV, "V")}", L.T("diagnostics.panel.currentHelp")),
+                (L.T("diagnostics.panel.outdoorFan"), N(d.OutdoorFanRpm, L.T("diagnostics.panel.unitRpm")), null),
+                (L.T("diagnostics.panel.defrost"), Flag(d.Defrost, L.T("diagnostics.panel.running"), L.T("diagnostics.panel.no")), null),
             },
             new (string, string, string?)[]
             {
-                ("T1 · Innenluft", T(d.T1IndoorAir), null),
-                ("Innenfühler 2", T(d.IndoorTemp2), "Zweiter Innenfühler (Eigenschaft 0x00E0)"),
-                ($"T2 · Innenregister ({(heating ? "Verflüssiger" : "Verdampfer")})", T(d.T2IndoorCoil), null),
-                ($"T3 · Außenregister ({(heating ? "Verdampfer" : "Verflüssiger")})", T(d.T3OutdoorCoil), null),
-                ("T4 · Außenluft", T(d.T4OutdoorAir), null),
-                ("TP · Heißgasleitung", N(d.TpDischarge, "°C"), null),
-                ("EEV-Öffnung", N(d.EevOpening, "Schritte"), "Öffnung des elektronischen Expansionsventils"),
+                (L.T("diagnostics.panel.t1"), T(d.T1IndoorAir), null),
+                (L.T("diagnostics.panel.indoorSensor2"), T(d.IndoorTemp2), L.T("diagnostics.panel.indoorSensor2Help")),
+                (L.F("diagnostics.panel.t2", ("role", L.T(heating ? "diagnostics.panel.condenser" : "diagnostics.panel.evaporator"))), T(d.T2IndoorCoil), null),
+                (L.F("diagnostics.panel.t3", ("role", L.T(heating ? "diagnostics.panel.evaporator" : "diagnostics.panel.condenser"))), T(d.T3OutdoorCoil), null),
+                (L.T("diagnostics.panel.t4"), T(d.T4OutdoorAir), null),
+                (L.T("diagnostics.panel.tp"), N(d.TpDischarge, "°C"), null),
+                (L.T("diagnostics.panel.eev"), N(d.EevOpening, L.T("diagnostics.panel.unitSteps")), L.T("diagnostics.panel.eevHelp")),
             },
             new (string, string, string?)[]
             {
-                ("Lüfter innen", $"{N(d.IndoorFanRpm, "U/min")}  (Soll {N(d.IndoorFanTargetRpm, "U/min")})", null),
-                ("Kondensatpumpe", Flag(d.CondensatePump, "läuft", "aus"), null),
-                ("Filter", s.FilterValue, null),
-                ("Fehlercode", s.ErrorCodeValue, null),
-                ("Zählerstand", Fmt.Kwh(st.TotalKWh), null),
+                (L.T("diagnostics.panel.indoorFan"), L.F("diagnostics.panel.withTarget", ("value", N(d.IndoorFanRpm, rpm)), ("target", N(d.IndoorFanTargetRpm, rpm))), null),
+                (L.T("diagnostics.panel.condensatePump"), Flag(d.CondensatePump, L.T("diagnostics.panel.running"), L.T("main.state.off")), null),
+                (L.T("diagnostics.panel.filter"), s.FilterValue, null),
+                (L.T("diagnostics.panel.errorCode"), s.ErrorCodeValue, null),
+                (L.T("diagnostics.panel.meter"), Fmt.Kwh(st.TotalKWh), null),
             },
         };
         if (rows.Count == 0)
         {
-            string[] titles = { "VERDICHTER · AUSSENGERÄT", "KÄLTEKREIS", "INNENGERÄT" };
+            var upper = System.Globalization.CultureInfo.GetCultureInfo(L.Language);
+            string[] titles =
+            {
+                L.T("diagnostics.panel.sectionCompressor").ToUpper(upper),
+                L.T("diagnostics.panel.sectionCircuit").ToUpper(upper),
+                L.T("diagnostics.panel.sectionIndoor").ToUpper(upper),
+            };
             for (var i = 0; i < sections.Length; i++) Section(titles[i], sections[i].Length);
         }
         var n = 0;

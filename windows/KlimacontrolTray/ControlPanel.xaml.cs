@@ -23,7 +23,7 @@ public partial class ControlPanel : UserControl
     readonly Dictionary<int, Button> modeTiles = new();
     readonly Dictionary<int, string> modeLabels = new();
     readonly Button swingTile, ecoTile, turboTile, silentTile;
-    readonly Button ieco, purifier, freeze, clean, display;
+    readonly Button ieco, purifier, freeze, clean, display, sound;
     readonly Dictionary<int, RadioButton> rateButtons = new();
     bool updating;
     DateTime lastTempDrag;
@@ -34,6 +34,7 @@ public partial class ControlPanel : UserControl
     const string Sparkles = "M7,2 L8.2,5.8 L12,7 L8.2,8.2 L7,12 L5.8,8.2 L2,7 L5.8,5.8 Z M12.5,10.5 L13,12 L14.5,12.5 L13,13 L12.5,14.5 L12,13 L10.5,12.5 L12,12 Z";
     const string SnowflakeCircle = "M8,1.5 A6.5,6.5 0 1 1 7.99,1.5 Z M8,4.5 V11.5 M5,6.25 L11,9.75 M11,6.25 L5,9.75";
     const string Bubbles = "M5.5,6 A3,3 0 1 1 5.49,6 Z M11.5,8.8 A2.2,2.2 0 1 1 11.49,8.8 Z M11,2.5 A1.5,1.5 0 1 1 10.99,2.5 Z";
+    const string Speaker = "M2,6 H4.5 L8,3 V13 L4.5,10 H2 Z M10.5,5.5 Q12.5,8 10.5,10.5";
     const string DisplayDashed = "M2,4 H5 M7,4 H9 M11,4 H14 V6.5 M14,9.5 V12 H11 M9,12 H7 M5,12 H2 V9.5 M2,6.5 V4";
 
     /// Schließt das Fenster am Infobereich, wenn „Klimacontrol öffnen“ (Hinweis ohne Einrichtung) ins Hauptfenster führt.
@@ -63,29 +64,29 @@ public partial class ControlPanel : UserControl
             ModeGrid.Children.Add(tile);
         }
         // Kurzinfos und Gültigkeit je Modus kommen aus dem Kern (`Availability`), beim Zeichnen gesetzt.
-        swingTile = Tile("Schwenken", Icons.Swing, () => Toggle(Cmd.Swing, s => s.Swing));
-        ecoTile = Tile("Eco", Icons.Leaf, () => Toggle(Cmd.Eco, s => s.Eco));
-        turboTile = Tile("Turbo", Icons.Bolt, () => Toggle(Cmd.Turbo, s => s.Turbo));
-        silentTile = Tile("Außengerät leise", Icons.Mute, () => Toggle(Cmd.OutdoorSilent, s => s.OutSilent == true));
+        swingTile = Tile(L.T("main.comfort.swing"), Icons.Swing, () => Toggle(Cmd.Swing, s => s.Swing));
+        ecoTile = Tile(L.T("main.comfort.eco"), Icons.Leaf, () => Toggle(Cmd.Eco, s => s.Eco));
+        turboTile = Tile(L.T("options.fan.turbo"), Icons.Bolt, () => Toggle(Cmd.Turbo, s => s.Turbo));
+        silentTile = Tile(L.T("options.fan.quietOutdoor"), Icons.Mute, () => Toggle(Cmd.OutdoorSilent, s => s.OutSilent == true));
         foreach (var t in new[] { swingTile, ecoTile, turboTile, silentTile }) ComfortGrid.Children.Add(t);
 
-        ieco = Row("iECO", GaugeLow, () => Toggle(Cmd.Ieco, s => s.Ieco == true));
-        purifier = Row("Ionisierer", Sparkles, () => Toggle(Cmd.Purifier, s => s.Purifier));
-        freeze = Row("Frostschutz", SnowflakeCircle, () => Toggle(Cmd.FreezeProtection, s => s.FreezeProtection));
-        clean = Row("Reinigung", Bubbles, () => _ = SelfClean());
-        display = Row("Anzeige", DisplayDashed, () => Core.Send(Cmd.Display));
-        // Signalton wie am Mac nur unter Einstellungen › Anlage.
-        foreach (var r in new[] { ieco, purifier, freeze, clean, display }) MoreGrid.Children.Add(r);
+        ieco = Row(L.T("main.comfort.ieco"), GaugeLow, () => Toggle(Cmd.Ieco, s => s.Ieco == true));
+        purifier = Row(L.T("main.comfort.ionizer"), Sparkles, () => Toggle(Cmd.Purifier, s => s.Purifier));
+        freeze = Row(L.T("main.comfort.frostProtection"), SnowflakeCircle, () => Toggle(Cmd.FreezeProtection, s => s.FreezeProtection));
+        clean = Row(L.T("main.comfort.selfClean"), Bubbles, () => _ = SelfClean());
+        display = Row(L.T("main.comfort.display"), DisplayDashed, () => Core.Send(Cmd.Display));
+        sound = Row(L.T("main.comfort.sound"), Speaker, () => Toggle(Cmd.Sound, s => s.Sound ?? Core.Snap.Beep));
+        foreach (var r in new[] { ieco, purifier, freeze, clean, display, sound }) MoreGrid.Children.Add(r);
         RateIcon.Content = Icons.Make(GaugeHigh, 14, null, 1.4);
 
         BuildFan();
         TempSlider.PreviewMouseDown += (_, _) => lastTempDrag = DateTime.Now;
 
         // Kennzahlen einmal anlegen; beim Zeichnen ändern sich nur Texte, Tooltips und ob „Außen“ zu sehen ist.
-        roomValue = Reading(Icons.Thermometer, "Raum", out _, out _);
-        outdoorValue = Reading(Icons.Sun, "Außen", out outdoorItem, out _);
-        powerValue = Reading(Icons.Bolt, "Leistung", out powerItem, out _);
-        todayValue = Reading(Icons.Calendar, "Kosten heute", out todayItem, out todayCaption);
+        roomValue = Reading(Icons.Thermometer, L.T("main.reading.room"), out _, out _);
+        outdoorValue = Reading(Icons.Sun, L.T("main.reading.outdoor"), out outdoorItem, out _);
+        powerValue = Reading(Icons.Bolt, L.T("main.reading.power"), out powerItem, out _);
+        todayValue = Reading(Icons.Calendar, L.T("cost.title"), out todayItem, out todayCaption);
 
         // Symbole der Meldungen einmal anlegen; beim Zeichnen wechselt nur, welches zu sehen ist, und die Farbe.
         warnIcon = Icons.Make(Icons.Warning, 14, null, 1.5);
@@ -152,11 +153,11 @@ public partial class ControlPanel : UserControl
         {
             var b = new RadioButton
             {
-                Content = $"{pct} %", FontSize = 12, Padding = new Thickness(10, 3, 10, 3), Margin = new Thickness(2, 0, 0, 0),
+                Content = L.F("main.comfort.percentChoice", ("value", pct.ToString(System.Globalization.CultureInfo.InvariantCulture))), FontSize = 12, Padding = new Thickness(10, 3, 10, 3), Margin = new Thickness(2, 0, 0, 0),
                 GroupName = "Rate",
             };
             if (toggleStyle != null) b.Style = toggleStyle;
-            AutomationProperties.SetName(b, $"Leistung {pct} Prozent");
+            AutomationProperties.SetName(b, L.F("main.windows.ratePercent", ("pct", pct.ToString(System.Globalization.CultureInfo.InvariantCulture))));
             b.Checked += (_, _) => { if (!updating && Core.Snap.State != null) Core.Send(Cmd.Rate, ("value", pct)); };
             rateButtons[pct] = b;
             RatePanel.Children.Add(b);
@@ -295,7 +296,7 @@ public partial class ControlPanel : UserControl
     {
         c.IsEnabled = enabled;
         c.Opacity = enabled ? 1 : 0.45;
-        AutomationProperties.SetItemStatus(c, active && enabled ? "aktiv" : inactive);
+        AutomationProperties.SetItemStatus(c, active && enabled ? L.T("main.mode.activeValue") : inactive);
         if (active && enabled)
         {
             // Zwischengespeicherte Pinsel: unveränderte Farbe = gleicher Wert, dann zeichnet WPF nichts neu.
@@ -392,12 +393,12 @@ public partial class ControlPanel : UserControl
         Hero.Background = on && live && !Theme.HighContrast ? Paints.Of(Color.FromArgb(0x40, tint.R, tint.G, tint.B)) : (Brush)FindResource("Tile");
         PowerButton.Background = on ? Theme.ActiveFillBrush(live ? tint : DotGray.Color) : (Brush)FindResource("Card");
         PowerButton.Foreground = on ? Theme.ActiveText : (Brush)FindResource("Fg");
-        var powerName = on ? "Ausschalten" : "Einschalten";
-        PowerButton.ToolTip = keys ? $"{powerName} (Strg+P)" : powerName;
-        AutomationProperties.SetName(PowerButton, powerName);
-        AutomationProperties.SetAcceleratorKey(PowerButton, keys ? "Strg+P" : "");
-        MinusButton.ToolTip = keys ? "Kälter (↓)" : "Kälter";
-        PlusButton.ToolTip = keys ? "Wärmer (↑)" : "Wärmer";
+        var powerKey = on ? "main.power.turnOff" : "main.power.turnOn";
+        PowerButton.ToolTip = L.Tip(powerKey, keys ? Hotkeys.Ctrl("P") : "");
+        AutomationProperties.SetName(PowerButton, L.T(powerKey));
+        AutomationProperties.SetAcceleratorKey(PowerButton, keys ? Hotkeys.Ctrl("P") : "");
+        MinusButton.ToolTip = L.Tip("main.step.cooler", keys ? "↓" : "");
+        PlusButton.ToolTip = L.Tip("main.step.warmer", keys ? "↑" : "");
         AutomationProperties.SetAcceleratorKey(MinusButton, keys ? "↓" : "");
         AutomationProperties.SetAcceleratorKey(PlusButton, keys ? "↑" : "");
         OnPanel.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
@@ -407,7 +408,7 @@ public partial class ControlPanel : UserControl
         TargetText.Foreground = live ? Paints.Of(Theme.TextTint(tint, 3.5)) : headBrush;
         TargetText.Opacity = live ? 1 : 0.5;
         // Zeigt die große Zahl nicht das Soll, ist sie die Raumtemperatur (−/+ und Regler gelten weiter fürs Soll).
-        if (s.HeroValue != Fmt.Target(st.Target)) AutomationProperties.SetName(TargetText, "Raumtemperatur " + TargetText.Text);
+        if (s.HeroValue != Fmt.Target(st.Target)) AutomationProperties.SetName(TargetText, L.F("main.windows.roomHero", ("value", TargetText.Text)));
         else TargetText.ClearValue(AutomationProperties.NameProperty);
         RenderGlow(tint, on && live);
         RenderEffects(st, tint, on && live, look);
@@ -440,7 +441,7 @@ public partial class ControlPanel : UserControl
             var selected = on && st.Mode == mode;
             Paint(tile, selected, true, Tint(mode));
             var label = modeLabels[mode];
-            tile.ToolTip = selected ? $"{label} ist aktiv" : on ? $"Zu {label} wechseln" : $"Mit {label} einschalten";
+            tile.ToolTip = selected ? L.F("main.mode.active", ("mode", label)) : on ? L.F("main.mode.switchTo", ("mode", label)) : L.F("main.mode.turnOnWith", ("mode", label));
         }
 
         // Lüfter
@@ -458,6 +459,7 @@ public partial class ControlPanel : UserControl
         Feature(freeze, s, "freezeProtection", st.FreezeProtection, tint);
         Feature(clean, s, "selfClean", st.SelfClean == true, tint);
         Feature(display, s, "display", st.DisplayOn, tint);
+        Feature(sound, s, "sound", st.Sound ?? s.Beep, tint);
         EnsureRateButtons(s.Options.Rate);
         if (!Equals(RateRow.ToolTip, s.Options.Rate.Help)) RateRow.ToolTip = s.Options.Rate.Help;
         var shownRate = st.RatePercent ?? s.Options.Rate.Fallback;
@@ -467,7 +469,7 @@ public partial class ControlPanel : UserControl
     /// Schalter nach Gültigkeit und Kurzinfo des Kerns zeichnen.
     static void Feature(Button b, Snapshot s, string feature, bool active, Color tint)
     {
-        Paint(b, active, s.IsEnabled(feature), tint, "aus");
+        Paint(b, active, s.IsEnabled(feature), tint, L.T("main.state.off"));
         var why = s.Why(feature);
         if (!Equals(b.ToolTip, why)) b.ToolTip = why;
     }

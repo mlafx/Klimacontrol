@@ -16,6 +16,10 @@ static class Native
     [DllImport(Dll, CallingConvention = CallingConvention.Cdecl)]
     public static extern void kc_stop();
     [DllImport(Dll, CallingConvention = CallingConvention.Cdecl)]
+    static extern IntPtr kc_set_locale([MarshalAs(UnmanagedType.LPUTF8Str)] string json);
+    [DllImport(Dll, CallingConvention = CallingConvention.Cdecl)]
+    static extern IntPtr kc_strings_json();
+    [DllImport(Dll, CallingConvention = CallingConvention.Cdecl)]
     static extern IntPtr kc_state_json();
     [DllImport(Dll, CallingConvention = CallingConvention.Cdecl)]
     public static extern long kc_state_rev();
@@ -65,7 +69,7 @@ static class Native
     }
 
     /// Version der C-Schnittstelle (`bridgeAPIVersion` in Bridge.swift); ein Test prüft die Übereinstimmung.
-    public const int ExpectedApi = 2;
+    public const int ExpectedApi = 3;
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     delegate int ApiVersionFn();
@@ -80,6 +84,10 @@ static class Native
     }
 
     public static void Init(string version) => kc_init(version);
+    /// Sprache und Formate setzen, vor `Init`. null = übernommen, sonst Meldung des Kerns.
+    public static string? SetLocale(string json) => Take(kc_set_locale(json));
+    /// Alle Texte der aktiven Sprache (`{"language","pseudo","strings":{…}}`).
+    public static string StringsJson() => Take(kc_strings_json()) ?? "{}";
     public static string StateJson() => Take(kc_state_json()) ?? "null";
     /// Revisionszähler des Schnappschusses: kc_state_json nur bei geändertem Zähler lesen.
     public static long StateRev() => kc_state_rev();

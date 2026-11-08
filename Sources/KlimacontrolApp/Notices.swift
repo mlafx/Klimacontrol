@@ -7,7 +7,7 @@ struct NoticesSettings: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Klimacontrol baut auf den folgenden Open-Source-Projekten auf. Ihre Lizenzen verlangen, Urheberrechtsvermerk und Lizenztext mitzugeben.")
+                Text(L.Notices.intro)
                     .font(.callout).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
                 ForEach(ThirdPartyNotices.all) { NoticeCard(notice: $0) }
                 Text(ThirdPartyNotices.trademarkNote)
@@ -41,7 +41,7 @@ private struct NoticeCard: View {
             }
             ForEach(notice.copyright, id: \.self) { Text($0).font(.caption.monospaced()) }
             Text(notice.usage).font(.callout).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
-            DisclosureGroup("Lizenztext", isExpanded: $showText) {
+            DisclosureGroup(L.Notices.licenseText, isExpanded: $showText) {
                 Text(notice.licenseText)
                     .font(.system(size: 10, design: .monospaced))
                     .textSelection(.enabled)

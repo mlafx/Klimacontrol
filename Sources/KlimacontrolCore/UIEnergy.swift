@@ -10,11 +10,13 @@ extension UIOptions {
         public let count: Int
     }
 
-    public static let energyKinds: [EnergyKindChoice] = [
-        EnergyKindChoice(kind: .day, label: "Tage", count: 14),
-        EnergyKindChoice(kind: .week, label: "Wochen", count: 8),
-        EnergyKindChoice(kind: .month, label: "Monate", count: 12),
-    ]
+    public static var energyKinds: [EnergyKindChoice] {
+        [
+            EnergyKindChoice(kind: .day, label: L.Energy.Kind.day, count: 14),
+            EnergyKindChoice(kind: .week, label: L.Energy.Kind.week, count: 8),
+            EnergyKindChoice(kind: .month, label: L.Energy.Kind.month, count: 12),
+        ]
+    }
     public static let energyKindDefault = EnergyPeriodKind.day
 
     public static func energyChoice(_ kind: EnergyPeriodKind) -> EnergyKindChoice {
@@ -23,27 +25,35 @@ extension UIOptions {
 }
 
 extension UIText {
-    public static let energyTitle = "Verbrauch"
-    public static let energyHelp = "Verbrauch laut Zähler der Anlage. Die Kosten rechnen mit dem Strompreis aus den "
-        + "Einstellungen, auch für frühere Zeiträume."
-    public static let energyLegend = "Heller Balken: Zeitraum läuft noch · ca.: aus Messwerten, Zähler unbekannt · …: Lücke im Verlauf. "
-        + "Mit der Maus über einen Balken fahren zeigt Verbrauch und Kosten."
-    public static let energyNoData = "Noch zu wenig Daten – der Verbrauch füllt sich, sobald der Verlauf Zählerstände enthält."
+    public static var energyTitle: String { L.Energy.title }
+    public static var energyHelp: String { L.Energy.help }
+    public static var energyLegend: String { L.Energy.legend }
+    public static var energyNoData: String { L.Energy.noData }
 
-    private static let weekdayShort = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
-    private static let weekdayLong = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"]
-    private static let monthShort = ["Jan.", "Feb.", "März", "Apr.", "Mai", "Juni", "Juli", "Aug.", "Sept.", "Okt.", "Nov.", "Dez."]
-    private static let monthLong = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September",
-                                    "Oktober", "November", "Dezember"]
+    /// Tag und Monat ohne führende Nullen nach dem Muster des Profils: „2.11.“, „11/2“.
+    private static func plainDayMonth(_ d: Date, calendar: Calendar) -> String {
+        var profile = FormatProfile.current
+        var pattern = ""
+        var last: Character?
+        for ch in profile.dayMonthPattern {
+            if (ch == "d" || ch == "M" || ch == "L"), ch == last { continue }
+            pattern.append(ch)
+            last = ch
+        }
+        profile.dayMonthPattern = pattern
+        return Fmt.dayMonth(d, calendar: calendar, profile: profile)
+    }
 
-    /// Beschriftung unter dem Balken: „Mo 2.11.“, „KW 45“, „Nov. 2026“.
+    /// Beschriftung unter dem Balken: „Mo 2.11.“, „KW 45“, „Nov. 2026“ (englisch „Mon 11/2“, „Wk 45“, „Nov 2026“).
     public static func energyPeriodLabel(_ p: EnergyPeriod, kind: EnergyPeriodKind) -> String {
         let cal = EnergyPeriodKind.calendar()
         let c = cal.dateComponents([.weekday, .day, .month, .year, .weekOfYear], from: p.start)
         switch kind {
-        case .day: return "\(weekdayShort[((c.weekday ?? 1) - 1 + 7) % 7]) \(c.day ?? 0).\(c.month ?? 0)."
-        case .week: return "KW \(c.weekOfYear ?? 0)"
-        case .month: return "\(monthShort[(((c.month ?? 1) - 1) % 12 + 12) % 12]) \(c.year ?? 0)"
+        case .day:
+            return L.Energy.Label.day(weekday: DateWords.weekdayShort(c.weekday ?? 1),
+                                      date: plainDayMonth(p.start, calendar: cal))
+        case .week: return L.Energy.Label.week(week: "\(c.weekOfYear ?? 0)")
+        case .month: return L.Energy.Label.month(month: DateWords.monthShort(c.month ?? 1), year: "\(c.year ?? 0)")
         }
     }
 
@@ -51,49 +61,53 @@ extension UIText {
     public static func energyPeriodName(_ p: EnergyPeriod, kind: EnergyPeriodKind) -> String {
         let cal = EnergyPeriodKind.calendar()
         let c = cal.dateComponents([.weekday, .day, .month, .year, .weekOfYear], from: p.start)
-        let month = monthLong[(((c.month ?? 1) - 1) % 12 + 12) % 12]
+        let month = DateWords.monthLong(c.month ?? 1)
         switch kind {
-        case .day: return "\(weekdayLong[((c.weekday ?? 1) - 1 + 7) % 7]), \(c.day ?? 0). \(month)"
+        case .day:
+            return L.Energy.Name.day(weekday: DateWords.weekdayLong(c.weekday ?? 1), month: month, day: "\(c.day ?? 0)")
         case .week:
             let last = cal.date(byAdding: .day, value: -1, to: p.end) ?? p.end
-            let l = cal.dateComponents([.day, .month], from: last)
-            return "Kalenderwoche \(c.weekOfYear ?? 0) (\(c.day ?? 0).\(c.month ?? 0). – \(l.day ?? 0).\(l.month ?? 0).)"
-        case .month: return "\(month) \(c.year ?? 0)"
+            return L.Energy.Name.week(week: "\(c.weekOfYear ?? 0)", from: plainDayMonth(p.start, calendar: cal),
+                                      to: plainDayMonth(last, calendar: cal))
+        case .month: return L.Energy.Name.month(month: month, year: "\(c.year ?? 0)")
         }
     }
 
     /// Kurzinfo bzw. Vorlesetext zum Balken: „Montag, 2. November: 4,20 kWh · 1,26 € (Zähler der Anlage)“.
-    public static func energyTooltip(_ p: EnergyPeriod, kind: EnergyPeriodKind, price: Double) -> String {
+    public static func energyTooltip(_ p: EnergyPeriod, kind: EnergyPeriodKind, price: Double,
+                                     currency: String = UIOptions.currencyDefault) -> String {
         let name = energyPeriodName(p, kind: kind)
         var text: String
         if let kWh = p.kWh {
-            text = "\(name): \(Fmt.kwh(kWh)) · \(Fmt.euro(kWh * price)) (Zähler der Anlage)"
+            text = L.Energy.Tooltip.meter(name: name, kwh: Fmt.kwh(kWh), cost: Fmt.money(kWh * price, currency: currency))
         } else if let m = p.measuredKWh {
-            text = "\(name): ca. \(Fmt.kwh(m)) · ca. \(Fmt.euro(m * price)) (aus Messwerten, Zähler unbekannt)"
+            text = L.Energy.Tooltip.measured(name: name, kwh: Fmt.kwh(m), cost: Fmt.money(m * price, currency: currency))
         } else {
-            text = "\(name): keine Daten"
+            text = L.Energy.Tooltip.noData(name: name)
         }
         if p.current {
-            text += " · noch nicht abgeschlossen"
+            text += L.Energy.Tooltip.current
         } else if !p.complete {
-            text += " · unvollständig (Lücke im Verlauf)"
+            text += L.Energy.Tooltip.incomplete
         }
         return text
     }
 
     /// Kosten des Zeitraums: „1,26 €“, aus Messwerten „ca. 1,26 €“, ohne Daten „–“.
-    public static func energyCost(_ p: EnergyPeriod, price: Double) -> String {
+    public static func energyCost(_ p: EnergyPeriod, price: Double, currency: String = UIOptions.currencyDefault) -> String {
         guard let v = p.shownKWh else { return "–" }
-        return (p.fromMeasurement ? "ca. " : "") + Fmt.euro(v * price)
+        let cost = Fmt.money(v * price, currency: currency)
+        return p.fromMeasurement ? L.Energy.Cost.approx(cost: cost) : cost
     }
 
     /// Summenzeile unter den Balken: „Summe 31,40 kWh · 9,42 €“.
-    public static func energySummary(_ periods: [EnergyPeriod], price: Double) -> String {
+    public static func energySummary(_ periods: [EnergyPeriod], price: Double,
+                                     currency: String = UIOptions.currencyDefault) -> String {
         let shown = periods.compactMap(\.shownKWh)
-        guard !shown.isEmpty else { return "Summe –" }
+        guard !shown.isEmpty else { return L.Energy.Summary.none }
         let total = shown.reduce(0, +)
-        var text = "Summe \(Fmt.kwh(total)) · \(Fmt.euro(total * price))"
-        if periods.contains(where: \.fromMeasurement) { text += " · teils aus Messwerten" }
+        var text = L.Energy.Summary.total(kwh: Fmt.kwh(total), cost: Fmt.money(total * price, currency: currency))
+        if periods.contains(where: \.fromMeasurement) { text += L.Energy.Summary.partly }
         return text
     }
 }

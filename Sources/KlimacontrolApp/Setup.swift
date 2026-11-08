@@ -31,27 +31,27 @@ private struct SetupStart: View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Image(systemName: "air.conditioner.horizontal").font(.system(size: 30)).foregroundStyle(.tint)
-                Text("Wie möchtest du verbinden?").font(.title2.weight(.semibold))
-                Text("Klimacontrol steuert die Anlage direkt im WLAN. Dafür braucht es einmalig Token und Schlüssel der Anlage.")
+                Text(L.Setup.View.Start.title).font(.title2.weight(.semibold))
+                Text(L.Setup.View.Start.intro)
                     .font(.callout).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
             }
-            choice("person.crop.circle", "Mit Midea-Konto", recommended: true,
-                   "Holt Token und Schlüssel automatisch. Findet die Anlage auch, wenn sie ausgeschaltet ist. Konto und Passwort gehen zur Anmeldung an Midea.") {
+            choice("person.crop.circle", L.Setup.View.Choice.Account.title, recommended: true,
+                   L.Setup.View.Choice.Account.detail) {
                 model.setup.choose(.account)
             }
-            choice("key", "Zugangsdaten eingeben", recommended: false,
-                   "Token und Schlüssel liegen dir schon vor. Keine Verbindung zu Midea, kein Internet nötig.") {
+            choice("key", L.Setup.View.Choice.Manual.title, recommended: false,
+                   L.Setup.View.Choice.Manual.detail) {
                 model.setup.choose(.manual)
             }
-            choice("doc.badge.arrow.up", "Sicherung einlesen", recommended: false,
-                   "Sicherungsdatei mit den Zugangsdaten, z. B. von einem anderen Rechner. Keine Verbindung zu Midea.") {
+            choice("doc.badge.arrow.up", L.Setup.View.Choice.Backup.title, recommended: false,
+                   L.Setup.View.Choice.Backup.detail) {
                 model.importBackup()
             }
             if let err = model.setup.error { MessageBanner(text: err) }
             HStack {
                 Spacer()
-                SettingsLink { Text("Einstellungen …") }.buttonStyle(.link).font(.caption)
-                    .help("Protokoll und Verbindung in den Einstellungen (⌘,)")
+                SettingsLink { Text(L.Setup.View.Settings.link) }.buttonStyle(.link).font(.caption)
+                    .help(L.Setup.View.Mac.settingsHelp)
             }
         }
     }
@@ -65,7 +65,7 @@ private struct SetupStart: View {
                     HStack(spacing: 6) {
                         Text(title).font(.headline)
                         if recommended {
-                            Text("empfohlen").font(.caption2.weight(.medium))
+                            Text(L.Setup.View.recommended).font(.caption2.weight(.medium))
                                 .padding(.horizontal, 6).padding(.vertical, 1)
                                 .background(Capsule().fill(Color.accentColor.opacity(0.2)))
                         }
@@ -94,7 +94,7 @@ private struct SetupHeader: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Button { model.setup.choose(nil) } label: { Label("Zurück", systemImage: "chevron.left") }
+            Button { model.setup.choose(nil) } label: { Label(L.Setup.View.back, systemImage: "chevron.left") }
                 .buttonStyle(.link).font(.callout)
                 .keyboardShortcut(.cancelAction)
             Text(title).font(.title2.weight(.semibold))
@@ -137,16 +137,16 @@ private struct SetupStep<Content: View>: View {
 private struct LocalNetworkHint: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text("Nichts gefunden? Prüfe, ob Klimacontrol auf das lokale Netzwerk zugreifen darf, und ob der Mac im selben WLAN wie die Anlage ist (nicht im Gast-WLAN).")
+            Text(L.Setup.View.Mac.networkHint)
                 .font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
-            Button("Freigabe öffnen") {
+            Button(L.Setup.View.Mac.openPermission) {
                 if let url = URL(string: SetupFlow.localNetworkSettingsURL) {
                     NSWorkspace.shared.open(url)
                 }
             }
             .controlSize(.small)
-            .help("Öffnet Systemeinstellungen → Datenschutz & Sicherheit → Lokales Netzwerk")
+            .help(L.Setup.View.Mac.openPermissionHelp)
         }
     }
 }
@@ -161,7 +161,7 @@ private struct SearchButtons: View {
             Button {
                 onAction(); model.setup.scan()
             } label: {
-                Label(model.setup.scanning ? "Suche …" : "Im WLAN suchen", systemImage: "dot.radiowaves.left.and.right")
+                Label(model.setup.scanning ? L.Setup.View.searching : L.Setup.View.Search.wifi, systemImage: "dot.radiowaves.left.and.right")
             }
             .disabled(model.setup.scanning)
             if model.setup.scanning { ProgressView().controlSize(.small) }
@@ -170,12 +170,12 @@ private struct SearchButtons: View {
             } label: {
                 // Fortschritt „37 von 254“ im Knopf selbst – in 480 px ist neben zwei Knöpfen kein Platz für mehr.
                 Label(model.setup.subnetScanning
-                      ? model.setup.subnetProgress.map { "\($0.0) von \($0.1)" } ?? "Netz …"
-                      : "Netz durchsuchen", systemImage: "network")
+                      ? model.setup.subnetProgress.map { L.Setup.View.Search.subnetProgress(done: String($0.0), total: String($0.1)) } ?? L.Setup.View.Search.subnetBusy
+                      : L.Setup.View.Search.subnet, systemImage: "network")
                     .monospacedDigit()
             }
             .disabled(model.setup.subnetScanning)
-            .help("Fragt jede Adresse deines Netzes einzeln – hilft, wenn die normale Suche nichts findet")
+            .help(L.Setup.View.Search.subnetHelp)
             if model.setup.subnetScanning { ProgressView().controlSize(.small) }
             Spacer()
         }
@@ -198,8 +198,8 @@ private struct FoundList: View {
                     VStack(alignment: .leading, spacing: 1) {
                         Text(dev.name).font(.callout.weight(.medium))
                         Text(dev.isCloudOnly
-                            ? "über Midea-Konto · \(dev.cloudOnline == false ? "ausgeschaltet" : "online")"
-                            : "\(dev.ip) · Protokoll V\(dev.version) · SN …\(dev.sn.suffix(8))")
+                            ? (dev.cloudOnline == false ? L.Setup.View.Found.cloudOff : L.Setup.View.Found.cloudOnline)
+                            : L.Setup.View.Found.lan(ip: dev.ip, version: String(dev.version), serial: String(dev.sn.suffix(8))))
                             .font(.caption).foregroundStyle(.secondary)
                     }
                     Spacer()
@@ -230,25 +230,25 @@ private struct AccountSetup: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            SetupHeader(title: "Mit Midea-Konto verbinden",
-                        detail: "Klimacontrol holt Token und Schlüssel einmalig über dein Midea-Konto. Gesteuert wird danach im WLAN; unterwegs springt das Konto ein.")
-            SetupStep(number: 1, title: "Midea-Konto", showsError: activeStep == 1) { accountStep }
-            SetupStep(number: 2, title: "Anlage finden", showsError: activeStep == 2) { findStep }
-            SetupStep(number: 3, title: "Verbinden", showsError: activeStep == 3) { connectStep }
+            SetupHeader(title: L.Setup.View.Account.title,
+                        detail: L.Setup.View.Account.detail)
+            SetupStep(number: 1, title: L.Setup.View.Step.account, showsError: activeStep == 1) { accountStep }
+            SetupStep(number: 2, title: L.Setup.View.Step.find, showsError: activeStep == 2) { findStep }
+            SetupStep(number: 3, title: L.Setup.View.Step.connect, showsError: activeStep == 3) { connectStep }
         }
         .defaultFocus($focus, .account)
     }
 
     private var accountStep: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Das Konto der App MSmartHome. " + HostWords.current.passwordStorage)
+            Text(L.Setup.View.Account.hint(storage: HostWords.current.passwordStorage))
                 .font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
-            TextField("E-Mail", text: $account)
+            TextField(L.Setup.View.email, text: $account)
                 .textFieldStyle(.roundedBorder)
                 .textContentType(.username)
                 .focused($focus, equals: .account)
                 .onSubmit { focus = .password }
-            SecureField("Passwort", text: $password)
+            SecureField(L.Setup.View.password, text: $password)
                 .textFieldStyle(.roundedBorder)
                 .textContentType(.password)
                 .focused($focus, equals: .password)
@@ -264,20 +264,20 @@ private struct AccountSetup: View {
                 Button {
                     activeStep = 2; model.setup.scanCloud(account: account, password: password)
                 } label: {
-                    Label(model.setup.cloudScanning ? "Cloud-Suche …" : "In der Cloud suchen", systemImage: "cloud")
+                    Label(model.setup.cloudScanning ? L.Setup.View.Cloud.searching : L.Setup.View.Cloud.search, systemImage: "cloud")
                 }
                 .disabled(model.setup.cloudScanning || needsAccount)
                 if model.setup.cloudScanning { ProgressView().controlSize(.small) }
                 Spacer()
             }
             // Tooltip auch auf dem Rahmen: Ein ausgegrauter Knopf allein sagt nicht, warum er aus ist.
-            .help(needsAccount ? "Erst Schritt 1 ausfüllen" : "Anlagen des Midea-Kontos auflisten – auch ausgeschaltet oder in einem anderen WLAN")
+            .help(needsAccount ? L.Setup.View.Cloud.needAccount : L.Setup.View.Cloud.help)
             HStack(spacing: 6) {
                 TextField(UIOptions.addressOrHostPrompt, text: $manualIP)
                     .textFieldStyle(.roundedBorder)
                     .focused($focus, equals: .ip)
                     .onSubmit { activeStep = 2; model.setup.scan(ip: manualIP) }
-                Button("Suchen") { activeStep = 2; model.setup.scan(ip: manualIP) }
+                Button(L.Setup.View.Search.button) { activeStep = 2; model.setup.scan(ip: manualIP) }
                     .disabled(manualIP.isEmpty || model.setup.scanning)
             }
             FoundList { model.setup.selected = $0 }
@@ -286,15 +286,15 @@ private struct AccountSetup: View {
 
     private var connectStep: some View {
         HStack {
-            Button(model.setup.busy ? "Verbinde …" : "Verbinden") { connect() }
+            Button(model.setup.busy ? L.Setup.View.connecting : L.Setup.View.connect) { connect() }
                 .buttonStyle(.borderedProminent)
                 // Return gehört dem Feld, solange eines aktiv ist (eigene onSubmit-Aktionen).
                 .keyboardShortcut(focus == nil ? KeyboardShortcut.defaultAction : nil)
                 .disabled(!model.setup.canConnect(account: account, password: password))
             if model.setup.busy { ProgressView().controlSize(.small) }
             Text(model.setup.selected?.isCloudOnly == true
-                ? "Richtet die Steuerung über das Konto ein"
-                : "Holt Token und Schlüssel über das Konto")
+                ? L.Setup.View.connectHintCloudOnly
+                : L.Setup.View.connectHintAccount)
                 .font(.caption).foregroundStyle(.secondary)
             Spacer()
         }
@@ -322,10 +322,10 @@ private struct ManualSetup: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            SetupHeader(title: "Zugangsdaten eingeben",
-                        detail: "Token und Schlüssel der Anlage liegen dir vor – dann braucht es kein Midea-Konto. Für die Cloud unterwegs lässt sich ein Konto später unter Einstellungen → Verbindung nachtragen.")
-            SetupStep(number: 1, title: "Anlage", showsError: errorAtSearch) { deviceStep }
-            SetupStep(number: 2, title: "Token und Schlüssel", showsError: !errorAtSearch) { credentialsStep }
+            SetupHeader(title: L.Setup.View.Choice.Manual.title,
+                        detail: L.Setup.View.Manual.detail)
+            SetupStep(number: 1, title: L.Setup.View.Step.device, showsError: errorAtSearch) { deviceStep }
+            SetupStep(number: 2, title: L.Setup.View.Step.credentials, showsError: !errorAtSearch) { credentialsStep }
             actionRow
         }
     }
@@ -337,15 +337,15 @@ private struct ManualSetup: View {
         VStack(alignment: .leading, spacing: 8) {
             SearchButtons { errorAtSearch = true }
             FoundList(lanOnly: true) { errorAtSearch = false; model.setup.useForManual($0) }
-            field("Adresse", problem: m.ip.isEmpty ? nil : m.problems["ip"]) {
+            field(L.Setup.Found.address, problem: m.ip.isEmpty ? nil : m.problems["ip"]) {
                 HStack(spacing: 6) {
                     TextField(UIOptions.addressExample, text: $setup.manual.ip).textFieldStyle(.roundedBorder)
-                    Text("Port").foregroundStyle(.secondary)
+                    Text(L.Setup.Found.port).foregroundStyle(.secondary)
                     TextField(String(UIOptions.defaultPort), text: $setup.manual.port).textFieldStyle(.roundedBorder).frame(width: 64)
                 }
             }
-            field("Anlagen-ID", problem: m.deviceId.isEmpty ? nil : m.problems["deviceId"]) {
-                TextField("aus der Suche (nur Ziffern)", text: $setup.manual.deviceId)
+            field(L.Setup.Found.applianceId, problem: m.deviceId.isEmpty ? nil : m.problems["deviceId"]) {
+                TextField(L.Setup.View.Manual.applianceIdPlaceholder, text: $setup.manual.deviceId)
                     .textFieldStyle(.roundedBorder).monospacedDigit()
             }
         }
@@ -356,12 +356,12 @@ private struct ManualSetup: View {
         @Bindable var setup = model.setup
         let m = model.setup.manual
         VStack(alignment: .leading, spacing: 8) {
-            field("Token", status: count(m.tokenHex.count, of: UIOptions.tokenLength, ok: m.tokenValid)) {
+            field(L.Setup.Found.token, status: count(m.tokenHex.count, of: UIOptions.tokenLength, ok: m.tokenValid)) {
                 TextField(UIOptions.tokenPrompt, text: $setup.manual.token, axis: .vertical)
                     .lineLimit(2...3).textFieldStyle(.roundedBorder)
                     .font(.system(.caption, design: .monospaced))
             }
-            field("Schlüssel", status: count(m.keyHex.count, of: UIOptions.keyLength, ok: m.keyValid)) {
+            field(L.Setup.Found.key, status: count(m.keyHex.count, of: UIOptions.keyLength, ok: m.keyValid)) {
                 TextField(UIOptions.keyPrompt, text: $setup.manual.key, axis: .vertical)
                     .lineLimit(1...2).textFieldStyle(.roundedBorder)
                     .font(.system(.caption, design: .monospaced))
@@ -370,10 +370,10 @@ private struct ManualSetup: View {
                 Button {
                     errorAtSearch = false
                     pasted = model.setup.pasteCredentials(NSPasteboard.general.string(forType: .string) ?? "")
-                } label: { Label("Aus Zwischenablage einfügen", systemImage: "doc.on.clipboard") }
-                    .help("Erkennt Token und Schlüssel – auch den ganzen Inhalt einer Sicherungsdatei")
+                } label: { Label(L.Setup.View.Manual.paste, systemImage: "doc.on.clipboard") }
+                    .help(L.Setup.View.Manual.pasteHelp)
                 if let pasted {
-                    Text("Übernommen: \(pasted)").font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                    Text(L.Setup.View.Manual.pasted(what: pasted)).font(.caption).foregroundStyle(.secondary).lineLimit(1)
                 }
                 Spacer()
             }
@@ -384,10 +384,10 @@ private struct ManualSetup: View {
     private var actionRow: some View {
         let m = model.setup.manual
         HStack(spacing: 8) {
-            Button("Testen") { errorAtSearch = false; Task { await model.setup.checkManual() } }
+            Button(L.Setup.View.Manual.test) { errorAtSearch = false; Task { await model.setup.checkManual() } }
                 .disabled(!m.isComplete || model.setup.busy)
-                .help("Meldet sich mit diesen Zugangsdaten bei der Anlage an, ohne etwas zu speichern")
-            Button(model.setup.busy ? "Verbinde …" : "Verbinden") {
+                .help(L.Setup.View.Manual.testHelp)
+            Button(model.setup.busy ? L.Setup.View.connecting : L.Setup.View.connect) {
                 errorAtSearch = false
                 Task { if await model.setup.connectManual() { model.presentSetupCompletion() } }
             }
@@ -397,7 +397,7 @@ private struct ManualSetup: View {
             if model.setup.busy { ProgressView().controlSize(.small) }
             if model.setup.manualCheckOK == true {
                 Label {
-                    Text("Anlage nimmt die Zugangsdaten an")
+                    Text(L.Setup.View.Manual.accepted)
                 } icon: {
                     Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
                 }
@@ -436,6 +436,6 @@ private struct ManualSetup: View {
     }
 
     private func count(_ n: Int, of total: Int, ok: Bool) -> (String, Bool) {
-        (ok ? "\(total) Zeichen" : "\(n) von \(total) Zeichen", ok)
+        (ok ? L.Setup.View.Manual.charsComplete(total: String(total)) : L.Setup.View.Manual.charsPartial(count: String(n), total: String(total)), ok)
     }
 }

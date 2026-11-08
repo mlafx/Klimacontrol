@@ -1,4 +1,4 @@
-// Erzeugt von tools/sync_release_notes.py aus CHANGELOG.md – nicht von Hand ändern.
+// Erzeugt von tools/sync_release_notes.py aus CHANGELOG.md und CHANGELOG.en.md – nicht von Hand ändern.
 
 extension ReleaseNotes {
     static let changelog = #"""
@@ -8,6 +8,34 @@ Neueste Version oben; Abschnitte „Hinzugefügt“, „Geändert“, „Behoben
 Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues Paket ohne Änderung für Nutzer →
 `1.0.0.1`, Fehlerbehebung → `1.0.1.0`, Neues → `1.1.0.0`, Änderungen, die Einrichtung oder Daten unbrauchbar machen →
 `2.0.0.0`.
+
+## [1.2.0.0] – 2026-11-08
+
+### Hinzugefügt
+- Englische Oberfläche. Bei deutscher Systemsprache bleibt die App deutsch, bei jeder anderen erscheint sie auf Englisch.
+- Einstellungen → Allgemein: Auswahl der Sprache (Systemsprache, Deutsch, English). Die Änderung wirkt nach einem Neustart der App.
+- Mac: Die Sprache lässt sich auch unter Systemeinstellungen → Allgemein → Sprache & Region → Apps festlegen.
+- Einstellungen → Allgemein: Währung des Strompreises frei wählbar, bis zu drei Zeichen, Standard €.
+- Mac: Einstellungen → Allgemein → Updates: Vorabversionen (Beta) können bezogen werden, standardmäßig aus.
+- Windows: Setup auf Deutsch und Englisch, passend zur Anzeigesprache von Windows.
+- Signalton lässt sich im Hauptfenster unter „Weitere Funktionen“ schalten.
+- Mac: Das Hauptfenster lässt sich in der Größe ändern und im Vollbild nutzen; im Vollbild erscheinen Verlauf und Diagnose nebeneinander.
+- Mac: „Nach Updates suchen …“ meldet auch, wenn keine neue Version vorliegt oder die Suche nicht geklappt hat.
+
+### Geändert
+- Zahlen, Uhrzeiten und Datumsangaben folgen den Regionseinstellungen des Systems, zum Beispiel Dezimalpunkt oder 12-Stunden-Format.
+- Strompreis bis 1000 je kWh einstellbar, bisher bis 10.
+- Verlauf: Der lesbare CSV-Export verwendet die Sprache der Oberfläche. Ältere deutsche Exporte lassen sich weiterhin einlesen.
+- Versionshinweise, Protokoll und Lizenzhinweise erscheinen in der Sprache der Oberfläche.
+- Darstellung: Themen als Vorschaukacheln, Feinheiten unter „Anpassen“.
+- Mac: Ein geladenes Update startet die App nicht mehr sofort neu. Ein Hinweis bietet „Jetzt neu starten“ oder „Später“, spätestens beim Beenden wird installiert.
+- Mac: Updates werden vor dem Entpacken auf ihre Signatur geprüft, die Update-Information ist ebenfalls signiert.
+- Windows: Der Update-Dialog erscheint in der Sprache der App.
+- Technischer Unterbau überarbeitet und optimiert, zahlreiche kleinere Fehler behoben.
+
+### Behoben
+- Zahlen mit genau halbem Rest wurden abgerundet (21,25 als 21,2), jetzt kaufmännisch gerundet.
+- Fassungen 1.0.x erhielten keine Updates mehr; sie werden jetzt auf die aktuelle Fassung gebracht.
 
 ## [1.1.0.0] – 2026-11-07
 
@@ -64,5 +92,41 @@ Erste öffentliche Fassung für Mac und Windows.
   Administratorrechte, mit Verknüpfung im Startmenü und auf dem Desktop.
   Das Setup ist nicht von Microsoft signiert, darum warnt Windows beim ersten Start („Weitere Informationen“ →
   „Trotzdem ausführen“); die Updates selbst sind signiert und werden geprüft.
+"""#
+
+    /// Leer, solange es CHANGELOG.en.md nicht gibt.
+    static let changelogEnglish = #"""
+# Changelog
+
+Newest version first; sections "Added", "Changed", "Fixed", "Removed"; English, from the user's point of view.
+Versions have four parts, major.features.fixes.build. Earlier versions are available in German only.
+
+## [1.2.0.0] – 2026-11-08
+
+### Added
+- English user interface. With German as the system language the app stays German, with any other language it appears in English.
+- Settings → General: language selection (System language, Deutsch, English). The change takes effect after restarting the app.
+- Mac: The language can also be set in System Settings → General → Language & Region → Applications.
+- Settings → General: currency of the electricity price can be set freely, up to three characters, default €.
+- Mac: Settings → General → Updates: pre-release (beta) versions can be received, off by default.
+- Windows: Setup in German and English, matching the Windows display language.
+- The beep can be switched on and off in the main window under “More features”.
+- Mac: The main window can be resized and used in full screen; in full screen, history and diagnostics appear side by side.
+- Mac: “Check for updates…” also reports when no new version is available or the check did not work.
+
+### Changed
+- Numbers, times and dates follow the system's regional settings, for example decimal point or 12-hour format.
+- Electricity price can be set up to 1000 per kWh, previously up to 10.
+- History: The readable CSV export uses the language of the user interface. Older German exports can still be imported.
+- Release notes, log and license notices appear in the language of the user interface.
+- Appearance: Themes shown as preview tiles, fine-tuning under “Customize”.
+- Mac: A downloaded update no longer restarts the app immediately. A notice offers “Restart now” or “Later”; it is installed at the latest when the app quits.
+- Mac: Updates are verified against their signature before unpacking; the update information is signed as well.
+- Windows: The update dialog appears in the language of the app.
+- Technical foundation reworked and optimized, numerous minor bugs fixed.
+
+### Fixed
+- Numbers with exactly half a remainder were rounded down (21.25 as 21.2), they are now rounded half away from zero.
+- Versions 1.0.x no longer received updates; they are now updated to the current version.
 """#
 }

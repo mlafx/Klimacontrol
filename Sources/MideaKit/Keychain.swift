@@ -38,13 +38,13 @@ public enum KeychainError: Error, LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .unavailable(let s):
-            return "Der Schlüsselbund ist gesperrt oder hat den Zugriff abgelehnt. Mac entsperren bzw. den Zugriff erlauben und erneut versuchen. (Status \(s))"
+            return LogText.t("kit.keychain.unavailable", "Der Schlüsselbund ist gesperrt oder hat den Zugriff abgelehnt. Mac entsperren bzw. den Zugriff erlauben und erneut versuchen. (Status {status})", ["status": String(s)])
         case .saveFailed(let s):
-            return "Die Zugangsdaten konnten nicht im Schlüsselbund gespeichert werden. Erneut versuchen; die alten Daten bleiben erhalten. (Status \(s))"
+            return LogText.t("kit.keychain.saveFailed", "Die Zugangsdaten konnten nicht im Schlüsselbund gespeichert werden. Erneut versuchen; die alten Daten bleiben erhalten. (Status {status})", ["status": String(s)])
         case .tooLarge(let n):
-            return "Die Daten sind zu groß für den Geheimnisspeicher. Bitte melden. (\(n) Byte)"
+            return LogText.t("kit.keychain.tooLarge", "Die Daten sind zu groß für den Geheimnisspeicher. Bitte melden. ({bytes} Byte)", ["bytes": String(n)])
         case .unreadable:
-            return "Der gespeicherte Eintrag ist unlesbar. Zugangsdaten in den Einstellungen neu eingeben."
+            return LogText.t("kit.keychain.unreadable", "Der gespeicherte Eintrag ist unlesbar. Zugangsdaten in den Einstellungen neu eingeben.")
         }
     }
 }
@@ -221,7 +221,7 @@ public enum SecretStore {
     @discardableResult
     static func save(service: String, _ value: Data) -> Bool {
         do { try write(service: service, value); return true } catch {
-            AppLog.error("Geheimnisspeicher: \(service) nicht gespeichert (\(error.localizedDescription), \(value.count) Byte)")
+            AppLog.error(LogText.t("log.keychain.notSaved", "Geheimnisspeicher: {service} nicht gespeichert ({error}, {bytes} Byte)", ["service": service, "error": error.localizedDescription, "bytes": String(value.count)]))
             return false
         }
     }
@@ -229,14 +229,14 @@ public enum SecretStore {
     /// nil bei „fehlt“ und bei Fehler (Fehler wird protokolliert). Wer beides unterscheiden muss, nimmt `read`.
     static func load(service: String) -> Data? {
         do { return try read(service: service) } catch {
-            AppLog.error("Geheimnisspeicher: \(service) nicht lesbar (\(error.localizedDescription))")
+            AppLog.error(LogText.t("log.keychain.notReadable", "Geheimnisspeicher: {service} nicht lesbar ({error})", ["service": service, "error": error.localizedDescription]))
             return nil
         }
     }
 
     static func delete(service: String) {
         do { try backend.remove(service: service) } catch {
-            AppLog.error("Geheimnisspeicher: \(service) nicht entfernt (\(error.localizedDescription))")
+            AppLog.error(LogText.t("log.keychain.notRemoved", "Geheimnisspeicher: {service} nicht entfernt ({error})", ["service": service, "error": error.localizedDescription]))
         }
     }
 }
@@ -253,7 +253,7 @@ public enum CloudKeychain {
 
     /// Wie `store`, aber ohne Rückmeldung (Fehler nur im Protokoll). Neuer Code nimmt `store`.
     public static func save(_ creds: CloudCredentials) {
-        do { try store(creds) } catch { AppLog.error("Cloud-Konto nicht gespeichert: \(error.localizedDescription)") }
+        do { try store(creds) } catch { AppLog.error(LogText.t("log.keychain.accountNotSaved", "Cloud-Konto nicht gespeichert: {error}", ["error": error.localizedDescription])) }
     }
 
     /// Unterscheidet „fehlt“ (nil) von „gesperrt/Fehler“ (wirft).
@@ -267,7 +267,7 @@ public enum CloudKeychain {
     /// nil bei „fehlt“ oder Fehler. Wer beides unterscheiden muss, nimmt `lookup()`.
     public static func load() -> CloudCredentials? {
         do { return try lookup() } catch {
-            AppLog.error("Cloud-Konto nicht lesbar: \(error.localizedDescription)")
+            AppLog.error(LogText.t("log.keychain.accountNotReadable", "Cloud-Konto nicht lesbar: {error}", ["error": error.localizedDescription]))
             return nil
         }
     }
@@ -314,7 +314,7 @@ public enum CloudSessionStore {
     }
 
     public static func save(_ session: CloudSession) {
-        do { try store(session) } catch { AppLog.error("Cloud-Sitzung nicht gespeichert: \(error.localizedDescription)") }
+        do { try store(session) } catch { AppLog.error(LogText.t("log.keychain.sessionNotSaved", "Cloud-Sitzung nicht gespeichert: {error}", ["error": error.localizedDescription])) }
     }
 
     /// Gespeicherte Sitzung zum Konto (und zur Anlage, falls angegeben). nil = keine passende; wirft, wenn der

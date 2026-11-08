@@ -85,14 +85,14 @@ public partial class SetupAccount : UserControl
 
         RenderConnectButton(s);
         var sel = s.Discovered.FirstOrDefault(d => d.Id == s.Selected);
-        ConnectHint.Text = sel?.CloudOnly == true ? "Richtet die Steuerung über das Konto ein" : "Holt Token und Schlüssel über das Konto";
+        ConnectHint.Text = sel?.CloudOnly == true ? L.T("setup.view.connectHintCloudOnly") : L.T("setup.view.connectHintAccount");
 
         var error = localError ?? s.Error;
         for (var i = 0; i < msgBoxes.Length; i++)
         {
             var step = i + 1;
             if (error != null && step == activeStep) SetupUi.ShowMessage(msgBoxes[i], msgTexts[i], msgIcons[i], error, false);
-            else if (error == null && connectedOk && step == 3 && !s.Busy) SetupUi.ShowMessage(msgBoxes[i], msgTexts[i], msgIcons[i], "Anlage eingerichtet.", true);
+            else if (error == null && connectedOk && step == 3 && !s.Busy) SetupUi.ShowMessage(msgBoxes[i], msgTexts[i], msgIcons[i], L.T("setup.view.windows.deviceSetUp"), true);
             else msgBoxes[i].Visibility = Visibility.Collapsed;
         }
         // Netzwerkhilfe nur unter Meldungen des Kerns, nicht bei sofortigen Ablehnungen.
@@ -103,16 +103,15 @@ public partial class SetupAccount : UserControl
     void RenderCloudButton(SetupInfo s)
     {
         CloudButton.IsEnabled = !s.CloudScanning && !NeedsAccount;
-        cloudLabel.Text = s.CloudScanning ? "Cloud-Suche …" : "In der Cloud suchen";
+        cloudLabel.Text = L.T(s.CloudScanning ? "setup.view.cloud.searching" : "setup.view.cloud.search");
         // Tooltip auch am ausgegrauten Knopf (ShowOnDisabled): er sagt, warum der Knopf aus ist.
-        CloudButton.ToolTip = NeedsAccount ? "Erst Schritt 1 ausfüllen"
-            : "Anlagen des Midea-Kontos auflisten – auch ausgeschaltet oder in einem anderen WLAN";
+        CloudButton.ToolTip = L.T(NeedsAccount ? "setup.view.cloud.needAccount" : "setup.view.cloud.help");
     }
 
     void RenderConnectButton(SetupInfo s)
     {
         ConnectButton.IsEnabled = CanConnect(s);
-        ConnectButton.Content = s.Busy ? "Verbinde …" : "Verbinden";
+        ConnectButton.Content = L.T(s.Busy ? "setup.view.connecting" : "setup.view.connect");
     }
 
     // MARK: Eingaben
