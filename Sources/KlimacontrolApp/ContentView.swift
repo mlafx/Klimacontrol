@@ -109,10 +109,7 @@ struct ContentView: View {
                     .layoutValue(key: ColumnRoleKey.self, value: .history)
                     .transition(fade)
             }
-            // Glas-Container nur um die Steuerung: Umfasste er auch den Verlauf, rechnete jedes Neuzeichnen der
-            // Graphen alle Glasflächen des Fensters neu.
             ControlColumn()
-                .modifier(GlassContainer())
                 .accessibilityElement(children: .contain)
                 .accessibilityLabel(UIText.columnControls)
                 .layoutValue(key: ColumnRoleKey.self, value: .control)
@@ -206,6 +203,9 @@ private struct ControlColumn: View {
                         LiveColumn()
                     }
                 }
+                // Glas-Container innerhalb der Scroll-Ansicht: Außen zeichnete er die Glasflächen ohne Zuschnitt über die
+                // Fußzeile. Nur um die Steuerung, sonst rechnete jedes Neuzeichnen der Graphen alle Glasflächen neu.
+                .modifier(GlassContainer())
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
                 .padding(.bottom, 12)
@@ -224,6 +224,7 @@ private struct ControlColumn: View {
                 }
                 FooterHost()
             }
+            .modifier(GlassContainer())
             .lineLimit(3)
             .padding(.horizontal, 20)
             .padding(.bottom, 20)
