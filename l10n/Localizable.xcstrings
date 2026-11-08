@@ -6973,6 +6973,4722 @@
         }
       }
     },
+    "kit.cloud.accessKeyUnreadable" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugangsschlüssel unlesbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access key unreadable"
+          }
+        }
+      }
+    },
+    "kit.cloud.noApplianceReply" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "keine Antwort von der Anlage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no reply from the air conditioner"
+          }
+        }
+      }
+    },
+    "kit.cloud.noReplyWithin" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "keine Antwort innerhalb von {seconds} s"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no reply within {seconds} s"
+          }
+        }
+      }
+    },
+    "kit.cloud.noText" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ohne Text"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no text"
+          }
+        }
+      }
+    },
+    "kit.cloud.sessionKeyMismatch" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sitzungsschlüssel passt nicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session key does not match"
+          }
+        }
+      }
+    },
+    "kit.cloud.sessionKeyUnreadable" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sitzungsschlüssel unlesbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session key unreadable"
+          }
+        }
+      }
+    },
+    "kit.cloud.sessionKeysMissing" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sitzungsschlüssel fehlen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session keys missing"
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.accountLocked" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Später erneut versuchen oder in der MSmartHome-App anmelden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try again later or sign in with the MSmartHome app."
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.applianceOffline" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol prüft regelmäßig weiter."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol keeps checking regularly."
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.network" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Internetverbindung prüfen und erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check the internet connection and try again."
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.retryLater" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Später erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try again later."
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.serviceUnavailable" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Später erneut versuchen oder die Anlage über die Suche im WLAN einrichten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try again later or set up the air conditioner using the Wi-Fi search."
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.sessionExpired" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol meldet sich automatisch neu an; sonst später erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol signs in again automatically; otherwise try again later."
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.tokenRejected" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfen, ob die Anlage in genau diesem Konto eingerichtet ist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check whether the air conditioner is set up in exactly this account."
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.unknownAppliance" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfen, ob sie in der MSmartHome-App in genau diesem Konto eingerichtet ist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check whether it is set up in exactly this account in the MSmartHome app."
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.wrongCredentials" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugangsdaten aus der MSmartHome-App in den Einstellungen neu eingeben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter the credentials from the MSmartHome app again in the settings."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.accountLocked" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Midea-Konto ist vorübergehend gesperrt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Midea account is temporarily locked."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.applianceOffline" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage ist laut Midea-Cloud ausgeschaltet oder ohne Strom."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "According to the Midea Cloud, the air conditioner is off or without power."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.badReply" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Midea-Cloud hat unerwartet geantwortet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Midea Cloud replied unexpectedly."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.network" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Midea-Cloud ist nicht erreichbar."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Midea Cloud is not reachable."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.other" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Midea-Cloud meldet einen Fehler."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Midea Cloud reports an error."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.otherWithText" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Midea-Cloud meldet einen Fehler: {text}."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Midea Cloud reports an error: {text}."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.serviceUnavailable" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Midea-Cloud gibt über diesen Zugang gerade keine Zugangsdaten aus."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Midea Cloud is currently not issuing credentials through this access."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.sessionExpired" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anmeldung bei der Midea-Cloud ist abgelaufen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The sign-in to the Midea Cloud has expired."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.tokenRejected" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage lehnt die Zugangsdaten aus der Cloud ab."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner rejects the credentials from the Cloud."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.unknownAppliance" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Cloud kennt diese Anlage nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Cloud does not know this air conditioner."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.wrongCredentials" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-Mail oder Passwort des Midea-Kontos stimmen nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The email or password of the Midea account is wrong."
+          }
+        }
+      }
+    },
+    "kit.config.invalidAddress" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Adresse der Anlage ist keine gültige IPv4-Adresse mit Port."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The address of the air conditioner is not a valid IPv4 address with port."
+          }
+        }
+      }
+    },
+    "kit.config.invalidHex" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token oder Schlüssel sind kein gültiges Hex (erwartet 128 bzw. 64 Zeichen)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token or key is not valid hex (expected 128 or 64 characters)."
+          }
+        }
+      }
+    },
+    "kit.config.noDevice" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei enthält keine Anlage."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file contains no air conditioner."
+          }
+        }
+      }
+    },
+    "kit.config.unsupportedVersion" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protokollversion V{version} wird nicht unterstützt (nur V3)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protocol version V{version} is not supported (V3 only)."
+          }
+        }
+      }
+    },
+    "kit.control.eco" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "eco"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "eco"
+          }
+        }
+      }
+    },
+    "kit.control.fan" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "lüfter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fan"
+          }
+        }
+      }
+    },
+    "kit.control.freeze" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "frostschutz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "frost protection"
+          }
+        }
+      }
+    },
+    "kit.control.mode" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "modus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mode"
+          }
+        }
+      }
+    },
+    "kit.control.power" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ein/aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "on/off"
+          }
+        }
+      }
+    },
+    "kit.control.purifier" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ionisierer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ionizer"
+          }
+        }
+      }
+    },
+    "kit.control.swing" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "swing"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "swing"
+          }
+        }
+      }
+    },
+    "kit.control.target" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "soll"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "target"
+          }
+        }
+      }
+    },
+    "kit.control.turbo" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "turbo"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "turbo"
+          }
+        }
+      }
+    },
+    "kit.device.noState" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "keine Zustandsmeldung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no state message"
+          }
+        }
+      }
+    },
+    "kit.discovery.badLength" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discovery-Antwort mit falscher Länge"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discovery reply has the wrong length"
+          }
+        }
+      }
+    },
+    "kit.discovery.badSignature" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discovery-Antwort mit falscher Signatur"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discovery reply has the wrong signature"
+          }
+        }
+      }
+    },
+    "kit.discovery.noNetwork" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein aktives Netz gefunden – ist der Rechner mit WLAN oder Ethernet verbunden?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No active network found. Is the computer connected to Wi-Fi or Ethernet?"
+          }
+        }
+      }
+    },
+    "kit.discovery.profileTooShort" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steckbrief zu kurz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Device profile too short"
+          }
+        }
+      }
+    },
+    "kit.discovery.searchFailed" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche nicht möglich: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search not possible: {error}"
+          }
+        }
+      }
+    },
+    "kit.discovery.tooShort" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discovery-Antwort zu kurz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discovery reply too short"
+          }
+        }
+      }
+    },
+    "kit.discovery.unknownDevice" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unbekanntes Gerät (V1 wird nicht unterstützt)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown device (V1 is not supported)"
+          }
+        }
+      }
+    },
+    "kit.error.authentication" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anmeldung an der Anlage fehlgeschlagen: {message}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign-in to the air conditioner failed: {message}"
+          }
+        }
+      }
+    },
+    "kit.error.crypto" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verschlüsselungsfehler ({code})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encryption error ({code})"
+          }
+        }
+      }
+    },
+    "kit.error.invalidResponse" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unerwartete Antwort: {message}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unexpected reply: {message}"
+          }
+        }
+      }
+    },
+    "kit.error.noConnection" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Verbindung zur Anlage: {detail}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No connection to the air conditioner: {detail}"
+          }
+        }
+      }
+    },
+    "kit.error.noReply" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Antwort."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No reply."
+          }
+        }
+      }
+    },
+    "kit.error.notApplied" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage hat die Änderung nicht übernommen – vielleicht steuert gerade eine andere App."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner did not accept the change. Another app may be controlling it right now."
+          }
+        }
+      }
+    },
+    "kit.error.outcomeUnknown" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Verbindung zur Anlage: {reason} Ob die Änderung angekommen ist, ist unklar – bitte die Anzeige prüfen. (nach dem Senden)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No connection to the air conditioner: {reason} It is unclear whether the change arrived. Please check the display. (after sending)"
+          }
+        }
+      }
+    },
+    "kit.error.protocol" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protokollfehler: {message}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protocol error: {message}"
+          }
+        }
+      }
+    },
+    "kit.error.timeout" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage antwortet nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner is not responding."
+          }
+        }
+      }
+    },
+    "kit.frame.badChecksum" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfsumme falsch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checksum wrong"
+          }
+        }
+      }
+    },
+    "kit.frame.deviceType" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerätetyp 0x{type}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Device type 0x{type}"
+          }
+        }
+      }
+    },
+    "kit.frame.noPayload" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rahmen ohne Nutzdaten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frame without payload"
+          }
+        }
+      }
+    },
+    "kit.frame.tooShort" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rahmen zu kurz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frame too short"
+          }
+        }
+      }
+    },
+    "kit.generic.error" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehler"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
+          }
+        }
+      }
+    },
+    "kit.keychain.saveFailed" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Zugangsdaten konnten nicht im Schlüsselbund gespeichert werden. Erneut versuchen; die alten Daten bleiben erhalten. (Status {status})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The credentials could not be saved to the keychain. Try again; the old data is kept. (Status {status})"
+          }
+        }
+      }
+    },
+    "kit.keychain.tooLarge" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Daten sind zu groß für den Geheimnisspeicher. Bitte melden. ({bytes} Byte)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The data is too large for the secret store. Please report this. ({bytes} bytes)"
+          }
+        }
+      }
+    },
+    "kit.keychain.unavailable" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Schlüsselbund ist gesperrt oder hat den Zugriff abgelehnt. Mac entsperren bzw. den Zugriff erlauben und erneut versuchen. (Status {status})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The keychain is locked or denied access. Unlock the Mac or allow access, then try again. (Status {status})"
+          }
+        }
+      }
+    },
+    "kit.keychain.unreadable" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der gespeicherte Eintrag ist unlesbar. Zugangsdaten in den Einstellungen neu eingeben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The stored entry is unreadable. Enter the credentials again in the settings."
+          }
+        }
+      }
+    },
+    "kit.lan.budget" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage hat nicht rechtzeitig geantwortet (Zeitlimit erreicht). Erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner did not respond in time (time limit reached). Try again."
+          }
+        }
+      }
+    },
+    "kit.lan.localNetworkMac" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS lässt die App nicht ins lokale Netzwerk. Systemeinstellungen → Datenschutz & Sicherheit → Lokales Netzwerk → Klimacontrol einschalten (oder Anlage nicht im WLAN)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS does not let the app use the local network. Turn on Klimacontrol in System Settings → Privacy & Security → Local Network (or the air conditioner is not on Wi-Fi)."
+          }
+        }
+      }
+    },
+    "kit.lan.localNetworkWindows" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage ist im Netz nicht erreichbar. Ist der PC im selben WLAN/Netz wie die Anlage? Sonst Windows-Firewall bzw. Netzwerkprofil („Privat“) prüfen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner is not reachable on the network. Is the PC on the same Wi-Fi or network as the air conditioner? Otherwise check the Windows firewall or the network profile (“Private”)."
+          }
+        }
+      }
+    },
+    "kit.lan.notConnected" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nicht verbunden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "not connected"
+          }
+        }
+      }
+    },
+    "kit.lan.unexpectedType" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "unerwarteter Pakettyp"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "unexpected packet type"
+          }
+        }
+      }
+    },
+    "kit.packet.badMarker" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ungültiges Kennbyte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid marker byte"
+          }
+        }
+      }
+    },
+    "kit.packet.badMd5" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MD5-Signatur stimmt nicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MD5 signature does not match"
+          }
+        }
+      }
+    },
+    "kit.packet.badSha" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SHA256 der Antwort stimmt nicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SHA256 of the reply does not match"
+          }
+        }
+      }
+    },
+    "kit.packet.badStart" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ungültiger Paketanfang"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid packet start"
+          }
+        }
+      }
+    },
+    "kit.packet.deviceError" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage meldet einen Fehler (Token abgelaufen oder Verbindung belegt)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner reports an error (token expired or connection busy)"
+          }
+        }
+      }
+    },
+    "kit.packet.handshakeSize" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Handshake-Antwort hat {count} statt 64 Byte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Handshake reply has {count} instead of 64 bytes"
+          }
+        }
+      }
+    },
+    "kit.packet.lengthMismatch" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paketlänge passt nicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Packet length does not match"
+          }
+        }
+      }
+    },
+    "kit.packet.notLoggedIn" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht angemeldet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not signed in"
+          }
+        }
+      }
+    },
+    "kit.packet.paddingMismatch" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füllbytes passen nicht zur Paketlänge"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Padding does not match the packet length"
+          }
+        }
+      }
+    },
+    "kit.packet.tokenMismatch" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token oder Schlüssel passen nicht zur Anlage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token or key do not match the air conditioner"
+          }
+        }
+      }
+    },
+    "kit.packet.tooShort" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paket zu kurz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Packet too short"
+          }
+        }
+      }
+    },
+    "kit.packet.truncated" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paket abgeschnitten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Packet truncated"
+          }
+        }
+      }
+    },
+    "kit.packet.unexpectedHandshake" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unerwartete Handshake-Antwort"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unexpected handshake reply"
+          }
+        }
+      }
+    },
+    "kit.packet.unexpectedType" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unerwarteter Pakettyp {type}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unexpected packet type {type}"
+          }
+        }
+      }
+    },
+    "kit.packet.unknownPacket" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unbekanntes Paket {data}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown packet {data}"
+          }
+        }
+      }
+    },
+    "kit.packet.unknownType" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unbekannter Pakettyp"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown packet type"
+          }
+        }
+      }
+    },
+    "kit.socket.connectTimeout" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitüberschreitung beim Verbinden mit {host}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timeout while connecting to {host}"
+          }
+        }
+      }
+    },
+    "kit.socket.createFailed" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Socket: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Socket: {error}"
+          }
+        }
+      }
+    },
+    "kit.socket.invalidHost" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adresse {host} ungültig"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Address {host} invalid"
+          }
+        }
+      }
+    },
+    "kit.socket.winsock" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Winsock nicht verfügbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Winsock not available"
+          }
+        }
+      }
+    },
+    "log.account.loginFailed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Login fehlgeschlagen: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud sign-in failed: {error}"
+          }
+        }
+      }
+    },
+    "log.account.removed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Konto entfernt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud account removed"
+          }
+        }
+      }
+    },
+    "log.app.csvExported" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf als CSV exportiert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History exported as CSV"
+          }
+        }
+      }
+    },
+    "log.app.loginItem" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beim Anmelden starten: {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start at login: {state}"
+          }
+        }
+      }
+    },
+    "log.app.loginItemDefault" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beim Anmelden starten: Standard beim ersten Start"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start at login: default at first launch"
+          }
+        }
+      }
+    },
+    "log.app.loginItemFailed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anmeldeobjekt nicht geändert: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Login item not changed: {error}"
+          }
+        }
+      }
+    },
+    "log.app.notificationsDenied" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilungen für Timer nicht erlaubt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications for timers not allowed"
+          }
+        }
+      }
+    },
+    "log.app.notificationsError" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilungen: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications: {error}"
+          }
+        }
+      }
+    },
+    "log.app.restart" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neustart"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart"
+          }
+        }
+      }
+    },
+    "log.app.restartNotPossible" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neustart nicht möglich: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart not possible: {error}"
+          }
+        }
+      }
+    },
+    "log.backup.exported" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugangsdaten exportiert nach {file}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Credentials exported to {file}"
+          }
+        }
+      }
+    },
+    "log.backup.notSetAside" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bisherige Einrichtung nicht beiseitegelegt: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previous setup not set aside: {error}"
+          }
+        }
+      }
+    },
+    "log.backup.rejected" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sicherung von der Anlage abgelehnt: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup rejected by the air conditioner: {error}"
+          }
+        }
+      }
+    },
+    "log.backup.restored" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sicherung eingelesen: {name} @ {ip}{verified}{skipped}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup restored: {name} @ {ip}{verified}{skipped}"
+          }
+        }
+      }
+    },
+    "log.backup.scenesSkipped" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", {count} Szenen nicht übernommen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", {count} scenes not imported"
+          }
+        }
+      }
+    },
+    "log.backup.unverified" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", Anlage nicht erreichbar (ungeprüft)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", air conditioner not reachable (unchecked)"
+          }
+        }
+      }
+    },
+    "log.backup.verified" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", an der Anlage geprüft"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", checked with the air conditioner"
+          }
+        }
+      }
+    },
+    "log.bridge.encodeFailed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bridge: Daten für die Oberfläche nicht kodierbar ({type}): {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bridge: data for the interface cannot be encoded ({type}): {error}"
+          }
+        }
+      }
+    },
+    "log.bridge.exportFailed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf exportieren gescheitert ({code})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History export failed ({code})"
+          }
+        }
+      }
+    },
+    "log.bridge.timeZone" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitzone: Windows-Zone nicht in eine IANA-Zone umsetzbar, UTC bleibt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time zone: Windows zone cannot be mapped to an IANA zone, UTC stays"
+          }
+        }
+      }
+    },
+    "log.change.eco" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eco {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eco {state}"
+          }
+        }
+      }
+    },
+    "log.change.fan" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüfter {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fan {value}"
+          }
+        }
+      }
+    },
+    "log.change.freeze" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frostschutz {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frost protection {state}"
+          }
+        }
+      }
+    },
+    "log.change.mode" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modus {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode {value}"
+          }
+        }
+      }
+    },
+    "log.change.off" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "off"
+          }
+        }
+      }
+    },
+    "log.change.on" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "on"
+          }
+        }
+      }
+    },
+    "log.change.purifier" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ionisierer {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ionizer {state}"
+          }
+        }
+      }
+    },
+    "log.change.swing" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schwenken {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swing {state}"
+          }
+        }
+      }
+    },
+    "log.change.target" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soll {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target {value}"
+          }
+        }
+      }
+    },
+    "log.change.turbo" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turbo {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turbo {state}"
+          }
+        }
+      }
+    },
+    "log.cloud.applianceFound" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud: Anlage gefunden (id {id})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud: air conditioner found (id {id})"
+          }
+        }
+      }
+    },
+    "log.cloud.keychainUnreadable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud: Schlüsselbund nicht lesbar – keine Neuanmeldung ({error})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud: keychain not readable – no new sign-in ({error})"
+          }
+        }
+      }
+    },
+    "log.cloud.kindError" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud {kind}: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud {kind}: {error}"
+          }
+        }
+      }
+    },
+    "log.cloud.loginOk" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Anmeldung ({kind}) erfolgreich für {account}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud sign-in ({kind}) succeeded for {account}"
+          }
+        }
+      }
+    },
+    "log.cloud.offline" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "offline"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "offline"
+          }
+        }
+      }
+    },
+    "log.cloud.online" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "online"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "online"
+          }
+        }
+      }
+    },
+    "log.cloud.search" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Suche mit Konto {account}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud search with account {account}"
+          }
+        }
+      }
+    },
+    "log.cloud.searchEmpty" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "keine Anlage im Konto"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no air conditioner in the account"
+          }
+        }
+      }
+    },
+    "log.cloud.searchError" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Suche {kind}: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud search {kind}: {error}"
+          }
+        }
+      }
+    },
+    "log.cloud.searchItem" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{name} id {id} {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{name} id {id} {state}"
+          }
+        }
+      }
+    },
+    "log.cloud.searchResult" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Suche ({kind}): {result}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud search ({kind}): {result}"
+          }
+        }
+      }
+    },
+    "log.cloud.sessionExpired" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Sitzung abgelaufen (älter als 30 Tage) – wird nicht mehr benutzt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud session expired (older than 30 days) – no longer used"
+          }
+        }
+      }
+    },
+    "log.cloud.sessionInvalid" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Sitzung ungültig – melde einmal neu an ({account})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud session invalid – signing in once more ({account})"
+          }
+        }
+      }
+    },
+    "log.cloud.sessionReused" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Sitzung wiederverwendet ({kind}) – keine neue Anmeldung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud session reused ({kind}) – no new sign-in"
+          }
+        }
+      }
+    },
+    "log.cloud.singleAppliance" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud: einzige Klimaanlage im Konto verwendet (id {id})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud: only air conditioner in the account used (id {id})"
+          }
+        }
+      }
+    },
+    "log.cloud.stopped" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud {kind} gestoppt bis zur nächsten Anmeldung in den Einstellungen: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud {kind} stopped until the next sign-in in the settings: {error}"
+          }
+        }
+      }
+    },
+    "log.commands.change" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Befehl: {change}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Command: {change}"
+          }
+        }
+      }
+    },
+    "log.commands.notApplied" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stellbefehl nach 3 Versuchen nicht übernommen – setze zurück und lese neu"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set command not applied after 3 attempts – resetting and reading again"
+          }
+        }
+      }
+    },
+    "log.commands.rate" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Befehl: Leistung begrenzen auf {percent} %"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Command: limit power to {percent} %"
+          }
+        }
+      }
+    },
+    "log.commands.restored" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbindung wieder da"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection restored"
+          }
+        }
+      }
+    },
+    "log.common.off" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "off"
+          }
+        }
+      }
+    },
+    "log.common.on" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "an"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "on"
+          }
+        }
+      }
+    },
+    "log.core.started" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} gestartet – Anlage {name} @ {ip}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} started – air conditioner {name} @ {ip}"
+          }
+        }
+      }
+    },
+    "log.core.startedNoDevice" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} gestartet – noch keine Anlage eingerichtet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} started – no air conditioner set up yet"
+          }
+        }
+      }
+    },
+    "log.device.configUnreadable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{file} unlesbar ({error}) – beiseitegelegt als {aside}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{file} unreadable ({error}) – set aside as {aside}"
+          }
+        }
+      }
+    },
+    "log.device.displayGaveUp" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzeige umschalten nicht übernommen – aufgegeben"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display toggle not applied – giving up"
+          }
+        }
+      }
+    },
+    "log.device.displayRetry" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzeige umschalten nicht übernommen – wiederhole einmal"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display toggle not applied – trying once more"
+          }
+        }
+      }
+    },
+    "log.device.notApplied" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stellbefehl nicht übernommen (Versuch {attempt}/3): {fields}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set command not applied (attempt {attempt}/3): {fields}"
+          }
+        }
+      }
+    },
+    "log.device.propertyGaveUp" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{property} = {value} nicht übernommen – aufgegeben"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{property} = {value} not applied – giving up"
+          }
+        }
+      }
+    },
+    "log.device.propertyRetry" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{property} = {value} nicht übernommen – wiederhole"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{property} = {value} not applied – retrying"
+          }
+        }
+      }
+    },
+    "log.device.rateGaveUp" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistungsbegrenzung {value} % nicht übernommen – aufgegeben"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power limit {value} % not applied – giving up"
+          }
+        }
+      }
+    },
+    "log.device.rateRetry" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistungsbegrenzung {value} % nicht übernommen – wiederhole"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power limit {value} % not applied – retrying"
+          }
+        }
+      }
+    },
+    "log.discovery.broadcast" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche: Broadcast an {target} Port 6445 und 20086 (je 3×), warte {seconds} s"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search: broadcast to {target} port 6445 and 20086 (3× each), waiting {seconds} s"
+          }
+        }
+      }
+    },
+    "log.discovery.device" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{label}: {name} {ip} Typ 0x{type} V{version} Port {port} id {id} SN {sn}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{label}: {name} {ip} type 0x{type} V{version} port {port} id {id} SN {sn}"
+          }
+        }
+      }
+    },
+    "log.discovery.foundBroadcast" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage {id} per Broadcast gefunden unter {ip}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner {id} found by broadcast at {ip}"
+          }
+        }
+      }
+    },
+    "log.discovery.foundScan" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage {id} per Netz-Scan gefunden unter {ip}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner {id} found by network scan at {ip}"
+          }
+        }
+      }
+    },
+    "log.discovery.labelScan" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netz-Scan"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Network scan"
+          }
+        }
+      }
+    },
+    "log.discovery.labelSearch" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
+          }
+        }
+      }
+    },
+    "log.discovery.notFound" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage {id} im Netz nicht gefunden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner {id} not found on the network"
+          }
+        }
+      }
+    },
+    "log.discovery.nothing" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nichts gefunden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nothing found"
+          }
+        }
+      }
+    },
+    "log.discovery.reply" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{label}: Antwort von {ip} ({bytes} Byte) {hex}…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{label}: reply from {ip} ({bytes} bytes) {hex}…"
+          }
+        }
+      }
+    },
+    "log.discovery.result" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche an {target}: {result}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search at {target}: {result}"
+          }
+        }
+      }
+    },
+    "log.discovery.scanPlan" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netz-Scan: {nets} → {count} Adressen, warte {seconds} s"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Network scan: {nets} → {count} addresses, waiting {seconds} s"
+          }
+        }
+      }
+    },
+    "log.discovery.scanResult" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netz-Scan über {count} Adressen: {result}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Network scan over {count} addresses: {result}"
+          }
+        }
+      }
+    },
+    "log.discovery.unreadable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{label}: Antwort von {ip} nicht lesbar: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{label}: reply from {ip} not readable: {error}"
+          }
+        }
+      }
+    },
+    "log.energy.meterJump" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zählerstand zurückgesprungen ({old} → {new} kWh) – Tagesverbrauch zählt ab jetzt neu"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meter reading jumped back ({old} → {new} kWh) – daily consumption restarts now"
+          }
+        }
+      }
+    },
+    "log.frame.capabilities" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fähigkeiten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "capabilities"
+          }
+        }
+      }
+    },
+    "log.frame.fault" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Störmeldung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fault message"
+          }
+        }
+      }
+    },
+    "log.frame.group" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gruppe {number}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "group {number}"
+          }
+        }
+      }
+    },
+    "log.frame.notice" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "message"
+          }
+        }
+      }
+    },
+    "log.frame.properties" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigenschaften"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "properties"
+          }
+        }
+      }
+    },
+    "log.frame.query" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abfrage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "query"
+          }
+        }
+      }
+    },
+    "log.frame.set" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stellbefehl"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "set command"
+          }
+        }
+      }
+    },
+    "log.frame.setProperties" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigenschaften setzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "set properties"
+          }
+        }
+      }
+    },
+    "log.frame.setState" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zustand setzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "set state"
+          }
+        }
+      }
+    },
+    "log.frame.state" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zustand"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "state"
+          }
+        }
+      }
+    },
+    "log.frame.type" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typ {code}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "type {code}"
+          }
+        }
+      }
+    },
+    "log.history.csvNotSetAside" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "verlauf.csv nicht beiseitegelegt: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "verlauf.csv not set aside: {error}"
+          }
+        }
+      }
+    },
+    "log.history.damaged" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlaufsdatenbank defekt – beiseitegelegt als {file}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History database damaged – set aside as {file}"
+          }
+        }
+      }
+    },
+    "log.history.importUnreadable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " – {count} Datei(en) nicht lesbar, nächster Versuch beim nächsten Start"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " – {count} file(s) not readable, next attempt at the next start"
+          }
+        }
+      }
+    },
+    "log.history.imported" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf: {rows} Zeilen aus {files} CSV-Datei(en) in die Datenbank übernommen{unreadable}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History: {rows} rows from {files} CSV file(s) imported into the database{unreadable}"
+          }
+        }
+      }
+    },
+    "log.history.openFailed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlaufsdatenbank nicht zu öffnen ({code}): {message}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History database cannot be opened ({code}): {message}"
+          }
+        }
+      }
+    },
+    "log.history.sqlite" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf (SQLite): {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History (SQLite): {error}"
+          }
+        }
+      }
+    },
+    "log.keychain.accountNotReadable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Konto nicht lesbar: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud account not readable: {error}"
+          }
+        }
+      }
+    },
+    "log.keychain.accountNotSaved" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Konto nicht gespeichert: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud account not saved: {error}"
+          }
+        }
+      }
+    },
+    "log.keychain.notReadable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geheimnisspeicher: {service} nicht lesbar ({error})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret store: {service} not readable ({error})"
+          }
+        }
+      }
+    },
+    "log.keychain.notRemoved" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geheimnisspeicher: {service} nicht entfernt ({error})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret store: {service} not removed ({error})"
+          }
+        }
+      }
+    },
+    "log.keychain.notSaved" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geheimnisspeicher: {service} nicht gespeichert ({error}, {bytes} Byte)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret store: {service} not saved ({error}, {bytes} bytes)"
+          }
+        }
+      }
+    },
+    "log.keychain.sessionNotSaved" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Sitzung nicht gespeichert: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud session not saved: {error}"
+          }
+        }
+      }
+    },
+    "log.lan.connecting" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbinde mit {host}:{port} (TCP, V3) …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecting to {host}:{port} (TCP, V3) …"
+          }
+        }
+      }
+    },
+    "log.lan.disconnected" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbindung zu {host} getrennt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection to {host} closed"
+          }
+        }
+      }
+    },
+    "log.lan.droppedFrames" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{host}: {count} verspätete Rahmen verworfen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{host}: {count} late frames discarded"
+          }
+        }
+      }
+    },
+    "log.lan.error" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{host}: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{host}: {error}"
+          }
+        }
+      }
+    },
+    "log.lan.handshake" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TCP verbunden, sende Handshake (Token {bytes} Byte, geschwärzt)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TCP connected, sending handshake (token {bytes} bytes, redacted)"
+          }
+        }
+      }
+    },
+    "log.lan.handshakeOk" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Handshake ok, Sitzungsschlüssel ausgehandelt (gültig 12 h)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Handshake ok, session key negotiated (valid 12 h)"
+          }
+        }
+      }
+    },
+    "log.lan.retry" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{host}: {error} – wiederhole"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{host}: {error} – retrying"
+          }
+        }
+      }
+    },
+    "log.language.set" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprache: {language}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language: {language}"
+          }
+        }
+      }
+    },
+    "log.language.setPseudo" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprache: {language} (Pseudo)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language: {language} (pseudo)"
+          }
+        }
+      }
+    },
+    "log.level.error" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR"
+          }
+        }
+      }
+    },
+    "log.level.warning" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WARNUNG"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WARNING"
+          }
+        }
+      }
+    },
+    "log.packet.badHeader" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8370-Kopf mit unsinniger Länge {length} verworfen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8370 header with nonsensical length {length} discarded"
+          }
+        }
+      }
+    },
+    "log.path.cloud" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud"
+          }
+        }
+      }
+    },
+    "log.path.lan" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WLAN"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wi-Fi"
+          }
+        }
+      }
+    },
+    "log.polling.diagnostics" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnose: {line}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnostics: {line}"
+          }
+        }
+      }
+    },
+    "log.polling.fastGroup" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schnellabruf (Block Gruppe {group})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fast refresh (block group {group})"
+          }
+        }
+      }
+    },
+    "log.polling.fastProperties" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schnellabruf (Block Eigenschaften+Verbrauch)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fast refresh (block properties and consumption)"
+          }
+        }
+      }
+    },
+    "log.polling.started" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abfrage gestartet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Polling started"
+          }
+        }
+      }
+    },
+    "log.polling.state" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zustand: {line}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "State: {line}"
+          }
+        }
+      }
+    },
+    "log.relocate.loginFailed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage unter {ip} gefunden, Anmeldung gescheitert: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner found at {ip}, sign-in failed: {error}"
+          }
+        }
+      }
+    },
+    "log.relocate.moved" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage jetzt unter {ip} (vorher {old})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner now at {ip} (before: {old})"
+          }
+        }
+      }
+    },
+    "log.relocate.notSaved" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neue Adresse nicht gespeichert: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New address not saved: {error}"
+          }
+        }
+      }
+    },
+    "log.relocate.searchFailed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche nach der Anlage fehlgeschlagen: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search for the air conditioner failed: {error}"
+          }
+        }
+      }
+    },
+    "log.relocate.searching" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche die Anlage (id {id}) im WLAN …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Looking for the air conditioner (id {id}) on Wi-Fi …"
+          }
+        }
+      }
+    },
+    "log.relocate.unchanged" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage weiter unter {ip}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner still at {ip}"
+          }
+        }
+      }
+    },
+    "log.scene.unreadable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{file} unlesbar – beiseitegelegt als {aside}, {count} Szene(n) gerettet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{file} unreadable – set aside as {aside}, {count} scene(s) rescued"
+          }
+        }
+      }
+    },
+    "log.scenes.notSaved" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Szenen nicht gespeichert: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scenes not saved: {error}"
+          }
+        }
+      }
+    },
+    "log.session.cloudSetup" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage über die Cloud eingerichtet: {name} (id {id})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner set up via the Cloud: {name} (id {id})"
+          }
+        }
+      }
+    },
+    "log.session.manualSetup" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage mit eingegebenen Zugangsdaten eingerichtet: {name} @ {ip}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner set up with entered credentials: {name} @ {ip}"
+          }
+        }
+      }
+    },
+    "log.session.notUsable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage nicht nutzbar: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner not usable: {error}"
+          }
+        }
+      }
+    },
+    "log.session.reset" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einrichtung zurückgesetzt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setup reset"
+          }
+        }
+      }
+    },
+    "log.session.setupNotRemoved" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einrichtung nicht entfernt: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setup not removed: {error}"
+          }
+        }
+      }
+    },
+    "log.session.timersDeleted" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App-Timer gelöscht (keine Anlage mehr eingerichtet)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App timers deleted (no air conditioner set up any more)"
+          }
+        }
+      }
+    },
+    "log.settings.backgroundPolling" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Fenster sichtbar – Abfrage alle {seconds} s"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No window visible – polling every {seconds} s"
+          }
+        }
+      }
+    },
+    "log.settings.betaChannel" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorabversionen: {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pre-releases: {state}"
+          }
+        }
+      }
+    },
+    "log.settings.connectionMode" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbindungsweg: {mode}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection path: {mode}"
+          }
+        }
+      }
+    },
+    "log.settings.currency" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Währung: {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Currency: {value}"
+          }
+        }
+      }
+    },
+    "log.settings.detailedLog" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausführliches Protokoll {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detailed log {state}"
+          }
+        }
+      }
+    },
+    "log.settings.historyCSV" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf als CSV: {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History as CSV: {state}"
+          }
+        }
+      }
+    },
+    "log.settings.languageAfterRestart" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprache nach Neustart: {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language after restart: {value}"
+          }
+        }
+      }
+    },
+    "log.settings.refresh" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualisierung alle {seconds} s"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh every {seconds} s"
+          }
+        }
+      }
+    },
+    "log.settings.windowVisible" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenster sichtbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Window visible"
+          }
+        }
+      }
+    },
+    "log.stateLine.diagnostics" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdichter {hz}/{targetHz} Hz, {watts} W, {amps} A, {volts} V, T1–T4 {t1}/{t2}/{t3}/{t4}, TP {tp}, EEV {eev}, Lüfter {indoorFan}/{outdoorFan} U/min"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compressor {hz}/{targetHz} Hz, {watts} W, {amps} A, {volts} V, T1–T4 {t1}/{t2}/{t3}/{t4}, TP {tp}, EEV {eev}, fan {indoorFan}/{outdoorFan} rpm"
+          }
+        }
+      }
+    },
+    "log.stateLine.line" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{power}, {mode}, Soll {target}, innen {indoor}, außen {outdoor}, Lüfter {fan}, {watts}, Begrenzung {rate}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{power}, {mode}, target {target}, indoor {indoor}, outdoor {outdoor}, fan {fan}, {watts}, limit {rate}"
+          }
+        }
+      }
+    },
+    "log.timer.actionOff" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ausschalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "turn off"
+          }
+        }
+      }
+    },
+    "log.timer.actionOn" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "einschalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "turn on"
+          }
+        }
+      }
+    },
+    "log.timer.ended" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer „{name}“ beendet: {reason}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer “{name}” ended: {reason}"
+          }
+        }
+      }
+    },
+    "log.timer.firing" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer löst aus: {action}{suffix}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer firing: {action}{suffix}"
+          }
+        }
+      }
+    },
+    "log.timer.missed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App-Timer „{name}“ verpasst (fällig war {time})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App timer “{name}” missed (was due {time})"
+          }
+        }
+      }
+    },
+    "log.timer.nameOff" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "off"
+          }
+        }
+      }
+    },
+    "log.timer.nameOn" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "on"
+          }
+        }
+      }
+    },
+    "log.timer.offDeleted" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer „aus“ gelöscht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer “off” deleted"
+          }
+        }
+      }
+    },
+    "log.timer.offIn" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer: aus in {minutes} min"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer: off in {minutes} min"
+          }
+        }
+      }
+    },
+    "log.timer.onAt" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer: ein um {time}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer: on at {time}"
+          }
+        }
+      }
+    },
+    "log.timer.onDeleted" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer „ein“ gelöscht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer “on” deleted"
+          }
+        }
+      }
+    },
+    "log.timer.repeat" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " (Wiederholung)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " (repeat)"
+          }
+        }
+      }
+    },
+    "log.timer.switchedByHand" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage inzwischen von Hand geschaltet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "air conditioner has been switched by hand in the meantime"
+          }
+        }
+      }
+    },
+    "log.token.accepted" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage hat das Token angenommen – Einrichtung fertig"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner accepted the token – setup complete"
+          }
+        }
+      }
+    },
+    "log.token.error" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{kind}: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{kind}: {error}"
+          }
+        }
+      }
+    },
+    "log.token.fetch" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token-Abruf für {name} ({ip}, id {id}) mit Konto {account}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fetching token for {name} ({ip}, id {id}) with account {account}"
+          }
+        }
+      }
+    },
+    "log.token.none" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Token für udpid ({order} endian, {kind})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No token for udpid ({order} endian, {kind})"
+          }
+        }
+      }
+    },
+    "log.token.received" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token erhalten ({order} endian), prüfe an der Anlage …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token received ({order} endian), checking with the air conditioner …"
+          }
+        }
+      }
+    },
+    "log.token.rejected" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage lehnt dieses Token ab ({order} endian) – probiere die andere Variante"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner rejects this token ({order} endian) – trying the other variant"
+          }
+        }
+      }
+    },
+    "log.transport.pathDown" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{path} nicht erreichbar – nächster Weg"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{path} not reachable – trying the next path"
+          }
+        }
+      }
+    },
+    "log.transport.via" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbindung über {path}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection via {path}"
+          }
+        }
+      }
+    },
+    "log.updates.aborted" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: abgebrochen ({error})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: aborted ({error})"
+          }
+        }
+      }
+    },
+    "log.updates.automatic" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: automatisch laden, Beta-Kanal {state} ({feed})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: download automatically, beta channel {state} ({feed})"
+          }
+        }
+      }
+    },
+    "log.updates.betaChannel" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: Beta-Kanal {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: beta channel {state}"
+          }
+        }
+      }
+    },
+    "log.updates.downloaded" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: Version {version} geladen, wartet auf Neustart oder Beenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: version {version} downloaded, waiting for restart or quit"
+          }
+        }
+      }
+    },
+    "log.updates.found" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: Version {version} gefunden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: version {version} found"
+          }
+        }
+      }
+    },
+    "log.updates.installNow" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: installiere Version {version} auf Wunsch sofort"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: installing version {version} now at your request"
+          }
+        }
+      }
+    },
+    "log.updates.remind" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: Erinnerung in 24 h"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: reminder in 24 h"
+          }
+        }
+      }
+    },
     "main.comfort.display" : {
       "comment" : "Funktion weitere Funktionen (Anzeige am Gerät)",
       "extractionState" : "manual",
@@ -10825,6 +15541,60 @@
         }
       }
     },
+    "notices.dotnet.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laufzeit und Oberfläche (Windows Presentation Foundation) der Windows-App, eigenständig im Paket mitgeliefert (.NET 10). Hinweise zu den in .NET enthaltenen Fremdkomponenten stehen in der mitgelieferten Datei DOTNET-THIRD-PARTY-NOTICES.TXT."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Runtime and user interface (Windows Presentation Foundation) of the Windows app, shipped self-contained in the package (.NET 10). Notices on the third-party components included in .NET are in the shipped file DOTNET-THIRD-PARTY-NOTICES.TXT."
+          }
+        }
+      }
+    },
+    "notices.expat.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "XML-Leser, den WinSparkle für den Appcast nutzt; steckt in der mitgelieferten WinSparkle.dll (COPYING.expat aus WinSparkle 0.9.4)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "XML parser that WinSparkle uses for the appcast; included in the shipped WinSparkle.dll (COPYING.expat from WinSparkle 0.9.4)."
+          }
+        }
+      }
+    },
+    "notices.icu.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unicode- und Ländereinstellungsdaten für Foundation (_FoundationICU.dll), Teil der mitgelieferten Swift-Laufzeit der Windows-Fassung."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unicode and locale data for Foundation (_FoundationICU.dll), part of the Swift runtime shipped with the Windows version."
+          }
+        }
+      }
+    },
     "notices.intro" : {
       "comment" : "Lizenzen: Einleitung",
       "extractionState" : "manual",
@@ -10861,6 +15631,222 @@
         }
       }
     },
+    "notices.mideaAcLan.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorlage für das Schlüsselschema der MSmartHome-Cloud (Sitzungsschlüssel aus accessToken und randomData)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model for the key scheme of the MSmartHome Cloud (session key from accessToken and randomData)."
+          }
+        }
+      }
+    },
+    "notices.mideaBeautifulAir.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorlage für die Cloud-Steuerung über NetHome Plus (transparent send, Datenschlüssel, CSV-Kodierung) und für die Kodierung der Gerätetimer."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model for Cloud control through NetHome Plus (transparent send, data key, CSV encoding) and for the encoding of the air conditioner timers."
+          }
+        }
+      }
+    },
+    "notices.msmartNg.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorlage für das lokale Midea-Protokoll: V2/V3-Pakete, Handshake und Verschlüsselung, Suche im Netz, Befehls- und Antwortrahmen für Klimaanlagen, Diagnosegruppen, Token-Abruf über die Cloud. In Swift nachgebaut; die Testvektoren der Tests wurden mit msmart-ng erzeugt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model for the local Midea protocol: V2/V3 packets, handshake and encryption, discovery on the network, command and reply frames for air conditioners, diagnostic groups, token retrieval through the Cloud. Re-implemented in Swift; the test vectors of the tests were generated with msmart-ng."
+          }
+        }
+      }
+    },
+    "notices.platform.all" : {
+      "comment" : "Lizenzen: Plattform, für alle",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "alle"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All"
+          }
+        }
+      }
+    },
+    "notices.platform.macOnly" : {
+      "comment" : "Lizenzen: Plattform, nur Mac",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nur Mac"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac only"
+          }
+        }
+      }
+    },
+    "notices.platform.windowsOnly" : {
+      "comment" : "Lizenzen: Plattform, nur Windows",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nur Windows"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows only"
+          }
+        }
+      }
+    },
+    "notices.sparkle.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates der Mac-App (Sparkle 2.10.1): sucht nach neuen Versionen, prüft deren EdDSA-Signatur und installiert sie nach Rückfrage. Als Framework in der App mitgeliefert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates of the Mac app (Sparkle 2.10.1): looks for new versions, checks their EdDSA signature and installs them after confirmation. Shipped in the app as a framework."
+          }
+        }
+      }
+    },
+    "notices.sqlite.copyright" : {
+      "comment" : "Lizenzen: Vermerk statt Urheberrechtszeile bei SQLite",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SQLite ist gemeinfrei (public domain); es gibt keinen Urheberrechtsvermerk."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SQLite is in the public domain; there is no copyright notice."
+          }
+        }
+      }
+    },
+    "notices.sqlite.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlaufsdatenbank in der Windows-Fassung (Amalgamation 3.54.1, unverändert eingebunden). Unter macOS nutzt Klimacontrol die SQLite des Systems."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History database in the Windows version (amalgamation 3.54.1, included unmodified). On macOS, Klimacontrol uses the system's SQLite."
+          }
+        }
+      }
+    },
+    "notices.swiftCrypto.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kryptografie (AES, SHA-256, HMAC, MD5) in der Windows-Fassung, als Bibliothek eingebunden. Unter macOS nutzt Klimacontrol stattdessen CryptoKit und CommonCrypto des Systems."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cryptography (AES, SHA-256, HMAC, MD5) in the Windows version, included as a library. On macOS, Klimacontrol uses the system's CryptoKit and CommonCrypto instead."
+          }
+        }
+      }
+    },
+    "notices.swiftRuntime.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laufzeit der Windows-Fassung, neben der App mitgeliefert (swiftCore.dll, Foundation-, Dispatch- und weitere Swift-DLLs aus der Swift-Toolchain 6.4.2). Unter macOS ist die Swift-Laufzeit Teil des Systems."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Runtime of the Windows version, shipped next to the app (swiftCore.dll, Foundation, Dispatch and other Swift DLLs from the Swift toolchain 6.4.2). On macOS, the Swift runtime is part of the system."
+          }
+        }
+      }
+    },
+    "notices.trademark" : {
+      "comment" : "Lizenzen: Markenhinweis unter der Liste",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol ist kein Produkt von Midea und steht in keiner Verbindung zu Midea. Midea, MSmartHome, NetHome Plus und PortaSplit sind Marken ihrer jeweiligen Inhaber."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol is not a Midea product and is not affiliated with Midea. Midea, MSmartHome, NetHome Plus and PortaSplit are trademarks of their respective owners."
+          }
+        }
+      }
+    },
     "notices.windows.licenseTextName" : {
       "comment" : "Windows: UIA-Name des Lizenztextfelds",
       "extractionState" : "manual",
@@ -10893,6 +15879,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Klimacontrol is not a Midea product and is not affiliated with Midea. Midea, MSmartHome, NetHome Plus, and PortaSplit are trademarks of their respective owners."
+          }
+        }
+      }
+    },
+    "notices.winsparkle.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates der Windows-App (WinSparkle 0.9.4): sucht nach neuen Versionen, prüft deren EdDSA-Signatur und startet den Installer nach Rückfrage. Als DLL neben der App mitgeliefert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates of the Windows app (WinSparkle 0.9.4): looks for new versions, checks their EdDSA signature and starts the installer after confirmation. Shipped as a DLL next to the app."
           }
         }
       }

@@ -71,7 +71,7 @@ extension ACController {
             guard configGeneration == startConfig, device === startDevice else { return .superseded }
             if staleAware, generation != startGeneration || !debounce.isEmpty { return .superseded }
             endConnectPhase()
-            if lastRefreshFailed { AppLog.write("Verbindung wieder da") }
+            if lastRefreshFailed { AppLog.write(L.Log.Commands.restored) }
             clearConnectionError()
             lastUpdate = now()
             lastKnown = nil
@@ -132,7 +132,7 @@ extension ACController {
             if origin == nil { change(&s) }
             if let old {
                 let diff = Fmt.change(from: old, to: s)
-                if !diff.isEmpty { AppLog.write("Befehl: " + diff) }
+                if !diff.isEmpty { AppLog.write(L.Log.Commands.change(change: diff)) }
                 if !byTimer, old.power != s.power { timerRuntime.userPowerAt = now() }
             }
             state = s
@@ -141,7 +141,7 @@ extension ACController {
         switch outcome {
         case .applied: return true
         case .superseded: return false
-        case .notApplied: AppLog.error("Stellbefehl nach 3 Versuchen nicht übernommen – setze zurück und lese neu")
+        case .notApplied: AppLog.error(L.Log.Commands.notApplied)
         case .unclear, .failed: break
         }
         // Inzwischen kam ein neuerer Befehl: dessen Anzeige nicht auf den alten Stand zurücksetzen.
@@ -207,7 +207,7 @@ extension ACController {
     public func setRate(_ percent: Int) {
         guard device != nil else { return }
         let percent = PortaSplitDevice.nearestRate(percent)
-        AppLog.write("Befehl: Leistung begrenzen auf \(percent) %")
+        AppLog.write(L.Log.Commands.rate(percent: String(percent)))
         let before = state?.ratePercent
         if var s = state { s.ratePercent = percent; state = s }
         command(revert: { $0.ratePercent = before }) { try await $0.setRate(percent) }

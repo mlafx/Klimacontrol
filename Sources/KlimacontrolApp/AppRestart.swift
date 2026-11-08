@@ -25,7 +25,7 @@ enum AppRestart {
         } else {
             UserDefaults.standard.removeObject(forKey: languagesKey)
         }
-        AppLog.write("Sprache nach Neustart: \(choice.rawValue)")
+        AppLog.write(L.Log.Settings.languageAfterRestart(value: choice.rawValue))
     }
 
     /// Nur im fertigen Bundle; bei `swift run` gäbe es nichts, was sich neu öffnen ließe.
@@ -47,10 +47,10 @@ enum AppRestart {
         do {
             try helper.run()
         } catch {
-            AppLog.error("Neustart nicht möglich: \(error.localizedDescription)")
+            AppLog.error(L.Log.App.restartNotPossible(error: error.localizedDescription))
             return
         }
-        AppLog.write("Neustart")
+        AppLog.write(L.Log.App.restart)
         skipQuitPrompt = true
         NSApp.terminate(nil)
     }

@@ -52,20 +52,20 @@ public enum TimerOutcome: Equatable, Sendable {
 }
 
 extension TimerOutcome {
-    /// Deutscher Text fürs Protokoll, unabhängig von der Oberflächensprache.
+    /// Text fürs Protokoll in der Sprache der Oberfläche, mit 24-Stunden-Uhrzeit.
     var logMessage: String {
-        let name = Localizer.text(powerOn ? "timer.nameOn" : "timer.nameOff", language: .de)
+        let name = Localizer.text(powerOn ? "timer.nameOn" : "timer.nameOff")
         let time = Fmt.clock(due, profile: .germany)
         switch self {
         case let .executed(_, _, at):
-            return Localizer.text(powerOn ? "timer.executedOn" : "timer.executedOff", language: .de,
+            return Localizer.text(powerOn ? "timer.executedOn" : "timer.executedOff",
                                   ["name": name, "time": Fmt.clock(at, profile: .germany)])
         case .missed:
-            return Localizer.text("timer.missed", language: .de, ["name": name, "time": time])
+            return Localizer.text("timer.missed", ["name": name, "time": time])
         case .failed(_, _, .noDevice):
-            return Localizer.text("timer.failedNoDevice", language: .de, ["name": name, "time": time])
+            return Localizer.text("timer.failedNoDevice", ["name": name, "time": time])
         case .failed(_, _, .unreachable):
-            return Localizer.text("timer.failedUnreachable", language: .de, ["name": name, "time": time])
+            return Localizer.text("timer.failedUnreachable", ["name": name, "time": time])
         }
     }
 }
@@ -114,7 +114,7 @@ extension ACController {
     /// Ausschalt-Timer in `minutes` Minuten (1 min bis 24 h); nil löscht ihn. `now`: Zeitpunkt (Standard: Uhr des Kerns).
     public func setOffTimer(in minutes: Int?, now: Date? = nil) {
         let now = now ?? self.now()
-        AppLog.write(minutes.map { "Timer: aus in \($0) min" } ?? "Timer „aus“ gelöscht")
+        AppLog.write(minutes.map { L.Log.Timer.offIn(minutes: String($0)) } ?? L.Log.Timer.offDeleted)
         cancelTimerFire()
         offAt = minutes.map { now.addingTimeInterval(TimeInterval(min(24 * 60, max(1, $0)) * 60)) }
         timerRuntime.tried.remove(false)
@@ -128,7 +128,7 @@ extension ACController {
         let now = now ?? self.now()
         cancelTimerFire()
         onAt = date.map { Self.nextOccurrence(of: $0, after: now) }
-        AppLog.write(onAt.map { "Timer: ein um \(Self.logLabel($0, now: now))" } ?? "Timer „ein“ gelöscht")
+        AppLog.write(onAt.map { L.Log.Timer.onAt(time: Self.logLabel($0, now: now)) } ?? L.Log.Timer.onDeleted)
         timerRuntime.tried.remove(true)
         persistTimers()
     }
@@ -167,17 +167,17 @@ extension ACController {
         return day + " " + clock(date)
     }
 
-    /// Wie `timerLabel`, aber deutsch und 24 Stunden: das Protokoll bleibt unabhängig von der Oberflächensprache.
+    /// Wie `timerLabel`, aber mit 24-Stunden-Uhrzeit fürs Protokoll.
     static func logLabel(_ date: Date, now: Date) -> String {
         let cal = Calendar.current
         let day: String
         if cal.isDate(date, inSameDayAs: now) {
-            day = Localizer.text("date.today", language: .de)
+            day = Localizer.text("date.today")
         } else if let tomorrow = cal.date(byAdding: .day, value: 1, to: now), cal.isDate(date, inSameDayAs: tomorrow) {
-            day = Localizer.text("date.tomorrow", language: .de)
+            day = Localizer.text("date.tomorrow")
         } else {
             let names = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
-            day = Localizer.text("date.weekdayShort." + names[cal.component(.weekday, from: date) - 1], language: .de)
+            day = Localizer.text("date.weekdayShort." + names[cal.component(.weekday, from: date) - 1])
         }
         return day + " " + Fmt.clock(date, profile: .germany)
     }
@@ -201,7 +201,7 @@ extension ACController {
             guard let raw = settings.object(forKey: key) as? Double, raw.isFinite else { return nil }
             let t = Date(timeIntervalSince1970: raw)
             guard now.timeIntervalSince(t) <= Self.timerGrace else {
-                AppLog.write("App-Timer „\(powerOn ? "ein" : "aus")“ verpasst (fällig war \(Self.logLabel(t, now: now)))")
+                AppLog.write(L.Log.Timer.missed(name: powerOn ? L.Log.Timer.nameOn : L.Log.Timer.nameOff, time: Self.logLabel(t, now: now)))
                 settings.removeObject(forKey: key)
                 report(.missed(powerOn: powerOn, due: t))
                 return nil
@@ -307,7 +307,7 @@ extension ACController {
             if !first {
                 // Nach dem ersten Versuch von Hand geschaltet: der Nutzer hat entschieden, nicht zurückschalten.
                 if let user = timerRuntime.userPowerAt, user >= at {
-                    drop(powerOn: powerOn, because: "Anlage inzwischen von Hand geschaltet")
+                    drop(powerOn: powerOn, because: L.Log.Timer.switchedByHand)
                     continue
                 }
                 // Der erste Versuch kam an, nur die Antwort fehlte: nicht noch einmal senden.
@@ -317,7 +317,7 @@ extension ACController {
                 }
             }
             timerRuntime.tried.insert(powerOn)
-            AppLog.write("Timer löst aus: \(powerOn ? "einschalten" : "ausschalten")\(first ? "" : " (Wiederholung)")")
+            AppLog.write(L.Log.Timer.firing(action: powerOn ? L.Log.Timer.actionOn : L.Log.Timer.actionOff, suffix: first ? "" : L.Log.Timer.repeat))
             // Eigene Aufgabe, damit ein Abbruch den Befehl nicht mitten im Senden trifft (ob er ankam, wäre sonst offen).
             let ok = await Task {
                 if first { return await send({ $0.power = powerOn }, byTimer: true) }
@@ -339,7 +339,7 @@ extension ACController {
         if powerOn { onAt = nil } else { offAt = nil }
         timerRuntime.tried.remove(powerOn)
         persistTimers()
-        AppLog.write("Timer „\(powerOn ? "ein" : "aus")“ beendet: \(reason)")
+        AppLog.write(L.Log.Timer.ended(name: powerOn ? L.Log.Timer.nameOn : L.Log.Timer.nameOff, reason: reason))
     }
 
     /// Timer abschließen: löschen, Ergebnis merken, Hinweis und Mitteilung.

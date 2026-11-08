@@ -248,7 +248,7 @@ final class DisplayNamesTests: XCTestCase {
         }
     }
 
-    func testProtocolLinesStayGerman() {
+    func testProtocolLinesFollowTheInterfaceLanguage() {
         var state = ACState()
         state.power = true
         state.mode = .cool
@@ -261,14 +261,18 @@ final class DisplayNamesTests: XCTestCase {
         Localizer.withLanguage(.en) {
             FormatProfile.withProfile(.unitedStates) {
                 let line = Fmt.stateLine(state)
-                XCTAssertTrue(line.contains("Soll 22°"), line)
+                XCTAssertTrue(line.contains("target 22°"), line)
                 XCTAssertTrue(line.contains("21,5°"), line)
-                XCTAssertTrue(line.contains("Kühlen"), line)
+                XCTAssertTrue(line.contains("Cool"), line)
                 XCTAssertTrue(line.contains("1.200 W"), line)
                 let change = Fmt.change(from: before, to: state)
-                XCTAssertTrue(change.contains("Modus Kühlen"), change)
-                XCTAssertTrue(change.contains("Soll 22°"), change)
+                XCTAssertTrue(change.contains("Mode Cool"), change)
+                XCTAssertTrue(change.contains("Target 22°"), change)
             }
+        }
+        Localizer.withLanguage(.de) {
+            XCTAssertTrue(Fmt.stateLine(state).contains("Soll 22°"))
+            XCTAssertTrue(Fmt.change(from: before, to: state).contains("Modus Kühlen"))
         }
     }
 }

@@ -241,14 +241,45 @@ final class EnglishLeakTests: CoreTestCase {
         }
     }
 
-    func testTimerLogLinesStayGerman() {
+    func testLogLinesFollowTheInterfaceLanguage() throws {
         let due = local(6, 7, 0)
         Localizer.withLanguage(.en) {
             FormatProfile.withProfile(.unitedStates) {
                 XCTAssertEqual(TimerOutcome.executed(powerOn: false, due: due, at: due).logMessage,
-                               "Timer „Aus“: Anlage um 07:00 ausgeschaltet.")
-                XCTAssertTrue(TimerOutcome.missed(powerOn: true, due: due).logMessage.hasPrefix("Timer „Ein“ für 07:00 verpasst."))
-                XCTAssertEqual(ACController.logLabel(due, now: due), "heute 07:00")
+                               "Timer “Off”: air conditioner turned off at 07:00.")
+                XCTAssertEqual(ACController.logLabel(due, now: due), "today 07:00")
+                XCTAssertEqual(MideaError.timeout.errorDescription, "The air conditioner is not responding.")
+                XCTAssertEqual(KeychainError.unreadable.errorDescription,
+                               "The stored entry is unreadable. Enter the credentials again in the settings.")
+                XCTAssertEqual(L.Log.Level.error, "ERROR")
+            }
+        }
+        Localizer.withLanguage(.de) {
+            XCTAssertEqual(TimerOutcome.executed(powerOn: false, due: due, at: due).logMessage,
+                           "Timer „Aus“: Anlage um 07:00 ausgeschaltet.")
+            XCTAssertEqual(ACController.logLabel(due, now: due), "heute 07:00")
+            XCTAssertEqual(MideaError.timeout.errorDescription, "Die Anlage antwortet nicht.")
+            XCTAssertEqual(L.Log.Level.error, "FEHLER")
+        }
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("LogLang-\(UUID().uuidString)")
+        AppLog.redirect(to: dir)
+        defer { AppLog.redirect(to: nil) }
+        Localizer.withLanguage(.en) { AppLog.error(MideaError.timeout.errorDescription ?? "") }
+        Localizer.withLanguage(.de) { AppLog.error(MideaError.timeout.errorDescription ?? "") }
+        let tail = AppLog.tail()
+        XCTAssertTrue(tail.contains(" ERROR The air conditioner is not responding."), tail)
+        XCTAssertTrue(tail.contains(" FEHLER Die Anlage antwortet nicht."), tail)
+    }
+
+    func testRedactionDoesNotDependOnTheLanguage() {
+        for language in AppLanguage.allCases {
+            Localizer.withLanguage(language) {
+                let line = LogText.t("log.cloud.kindError", "Cloud {kind}: {error}",
+                                     ["kind": "MSmartHome", "error": "{\"token\": \"abc\", \"password\": 7}"])
+                let out = AppLog.redact(line)
+                XCTAssertFalse(out.contains("abc"), out)
+                XCTAssertTrue(out.contains("\"token\":\"***\""), out)
+                XCTAssertTrue(out.contains("\"password\":\"***\""), out)
             }
         }
     }

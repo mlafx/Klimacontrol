@@ -63,14 +63,14 @@ public enum MideaCloud {
             switch self {
             case .api(_, let msg), .network(let msg), .badReply(let msg), .sessionKeys(let msg), .incompleteLogin(let msg):
                 return msg
-            case .noToken: return "kein Token"
-            case .tokenRejected: return "Die Anlage lehnt das Token ab – ist sie in genau diesem Konto eingerichtet?"
-            case .notInAccount: return "Anlage ist in diesem Konto nicht vorhanden"
+            case .noToken: return LogText.t("reason.cloud.noToken", "kein Token")
+            case .tokenRejected: return LogText.t("reason.cloud.tokenRejected", "Die Anlage lehnt das Token ab – ist sie in genau diesem Konto eingerichtet?")
+            case .notInAccount: return LogText.t("reason.cloud.notInAccount", "Anlage ist in diesem Konto nicht vorhanden")
             case .paused(let until):
-                return "Die Cloud-Anmeldung ist nach Fehlschlägen pausiert. Klimacontrol versucht es ab "
-                    + "\(MideaCloudSession.clock(until)) wieder."
+                return LogText.t("reason.cloud.paused", "Die Cloud-Anmeldung ist nach Fehlschlägen pausiert. Klimacontrol versucht es ab {time} wieder.",
+                                 ["time": MideaCloudSession.clock(until)])
             case .keychainLocked:
-                return "Der Schlüsselbund ist gesperrt. Mac entsperren; Klimacontrol versucht es danach von selbst wieder."
+                return LogText.t("reason.cloud.keychainLocked", "Der Schlüsselbund ist gesperrt. Mac entsperren; Klimacontrol versucht es danach von selbst wieder.")
             }
         }
 
@@ -93,20 +93,20 @@ public enum MideaCloud {
         /// Was ist passiert (ein Satz, ohne Fachwörter). Deutsch für Protokoll; die Anzeige-Texte stehen im Katalog des Kerns.
         public var what: String {
             switch kind {
-            case .wrongCredentials: return "E-Mail oder Passwort des Midea-Kontos stimmen nicht."
-            case .accountLocked: return "Das Midea-Konto ist vorübergehend gesperrt."
-            case .serviceUnavailable: return "Die Midea-Cloud gibt über diesen Zugang gerade keine Zugangsdaten aus."
-            case .sessionExpired: return "Die Anmeldung bei der Midea-Cloud ist abgelaufen."
-            case .applianceOffline: return "Die Anlage ist laut Midea-Cloud ausgeschaltet oder ohne Strom."
-            case .notInAccount, .noToken: return "Die Cloud kennt diese Anlage nicht."
-            case .tokenRejected: return "Die Anlage lehnt die Zugangsdaten aus der Cloud ab."
-            case .network: return "Die Midea-Cloud ist nicht erreichbar."
-            case .badReply: return "Die Midea-Cloud hat unerwartet geantwortet."
+            case .wrongCredentials: return LogText.t("kit.cloud.what.wrongCredentials", "E-Mail oder Passwort des Midea-Kontos stimmen nicht.")
+            case .accountLocked: return LogText.t("kit.cloud.what.accountLocked", "Das Midea-Konto ist vorübergehend gesperrt.")
+            case .serviceUnavailable: return LogText.t("kit.cloud.what.serviceUnavailable", "Die Midea-Cloud gibt über diesen Zugang gerade keine Zugangsdaten aus.")
+            case .sessionExpired: return LogText.t("kit.cloud.what.sessionExpired", "Die Anmeldung bei der Midea-Cloud ist abgelaufen.")
+            case .applianceOffline: return LogText.t("kit.cloud.what.applianceOffline", "Die Anlage ist laut Midea-Cloud ausgeschaltet oder ohne Strom.")
+            case .notInAccount, .noToken: return LogText.t("kit.cloud.what.unknownAppliance", "Die Cloud kennt diese Anlage nicht.")
+            case .tokenRejected: return LogText.t("kit.cloud.what.tokenRejected", "Die Anlage lehnt die Zugangsdaten aus der Cloud ab.")
+            case .network: return LogText.t("kit.cloud.what.network", "Die Midea-Cloud ist nicht erreichbar.")
+            case .badReply: return LogText.t("kit.cloud.what.badReply", "Die Midea-Cloud hat unerwartet geantwortet.")
             case .other:
                 if case .api(_, let msg) = self {
-                    return "Die Midea-Cloud meldet einen Fehler: \(DeviceConfig.cleanText(msg, fallback: "ohne Text"))."
+                    return LogText.t("kit.cloud.what.otherWithText", "Die Midea-Cloud meldet einen Fehler: {text}.", ["text": DeviceConfig.cleanText(msg, fallback: LogText.t("kit.cloud.noText", "ohne Text"))])
                 }
-                return "Die Midea-Cloud meldet einen Fehler."
+                return LogText.t("kit.cloud.what.other", "Die Midea-Cloud meldet einen Fehler.")
             case .paused, .keychainLocked: return message
             }
         }
@@ -114,15 +114,15 @@ public enum MideaCloud {
         /// Was tun (ein Satz).
         public var todo: String {
             switch kind {
-            case .wrongCredentials: return "Zugangsdaten aus der MSmartHome-App in den Einstellungen neu eingeben."
-            case .accountLocked: return "Später erneut versuchen oder in der MSmartHome-App anmelden."
-            case .serviceUnavailable: return "Später erneut versuchen oder die Anlage über die Suche im WLAN einrichten."
-            case .sessionExpired: return "Klimacontrol meldet sich automatisch neu an; sonst später erneut versuchen."
-            case .applianceOffline: return "Klimacontrol prüft regelmäßig weiter."
-            case .notInAccount, .noToken: return "Prüfen, ob sie in der MSmartHome-App in genau diesem Konto eingerichtet ist."
-            case .tokenRejected: return "Prüfen, ob die Anlage in genau diesem Konto eingerichtet ist."
-            case .network: return "Internetverbindung prüfen und erneut versuchen."
-            case .badReply, .other: return "Später erneut versuchen."
+            case .wrongCredentials: return LogText.t("kit.cloud.todo.wrongCredentials", "Zugangsdaten aus der MSmartHome-App in den Einstellungen neu eingeben.")
+            case .accountLocked: return LogText.t("kit.cloud.todo.accountLocked", "Später erneut versuchen oder in der MSmartHome-App anmelden.")
+            case .serviceUnavailable: return LogText.t("kit.cloud.todo.serviceUnavailable", "Später erneut versuchen oder die Anlage über die Suche im WLAN einrichten.")
+            case .sessionExpired: return LogText.t("kit.cloud.todo.sessionExpired", "Klimacontrol meldet sich automatisch neu an; sonst später erneut versuchen.")
+            case .applianceOffline: return LogText.t("kit.cloud.todo.applianceOffline", "Klimacontrol prüft regelmäßig weiter.")
+            case .notInAccount, .noToken: return LogText.t("kit.cloud.todo.unknownAppliance", "Prüfen, ob sie in der MSmartHome-App in genau diesem Konto eingerichtet ist.")
+            case .tokenRejected: return LogText.t("kit.cloud.todo.tokenRejected", "Prüfen, ob die Anlage in genau diesem Konto eingerichtet ist.")
+            case .network: return LogText.t("kit.cloud.todo.network", "Internetverbindung prüfen und erneut versuchen.")
+            case .badReply, .other: return LogText.t("kit.cloud.todo.retryLater", "Später erneut versuchen.")
             case .paused, .keychainLocked: return ""
             }
         }
@@ -146,7 +146,7 @@ public enum MideaCloud {
     /// Nutzt die gemeinsame Sitzung des Kontos (keine zweite Anmeldung, wenn kurz vorher die Kontoliste kam).
     public static func fetchConfig(for dev: DiscoveredDevice, account: String, password: String) async throws -> DeviceConfig {
         var lastError: any Error = CloudError.noToken
-        AppLog.write("Token-Abruf für \(dev.name) (\(dev.ip), id \(dev.deviceId)) mit Konto \(AppLog.mask(account))")
+        AppLog.write(LogText.t("log.token.fetch", "Token-Abruf für {name} ({ip}, id {id}) mit Konto {account}", ["name": dev.name, "ip": dev.ip, "id": String(dev.deviceId), "account": AppLog.mask(account)]))
         let session = MideaCloudSession.shared(account: account, password: password)
         await session.userActed()
         for kind in CloudKind.allCases {
@@ -156,20 +156,20 @@ public enum MideaCloud {
                     let udpid = Discovery.udpid(deviceId: dev.deviceId, bigEndian: big)
                     let found = try await session.token(kind: kind, udpid: udpid, applianceId: dev.deviceId)
                     guard let (token, key) = found else {
-                        AppLog.write("Kein Token für udpid (\(big ? "big" : "little") endian, \(kind.rawValue))")
+                        AppLog.write(LogText.t("log.token.none", "Kein Token für udpid ({order} endian, {kind})", ["order": big ? "big" : "little", "kind": kind.rawValue]))
                         continue
                     }
-                    AppLog.write("Token erhalten (\(big ? "big" : "little") endian), prüfe an der Anlage …")
+                    AppLog.write(LogText.t("log.token.received", "Token erhalten ({order} endian), prüfe an der Anlage …", ["order": big ? "big" : "little"]))
                     let cfg = DeviceConfig(name: dev.name, ip: dev.ip, port: dev.port, deviceId: dev.deviceId, token: token, key: key)
                     if await PortaSplitDevice.verify(cfg, quiet: true) {
-                        AppLog.write("Anlage hat das Token angenommen – Einrichtung fertig")
+                        AppLog.write(LogText.t("log.token.accepted", "Anlage hat das Token angenommen – Einrichtung fertig"))
                         return cfg
                     }
-                    AppLog.write("Anlage lehnt dieses Token ab (\(big ? "big" : "little") endian) – probiere die andere Variante")
+                    AppLog.write(LogText.t("log.token.rejected", "Anlage lehnt dieses Token ab ({order} endian) – probiere die andere Variante", ["order": big ? "big" : "little"]))
                     lastError = CloudError.tokenRejected
                 }
             } catch {
-                AppLog.error("\(kind.rawValue): \(error.localizedDescription)")
+                AppLog.error(LogText.t("log.token.error", "{kind}: {error}", ["kind": kind.rawValue, "error": error.localizedDescription]))
                 lastError = error
             }
         }
@@ -181,18 +181,19 @@ public enum MideaCloud {
     /// NetHome Plus als Rückfall.
     public static func listAppliances(account: String, password: String) async throws -> [CloudAppliance] {
         var lastError: any Error = CloudError.noToken
-        AppLog.write("Cloud-Suche mit Konto \(AppLog.mask(account))")
+        AppLog.write(LogText.t("log.cloud.search", "Cloud-Suche mit Konto {account}", ["account": AppLog.mask(account)]))
         let session = MideaCloudSession.shared(account: account, password: password)
         await session.userActed()
         for kind in CloudKind.allCases {
             do {
                 let list = try await session.appliances(kind: kind)
-                AppLog.write("Cloud-Suche (\(kind.rawValue)): " + (list.isEmpty ? "keine Anlage im Konto"
-                    : list.map { "\($0.name) id \($0.deviceId) \($0.online ? "online" : "offline")" }.joined(separator: ", ")))
+                let found = list.isEmpty ? LogText.t("log.cloud.searchEmpty", "keine Anlage im Konto")
+                    : list.map { LogText.t("log.cloud.searchItem", "{name} id {id} {state}", ["name": $0.name, "id": String($0.deviceId), "state": $0.online ? LogText.t("log.cloud.online", "online") : LogText.t("log.cloud.offline", "offline")]) }.joined(separator: ", ")
+                AppLog.write(LogText.t("log.cloud.searchResult", "Cloud-Suche ({kind}): {result}", ["kind": kind.rawValue, "result": found]))
                 if !list.isEmpty { return list }
                 lastError = CloudError.noToken
             } catch {
-                AppLog.error("Cloud-Suche \(kind.rawValue): \(error.localizedDescription)")
+                AppLog.error(LogText.t("log.cloud.searchError", "Cloud-Suche {kind}: {error}", ["kind": kind.rawValue, "error": error.localizedDescription]))
                 lastError = error
             }
         }
@@ -365,10 +366,10 @@ extension MideaCloudAPI {
     /// heißt: der Sitzungsschlüssel passt nicht (`sessionKeys`); gültiges CSV, aber kaputtes Paket = `badReply`.
     static func innerFrame(fromCSV text: String) throws -> [Data] {
         guard let decoded = CloudControlClient.fromCSV(text), !decoded.isEmpty else {
-            throw MideaCloud.CloudError.sessionKeys("Sitzungsschlüssel passt nicht")
+            throw MideaCloud.CloudError.sessionKeys(LogText.t("kit.cloud.sessionKeyMismatch", "Sitzungsschlüssel passt nicht"))
         }
         guard let inner = CloudPacket.decode(decoded) else {
-            throw MideaCloud.CloudError.badReply("Antwort der Anlage über die Cloud unlesbar")
+            throw MideaCloud.CloudError.badReply(LogText.t("reason.cloud.badReply", "Antwort der Anlage über die Cloud unlesbar"))
         }
         return [inner]
     }
@@ -506,14 +507,14 @@ final class SmartHomeClient: MideaCloudAPI, Sendable {
     private func deriveSessionKeys(encKeyHex: String, encIvHex: String) throws {
         let (tmpKey, tmpIv) = Self.tmpKeyIv()
         guard let ek = Data(hex: encKeyHex), let ei = Data(hex: encIvHex) else {
-            throw MideaCloud.CloudError.incompleteLogin("Sitzungsschlüssel unlesbar")
+            throw MideaCloud.CloudError.incompleteLogin(LogText.t("kit.cloud.sessionKeyUnreadable", "Sitzungsschlüssel unlesbar"))
         }
         do {
             aesKey = try MideaCrypto.decryptCBC(key: tmpKey, iv: tmpIv, ek)
             aesIv = try MideaCrypto.decryptCBC(key: tmpKey, iv: tmpIv, ei)
         } catch {
             aesKey = Data(); aesIv = Data()
-            throw MideaCloud.CloudError.incompleteLogin("Sitzungsschlüssel unlesbar")
+            throw MideaCloud.CloudError.incompleteLogin(LogText.t("kit.cloud.sessionKeyUnreadable", "Sitzungsschlüssel unlesbar"))
         }
     }
 
@@ -541,7 +542,7 @@ final class SmartHomeClient: MideaCloudAPI, Sendable {
 
     func transparentSend(_ frame: Data, deviceId: UInt64, applianceId: String) async throws -> [Data] {
         guard canControl else {
-            throw MideaCloud.CloudError.sessionKeys("Sitzungsschlüssel fehlen")
+            throw MideaCloud.CloudError.sessionKeys(LogText.t("kit.cloud.sessionKeysMissing", "Sitzungsschlüssel fehlen"))
         }
         let packet = CloudPacket.encode(deviceId: deviceId, frame: frame)
         let order = try MideaCrypto.encryptCBC(key: aesKey, iv: aesIv, Data(CloudControlClient.csv(packet).utf8)).hex
@@ -549,12 +550,12 @@ final class SmartHomeClient: MideaCloudAPI, Sendable {
         let r = try await request("/v1/appliance/transparent/send",
                                   body(["order": order, "funId": "0000", "applianceCode": applianceId, "waitResp": true]))
         guard let reply = r["reply"] as? String, let rd = Data(hex: reply) else {
-            throw MideaCloud.CloudError.badReply("keine Antwort von der Anlage")
+            throw MideaCloud.CloudError.badReply(LogText.t("kit.cloud.noApplianceReply", "keine Antwort von der Anlage"))
         }
         let plain: Data
         do { plain = try MideaCrypto.decryptCBC(key: aesKey, iv: aesIv, rd) } catch {
             // Schlüssel passt nicht – ein Sitzungsproblem, kein Netzfehler.
-            throw MideaCloud.CloudError.sessionKeys("Sitzungsschlüssel passt nicht")
+            throw MideaCloud.CloudError.sessionKeys(LogText.t("kit.cloud.sessionKeyMismatch", "Sitzungsschlüssel passt nicht"))
         }
         return try Self.innerFrame(fromCSV: String(decoding: plain, as: UTF8.self))
     }
@@ -678,20 +679,20 @@ final class NetHomePlusClient: MideaCloudAPI, Sendable {
     func transparentSend(_ frame: Data, deviceId: UInt64, applianceId: String) async throws -> [Data] {
         let dataKey: Data
         do { dataKey = try CloudControlClient.deriveDataKey(accessTokenHex: accessToken, appKey: Self.appKey) } catch {
-            throw MideaCloud.CloudError.sessionKeys("Sitzungsschlüssel unlesbar")
+            throw MideaCloud.CloudError.sessionKeys(LogText.t("kit.cloud.sessionKeyUnreadable", "Sitzungsschlüssel unlesbar"))
         }
         let packet = CloudPacket.encode(deviceId: deviceId, frame: frame)
         let order = try CloudControlClient.encryptString(CloudControlClient.csv(packet), dataKey: dataKey)
         let r = try await request("/v1/appliance/transparent/send",
                                   body(["order": order, "funId": "0000", "applianceId": applianceId]))
         guard let reply = r["reply"] as? String else {
-            throw MideaCloud.CloudError.badReply("keine Antwort von der Anlage")
+            throw MideaCloud.CloudError.badReply(LogText.t("kit.cloud.noApplianceReply", "keine Antwort von der Anlage"))
         }
         let text: String
         do { text = try CloudControlClient.decryptString(reply, dataKey: dataKey) } catch let e as MideaCloud.CloudError {
             throw e
         } catch {
-            throw MideaCloud.CloudError.sessionKeys("Sitzungsschlüssel passt nicht")
+            throw MideaCloud.CloudError.sessionKeys(LogText.t("kit.cloud.sessionKeyMismatch", "Sitzungsschlüssel passt nicht"))
         }
         return try Self.innerFrame(fromCSV: text)
     }

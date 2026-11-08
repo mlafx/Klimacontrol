@@ -25,7 +25,7 @@ extension ACController {
             showConnectionError(UserMessage(what: L.Message.Session.Incomplete.what,
                                             todo: L.Message.Session.Incomplete.todo,
                                             code: UserMessage.from(error).code, detail: error.localizedDescription))
-            AppLog.error("Anlage nicht nutzbar: \(error.localizedDescription)")
+            AppLog.error(L.Log.Session.notUsable(error: error.localizedDescription))
         }
         restartPolling()
         guard let current = device else { return }
@@ -40,7 +40,7 @@ extension ACController {
     /// Die Cloud-Sitzung gilt nur für diese Anlage und wird verworfen, das Konto bleibt. Router-/IP-Wechsel: `relocate()`.
     public func forgetDevice() {
         stopDevice()
-        do { try platform.discard(paths.config) } catch { AppLog.error("Einrichtung nicht entfernt: \(error.localizedDescription)") }
+        do { try platform.discard(paths.config) } catch { AppLog.error(L.Log.Session.setupNotRemoved(error: error.localizedDescription)) }
         accounts.clearSession()
         setCredentialsBackedUp(false)
         forgetEnergyDayStart()
@@ -57,13 +57,13 @@ extension ACController {
         clearConnectionError()
         clearNotice()
         if offAt != nil || onAt != nil {
-            AppLog.write("App-Timer gelöscht (keine Anlage mehr eingerichtet)")
+            AppLog.write(L.Log.Session.timersDeleted)
             cancelTimerFire()
             offAt = nil
             onAt = nil
             persistTimers()
         }
-        AppLog.write("Einrichtung zurückgesetzt")
+        AppLog.write(L.Log.Session.reset)
     }
 
     func stopDevice() {
@@ -95,7 +95,7 @@ extension ACController {
         cloudAccount = creds.account
         if connectionMode == .lan { connectionMode = .auto }
         use(cfg)
-        AppLog.write("Anlage über die Cloud eingerichtet: \(cfg.name) (id \(cfg.deviceId))")
+        AppLog.write(L.Log.Session.cloudSetup(name: cfg.name, id: String(cfg.deviceId)))
     }
 }
 

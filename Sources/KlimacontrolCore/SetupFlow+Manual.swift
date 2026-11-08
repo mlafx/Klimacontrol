@@ -185,7 +185,7 @@ extension SetupFlow {
             let fresh = manualCheckOK == true && manualCheckedAt.map { now().timeIntervalSince($0) < Self.reuseSeconds } == true
             if !fresh, !(await check(cfg)) { return false }
             try sink.adopt(cfg)
-            AppLog.write("Anlage mit eingegebenen Zugangsdaten eingerichtet: \(cfg.name) @ \(cfg.ip)")
+            AppLog.write(L.Log.Session.manualSetup(name: cfg.name, ip: cfg.ip))
             // Ohne Konto gibt es keinen Cloud-Weg und die Zugangsdaten liegen nur hier.
             completion = SetupCompletion(path: .manual, suggestLANOnly: sink.connectionMode != .lan,
                                          offerBackup: true, note: Self.completionNoteManual)

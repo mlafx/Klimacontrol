@@ -174,6 +174,7 @@ public final class ACController {
     ///   - dependencies: Ablagen, Betriebssystem, Anlage, Midea-Konto, Uhr.
     ///   - autostart: false für Tests – dann keine Einrichtung laden, keine Abfrage- und Timer-Schleife, keine Suche im Netz.
     public init(appVersion: String, dependencies deps: CoreDependencies, autostart: Bool = true) {
+        Localizer.installLogTranslator()
         self.appVersion = appVersion
         settings = deps.settings
         paths = deps.paths
@@ -214,12 +215,12 @@ public final class ACController {
         }
         guard autostart else { return }
         if let cfg = DeviceConfig.load(from: paths.config) {
-            AppLog.write("Klimacontrol \(appVersion) gestartet – Anlage \(cfg.name) @ \(cfg.ip)")
+            AppLog.write(L.Log.Core.started(version: appVersion, name: cfg.name, ip: cfg.ip))
             // Startanzeige: zuletzt bekannte Werte (höchstens 1 Tag alt) abgeblendet mit „Stand HH:MM“.
             lastKnown = history.window(86400).last
             use(cfg)
         } else {
-            AppLog.write("Klimacontrol \(appVersion) gestartet – noch keine Anlage eingerichtet")
+            AppLog.write(L.Log.Core.startedNoDevice(version: appVersion))
         }
         startTimerLoop()
     }

@@ -5,67 +5,104 @@ import Foundation
 // ausgelieferte Laufzeiten; die Visual-C++-Laufzeit ist verteilbarer Code ohne Vermerkpflicht.
 
 public struct ThirdPartyNotice: Identifiable, Sendable, Encodable {
+    public enum Platform: Sendable { case all, macOnly, windowsOnly }
+
     public let id: String
     public let name: String
     public let url: String
     /// SPDX-Kennung bzw. „Public Domain“.
     public let license: String
-    public let copyright: [String]
-    /// Wofür Klimacontrol die Quelle nutzt.
-    public let usage: String
-    public let platforms: String
+    private let fixedCopyright: [String]
+    private let copyrightKey: String?
+    public let platform: Platform
     /// Voller Lizenztext (bei Apache 2.0 einschließlich NOTICE).
     public let licenseText: String
+
+    init(id: String, name: String, url: String, license: String, copyright: [String] = [], copyrightKey: String? = nil,
+         platform: Platform, licenseText: String) {
+        self.id = id
+        self.name = name
+        self.url = url
+        self.license = license
+        fixedCopyright = copyright
+        self.copyrightKey = copyrightKey
+        self.platform = platform
+        self.licenseText = licenseText
+    }
+
+    public var copyright: [String] { copyrightKey.map { [Localizer.text($0)] } ?? fixedCopyright }
+
+    /// Wofür Klimacontrol die Quelle nutzt, in der Sprache der Oberfläche.
+    public var usage: String { Localizer.text("notices.\(Self.keyName(id)).usage") }
+
+    public var platforms: String {
+        switch platform {
+        case .all: Localizer.text("notices.platform.all")
+        case .macOnly: Localizer.text("notices.platform.macOnly")
+        case .windowsOnly: Localizer.text("notices.platform.windowsOnly")
+        }
+    }
+
+    /// `msmart-ng` → `msmartNg`, `midea_ac_lan` → `mideaAcLan` (Teil der Katalogschlüssel).
+    static func keyName(_ id: String) -> String {
+        let parts = id.split(whereSeparator: { "-_.".contains($0) }).map(String.init)
+        return (parts.first ?? "") + parts.dropFirst().map { $0.prefix(1).uppercased() + $0.dropFirst() }.joined()
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, name, url, license, copyright, usage, platforms, licenseText
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(id, forKey: .id)
+        try c.encode(name, forKey: .name)
+        try c.encode(url, forKey: .url)
+        try c.encode(license, forKey: .license)
+        try c.encode(copyright, forKey: .copyright)
+        try c.encode(usage, forKey: .usage)
+        try c.encode(platforms, forKey: .platforms)
+        try c.encode(licenseText, forKey: .licenseText)
+    }
 }
 
 public enum ThirdPartyNotices {
     /// Markenhinweis unter der Liste.
-    public static let trademarkNote = "Klimacontrol ist kein Produkt von Midea und steht in keiner Verbindung zu Midea. Midea, MSmartHome, NetHome Plus und PortaSplit sind Marken ihrer jeweiligen Inhaber."
+    public static var trademarkNote: String { Localizer.text("notices.trademark") }
 
     public static let all: [ThirdPartyNotice] = [
         ThirdPartyNotice(id: "msmart-ng", name: "msmart-ng (midea-msmart)", url: "https://github.com/mill1000/midea-msmart", license: "MIT",
                          copyright: ["Copyright (c) 2022-2026 Tucker Kern", "Copyright (c) 2020 Colin Kuebler (@kueblc)", "Copyright (c) 2020 Mac_Zhou (@mac-zhou)", "Copyright (c) 2018 NeoAcheron"],
-                         usage: "Vorlage für das lokale Midea-Protokoll: V2/V3-Pakete, Handshake und Verschlüsselung, Suche im Netz, Befehls- und Antwortrahmen für Klimaanlagen, Diagnosegruppen, Token-Abruf über die Cloud. In Swift nachgebaut; die Testvektoren der Tests wurden mit msmart-ng erzeugt.",
-                         platforms: "alle", licenseText: mitText("Copyright (c) 2022-2026 Tucker Kern\nCopyright (c) 2020 Colin Kuebler (@kueblc)\nCopyright (c) 2020 Mac_Zhou (@mac-zhou)\nCopyright (c) 2018 NeoAcheron")),
+                         platform: .all, licenseText: mitText("Copyright (c) 2022-2026 Tucker Kern\nCopyright (c) 2020 Colin Kuebler (@kueblc)\nCopyright (c) 2020 Mac_Zhou (@mac-zhou)\nCopyright (c) 2018 NeoAcheron")),
         ThirdPartyNotice(id: "midea-beautiful-air", name: "midea-beautiful-air", url: "https://github.com/nbogojevic/midea-beautiful-air", license: "MIT",
                          copyright: ["Copyright (c) 2021 Nenad Bogojevic"],
-                         usage: "Vorlage für die Cloud-Steuerung über NetHome Plus (transparent send, Datenschlüssel, CSV-Kodierung) und für die Kodierung der Gerätetimer.",
-                         platforms: "alle", licenseText: mitText("Copyright (c) 2021 Nenad Bogojevic")),
+                         platform: .all, licenseText: mitText("Copyright (c) 2021 Nenad Bogojevic")),
         ThirdPartyNotice(id: "midea_ac_lan", name: "midea_ac_lan", url: "https://github.com/georgezhao2010/midea_ac_lan", license: "MIT",
                          copyright: ["Copyright (c) 2021 George Zhao"],
-                         usage: "Vorlage für das Schlüsselschema der MSmartHome-Cloud (Sitzungsschlüssel aus accessToken und randomData).",
-                         platforms: "alle", licenseText: mitText("Copyright (c) 2021 George Zhao")),
+                         platform: .all, licenseText: mitText("Copyright (c) 2021 George Zhao")),
         ThirdPartyNotice(id: "swift-crypto", name: "Swift Crypto", url: "https://github.com/apple/swift-crypto", license: "Apache-2.0",
                          copyright: ["Copyright 2019 The SwiftCrypto Project"],
-                         usage: "Kryptografie (AES, SHA-256, HMAC, MD5) in der Windows-Fassung, als Bibliothek eingebunden. Unter macOS nutzt Klimacontrol stattdessen CryptoKit und CommonCrypto des Systems.",
-                         platforms: "nur Windows", licenseText: apacheText),
+                         platform: .windowsOnly, licenseText: apacheText),
         ThirdPartyNotice(id: "sqlite", name: "SQLite", url: "https://sqlite.org", license: "Public Domain",
-                         copyright: ["SQLite ist gemeinfrei (public domain); es gibt keinen Urheberrechtsvermerk."],
-                         usage: "Verlaufsdatenbank in der Windows-Fassung (Amalgamation 3.54.1, unverändert eingebunden). Unter macOS nutzt Klimacontrol die SQLite des Systems.",
-                         platforms: "nur Windows", licenseText: sqliteText),
+                         copyrightKey: "notices.sqlite.copyright",
+                         platform: .windowsOnly, licenseText: sqliteText),
         ThirdPartyNotice(id: "swift-runtime", name: "Swift-Laufzeit (Swift, Foundation, Dispatch)", url: "https://www.swift.org", license: "Apache-2.0 WITH Swift-exception",
                          copyright: ["Copyright (c) Apple Inc. and the Swift project authors"],
-                         usage: "Laufzeit der Windows-Fassung, neben der App mitgeliefert (swiftCore.dll, Foundation-, Dispatch- und weitere Swift-DLLs aus der Swift-Toolchain 6.4.2). Unter macOS ist die Swift-Laufzeit Teil des Systems.",
-                         platforms: "nur Windows", licenseText: swiftRuntimeText),
+                         platform: .windowsOnly, licenseText: swiftRuntimeText),
         ThirdPartyNotice(id: "icu", name: "ICU (swift-foundation-icu)", url: "https://github.com/swiftlang/swift-foundation-icu", license: "Unicode-3.0",
                          copyright: ["Copyright © 1991-2026 Unicode, Inc."],
-                         usage: "Unicode- und Ländereinstellungsdaten für Foundation (_FoundationICU.dll), Teil der mitgelieferten Swift-Laufzeit der Windows-Fassung.",
-                         platforms: "nur Windows", licenseText: unicodeText),
+                         platform: .windowsOnly, licenseText: unicodeText),
         ThirdPartyNotice(id: "dotnet", name: ".NET-Laufzeit und WPF", url: "https://github.com/dotnet/runtime", license: "MIT",
                          copyright: ["Copyright (c) .NET Foundation and Contributors"],
-                         usage: "Laufzeit und Oberfläche (Windows Presentation Foundation) der Windows-App, eigenständig im Paket mitgeliefert (.NET 10). Hinweise zu den in .NET enthaltenen Fremdkomponenten stehen in der mitgelieferten Datei DOTNET-THIRD-PARTY-NOTICES.TXT.",
-                         platforms: "nur Windows", licenseText: dotnetText),        ThirdPartyNotice(id: "sparkle", name: "Sparkle", url: "https://github.com/sparkle-project/Sparkle", license: "MIT AND BSD-2-Clause AND Zlib",
+                         platform: .windowsOnly, licenseText: dotnetText),        ThirdPartyNotice(id: "sparkle", name: "Sparkle", url: "https://github.com/sparkle-project/Sparkle", license: "MIT AND BSD-2-Clause AND Zlib",
                          copyright: ["Copyright (c) 2006-2013 Andy Matuschak.", "Copyright (c) 2015-2017 Mayur Pawashe.", "Copyright 2003-2005 Colin Percival", "Copyright (c) 2008-2010 Yuta Mori All Rights Reserved.", "Copyright (c) 2015 Orson Peters <orsonpeters@gmail.com>", "Copyright (c) 2011 Mark Hamlin."],
-                         usage: "Updates der Mac-App (Sparkle 2.10.1): sucht nach neuen Versionen, prüft deren EdDSA-Signatur und installiert sie nach Rückfrage. Als Framework in der App mitgeliefert.",
-                         platforms: "nur Mac", licenseText: sparkleText),
+                         platform: .macOnly, licenseText: sparkleText),
         ThirdPartyNotice(id: "winsparkle", name: "WinSparkle", url: "https://github.com/vslavik/winsparkle", license: "MIT",
                          copyright: ["Copyright (c) 2009-2026 Vaclav Slavik"],
-                         usage: "Updates der Windows-App (WinSparkle 0.9.4): sucht nach neuen Versionen, prüft deren EdDSA-Signatur und startet den Installer nach Rückfrage. Als DLL neben der App mitgeliefert.",
-                         platforms: "nur Windows", licenseText: winsparkleText),
+                         platform: .windowsOnly, licenseText: winsparkleText),
         ThirdPartyNotice(id: "expat", name: "Expat (in WinSparkle)", url: "https://github.com/libexpat/libexpat", license: "MIT",
                          copyright: ["Copyright (c) 1998-2000 Thai Open Source Software Center Ltd and Clark Cooper", "Copyright (c) 2001-2025 Expat maintainers"],
-                         usage: "XML-Leser, den WinSparkle für den Appcast nutzt; steckt in der mitgelieferten WinSparkle.dll (COPYING.expat aus WinSparkle 0.9.4).",
-                         platforms: "nur Windows", licenseText: expatText),
+                         platform: .windowsOnly, licenseText: expatText),
     ]
 
     /// MIT-Lizenz mit dem Urheberrechtsvermerk des jeweiligen Projekts.

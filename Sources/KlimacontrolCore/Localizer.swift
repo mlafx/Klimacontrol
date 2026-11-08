@@ -93,7 +93,8 @@ public enum Localizer {
             s = State(language: language, pseudo: pseudo, configured: true)
             return true
         }
-        if accepted { AppLog.write("Sprache: \(language.rawValue)" + (pseudo ? " (Pseudo)" : "")) }
+        installLogTranslator()
+        if accepted { AppLog.write(pseudo ? L.Log.Language.setPseudo(language: language.rawValue) : L.Log.Language.set(language: language.rawValue)) }
         return accepted
     }
 
@@ -127,6 +128,21 @@ public enum Localizer {
         }
     }
 
+    /// Text zum Schlüssel in der aktiven Sprache, nil bei unbekanntem Schlüssel (Übersetzer für `LogText`).
+    static func textIfPresent(_ key: String, _ args: [String: String]) -> String? {
+        let (lang, pseudo) = current
+        switch resolved(key, lang, pseudo) {
+        case .text(let s): return fill(s, args)
+        case .plural(let cases): return fill(cases["other"] ?? cases.values.sorted().first ?? key, args)
+        case nil: return nil
+        }
+    }
+
+    /// Macht MideaKit-Protokolltexte und Fehlertexte sprachabhängig; harmlos mehrfach aufzurufen.
+    static func installLogTranslator() {
+        LogText.install { key, args in Localizer.textIfPresent(key, args) }
+    }
+
     /// Mehrzahl: Fall `one` bei count == 1, sonst `other` (fehlt `one`: `other`); `{count}` = `Fmt.num(Double(count), 0)`.
     public static func plural(_ key: String, count: Int, _ args: [String: String] = [:]) -> String {
         let (lang, pseudo) = current
@@ -157,7 +173,7 @@ public enum Localizer {
         do {
             return try StringTable(catalogJSON: StringsData.catalog)
         } catch {
-            AppLog.error("Textkatalog nicht lesbar: \(error)")
+            AppLog.error("Text catalog not readable: \(error)")
             return StringTable.empty
         }
     }()
@@ -175,6 +191,7 @@ public enum Localizer {
 
     /// Führt `body` mit dieser Sprache aus und stellt danach den vorigen Zustand wieder her (auch `isConfigured`).
     static func withLanguage<T>(_ language: AppLanguage, pseudo: Bool = false, _ body: () throws -> T) rethrows -> T {
+        installLogTranslator()
         let saved = state.withLock { s -> State in
             let old = s
             s = State(language: language, pseudo: pseudo, configured: old.configured)

@@ -19,7 +19,7 @@ extension ACController {
         do {
             try await accounts.verify(creds, cfg)
         } catch {
-            AppLog.error("Cloud-Login fehlgeschlagen: \(error.localizedDescription)")
+            AppLog.error(L.Log.Account.loginFailed(error: error.localizedDescription))
             return UserMessage.from(error).text
         }
         // Inzwischen eine andere Anlage eingerichtet, vergessen oder abgemeldet? Dann nichts übernehmen.
@@ -28,7 +28,7 @@ extension ACController {
             return L.Message.Account.setupChanged
         }
         do { try accounts.save(creds) } catch {
-            AppLog.error("Cloud-Konto nicht gespeichert: \(error.localizedDescription)")
+            AppLog.error(L.Log.Keychain.accountNotSaved(error: error.localizedDescription))
             return UserMessage.from(error).text
         }
         cloudAccount = creds.account
@@ -44,6 +44,6 @@ extension ACController {
         cloudAccount = nil
         if connectionMode == .cloud { connectionMode = .auto }
         if let cfg = config { use(cfg) }
-        AppLog.write("Cloud-Konto entfernt")
+        AppLog.write(L.Log.Account.removed)
     }
 }

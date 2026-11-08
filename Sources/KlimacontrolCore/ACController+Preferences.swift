@@ -24,7 +24,7 @@ extension ACController {
             guard clamped != storedRefreshSeconds else { return }
             storedRefreshSeconds = clamped
             settings.set(clamped, forKey: SettingsKey.refreshSeconds)
-            AppLog.write("Aktualisierung alle \(clamped) s")
+            AppLog.write(L.Log.Settings.refresh(seconds: String(clamped)))
             restartPolling()
         }
     }
@@ -48,7 +48,7 @@ extension ACController {
         // Wer nach Hause kommt und das Fenster öffnet, soll sofort wieder WLAN probieren statt bis zu 5 min auf den
         // Cloud-Backoff zu warten.
         if wasBackground, !background { device?.resetBackoff() }
-        AppLog.debug(background ? "Kein Fenster sichtbar – Abfrage alle \(effectiveRefreshSeconds) s" : "Fenster sichtbar")
+        AppLog.debug(background ? L.Log.Settings.backgroundPolling(seconds: String(effectiveRefreshSeconds)) : L.Log.Settings.windowVisible)
         restartPolling()
     }
 
@@ -69,7 +69,7 @@ extension ACController {
             guard let value = Self.validCurrency(newValue), value != storedCurrency else { return }
             storedCurrency = value
             settings.set(value, forKey: SettingsKey.currency)
-            AppLog.write("Währung: \(value)")
+            AppLog.write(L.Log.Settings.currency(value: value))
         }
     }
 
@@ -80,7 +80,7 @@ extension ACController {
             guard newValue != storedLanguage else { return }
             storedLanguage = newValue
             settings.set(newValue.rawValue, forKey: SettingsKey.language)
-            AppLog.write("Sprache nach Neustart: \(newValue.rawValue)")
+            AppLog.write(L.Log.Settings.languageAfterRestart(value: newValue.rawValue))
         }
     }
 
@@ -91,7 +91,7 @@ extension ACController {
             guard newValue != storedBetaChannel else { return }
             storedBetaChannel = newValue
             settings.set(newValue, forKey: SettingsKey.updateBetaChannel)
-            AppLog.write("Vorabversionen: \(newValue ? "an" : "aus")")
+            AppLog.write(L.Log.Settings.betaChannel(state: newValue ? L.Log.Common.on : L.Log.Common.off))
         }
     }
 
@@ -103,7 +103,7 @@ extension ACController {
             storedMode = newValue
             settings.set(newValue.rawValue, forKey: SettingsKey.connectionMode)
             device?.connectionMode = newValue
-            AppLog.write("Verbindungsweg: \(newValue.label)")
+            AppLog.write(L.Log.Settings.connectionMode(mode: newValue.title))
         }
     }
 
@@ -117,7 +117,7 @@ extension ACController {
             guard newValue != history.csvEnabled else { return }
             history.csvEnabled = newValue
             settings.set(newValue, forKey: SettingsKey.historyCSV)
-            AppLog.write("Verlauf als CSV: \(newValue ? "an" : "aus")")
+            AppLog.write(L.Log.Settings.historyCSV(state: newValue ? L.Log.Common.on : L.Log.Common.off))
         }
     }
 

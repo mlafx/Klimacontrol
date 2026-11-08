@@ -129,7 +129,7 @@ public final class HistoryDB: @unchecked Sendable {
             try Self.setupSchema(c)
             return c
         } catch let error as HistoryDBError {
-            AppLog.error("Verlaufsdatenbank nicht zu öffnen (\(error.code)): \(error.message)")
+            AppLog.error(L.Log.History.openFailed(code: "\(error.code)", message: error.message))
             throw error
         }
     }
@@ -143,7 +143,7 @@ public final class HistoryDB: @unchecked Sendable {
         for suffix in ["", "-wal", "-shm"] {
             try? FileManager.default.moveItem(at: sibling(suffix), to: sibling(".defekt-\(stamp)\(suffix)"))
         }
-        AppLog.error("Verlaufsdatenbank defekt – beiseitegelegt als \(url.lastPathComponent).defekt-\(stamp)")
+        AppLog.error(L.Log.History.damaged(file: "\(url.lastPathComponent).defekt-\(stamp)"))
     }
 
     /// Tabellen anlegen; neue Spalten aus `HistoryColumn.all` an eine bestehende Tabelle anhängen.
@@ -168,7 +168,7 @@ public final class HistoryDB: @unchecked Sendable {
         do {
             return try work(connection)
         } catch {
-            AppLog.error("Verlauf (SQLite): \(error)")
+            AppLog.error(L.Log.History.sqlite(error: "\(error)"))
             return nil
         }
     }
@@ -371,8 +371,9 @@ public final class HistoryDB: @unchecked Sendable {
             if let n = importFile(file) { rows += n } else { unreadable += 1 }
         }
         finishImport(addedRows: rows, complete: unreadable == 0)
-        AppLog.write("Verlauf: \(rows) Zeilen aus \(files.count - unreadable) CSV-Datei(en) in die Datenbank übernommen"
-                     + (unreadable > 0 ? " – \(unreadable) Datei(en) nicht lesbar, nächster Versuch beim nächsten Start" : ""))
+        AppLog.write(L.Log.History.imported(
+            rows: String(rows), files: String(files.count - unreadable),
+            unreadable: unreadable > 0 ? L.Log.History.importUnreadable(count: String(unreadable)) : ""))
     }
 
     /// Eine CSV-Datei in Stapeln übernehmen. Gibt die Zahl neuer Zeilen zurück; nil = Datei nicht lesbar.
@@ -404,7 +405,7 @@ public final class HistoryDB: @unchecked Sendable {
                     for row in batch {
                         stmt.reset()
                         stmt.bind(row.bindings)
-                        do { try stmt.forEachRow { _ in } } catch { AppLog.error("Verlauf (SQLite): \(error)") }
+                        do { try stmt.forEachRow { _ in } } catch { AppLog.error(L.Log.History.sqlite(error: "\(error)")) }
                     }
                 }
                 return c.totalChanges - before

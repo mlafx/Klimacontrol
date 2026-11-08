@@ -202,17 +202,19 @@ public enum MideaError: Error, LocalizedError, Equatable {
     /// Deutsch, für Protokoll; Anzeige über `UserMessage` und `connectionDetailText` im Kern (`DisplayNames.swift`).
     public var errorDescription: String? {
         switch self {
-        case .crypto(let code): return "Verschlüsselungsfehler (\(code))"
-        case .protocolError(let msg): return "Protokollfehler: \(msg)"
-        case .authenticationFailed(let msg): return "Anmeldung an der Anlage fehlgeschlagen: \(msg)"
-        case .timeout: return "Die Anlage antwortet nicht."
+        case .crypto(let code): return LogText.t("kit.error.crypto", "Verschlüsselungsfehler ({code})", ["code": String(code)])
+        case .protocolError(let msg): return LogText.t("kit.error.protocol", "Protokollfehler: {message}", ["message": msg])
+        case .authenticationFailed(let msg): return LogText.t("kit.error.authentication", "Anmeldung an der Anlage fehlgeschlagen: {message}", ["message": msg])
+        case .timeout: return LogText.t("kit.error.timeout", "Die Anlage antwortet nicht.")
         case .connectionFailed, .refused, .unreachable, .allPathsFailed:
-            return "Keine Verbindung zur Anlage: \(connectionDetail ?? "")"
-        case .invalidResponse(let msg): return "Unerwartete Antwort: \(msg)"
-        case .commandNotApplied: return "Die Anlage hat die Änderung nicht übernommen – vielleicht steuert gerade eine andere App."
-        case .busy(let msg): return msg.isEmpty ? "Die Anlage ist gerade belegt. Bitte kurz warten und erneut versuchen." : "Die Anlage ist gerade belegt. \(msg)"
+            return LogText.t("kit.error.noConnection", "Keine Verbindung zur Anlage: {detail}", ["detail": connectionDetail ?? ""])
+        case .invalidResponse(let msg): return LogText.t("kit.error.invalidResponse", "Unerwartete Antwort: {message}", ["message": msg])
+        case .commandNotApplied: return LogText.t("kit.error.notApplied", "Die Anlage hat die Änderung nicht übernommen – vielleicht steuert gerade eine andere App.")
+        case .busy(let msg):
+            return msg.isEmpty ? LogText.t("reason.busyShort", "Die Anlage ist gerade belegt. Bitte kurz warten und erneut versuchen.")
+                : LogText.t("reason.busy", "Die Anlage ist gerade belegt. {hint}", ["hint": msg])
         case .outcomeUnknown(let reason):
-            return "Keine Verbindung zur Anlage: \(reason) Ob die Änderung angekommen ist, ist unklar – bitte die Anzeige prüfen. (nach dem Senden)"
+            return LogText.t("kit.error.outcomeUnknown", "Keine Verbindung zur Anlage: {reason} Ob die Änderung angekommen ist, ist unklar – bitte die Anzeige prüfen. (nach dem Senden)", ["reason": reason])
         }
     }
 

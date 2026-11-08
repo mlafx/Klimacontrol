@@ -199,7 +199,7 @@ private let settingsCommands: [BridgeCommand] = [
         let on = try a.bool("on")
         AppLog.debugEnabled = on
         results.debugLog = on
-        AppLog.write("Ausführliches Protokoll \(on ? "an" : "aus")")
+        AppLog.write(L.Log.Settings.detailedLog(state: on ? L.Log.Common.on : L.Log.Common.off))
     },
     .always("historyCSV") { a, c in c.historyCSV = try a.bool("on") },
     .always("diagnosticsVisible") { a, c in c.diagnosticsVisible = try a.bool("on") },
@@ -246,12 +246,12 @@ private let dataCommands: [BridgeCommand] = [
                 try await Task.detached(priority: .userInitiated) {
                     try db.exportCSV(to: url, from: from, until: until, readable: readable)
                 }.value
-                AppLog.write("Verlauf als CSV exportiert")
+                AppLog.write(L.Log.App.csvExported)
                 results.exportHistoryText = UIText.historyExported(fileName: url.lastPathComponent).text
                 return nil
             } catch {
                 let text = exportHistoryMessage(for: error)
-                AppLog.error("Verlauf exportieren gescheitert (\(bridgeIssue(for: error).code ?? "export-failed"))")
+                AppLog.error(L.Log.Bridge.exportFailed(code: bridgeIssue(for: error).code ?? "export-failed"))
                 return text
             }
         }

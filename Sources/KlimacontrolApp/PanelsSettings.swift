@@ -295,10 +295,10 @@ enum LoginItem {
     static func set(_ on: Bool) -> String? {
         do {
             if on { try SMAppService.mainApp.register() } else { try SMAppService.mainApp.unregister() }
-            AppLog.write("Beim Anmelden starten: \(on ? "an" : "aus")")
+            AppLog.write(L.Log.App.loginItem(state: on ? L.Log.Common.on : L.Log.Common.off))
             return nil
         } catch {
-            AppLog.error("Anmeldeobjekt nicht geändert: \(error.localizedDescription)")
+            AppLog.error(L.Log.App.loginItemFailed(error: error.localizedDescription))
             return on
                 ? L.Settings.General.Mac.loginAddFailed
                 : L.Settings.General.Mac.loginRemoveFailed

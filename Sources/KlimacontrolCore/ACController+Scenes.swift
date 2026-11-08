@@ -35,7 +35,7 @@ extension ACController {
 
     func saveScenes() {
         do { try ACScene.save(scenes, to: paths.scenes) } catch {
-            AppLog.error("Szenen nicht gespeichert: \(error.localizedDescription)")
+            AppLog.error(L.Log.Scenes.notSaved(error: error.localizedDescription))
             showNotice(L.Message.Scenes.notSaved(reason: UserMessage.from(error).text))
         }
     }

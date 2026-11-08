@@ -147,36 +147,37 @@ public enum DateWords {
     }
 }
 
-/// Gründe aus MideaKit für Texte der Oberfläche. Feste MideaKit-Texte haben Katalog-Schlüssel, deren deutscher Wert
-/// dem MideaKit-Text entspricht. Freie Texte (Systemfehler, Fehlertexte aus Teilen der Cloud-Anbindung) bleiben im
+/// Gründe aus MideaKit für Texte der Oberfläche. Feste MideaKit-Texte haben Katalog-Schlüssel, die MideaKit über
+/// `LogText` selbst benutzt; der Rohtext steht daher in der aktiven oder (aus älteren Aufrufen) in der deutschen Fassung. Freie Texte (Systemfehler, Fehlertexte aus Teilen der Cloud-Anbindung) bleiben im
 /// Deutschen unverändert; in jeder anderen Sprache steht ein allgemeiner Katalogtext. Texte von Midea selbst
 /// (`CloudError.api`) sind Daten und bleiben immer unverändert.
 enum ReasonText {
     /// Deutsche Oberfläche ohne Pseudo-Sprache: freie Texte unverändert zeigen.
     static var showsRawGerman: Bool { Localizer.language == .de && !Localizer.isPseudo }
 
-    private static func german(_ key: String, _ args: [String: String] = [:]) -> String {
-        Localizer.text(key, language: .de, args)
+    private static func isKnown(_ raw: String, _ key: String, _ args: [String: String] = [:]) -> Bool {
+        raw == Localizer.text(key, args) || raw == Localizer.text(key, language: .de, args)
     }
 
     /// Bekannte feste Texte in der Sprache der Oberfläche, sonst Rohtext (Deutsch) bzw. „nicht erreichbar“.
     static func free(_ raw: String) -> String {
         let known: [(String, String)] = [
-            (german("reason.closed"), L.Reason.closed),
-            (german("reason.noLan"), L.Reason.noLan),
-            (german("reason.noCloud"), L.Reason.noCloud),
-            (german("reason.noPath"), L.Reason.noPath),
-            (german("reason.refused"), L.Reason.refused),
-            (german("reason.timeout"), L.Reason.timeout),
-            (german("reason.unreachable"), L.Reason.unreachable),
+            ("reason.closed", L.Reason.closed),
+            ("reason.noLan", L.Reason.noLan),
+            ("reason.noCloud", L.Reason.noCloud),
+            ("reason.noPath", L.Reason.noPath),
+            ("reason.refused", L.Reason.refused),
+            ("reason.timeout", L.Reason.timeout),
+            ("reason.unreachable", L.Reason.unreachable),
         ]
-        if let hit = known.first(where: { $0.0 == raw }) { return hit.1 }
+        if let hit = known.first(where: { isKnown(raw, $0.0) }) { return hit.1 }
         return showsRawGerman ? raw : L.Reason.unreachable
     }
 
     static func busy(_ raw: String) -> String {
-        if raw == german("reason.busyShort") { return L.Reason.busyShort }
-        if raw == german("reason.busy", ["hint": german("reason.busyHint")]) || !showsRawGerman {
+        if isKnown(raw, "reason.busyShort") { return L.Reason.busyShort }
+        if isKnown(raw, "reason.busy", ["hint": Localizer.text("reason.busyHint")])
+            || isKnown(raw, "reason.busy", ["hint": Localizer.text("reason.busyHint", language: .de)]) || !showsRawGerman {
             return L.Reason.busy(hint: L.Reason.busyHint)
         }
         return raw

@@ -51,19 +51,19 @@ final class AppUpdater {
         }
         delegate.onStatus = { [weak self] in self?.status = $0 }
         delegate.onReady = { [weak self] version, install in self?.updateIsReady(version: version, install: install) }
-        AppLog.write("Updates: automatisch laden, Beta-Kanal \(UpdaterDelegate.betaEnabled ? "an" : "aus") (\(AppUpdate.feedMac(beta: UpdaterDelegate.betaEnabled)))")
+        AppLog.write(L.Log.Updates.automatic(state: UpdaterDelegate.betaEnabled ? L.Log.Common.on : L.Log.Common.off, feed: AppUpdate.feedMac(beta: UpdaterDelegate.betaEnabled)))
     }
 
     /// Nach dem Einschalten des Beta-Kanals sofort suchen; beim Ausschalten bleibt die Fassung, bis eine neuere stabile kommt.
     func betaChannelChanged(to on: Bool) {
-        AppLog.write("Updates: Beta-Kanal \(on ? "an" : "aus")")
+        AppLog.write(L.Log.Updates.betaChannel(state: on ? L.Log.Common.on : L.Log.Common.off))
         if on { checkForUpdates() }
     }
 
     /// Installiert das geladene Update und startet die App neu, ohne die Timer-Rückfrage.
     func installNow() {
         guard let block = installBlock else { return }
-        AppLog.write("Updates: installiere Version \(readyVersion ?? "?") auf Wunsch sofort")
+        AppLog.write(L.Log.Updates.installNow(version: readyVersion ?? "?"))
         installBlock = nil
         AppRestart.skipQuitPrompt = true
         block()
@@ -115,7 +115,7 @@ final class AppUpdater {
             installNow()
         } else {
             remindAt = Date().addingTimeInterval(24 * 3600)
-            AppLog.write("Updates: Erinnerung in 24 h")
+            AppLog.write(L.Log.Updates.remind)
         }
     }
 
@@ -142,7 +142,7 @@ private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
     }
 
     func updater(_ updater: SPUUpdater, didFindValidUpdate item: SUAppcastItem) {
-        AppLog.write("Updates: Version \(item.displayVersionString) gefunden")
+        AppLog.write(L.Log.Updates.found(version: item.displayVersionString))
         onStatus?(L.Updates.Mac.downloading(version: item.displayVersionString))
     }
 
@@ -154,14 +154,14 @@ private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
         // Sparkle meldet „kein Update“ hier zusätzlich als Fehler – das ist kein Fehlschlag.
         let e = error as NSError
         if e.domain == SUSparkleErrorDomain, e.code == Int(SUError.noUpdateError.rawValue) { return }
-        AppLog.write("Updates: abgebrochen (\(error.localizedDescription))")
+        AppLog.write(L.Log.Updates.aborted(error: error.localizedDescription))
         onStatus?(UIText.updatesFailed)
     }
 
     /// Sparkle installiert beim Beenden ohnehin; true meldet, dass die App den sofortigen Weg über den Block anbietet.
     func updater(_ updater: SPUUpdater, willInstallUpdateOnQuit item: SUAppcastItem,
                  immediateInstallationBlock immediateInstallHandler: @escaping () -> Void) -> Bool {
-        AppLog.write("Updates: Version \(item.displayVersionString) geladen, wartet auf Neustart oder Beenden")
+        AppLog.write(L.Log.Updates.downloaded(version: item.displayVersionString))
         onReady?(item.displayVersionString, immediateInstallHandler)
         return true
     }

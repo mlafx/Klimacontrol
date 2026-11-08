@@ -138,7 +138,7 @@ extension ACController {
         let stored = storedDayStart()
         if let s = currentDayStart(day: day) {
             guard total + Self.counterJitterKWh < s.kWh else { return }
-            AppLog.write("Zählerstand zurückgesprungen (\(s.kWh) → \(total) kWh) – Tagesverbrauch zählt ab jetzt neu")
+            AppLog.write(L.Log.Energy.meterJump(old: "\(s.kWh)", new: "\(total)"))
             saveDayStart(DayStart(day: day, kWh: total, device: id, since: now, fromMidnight: false))
             return
         }

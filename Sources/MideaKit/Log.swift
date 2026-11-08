@@ -193,7 +193,7 @@ public enum AppLog {
         try? fm.moveItem(at: url, to: old1)
     }
 
-    public static func error(_ message: String) { write(message, "FEHLER") }
+    public static func error(_ message: String) { write(message, LogText.t("log.level.error", "FEHLER")) }
 
     /// Letzte Zeilen für die Anzeige in den Einstellungen.
     public static func tail(_ lines: Int = 300) -> String {

@@ -68,7 +68,8 @@ public struct ACScene: Codable, Equatable, Identifiable, Sendable {
         }
         let rescued = ((try? JSONDecoder().decode([Lossy].self, from: data)) ?? []).compactMap(\.scene).map(\.sanitized)
         let aside = DeviceConfig.moveAside(url)
-        AppLog.error("\(url.lastPathComponent) unlesbar – beiseitegelegt als \(aside), \(rescued.count) Szene(n) gerettet")
+        AppLog.error(LogText.t("log.scene.unreadable", "{file} unlesbar – beiseitegelegt als {aside}, {count} Szene(n) gerettet",
+                               ["file": url.lastPathComponent, "aside": "\(aside)", "count": String(rescued.count)]))
         return LoadResult(scenes: rescued, movedAside: aside)
     }
 

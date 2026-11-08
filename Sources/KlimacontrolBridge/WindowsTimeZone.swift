@@ -1,5 +1,6 @@
 #if os(Windows)
 import Foundation
+import KlimacontrolCore
 import MideaKit
 import WinSDK
 
@@ -10,7 +11,7 @@ import WinSDK
 func applyWindowsTimeZone() -> String? {
     guard let windowsID = windowsTimeZoneKey(), let iana = ianaTimeZone(forWindowsID: windowsID),
           let zone = TimeZone(identifier: iana) else {
-        AppLog.write("Zeitzone: Windows-Zone nicht in eine IANA-Zone umsetzbar, UTC bleibt", "WARNUNG")
+        AppLog.write(L.Log.Bridge.timeZone, L.Log.Level.warning)
         return nil
     }
     NSTimeZone.default = zone

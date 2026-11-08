@@ -93,6 +93,14 @@ public enum ConnectionMode: String, CaseIterable, Sendable {
 /// Tatsächlich genutzter Weg. `rawValue` ist deutsch für Protokoll und Datenbank; Anzeige über `title` im Kern (`DisplayNames.swift`).
 public enum ConnectionPath: String, Sendable {
     case lan = "WLAN", cloud = "Cloud"
+
+    /// Name fürs Protokoll in der Sprache der Oberfläche (`rawValue` bleibt für Datenbank und Vergleiche).
+    var logName: String {
+        switch self {
+        case .lan: LogText.t("log.path.lan", "WLAN")
+        case .cloud: LogText.t("log.path.cloud", "Cloud")
+        }
+    }
 }
 
 
@@ -120,7 +128,9 @@ public struct PathFailure: Sendable, Equatable {
         self.text = text
     }
 
-    static let noPathText = "kein Weg zur Anlage verfügbar"
+    static var errorWord: String { LogText.t("kit.generic.error", "Fehler") }
+
+    static var noPathText: String { LogText.t("reason.noPath", "kein Weg zur Anlage verfügbar") }
 
     public var isApplianceOffline: Bool {
         if case .applianceOffline = reason { return true }
@@ -135,8 +145,8 @@ public struct PathFailure: Sendable, Equatable {
 
     static func offline(nextCheck: String?) -> PathFailure {
         PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: nextCheck),
-                    text: nextCheck.map { "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung \($0)" }
-                        ?? "Anlage offline laut Cloud (3123)")
+                    text: nextCheck.map { LogText.t("reason.applianceOff", "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung {next}", ["next": $0]) }
+                        ?? LogText.t("reason.applianceOffline", "Anlage offline laut Cloud (3123)"))
     }
 
     /// Grund und Kurztext eines Fehlers auf Weg `path`.
@@ -146,22 +156,22 @@ public struct PathFailure: Sendable, Equatable {
             case .api(3123, _): return offline(nextCheck: nil)
             case .api(let code, _):
                 return PathFailure(path: path, reason: .cloud(c.kind, code: code),
-                                   text: "\(DeviceConfig.cleanText(c.message, fallback: "Fehler")) (\(code))")
-            case .network: return PathFailure(path: path, reason: .cloud(.network, code: nil), text: "Cloud nicht erreichbar")
-            case .noToken: return PathFailure(path: path, reason: .cloud(.noToken, code: nil), text: c.errorDescription ?? "Fehler")
+                                   text: "\(DeviceConfig.cleanText(c.message, fallback: Self.errorWord)) (\(code))")
+            case .network: return PathFailure(path: path, reason: .cloud(.network, code: nil), text: LogText.t("reason.cloud.unreachable", "Cloud nicht erreichbar"))
+            case .noToken: return PathFailure(path: path, reason: .cloud(.noToken, code: nil), text: c.errorDescription ?? Self.errorWord)
             default:
                 return PathFailure(path: path, reason: .cloud(c.kind, code: nil),
-                                   text: "\(DeviceConfig.cleanText(c.message, fallback: "Fehler")) (\(c.code))")
+                                   text: "\(DeviceConfig.cleanText(c.message, fallback: Self.errorWord)) (\(c.code))")
             }
         }
-        guard let m = error as? MideaError else { return PathFailure(path: path, reason: .other, text: "Fehler") }
+        guard let m = error as? MideaError else { return PathFailure(path: path, reason: .other, text: Self.errorWord) }
         switch m {
-        case .timeout: return PathFailure(path: path, reason: .timeout, text: "antwortet nicht")
-        case .unreachable: return PathFailure(path: path, reason: .unreachable, text: "nicht erreichbar")
+        case .timeout: return PathFailure(path: path, reason: .timeout, text: LogText.t("reason.timeout", "antwortet nicht"))
+        case .unreachable: return PathFailure(path: path, reason: .unreachable, text: LogText.t("reason.unreachable", "nicht erreichbar"))
         case .refused: return PathFailure(path: path, reason: .refused, text: NetSocket.refusedText)
-        case .busy: return PathFailure(path: path, reason: .busy, text: m.errorDescription ?? "Fehler")
+        case .busy: return PathFailure(path: path, reason: .busy, text: m.errorDescription ?? Self.errorWord)
         case .connectionFailed(let s): return PathFailure(path: path, reason: .other, text: s)
-        default: return PathFailure(path: path, reason: .other, text: m.errorDescription ?? "Fehler")
+        default: return PathFailure(path: path, reason: .other, text: m.errorDescription ?? Self.errorWord)
         }
     }
 }
@@ -230,8 +240,8 @@ final class AutoTransport: FrameTransport, @unchecked Sendable {
         cloudOfflineUntil = nil
     }
 
-    static let noLANText = "keine WLAN-Zugangsdaten – einmal mit dem Konto einrichten"
-    static let noCloudText = "Cloud nicht eingerichtet – einmal mit dem Midea-Konto anmelden"
+    static var noLANText: String { LogText.t("reason.noLan", "keine WLAN-Zugangsdaten – einmal mit dem Konto einrichten") }
+    static var noCloudText: String { LogText.t("reason.noCloud", "Cloud nicht eingerichtet – einmal mit dem Midea-Konto anmelden") }
 
     func send(_ frame: Data, retries: Int, expect: UInt8?) throws -> [Data] {
         let mode = self.mode
@@ -290,7 +300,7 @@ final class AutoTransport: FrameTransport, @unchecked Sendable {
                 failures.append(failure)
                 if failedAt[p] != nil { repeated.append(p) }
                 failedAt[p] = now()
-                if !isLast, reportedDown.insert(p).inserted { AppLog.write("\(p.rawValue) nicht erreichbar – nächster Weg") }
+                if !isLast, reportedDown.insert(p).inserted { AppLog.write(LogText.t("log.transport.pathDown", "{path} nicht erreichbar – nächster Weg", ["path": p.logName])) }
                 if isLast { lastOffline = failure.isApplianceOffline }
                 noteCloudOffline(error)
                 // Ein Stellbefehl, der schon hinausging, wird nicht still über den nächsten Weg wiederholt.
@@ -361,7 +371,7 @@ final class AutoTransport: FrameTransport, @unchecked Sendable {
     private func use(_ p: ConnectionPath, _ body: () throws -> [Data]) throws -> [Data] {
         let frames = try body()
         if path != p {
-            AppLog.write("Verbindung über \(p.rawValue)")
+            AppLog.write(LogText.t("log.transport.via", "Verbindung über {path}", ["path": p.logName]))
             // Weg gewechselt: WLAN freigeben (die Anlage nimmt nur eine Verbindung an). Die Cloud hält nichts
             // lokal offen.
             if path == .lan { lan?.disconnect() }

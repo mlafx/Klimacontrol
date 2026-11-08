@@ -69,7 +69,7 @@ private func cString(_ s: String) -> UnsafeMutablePointer<CChar> {
         return text
     } catch {
         if !jsonErrorLogged {
-            AppLog.error("Bridge: Daten für die Oberfläche nicht kodierbar (\(type(of: value))): \(error)")
+            AppLog.error(L.Log.Bridge.encodeFailed(type: "\(type(of: value))", error: "\(error)"))
             jsonErrorLogged = true
         }
         return fallback

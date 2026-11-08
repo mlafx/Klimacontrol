@@ -6977,6 +6977,4722 @@ extension StringsData {
         }
       }
     },
+    "kit.cloud.accessKeyUnreadable" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugangsschlüssel unlesbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access key unreadable"
+          }
+        }
+      }
+    },
+    "kit.cloud.noApplianceReply" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "keine Antwort von der Anlage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no reply from the air conditioner"
+          }
+        }
+      }
+    },
+    "kit.cloud.noReplyWithin" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "keine Antwort innerhalb von {seconds} s"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no reply within {seconds} s"
+          }
+        }
+      }
+    },
+    "kit.cloud.noText" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ohne Text"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no text"
+          }
+        }
+      }
+    },
+    "kit.cloud.sessionKeyMismatch" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sitzungsschlüssel passt nicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session key does not match"
+          }
+        }
+      }
+    },
+    "kit.cloud.sessionKeyUnreadable" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sitzungsschlüssel unlesbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session key unreadable"
+          }
+        }
+      }
+    },
+    "kit.cloud.sessionKeysMissing" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sitzungsschlüssel fehlen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session keys missing"
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.accountLocked" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Später erneut versuchen oder in der MSmartHome-App anmelden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try again later or sign in with the MSmartHome app."
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.applianceOffline" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol prüft regelmäßig weiter."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol keeps checking regularly."
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.network" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Internetverbindung prüfen und erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check the internet connection and try again."
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.retryLater" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Später erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try again later."
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.serviceUnavailable" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Später erneut versuchen oder die Anlage über die Suche im WLAN einrichten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try again later or set up the air conditioner using the Wi-Fi search."
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.sessionExpired" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol meldet sich automatisch neu an; sonst später erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol signs in again automatically; otherwise try again later."
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.tokenRejected" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfen, ob die Anlage in genau diesem Konto eingerichtet ist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check whether the air conditioner is set up in exactly this account."
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.unknownAppliance" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfen, ob sie in der MSmartHome-App in genau diesem Konto eingerichtet ist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check whether it is set up in exactly this account in the MSmartHome app."
+          }
+        }
+      }
+    },
+    "kit.cloud.todo.wrongCredentials" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugangsdaten aus der MSmartHome-App in den Einstellungen neu eingeben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter the credentials from the MSmartHome app again in the settings."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.accountLocked" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Midea-Konto ist vorübergehend gesperrt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Midea account is temporarily locked."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.applianceOffline" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage ist laut Midea-Cloud ausgeschaltet oder ohne Strom."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "According to the Midea Cloud, the air conditioner is off or without power."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.badReply" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Midea-Cloud hat unerwartet geantwortet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Midea Cloud replied unexpectedly."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.network" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Midea-Cloud ist nicht erreichbar."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Midea Cloud is not reachable."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.other" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Midea-Cloud meldet einen Fehler."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Midea Cloud reports an error."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.otherWithText" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Midea-Cloud meldet einen Fehler: {text}."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Midea Cloud reports an error: {text}."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.serviceUnavailable" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Midea-Cloud gibt über diesen Zugang gerade keine Zugangsdaten aus."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Midea Cloud is currently not issuing credentials through this access."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.sessionExpired" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anmeldung bei der Midea-Cloud ist abgelaufen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The sign-in to the Midea Cloud has expired."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.tokenRejected" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage lehnt die Zugangsdaten aus der Cloud ab."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner rejects the credentials from the Cloud."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.unknownAppliance" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Cloud kennt diese Anlage nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Cloud does not know this air conditioner."
+          }
+        }
+      }
+    },
+    "kit.cloud.what.wrongCredentials" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-Mail oder Passwort des Midea-Kontos stimmen nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The email or password of the Midea account is wrong."
+          }
+        }
+      }
+    },
+    "kit.config.invalidAddress" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Adresse der Anlage ist keine gültige IPv4-Adresse mit Port."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The address of the air conditioner is not a valid IPv4 address with port."
+          }
+        }
+      }
+    },
+    "kit.config.invalidHex" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token oder Schlüssel sind kein gültiges Hex (erwartet 128 bzw. 64 Zeichen)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token or key is not valid hex (expected 128 or 64 characters)."
+          }
+        }
+      }
+    },
+    "kit.config.noDevice" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei enthält keine Anlage."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file contains no air conditioner."
+          }
+        }
+      }
+    },
+    "kit.config.unsupportedVersion" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protokollversion V{version} wird nicht unterstützt (nur V3)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protocol version V{version} is not supported (V3 only)."
+          }
+        }
+      }
+    },
+    "kit.control.eco" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "eco"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "eco"
+          }
+        }
+      }
+    },
+    "kit.control.fan" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "lüfter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fan"
+          }
+        }
+      }
+    },
+    "kit.control.freeze" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "frostschutz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "frost protection"
+          }
+        }
+      }
+    },
+    "kit.control.mode" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "modus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mode"
+          }
+        }
+      }
+    },
+    "kit.control.power" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ein/aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "on/off"
+          }
+        }
+      }
+    },
+    "kit.control.purifier" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ionisierer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ionizer"
+          }
+        }
+      }
+    },
+    "kit.control.swing" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "swing"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "swing"
+          }
+        }
+      }
+    },
+    "kit.control.target" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "soll"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "target"
+          }
+        }
+      }
+    },
+    "kit.control.turbo" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "turbo"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "turbo"
+          }
+        }
+      }
+    },
+    "kit.device.noState" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "keine Zustandsmeldung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no state message"
+          }
+        }
+      }
+    },
+    "kit.discovery.badLength" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discovery-Antwort mit falscher Länge"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discovery reply has the wrong length"
+          }
+        }
+      }
+    },
+    "kit.discovery.badSignature" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discovery-Antwort mit falscher Signatur"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discovery reply has the wrong signature"
+          }
+        }
+      }
+    },
+    "kit.discovery.noNetwork" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein aktives Netz gefunden – ist der Rechner mit WLAN oder Ethernet verbunden?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No active network found. Is the computer connected to Wi-Fi or Ethernet?"
+          }
+        }
+      }
+    },
+    "kit.discovery.profileTooShort" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steckbrief zu kurz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Device profile too short"
+          }
+        }
+      }
+    },
+    "kit.discovery.searchFailed" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche nicht möglich: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search not possible: {error}"
+          }
+        }
+      }
+    },
+    "kit.discovery.tooShort" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discovery-Antwort zu kurz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discovery reply too short"
+          }
+        }
+      }
+    },
+    "kit.discovery.unknownDevice" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unbekanntes Gerät (V1 wird nicht unterstützt)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown device (V1 is not supported)"
+          }
+        }
+      }
+    },
+    "kit.error.authentication" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anmeldung an der Anlage fehlgeschlagen: {message}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign-in to the air conditioner failed: {message}"
+          }
+        }
+      }
+    },
+    "kit.error.crypto" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verschlüsselungsfehler ({code})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encryption error ({code})"
+          }
+        }
+      }
+    },
+    "kit.error.invalidResponse" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unerwartete Antwort: {message}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unexpected reply: {message}"
+          }
+        }
+      }
+    },
+    "kit.error.noConnection" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Verbindung zur Anlage: {detail}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No connection to the air conditioner: {detail}"
+          }
+        }
+      }
+    },
+    "kit.error.noReply" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Antwort."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No reply."
+          }
+        }
+      }
+    },
+    "kit.error.notApplied" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage hat die Änderung nicht übernommen – vielleicht steuert gerade eine andere App."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner did not accept the change. Another app may be controlling it right now."
+          }
+        }
+      }
+    },
+    "kit.error.outcomeUnknown" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Verbindung zur Anlage: {reason} Ob die Änderung angekommen ist, ist unklar – bitte die Anzeige prüfen. (nach dem Senden)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No connection to the air conditioner: {reason} It is unclear whether the change arrived. Please check the display. (after sending)"
+          }
+        }
+      }
+    },
+    "kit.error.protocol" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protokollfehler: {message}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protocol error: {message}"
+          }
+        }
+      }
+    },
+    "kit.error.timeout" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage antwortet nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner is not responding."
+          }
+        }
+      }
+    },
+    "kit.frame.badChecksum" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfsumme falsch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checksum wrong"
+          }
+        }
+      }
+    },
+    "kit.frame.deviceType" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerätetyp 0x{type}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Device type 0x{type}"
+          }
+        }
+      }
+    },
+    "kit.frame.noPayload" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rahmen ohne Nutzdaten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frame without payload"
+          }
+        }
+      }
+    },
+    "kit.frame.tooShort" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rahmen zu kurz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frame too short"
+          }
+        }
+      }
+    },
+    "kit.generic.error" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehler"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
+          }
+        }
+      }
+    },
+    "kit.keychain.saveFailed" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Zugangsdaten konnten nicht im Schlüsselbund gespeichert werden. Erneut versuchen; die alten Daten bleiben erhalten. (Status {status})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The credentials could not be saved to the keychain. Try again; the old data is kept. (Status {status})"
+          }
+        }
+      }
+    },
+    "kit.keychain.tooLarge" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Daten sind zu groß für den Geheimnisspeicher. Bitte melden. ({bytes} Byte)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The data is too large for the secret store. Please report this. ({bytes} bytes)"
+          }
+        }
+      }
+    },
+    "kit.keychain.unavailable" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Schlüsselbund ist gesperrt oder hat den Zugriff abgelehnt. Mac entsperren bzw. den Zugriff erlauben und erneut versuchen. (Status {status})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The keychain is locked or denied access. Unlock the Mac or allow access, then try again. (Status {status})"
+          }
+        }
+      }
+    },
+    "kit.keychain.unreadable" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der gespeicherte Eintrag ist unlesbar. Zugangsdaten in den Einstellungen neu eingeben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The stored entry is unreadable. Enter the credentials again in the settings."
+          }
+        }
+      }
+    },
+    "kit.lan.budget" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage hat nicht rechtzeitig geantwortet (Zeitlimit erreicht). Erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner did not respond in time (time limit reached). Try again."
+          }
+        }
+      }
+    },
+    "kit.lan.localNetworkMac" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS lässt die App nicht ins lokale Netzwerk. Systemeinstellungen → Datenschutz & Sicherheit → Lokales Netzwerk → Klimacontrol einschalten (oder Anlage nicht im WLAN)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS does not let the app use the local network. Turn on Klimacontrol in System Settings → Privacy & Security → Local Network (or the air conditioner is not on Wi-Fi)."
+          }
+        }
+      }
+    },
+    "kit.lan.localNetworkWindows" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage ist im Netz nicht erreichbar. Ist der PC im selben WLAN/Netz wie die Anlage? Sonst Windows-Firewall bzw. Netzwerkprofil („Privat“) prüfen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner is not reachable on the network. Is the PC on the same Wi-Fi or network as the air conditioner? Otherwise check the Windows firewall or the network profile (“Private”)."
+          }
+        }
+      }
+    },
+    "kit.lan.notConnected" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nicht verbunden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "not connected"
+          }
+        }
+      }
+    },
+    "kit.lan.unexpectedType" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "unerwarteter Pakettyp"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "unexpected packet type"
+          }
+        }
+      }
+    },
+    "kit.packet.badMarker" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ungültiges Kennbyte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid marker byte"
+          }
+        }
+      }
+    },
+    "kit.packet.badMd5" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MD5-Signatur stimmt nicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MD5 signature does not match"
+          }
+        }
+      }
+    },
+    "kit.packet.badSha" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SHA256 der Antwort stimmt nicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SHA256 of the reply does not match"
+          }
+        }
+      }
+    },
+    "kit.packet.badStart" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ungültiger Paketanfang"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid packet start"
+          }
+        }
+      }
+    },
+    "kit.packet.deviceError" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage meldet einen Fehler (Token abgelaufen oder Verbindung belegt)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner reports an error (token expired or connection busy)"
+          }
+        }
+      }
+    },
+    "kit.packet.handshakeSize" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Handshake-Antwort hat {count} statt 64 Byte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Handshake reply has {count} instead of 64 bytes"
+          }
+        }
+      }
+    },
+    "kit.packet.lengthMismatch" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paketlänge passt nicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Packet length does not match"
+          }
+        }
+      }
+    },
+    "kit.packet.notLoggedIn" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht angemeldet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not signed in"
+          }
+        }
+      }
+    },
+    "kit.packet.paddingMismatch" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füllbytes passen nicht zur Paketlänge"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Padding does not match the packet length"
+          }
+        }
+      }
+    },
+    "kit.packet.tokenMismatch" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token oder Schlüssel passen nicht zur Anlage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token or key do not match the air conditioner"
+          }
+        }
+      }
+    },
+    "kit.packet.tooShort" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paket zu kurz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Packet too short"
+          }
+        }
+      }
+    },
+    "kit.packet.truncated" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paket abgeschnitten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Packet truncated"
+          }
+        }
+      }
+    },
+    "kit.packet.unexpectedHandshake" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unerwartete Handshake-Antwort"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unexpected handshake reply"
+          }
+        }
+      }
+    },
+    "kit.packet.unexpectedType" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unerwarteter Pakettyp {type}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unexpected packet type {type}"
+          }
+        }
+      }
+    },
+    "kit.packet.unknownPacket" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unbekanntes Paket {data}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown packet {data}"
+          }
+        }
+      }
+    },
+    "kit.packet.unknownType" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unbekannter Pakettyp"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown packet type"
+          }
+        }
+      }
+    },
+    "kit.socket.connectTimeout" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitüberschreitung beim Verbinden mit {host}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timeout while connecting to {host}"
+          }
+        }
+      }
+    },
+    "kit.socket.createFailed" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Socket: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Socket: {error}"
+          }
+        }
+      }
+    },
+    "kit.socket.invalidHost" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adresse {host} ungültig"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Address {host} invalid"
+          }
+        }
+      }
+    },
+    "kit.socket.winsock" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Winsock nicht verfügbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Winsock not available"
+          }
+        }
+      }
+    },
+    "log.account.loginFailed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Login fehlgeschlagen: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud sign-in failed: {error}"
+          }
+        }
+      }
+    },
+    "log.account.removed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Konto entfernt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud account removed"
+          }
+        }
+      }
+    },
+    "log.app.csvExported" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf als CSV exportiert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History exported as CSV"
+          }
+        }
+      }
+    },
+    "log.app.loginItem" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beim Anmelden starten: {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start at login: {state}"
+          }
+        }
+      }
+    },
+    "log.app.loginItemDefault" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beim Anmelden starten: Standard beim ersten Start"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start at login: default at first launch"
+          }
+        }
+      }
+    },
+    "log.app.loginItemFailed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anmeldeobjekt nicht geändert: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Login item not changed: {error}"
+          }
+        }
+      }
+    },
+    "log.app.notificationsDenied" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilungen für Timer nicht erlaubt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications for timers not allowed"
+          }
+        }
+      }
+    },
+    "log.app.notificationsError" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilungen: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications: {error}"
+          }
+        }
+      }
+    },
+    "log.app.restart" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neustart"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart"
+          }
+        }
+      }
+    },
+    "log.app.restartNotPossible" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neustart nicht möglich: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart not possible: {error}"
+          }
+        }
+      }
+    },
+    "log.backup.exported" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugangsdaten exportiert nach {file}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Credentials exported to {file}"
+          }
+        }
+      }
+    },
+    "log.backup.notSetAside" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bisherige Einrichtung nicht beiseitegelegt: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previous setup not set aside: {error}"
+          }
+        }
+      }
+    },
+    "log.backup.rejected" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sicherung von der Anlage abgelehnt: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup rejected by the air conditioner: {error}"
+          }
+        }
+      }
+    },
+    "log.backup.restored" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sicherung eingelesen: {name} @ {ip}{verified}{skipped}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup restored: {name} @ {ip}{verified}{skipped}"
+          }
+        }
+      }
+    },
+    "log.backup.scenesSkipped" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", {count} Szenen nicht übernommen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", {count} scenes not imported"
+          }
+        }
+      }
+    },
+    "log.backup.unverified" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", Anlage nicht erreichbar (ungeprüft)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", air conditioner not reachable (unchecked)"
+          }
+        }
+      }
+    },
+    "log.backup.verified" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", an der Anlage geprüft"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", checked with the air conditioner"
+          }
+        }
+      }
+    },
+    "log.bridge.encodeFailed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bridge: Daten für die Oberfläche nicht kodierbar ({type}): {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bridge: data for the interface cannot be encoded ({type}): {error}"
+          }
+        }
+      }
+    },
+    "log.bridge.exportFailed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf exportieren gescheitert ({code})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History export failed ({code})"
+          }
+        }
+      }
+    },
+    "log.bridge.timeZone" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitzone: Windows-Zone nicht in eine IANA-Zone umsetzbar, UTC bleibt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time zone: Windows zone cannot be mapped to an IANA zone, UTC stays"
+          }
+        }
+      }
+    },
+    "log.change.eco" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eco {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eco {state}"
+          }
+        }
+      }
+    },
+    "log.change.fan" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüfter {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fan {value}"
+          }
+        }
+      }
+    },
+    "log.change.freeze" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frostschutz {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frost protection {state}"
+          }
+        }
+      }
+    },
+    "log.change.mode" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modus {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode {value}"
+          }
+        }
+      }
+    },
+    "log.change.off" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "off"
+          }
+        }
+      }
+    },
+    "log.change.on" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "on"
+          }
+        }
+      }
+    },
+    "log.change.purifier" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ionisierer {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ionizer {state}"
+          }
+        }
+      }
+    },
+    "log.change.swing" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schwenken {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swing {state}"
+          }
+        }
+      }
+    },
+    "log.change.target" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soll {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target {value}"
+          }
+        }
+      }
+    },
+    "log.change.turbo" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turbo {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turbo {state}"
+          }
+        }
+      }
+    },
+    "log.cloud.applianceFound" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud: Anlage gefunden (id {id})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud: air conditioner found (id {id})"
+          }
+        }
+      }
+    },
+    "log.cloud.keychainUnreadable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud: Schlüsselbund nicht lesbar – keine Neuanmeldung ({error})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud: keychain not readable – no new sign-in ({error})"
+          }
+        }
+      }
+    },
+    "log.cloud.kindError" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud {kind}: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud {kind}: {error}"
+          }
+        }
+      }
+    },
+    "log.cloud.loginOk" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Anmeldung ({kind}) erfolgreich für {account}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud sign-in ({kind}) succeeded for {account}"
+          }
+        }
+      }
+    },
+    "log.cloud.offline" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "offline"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "offline"
+          }
+        }
+      }
+    },
+    "log.cloud.online" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "online"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "online"
+          }
+        }
+      }
+    },
+    "log.cloud.search" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Suche mit Konto {account}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud search with account {account}"
+          }
+        }
+      }
+    },
+    "log.cloud.searchEmpty" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "keine Anlage im Konto"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no air conditioner in the account"
+          }
+        }
+      }
+    },
+    "log.cloud.searchError" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Suche {kind}: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud search {kind}: {error}"
+          }
+        }
+      }
+    },
+    "log.cloud.searchItem" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{name} id {id} {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{name} id {id} {state}"
+          }
+        }
+      }
+    },
+    "log.cloud.searchResult" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Suche ({kind}): {result}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud search ({kind}): {result}"
+          }
+        }
+      }
+    },
+    "log.cloud.sessionExpired" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Sitzung abgelaufen (älter als 30 Tage) – wird nicht mehr benutzt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud session expired (older than 30 days) – no longer used"
+          }
+        }
+      }
+    },
+    "log.cloud.sessionInvalid" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Sitzung ungültig – melde einmal neu an ({account})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud session invalid – signing in once more ({account})"
+          }
+        }
+      }
+    },
+    "log.cloud.sessionReused" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Sitzung wiederverwendet ({kind}) – keine neue Anmeldung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud session reused ({kind}) – no new sign-in"
+          }
+        }
+      }
+    },
+    "log.cloud.singleAppliance" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud: einzige Klimaanlage im Konto verwendet (id {id})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud: only air conditioner in the account used (id {id})"
+          }
+        }
+      }
+    },
+    "log.cloud.stopped" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud {kind} gestoppt bis zur nächsten Anmeldung in den Einstellungen: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud {kind} stopped until the next sign-in in the settings: {error}"
+          }
+        }
+      }
+    },
+    "log.commands.change" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Befehl: {change}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Command: {change}"
+          }
+        }
+      }
+    },
+    "log.commands.notApplied" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stellbefehl nach 3 Versuchen nicht übernommen – setze zurück und lese neu"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set command not applied after 3 attempts – resetting and reading again"
+          }
+        }
+      }
+    },
+    "log.commands.rate" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Befehl: Leistung begrenzen auf {percent} %"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Command: limit power to {percent} %"
+          }
+        }
+      }
+    },
+    "log.commands.restored" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbindung wieder da"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection restored"
+          }
+        }
+      }
+    },
+    "log.common.off" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "off"
+          }
+        }
+      }
+    },
+    "log.common.on" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "an"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "on"
+          }
+        }
+      }
+    },
+    "log.core.started" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} gestartet – Anlage {name} @ {ip}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} started – air conditioner {name} @ {ip}"
+          }
+        }
+      }
+    },
+    "log.core.startedNoDevice" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} gestartet – noch keine Anlage eingerichtet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} started – no air conditioner set up yet"
+          }
+        }
+      }
+    },
+    "log.device.configUnreadable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{file} unlesbar ({error}) – beiseitegelegt als {aside}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{file} unreadable ({error}) – set aside as {aside}"
+          }
+        }
+      }
+    },
+    "log.device.displayGaveUp" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzeige umschalten nicht übernommen – aufgegeben"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display toggle not applied – giving up"
+          }
+        }
+      }
+    },
+    "log.device.displayRetry" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzeige umschalten nicht übernommen – wiederhole einmal"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display toggle not applied – trying once more"
+          }
+        }
+      }
+    },
+    "log.device.notApplied" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stellbefehl nicht übernommen (Versuch {attempt}/3): {fields}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set command not applied (attempt {attempt}/3): {fields}"
+          }
+        }
+      }
+    },
+    "log.device.propertyGaveUp" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{property} = {value} nicht übernommen – aufgegeben"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{property} = {value} not applied – giving up"
+          }
+        }
+      }
+    },
+    "log.device.propertyRetry" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{property} = {value} nicht übernommen – wiederhole"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{property} = {value} not applied – retrying"
+          }
+        }
+      }
+    },
+    "log.device.rateGaveUp" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistungsbegrenzung {value} % nicht übernommen – aufgegeben"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power limit {value} % not applied – giving up"
+          }
+        }
+      }
+    },
+    "log.device.rateRetry" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistungsbegrenzung {value} % nicht übernommen – wiederhole"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power limit {value} % not applied – retrying"
+          }
+        }
+      }
+    },
+    "log.discovery.broadcast" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche: Broadcast an {target} Port 6445 und 20086 (je 3×), warte {seconds} s"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search: broadcast to {target} port 6445 and 20086 (3× each), waiting {seconds} s"
+          }
+        }
+      }
+    },
+    "log.discovery.device" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{label}: {name} {ip} Typ 0x{type} V{version} Port {port} id {id} SN {sn}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{label}: {name} {ip} type 0x{type} V{version} port {port} id {id} SN {sn}"
+          }
+        }
+      }
+    },
+    "log.discovery.foundBroadcast" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage {id} per Broadcast gefunden unter {ip}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner {id} found by broadcast at {ip}"
+          }
+        }
+      }
+    },
+    "log.discovery.foundScan" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage {id} per Netz-Scan gefunden unter {ip}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner {id} found by network scan at {ip}"
+          }
+        }
+      }
+    },
+    "log.discovery.labelScan" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netz-Scan"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Network scan"
+          }
+        }
+      }
+    },
+    "log.discovery.labelSearch" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
+          }
+        }
+      }
+    },
+    "log.discovery.notFound" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage {id} im Netz nicht gefunden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner {id} not found on the network"
+          }
+        }
+      }
+    },
+    "log.discovery.nothing" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nichts gefunden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nothing found"
+          }
+        }
+      }
+    },
+    "log.discovery.reply" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{label}: Antwort von {ip} ({bytes} Byte) {hex}…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{label}: reply from {ip} ({bytes} bytes) {hex}…"
+          }
+        }
+      }
+    },
+    "log.discovery.result" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche an {target}: {result}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search at {target}: {result}"
+          }
+        }
+      }
+    },
+    "log.discovery.scanPlan" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netz-Scan: {nets} → {count} Adressen, warte {seconds} s"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Network scan: {nets} → {count} addresses, waiting {seconds} s"
+          }
+        }
+      }
+    },
+    "log.discovery.scanResult" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netz-Scan über {count} Adressen: {result}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Network scan over {count} addresses: {result}"
+          }
+        }
+      }
+    },
+    "log.discovery.unreadable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{label}: Antwort von {ip} nicht lesbar: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{label}: reply from {ip} not readable: {error}"
+          }
+        }
+      }
+    },
+    "log.energy.meterJump" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zählerstand zurückgesprungen ({old} → {new} kWh) – Tagesverbrauch zählt ab jetzt neu"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meter reading jumped back ({old} → {new} kWh) – daily consumption restarts now"
+          }
+        }
+      }
+    },
+    "log.frame.capabilities" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fähigkeiten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "capabilities"
+          }
+        }
+      }
+    },
+    "log.frame.fault" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Störmeldung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fault message"
+          }
+        }
+      }
+    },
+    "log.frame.group" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gruppe {number}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "group {number}"
+          }
+        }
+      }
+    },
+    "log.frame.notice" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "message"
+          }
+        }
+      }
+    },
+    "log.frame.properties" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigenschaften"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "properties"
+          }
+        }
+      }
+    },
+    "log.frame.query" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abfrage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "query"
+          }
+        }
+      }
+    },
+    "log.frame.set" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stellbefehl"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "set command"
+          }
+        }
+      }
+    },
+    "log.frame.setProperties" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigenschaften setzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "set properties"
+          }
+        }
+      }
+    },
+    "log.frame.setState" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zustand setzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "set state"
+          }
+        }
+      }
+    },
+    "log.frame.state" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zustand"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "state"
+          }
+        }
+      }
+    },
+    "log.frame.type" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typ {code}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "type {code}"
+          }
+        }
+      }
+    },
+    "log.history.csvNotSetAside" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "verlauf.csv nicht beiseitegelegt: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "verlauf.csv not set aside: {error}"
+          }
+        }
+      }
+    },
+    "log.history.damaged" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlaufsdatenbank defekt – beiseitegelegt als {file}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History database damaged – set aside as {file}"
+          }
+        }
+      }
+    },
+    "log.history.importUnreadable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " – {count} Datei(en) nicht lesbar, nächster Versuch beim nächsten Start"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " – {count} file(s) not readable, next attempt at the next start"
+          }
+        }
+      }
+    },
+    "log.history.imported" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf: {rows} Zeilen aus {files} CSV-Datei(en) in die Datenbank übernommen{unreadable}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History: {rows} rows from {files} CSV file(s) imported into the database{unreadable}"
+          }
+        }
+      }
+    },
+    "log.history.openFailed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlaufsdatenbank nicht zu öffnen ({code}): {message}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History database cannot be opened ({code}): {message}"
+          }
+        }
+      }
+    },
+    "log.history.sqlite" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf (SQLite): {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History (SQLite): {error}"
+          }
+        }
+      }
+    },
+    "log.keychain.accountNotReadable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Konto nicht lesbar: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud account not readable: {error}"
+          }
+        }
+      }
+    },
+    "log.keychain.accountNotSaved" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Konto nicht gespeichert: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud account not saved: {error}"
+          }
+        }
+      }
+    },
+    "log.keychain.notReadable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geheimnisspeicher: {service} nicht lesbar ({error})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret store: {service} not readable ({error})"
+          }
+        }
+      }
+    },
+    "log.keychain.notRemoved" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geheimnisspeicher: {service} nicht entfernt ({error})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret store: {service} not removed ({error})"
+          }
+        }
+      }
+    },
+    "log.keychain.notSaved" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geheimnisspeicher: {service} nicht gespeichert ({error}, {bytes} Byte)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret store: {service} not saved ({error}, {bytes} bytes)"
+          }
+        }
+      }
+    },
+    "log.keychain.sessionNotSaved" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud-Sitzung nicht gespeichert: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud session not saved: {error}"
+          }
+        }
+      }
+    },
+    "log.lan.connecting" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbinde mit {host}:{port} (TCP, V3) …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecting to {host}:{port} (TCP, V3) …"
+          }
+        }
+      }
+    },
+    "log.lan.disconnected" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbindung zu {host} getrennt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection to {host} closed"
+          }
+        }
+      }
+    },
+    "log.lan.droppedFrames" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{host}: {count} verspätete Rahmen verworfen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{host}: {count} late frames discarded"
+          }
+        }
+      }
+    },
+    "log.lan.error" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{host}: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{host}: {error}"
+          }
+        }
+      }
+    },
+    "log.lan.handshake" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TCP verbunden, sende Handshake (Token {bytes} Byte, geschwärzt)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TCP connected, sending handshake (token {bytes} bytes, redacted)"
+          }
+        }
+      }
+    },
+    "log.lan.handshakeOk" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Handshake ok, Sitzungsschlüssel ausgehandelt (gültig 12 h)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Handshake ok, session key negotiated (valid 12 h)"
+          }
+        }
+      }
+    },
+    "log.lan.retry" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{host}: {error} – wiederhole"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{host}: {error} – retrying"
+          }
+        }
+      }
+    },
+    "log.language.set" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprache: {language}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language: {language}"
+          }
+        }
+      }
+    },
+    "log.language.setPseudo" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprache: {language} (Pseudo)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language: {language} (pseudo)"
+          }
+        }
+      }
+    },
+    "log.level.error" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR"
+          }
+        }
+      }
+    },
+    "log.level.warning" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WARNUNG"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WARNING"
+          }
+        }
+      }
+    },
+    "log.packet.badHeader" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8370-Kopf mit unsinniger Länge {length} verworfen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8370 header with nonsensical length {length} discarded"
+          }
+        }
+      }
+    },
+    "log.path.cloud" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud"
+          }
+        }
+      }
+    },
+    "log.path.lan" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WLAN"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wi-Fi"
+          }
+        }
+      }
+    },
+    "log.polling.diagnostics" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnose: {line}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnostics: {line}"
+          }
+        }
+      }
+    },
+    "log.polling.fastGroup" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schnellabruf (Block Gruppe {group})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fast refresh (block group {group})"
+          }
+        }
+      }
+    },
+    "log.polling.fastProperties" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schnellabruf (Block Eigenschaften+Verbrauch)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fast refresh (block properties and consumption)"
+          }
+        }
+      }
+    },
+    "log.polling.started" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abfrage gestartet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Polling started"
+          }
+        }
+      }
+    },
+    "log.polling.state" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zustand: {line}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "State: {line}"
+          }
+        }
+      }
+    },
+    "log.relocate.loginFailed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage unter {ip} gefunden, Anmeldung gescheitert: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner found at {ip}, sign-in failed: {error}"
+          }
+        }
+      }
+    },
+    "log.relocate.moved" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage jetzt unter {ip} (vorher {old})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner now at {ip} (before: {old})"
+          }
+        }
+      }
+    },
+    "log.relocate.notSaved" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neue Adresse nicht gespeichert: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New address not saved: {error}"
+          }
+        }
+      }
+    },
+    "log.relocate.searchFailed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche nach der Anlage fehlgeschlagen: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search for the air conditioner failed: {error}"
+          }
+        }
+      }
+    },
+    "log.relocate.searching" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche die Anlage (id {id}) im WLAN …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Looking for the air conditioner (id {id}) on Wi-Fi …"
+          }
+        }
+      }
+    },
+    "log.relocate.unchanged" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage weiter unter {ip}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner still at {ip}"
+          }
+        }
+      }
+    },
+    "log.scene.unreadable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{file} unlesbar – beiseitegelegt als {aside}, {count} Szene(n) gerettet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{file} unreadable – set aside as {aside}, {count} scene(s) rescued"
+          }
+        }
+      }
+    },
+    "log.scenes.notSaved" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Szenen nicht gespeichert: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scenes not saved: {error}"
+          }
+        }
+      }
+    },
+    "log.session.cloudSetup" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage über die Cloud eingerichtet: {name} (id {id})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner set up via the Cloud: {name} (id {id})"
+          }
+        }
+      }
+    },
+    "log.session.manualSetup" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage mit eingegebenen Zugangsdaten eingerichtet: {name} @ {ip}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner set up with entered credentials: {name} @ {ip}"
+          }
+        }
+      }
+    },
+    "log.session.notUsable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage nicht nutzbar: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner not usable: {error}"
+          }
+        }
+      }
+    },
+    "log.session.reset" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einrichtung zurückgesetzt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setup reset"
+          }
+        }
+      }
+    },
+    "log.session.setupNotRemoved" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einrichtung nicht entfernt: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setup not removed: {error}"
+          }
+        }
+      }
+    },
+    "log.session.timersDeleted" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App-Timer gelöscht (keine Anlage mehr eingerichtet)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App timers deleted (no air conditioner set up any more)"
+          }
+        }
+      }
+    },
+    "log.settings.backgroundPolling" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Fenster sichtbar – Abfrage alle {seconds} s"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No window visible – polling every {seconds} s"
+          }
+        }
+      }
+    },
+    "log.settings.betaChannel" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorabversionen: {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pre-releases: {state}"
+          }
+        }
+      }
+    },
+    "log.settings.connectionMode" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbindungsweg: {mode}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection path: {mode}"
+          }
+        }
+      }
+    },
+    "log.settings.currency" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Währung: {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Currency: {value}"
+          }
+        }
+      }
+    },
+    "log.settings.detailedLog" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausführliches Protokoll {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detailed log {state}"
+          }
+        }
+      }
+    },
+    "log.settings.historyCSV" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf als CSV: {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History as CSV: {state}"
+          }
+        }
+      }
+    },
+    "log.settings.languageAfterRestart" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprache nach Neustart: {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language after restart: {value}"
+          }
+        }
+      }
+    },
+    "log.settings.refresh" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualisierung alle {seconds} s"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh every {seconds} s"
+          }
+        }
+      }
+    },
+    "log.settings.windowVisible" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenster sichtbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Window visible"
+          }
+        }
+      }
+    },
+    "log.stateLine.diagnostics" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdichter {hz}/{targetHz} Hz, {watts} W, {amps} A, {volts} V, T1–T4 {t1}/{t2}/{t3}/{t4}, TP {tp}, EEV {eev}, Lüfter {indoorFan}/{outdoorFan} U/min"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compressor {hz}/{targetHz} Hz, {watts} W, {amps} A, {volts} V, T1–T4 {t1}/{t2}/{t3}/{t4}, TP {tp}, EEV {eev}, fan {indoorFan}/{outdoorFan} rpm"
+          }
+        }
+      }
+    },
+    "log.stateLine.line" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{power}, {mode}, Soll {target}, innen {indoor}, außen {outdoor}, Lüfter {fan}, {watts}, Begrenzung {rate}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{power}, {mode}, target {target}, indoor {indoor}, outdoor {outdoor}, fan {fan}, {watts}, limit {rate}"
+          }
+        }
+      }
+    },
+    "log.timer.actionOff" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ausschalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "turn off"
+          }
+        }
+      }
+    },
+    "log.timer.actionOn" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "einschalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "turn on"
+          }
+        }
+      }
+    },
+    "log.timer.ended" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer „{name}“ beendet: {reason}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer “{name}” ended: {reason}"
+          }
+        }
+      }
+    },
+    "log.timer.firing" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer löst aus: {action}{suffix}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer firing: {action}{suffix}"
+          }
+        }
+      }
+    },
+    "log.timer.missed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App-Timer „{name}“ verpasst (fällig war {time})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App timer “{name}” missed (was due {time})"
+          }
+        }
+      }
+    },
+    "log.timer.nameOff" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "off"
+          }
+        }
+      }
+    },
+    "log.timer.nameOn" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "on"
+          }
+        }
+      }
+    },
+    "log.timer.offDeleted" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer „aus“ gelöscht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer “off” deleted"
+          }
+        }
+      }
+    },
+    "log.timer.offIn" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer: aus in {minutes} min"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer: off in {minutes} min"
+          }
+        }
+      }
+    },
+    "log.timer.onAt" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer: ein um {time}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer: on at {time}"
+          }
+        }
+      }
+    },
+    "log.timer.onDeleted" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer „ein“ gelöscht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer “on” deleted"
+          }
+        }
+      }
+    },
+    "log.timer.repeat" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " (Wiederholung)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " (repeat)"
+          }
+        }
+      }
+    },
+    "log.timer.switchedByHand" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage inzwischen von Hand geschaltet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "air conditioner has been switched by hand in the meantime"
+          }
+        }
+      }
+    },
+    "log.token.accepted" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage hat das Token angenommen – Einrichtung fertig"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner accepted the token – setup complete"
+          }
+        }
+      }
+    },
+    "log.token.error" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{kind}: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{kind}: {error}"
+          }
+        }
+      }
+    },
+    "log.token.fetch" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token-Abruf für {name} ({ip}, id {id}) mit Konto {account}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fetching token for {name} ({ip}, id {id}) with account {account}"
+          }
+        }
+      }
+    },
+    "log.token.none" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Token für udpid ({order} endian, {kind})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No token for udpid ({order} endian, {kind})"
+          }
+        }
+      }
+    },
+    "log.token.received" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token erhalten ({order} endian), prüfe an der Anlage …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token received ({order} endian), checking with the air conditioner …"
+          }
+        }
+      }
+    },
+    "log.token.rejected" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage lehnt dieses Token ab ({order} endian) – probiere die andere Variante"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner rejects this token ({order} endian) – trying the other variant"
+          }
+        }
+      }
+    },
+    "log.transport.pathDown" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{path} nicht erreichbar – nächster Weg"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{path} not reachable – trying the next path"
+          }
+        }
+      }
+    },
+    "log.transport.via" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbindung über {path}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection via {path}"
+          }
+        }
+      }
+    },
+    "log.updates.aborted" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: abgebrochen ({error})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: aborted ({error})"
+          }
+        }
+      }
+    },
+    "log.updates.automatic" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: automatisch laden, Beta-Kanal {state} ({feed})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: download automatically, beta channel {state} ({feed})"
+          }
+        }
+      }
+    },
+    "log.updates.betaChannel" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: Beta-Kanal {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: beta channel {state}"
+          }
+        }
+      }
+    },
+    "log.updates.downloaded" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: Version {version} geladen, wartet auf Neustart oder Beenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: version {version} downloaded, waiting for restart or quit"
+          }
+        }
+      }
+    },
+    "log.updates.found" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: Version {version} gefunden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: version {version} found"
+          }
+        }
+      }
+    },
+    "log.updates.installNow" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: installiere Version {version} auf Wunsch sofort"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: installing version {version} now at your request"
+          }
+        }
+      }
+    },
+    "log.updates.remind" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: Erinnerung in 24 h"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: reminder in 24 h"
+          }
+        }
+      }
+    },
     "main.comfort.display" : {
       "comment" : "Funktion weitere Funktionen (Anzeige am Gerät)",
       "extractionState" : "manual",
@@ -10829,6 +15545,60 @@ extension StringsData {
         }
       }
     },
+    "notices.dotnet.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laufzeit und Oberfläche (Windows Presentation Foundation) der Windows-App, eigenständig im Paket mitgeliefert (.NET 10). Hinweise zu den in .NET enthaltenen Fremdkomponenten stehen in der mitgelieferten Datei DOTNET-THIRD-PARTY-NOTICES.TXT."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Runtime and user interface (Windows Presentation Foundation) of the Windows app, shipped self-contained in the package (.NET 10). Notices on the third-party components included in .NET are in the shipped file DOTNET-THIRD-PARTY-NOTICES.TXT."
+          }
+        }
+      }
+    },
+    "notices.expat.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "XML-Leser, den WinSparkle für den Appcast nutzt; steckt in der mitgelieferten WinSparkle.dll (COPYING.expat aus WinSparkle 0.9.4)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "XML parser that WinSparkle uses for the appcast; included in the shipped WinSparkle.dll (COPYING.expat from WinSparkle 0.9.4)."
+          }
+        }
+      }
+    },
+    "notices.icu.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unicode- und Ländereinstellungsdaten für Foundation (_FoundationICU.dll), Teil der mitgelieferten Swift-Laufzeit der Windows-Fassung."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unicode and locale data for Foundation (_FoundationICU.dll), part of the Swift runtime shipped with the Windows version."
+          }
+        }
+      }
+    },
     "notices.intro" : {
       "comment" : "Lizenzen: Einleitung",
       "extractionState" : "manual",
@@ -10865,6 +15635,222 @@ extension StringsData {
         }
       }
     },
+    "notices.mideaAcLan.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorlage für das Schlüsselschema der MSmartHome-Cloud (Sitzungsschlüssel aus accessToken und randomData)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model for the key scheme of the MSmartHome Cloud (session key from accessToken and randomData)."
+          }
+        }
+      }
+    },
+    "notices.mideaBeautifulAir.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorlage für die Cloud-Steuerung über NetHome Plus (transparent send, Datenschlüssel, CSV-Kodierung) und für die Kodierung der Gerätetimer."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model for Cloud control through NetHome Plus (transparent send, data key, CSV encoding) and for the encoding of the air conditioner timers."
+          }
+        }
+      }
+    },
+    "notices.msmartNg.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorlage für das lokale Midea-Protokoll: V2/V3-Pakete, Handshake und Verschlüsselung, Suche im Netz, Befehls- und Antwortrahmen für Klimaanlagen, Diagnosegruppen, Token-Abruf über die Cloud. In Swift nachgebaut; die Testvektoren der Tests wurden mit msmart-ng erzeugt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model for the local Midea protocol: V2/V3 packets, handshake and encryption, discovery on the network, command and reply frames for air conditioners, diagnostic groups, token retrieval through the Cloud. Re-implemented in Swift; the test vectors of the tests were generated with msmart-ng."
+          }
+        }
+      }
+    },
+    "notices.platform.all" : {
+      "comment" : "Lizenzen: Plattform, für alle",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "alle"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All"
+          }
+        }
+      }
+    },
+    "notices.platform.macOnly" : {
+      "comment" : "Lizenzen: Plattform, nur Mac",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nur Mac"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac only"
+          }
+        }
+      }
+    },
+    "notices.platform.windowsOnly" : {
+      "comment" : "Lizenzen: Plattform, nur Windows",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nur Windows"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows only"
+          }
+        }
+      }
+    },
+    "notices.sparkle.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates der Mac-App (Sparkle 2.10.1): sucht nach neuen Versionen, prüft deren EdDSA-Signatur und installiert sie nach Rückfrage. Als Framework in der App mitgeliefert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates of the Mac app (Sparkle 2.10.1): looks for new versions, checks their EdDSA signature and installs them after confirmation. Shipped in the app as a framework."
+          }
+        }
+      }
+    },
+    "notices.sqlite.copyright" : {
+      "comment" : "Lizenzen: Vermerk statt Urheberrechtszeile bei SQLite",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SQLite ist gemeinfrei (public domain); es gibt keinen Urheberrechtsvermerk."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SQLite is in the public domain; there is no copyright notice."
+          }
+        }
+      }
+    },
+    "notices.sqlite.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlaufsdatenbank in der Windows-Fassung (Amalgamation 3.54.1, unverändert eingebunden). Unter macOS nutzt Klimacontrol die SQLite des Systems."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History database in the Windows version (amalgamation 3.54.1, included unmodified). On macOS, Klimacontrol uses the system's SQLite."
+          }
+        }
+      }
+    },
+    "notices.swiftCrypto.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kryptografie (AES, SHA-256, HMAC, MD5) in der Windows-Fassung, als Bibliothek eingebunden. Unter macOS nutzt Klimacontrol stattdessen CryptoKit und CommonCrypto des Systems."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cryptography (AES, SHA-256, HMAC, MD5) in the Windows version, included as a library. On macOS, Klimacontrol uses the system's CryptoKit and CommonCrypto instead."
+          }
+        }
+      }
+    },
+    "notices.swiftRuntime.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laufzeit der Windows-Fassung, neben der App mitgeliefert (swiftCore.dll, Foundation-, Dispatch- und weitere Swift-DLLs aus der Swift-Toolchain 6.4.2). Unter macOS ist die Swift-Laufzeit Teil des Systems."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Runtime of the Windows version, shipped next to the app (swiftCore.dll, Foundation, Dispatch and other Swift DLLs from the Swift toolchain 6.4.2). On macOS, the Swift runtime is part of the system."
+          }
+        }
+      }
+    },
+    "notices.trademark" : {
+      "comment" : "Lizenzen: Markenhinweis unter der Liste",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol ist kein Produkt von Midea und steht in keiner Verbindung zu Midea. Midea, MSmartHome, NetHome Plus und PortaSplit sind Marken ihrer jeweiligen Inhaber."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol is not a Midea product and is not affiliated with Midea. Midea, MSmartHome, NetHome Plus and PortaSplit are trademarks of their respective owners."
+          }
+        }
+      }
+    },
     "notices.windows.licenseTextName" : {
       "comment" : "Windows: UIA-Name des Lizenztextfelds",
       "extractionState" : "manual",
@@ -10897,6 +15883,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Klimacontrol is not a Midea product and is not affiliated with Midea. Midea, MSmartHome, NetHome Plus, and PortaSplit are trademarks of their respective owners."
+          }
+        }
+      }
+    },
+    "notices.winsparkle.usage" : {
+      "comment" : "Lizenzen: wofür Klimacontrol die Quelle nutzt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates der Windows-App (WinSparkle 0.9.4): sucht nach neuen Versionen, prüft deren EdDSA-Signatur und startet den Installer nach Rückfrage. Als DLL neben der App mitgeliefert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates of the Windows app (WinSparkle 0.9.4): looks for new versions, checks their EdDSA signature and starts the installer after confirmation. Shipped as a DLL next to the app."
           }
         }
       }
@@ -21183,6 +26187,268 @@ extension StringsData {
         "keys.windows.standardSuffix",
         "keys.windows.win",
         "keys.windows.withShortcut",
+        "kit.cloud.accessKeyUnreadable",
+        "kit.cloud.noApplianceReply",
+        "kit.cloud.noReplyWithin",
+        "kit.cloud.noText",
+        "kit.cloud.sessionKeyMismatch",
+        "kit.cloud.sessionKeyUnreadable",
+        "kit.cloud.sessionKeysMissing",
+        "kit.cloud.todo.accountLocked",
+        "kit.cloud.todo.applianceOffline",
+        "kit.cloud.todo.network",
+        "kit.cloud.todo.retryLater",
+        "kit.cloud.todo.serviceUnavailable",
+        "kit.cloud.todo.sessionExpired",
+        "kit.cloud.todo.tokenRejected",
+        "kit.cloud.todo.unknownAppliance",
+        "kit.cloud.todo.wrongCredentials",
+        "kit.cloud.what.accountLocked",
+        "kit.cloud.what.applianceOffline",
+        "kit.cloud.what.badReply",
+        "kit.cloud.what.network",
+        "kit.cloud.what.other",
+        "kit.cloud.what.otherWithText",
+        "kit.cloud.what.serviceUnavailable",
+        "kit.cloud.what.sessionExpired",
+        "kit.cloud.what.tokenRejected",
+        "kit.cloud.what.unknownAppliance",
+        "kit.cloud.what.wrongCredentials",
+        "kit.config.invalidAddress",
+        "kit.config.invalidHex",
+        "kit.config.noDevice",
+        "kit.config.unsupportedVersion",
+        "kit.control.eco",
+        "kit.control.fan",
+        "kit.control.freeze",
+        "kit.control.mode",
+        "kit.control.power",
+        "kit.control.purifier",
+        "kit.control.swing",
+        "kit.control.target",
+        "kit.control.turbo",
+        "kit.device.noState",
+        "kit.discovery.badLength",
+        "kit.discovery.badSignature",
+        "kit.discovery.noNetwork",
+        "kit.discovery.profileTooShort",
+        "kit.discovery.searchFailed",
+        "kit.discovery.tooShort",
+        "kit.discovery.unknownDevice",
+        "kit.error.authentication",
+        "kit.error.crypto",
+        "kit.error.invalidResponse",
+        "kit.error.noConnection",
+        "kit.error.noReply",
+        "kit.error.notApplied",
+        "kit.error.outcomeUnknown",
+        "kit.error.protocol",
+        "kit.error.timeout",
+        "kit.frame.badChecksum",
+        "kit.frame.deviceType",
+        "kit.frame.noPayload",
+        "kit.frame.tooShort",
+        "kit.generic.error",
+        "kit.keychain.saveFailed",
+        "kit.keychain.tooLarge",
+        "kit.keychain.unavailable",
+        "kit.keychain.unreadable",
+        "kit.lan.budget",
+        "kit.lan.localNetworkMac",
+        "kit.lan.localNetworkWindows",
+        "kit.lan.notConnected",
+        "kit.lan.unexpectedType",
+        "kit.packet.badMarker",
+        "kit.packet.badMd5",
+        "kit.packet.badSha",
+        "kit.packet.badStart",
+        "kit.packet.deviceError",
+        "kit.packet.handshakeSize",
+        "kit.packet.lengthMismatch",
+        "kit.packet.notLoggedIn",
+        "kit.packet.paddingMismatch",
+        "kit.packet.tokenMismatch",
+        "kit.packet.tooShort",
+        "kit.packet.truncated",
+        "kit.packet.unexpectedHandshake",
+        "kit.packet.unexpectedType",
+        "kit.packet.unknownPacket",
+        "kit.packet.unknownType",
+        "kit.socket.connectTimeout",
+        "kit.socket.createFailed",
+        "kit.socket.invalidHost",
+        "kit.socket.winsock",
+        "log.account.loginFailed",
+        "log.account.removed",
+        "log.app.csvExported",
+        "log.app.loginItem",
+        "log.app.loginItemDefault",
+        "log.app.loginItemFailed",
+        "log.app.notificationsDenied",
+        "log.app.notificationsError",
+        "log.app.restart",
+        "log.app.restartNotPossible",
+        "log.backup.exported",
+        "log.backup.notSetAside",
+        "log.backup.rejected",
+        "log.backup.restored",
+        "log.backup.scenesSkipped",
+        "log.backup.unverified",
+        "log.backup.verified",
+        "log.bridge.encodeFailed",
+        "log.bridge.exportFailed",
+        "log.bridge.timeZone",
+        "log.change.eco",
+        "log.change.fan",
+        "log.change.freeze",
+        "log.change.mode",
+        "log.change.off",
+        "log.change.on",
+        "log.change.purifier",
+        "log.change.swing",
+        "log.change.target",
+        "log.change.turbo",
+        "log.cloud.applianceFound",
+        "log.cloud.keychainUnreadable",
+        "log.cloud.kindError",
+        "log.cloud.loginOk",
+        "log.cloud.offline",
+        "log.cloud.online",
+        "log.cloud.search",
+        "log.cloud.searchEmpty",
+        "log.cloud.searchError",
+        "log.cloud.searchItem",
+        "log.cloud.searchResult",
+        "log.cloud.sessionExpired",
+        "log.cloud.sessionInvalid",
+        "log.cloud.sessionReused",
+        "log.cloud.singleAppliance",
+        "log.cloud.stopped",
+        "log.commands.change",
+        "log.commands.notApplied",
+        "log.commands.rate",
+        "log.commands.restored",
+        "log.common.off",
+        "log.common.on",
+        "log.core.started",
+        "log.core.startedNoDevice",
+        "log.device.configUnreadable",
+        "log.device.displayGaveUp",
+        "log.device.displayRetry",
+        "log.device.notApplied",
+        "log.device.propertyGaveUp",
+        "log.device.propertyRetry",
+        "log.device.rateGaveUp",
+        "log.device.rateRetry",
+        "log.discovery.broadcast",
+        "log.discovery.device",
+        "log.discovery.foundBroadcast",
+        "log.discovery.foundScan",
+        "log.discovery.labelScan",
+        "log.discovery.labelSearch",
+        "log.discovery.notFound",
+        "log.discovery.nothing",
+        "log.discovery.reply",
+        "log.discovery.result",
+        "log.discovery.scanPlan",
+        "log.discovery.scanResult",
+        "log.discovery.unreadable",
+        "log.energy.meterJump",
+        "log.frame.capabilities",
+        "log.frame.fault",
+        "log.frame.group",
+        "log.frame.notice",
+        "log.frame.properties",
+        "log.frame.query",
+        "log.frame.set",
+        "log.frame.setProperties",
+        "log.frame.setState",
+        "log.frame.state",
+        "log.frame.type",
+        "log.history.csvNotSetAside",
+        "log.history.damaged",
+        "log.history.importUnreadable",
+        "log.history.imported",
+        "log.history.openFailed",
+        "log.history.sqlite",
+        "log.keychain.accountNotReadable",
+        "log.keychain.accountNotSaved",
+        "log.keychain.notReadable",
+        "log.keychain.notRemoved",
+        "log.keychain.notSaved",
+        "log.keychain.sessionNotSaved",
+        "log.lan.connecting",
+        "log.lan.disconnected",
+        "log.lan.droppedFrames",
+        "log.lan.error",
+        "log.lan.handshake",
+        "log.lan.handshakeOk",
+        "log.lan.retry",
+        "log.language.set",
+        "log.language.setPseudo",
+        "log.level.error",
+        "log.level.warning",
+        "log.packet.badHeader",
+        "log.path.cloud",
+        "log.path.lan",
+        "log.polling.diagnostics",
+        "log.polling.fastGroup",
+        "log.polling.fastProperties",
+        "log.polling.started",
+        "log.polling.state",
+        "log.relocate.loginFailed",
+        "log.relocate.moved",
+        "log.relocate.notSaved",
+        "log.relocate.searchFailed",
+        "log.relocate.searching",
+        "log.relocate.unchanged",
+        "log.scene.unreadable",
+        "log.scenes.notSaved",
+        "log.session.cloudSetup",
+        "log.session.manualSetup",
+        "log.session.notUsable",
+        "log.session.reset",
+        "log.session.setupNotRemoved",
+        "log.session.timersDeleted",
+        "log.settings.backgroundPolling",
+        "log.settings.betaChannel",
+        "log.settings.connectionMode",
+        "log.settings.currency",
+        "log.settings.detailedLog",
+        "log.settings.historyCSV",
+        "log.settings.languageAfterRestart",
+        "log.settings.refresh",
+        "log.settings.windowVisible",
+        "log.stateLine.diagnostics",
+        "log.stateLine.line",
+        "log.timer.actionOff",
+        "log.timer.actionOn",
+        "log.timer.ended",
+        "log.timer.firing",
+        "log.timer.missed",
+        "log.timer.nameOff",
+        "log.timer.nameOn",
+        "log.timer.offDeleted",
+        "log.timer.offIn",
+        "log.timer.onAt",
+        "log.timer.onDeleted",
+        "log.timer.repeat",
+        "log.timer.switchedByHand",
+        "log.token.accepted",
+        "log.token.error",
+        "log.token.fetch",
+        "log.token.none",
+        "log.token.received",
+        "log.token.rejected",
+        "log.transport.pathDown",
+        "log.transport.via",
+        "log.updates.aborted",
+        "log.updates.automatic",
+        "log.updates.betaChannel",
+        "log.updates.downloaded",
+        "log.updates.found",
+        "log.updates.installNow",
+        "log.updates.remind",
         "main.comfort.display",
         "main.comfort.eco",
         "main.comfort.frostProtection",
@@ -21397,10 +26663,26 @@ extension StringsData {
         "mode.verb.dry",
         "mode.verb.fan",
         "mode.verb.heat",
+        "notices.dotnet.usage",
+        "notices.expat.usage",
+        "notices.icu.usage",
         "notices.intro",
         "notices.licenseText",
+        "notices.mideaAcLan.usage",
+        "notices.mideaBeautifulAir.usage",
+        "notices.msmartNg.usage",
+        "notices.platform.all",
+        "notices.platform.macOnly",
+        "notices.platform.windowsOnly",
+        "notices.sparkle.usage",
+        "notices.sqlite.copyright",
+        "notices.sqlite.usage",
+        "notices.swiftCrypto.usage",
+        "notices.swiftRuntime.usage",
+        "notices.trademark",
         "notices.windows.licenseTextName",
         "notices.windows.trademarks",
+        "notices.winsparkle.usage",
         "options.address.example",
         "options.address.orHost",
         "options.fan.autoCaption",
@@ -22334,6 +27616,268 @@ extension StringsData {
         "keys.windows.standardSuffix": ["shortcut"],
         "keys.windows.win": [],
         "keys.windows.withShortcut": ["text", "shortcut"],
+        "kit.cloud.accessKeyUnreadable": [],
+        "kit.cloud.noApplianceReply": [],
+        "kit.cloud.noReplyWithin": ["seconds"],
+        "kit.cloud.noText": [],
+        "kit.cloud.sessionKeyMismatch": [],
+        "kit.cloud.sessionKeyUnreadable": [],
+        "kit.cloud.sessionKeysMissing": [],
+        "kit.cloud.todo.accountLocked": [],
+        "kit.cloud.todo.applianceOffline": [],
+        "kit.cloud.todo.network": [],
+        "kit.cloud.todo.retryLater": [],
+        "kit.cloud.todo.serviceUnavailable": [],
+        "kit.cloud.todo.sessionExpired": [],
+        "kit.cloud.todo.tokenRejected": [],
+        "kit.cloud.todo.unknownAppliance": [],
+        "kit.cloud.todo.wrongCredentials": [],
+        "kit.cloud.what.accountLocked": [],
+        "kit.cloud.what.applianceOffline": [],
+        "kit.cloud.what.badReply": [],
+        "kit.cloud.what.network": [],
+        "kit.cloud.what.other": [],
+        "kit.cloud.what.otherWithText": ["text"],
+        "kit.cloud.what.serviceUnavailable": [],
+        "kit.cloud.what.sessionExpired": [],
+        "kit.cloud.what.tokenRejected": [],
+        "kit.cloud.what.unknownAppliance": [],
+        "kit.cloud.what.wrongCredentials": [],
+        "kit.config.invalidAddress": [],
+        "kit.config.invalidHex": [],
+        "kit.config.noDevice": [],
+        "kit.config.unsupportedVersion": ["version"],
+        "kit.control.eco": [],
+        "kit.control.fan": [],
+        "kit.control.freeze": [],
+        "kit.control.mode": [],
+        "kit.control.power": [],
+        "kit.control.purifier": [],
+        "kit.control.swing": [],
+        "kit.control.target": [],
+        "kit.control.turbo": [],
+        "kit.device.noState": [],
+        "kit.discovery.badLength": [],
+        "kit.discovery.badSignature": [],
+        "kit.discovery.noNetwork": [],
+        "kit.discovery.profileTooShort": [],
+        "kit.discovery.searchFailed": ["error"],
+        "kit.discovery.tooShort": [],
+        "kit.discovery.unknownDevice": [],
+        "kit.error.authentication": ["message"],
+        "kit.error.crypto": ["code"],
+        "kit.error.invalidResponse": ["message"],
+        "kit.error.noConnection": ["detail"],
+        "kit.error.noReply": [],
+        "kit.error.notApplied": [],
+        "kit.error.outcomeUnknown": ["reason"],
+        "kit.error.protocol": ["message"],
+        "kit.error.timeout": [],
+        "kit.frame.badChecksum": [],
+        "kit.frame.deviceType": ["type"],
+        "kit.frame.noPayload": [],
+        "kit.frame.tooShort": [],
+        "kit.generic.error": [],
+        "kit.keychain.saveFailed": ["status"],
+        "kit.keychain.tooLarge": ["bytes"],
+        "kit.keychain.unavailable": ["status"],
+        "kit.keychain.unreadable": [],
+        "kit.lan.budget": [],
+        "kit.lan.localNetworkMac": [],
+        "kit.lan.localNetworkWindows": [],
+        "kit.lan.notConnected": [],
+        "kit.lan.unexpectedType": [],
+        "kit.packet.badMarker": [],
+        "kit.packet.badMd5": [],
+        "kit.packet.badSha": [],
+        "kit.packet.badStart": [],
+        "kit.packet.deviceError": [],
+        "kit.packet.handshakeSize": ["count"],
+        "kit.packet.lengthMismatch": [],
+        "kit.packet.notLoggedIn": [],
+        "kit.packet.paddingMismatch": [],
+        "kit.packet.tokenMismatch": [],
+        "kit.packet.tooShort": [],
+        "kit.packet.truncated": [],
+        "kit.packet.unexpectedHandshake": [],
+        "kit.packet.unexpectedType": ["type"],
+        "kit.packet.unknownPacket": ["data"],
+        "kit.packet.unknownType": [],
+        "kit.socket.connectTimeout": ["host"],
+        "kit.socket.createFailed": ["error"],
+        "kit.socket.invalidHost": ["host"],
+        "kit.socket.winsock": [],
+        "log.account.loginFailed": ["error"],
+        "log.account.removed": [],
+        "log.app.csvExported": [],
+        "log.app.loginItem": ["state"],
+        "log.app.loginItemDefault": [],
+        "log.app.loginItemFailed": ["error"],
+        "log.app.notificationsDenied": [],
+        "log.app.notificationsError": ["error"],
+        "log.app.restart": [],
+        "log.app.restartNotPossible": ["error"],
+        "log.backup.exported": ["file"],
+        "log.backup.notSetAside": ["error"],
+        "log.backup.rejected": ["error"],
+        "log.backup.restored": ["name", "ip", "verified", "skipped"],
+        "log.backup.scenesSkipped": ["count"],
+        "log.backup.unverified": [],
+        "log.backup.verified": [],
+        "log.bridge.encodeFailed": ["type", "error"],
+        "log.bridge.exportFailed": ["code"],
+        "log.bridge.timeZone": [],
+        "log.change.eco": ["state"],
+        "log.change.fan": ["value"],
+        "log.change.freeze": ["state"],
+        "log.change.mode": ["value"],
+        "log.change.off": [],
+        "log.change.on": [],
+        "log.change.purifier": ["state"],
+        "log.change.swing": ["state"],
+        "log.change.target": ["value"],
+        "log.change.turbo": ["state"],
+        "log.cloud.applianceFound": ["id"],
+        "log.cloud.keychainUnreadable": ["error"],
+        "log.cloud.kindError": ["kind", "error"],
+        "log.cloud.loginOk": ["kind", "account"],
+        "log.cloud.offline": [],
+        "log.cloud.online": [],
+        "log.cloud.search": ["account"],
+        "log.cloud.searchEmpty": [],
+        "log.cloud.searchError": ["kind", "error"],
+        "log.cloud.searchItem": ["name", "id", "state"],
+        "log.cloud.searchResult": ["kind", "result"],
+        "log.cloud.sessionExpired": [],
+        "log.cloud.sessionInvalid": ["account"],
+        "log.cloud.sessionReused": ["kind"],
+        "log.cloud.singleAppliance": ["id"],
+        "log.cloud.stopped": ["kind", "error"],
+        "log.commands.change": ["change"],
+        "log.commands.notApplied": [],
+        "log.commands.rate": ["percent"],
+        "log.commands.restored": [],
+        "log.common.off": [],
+        "log.common.on": [],
+        "log.core.started": ["version", "name", "ip"],
+        "log.core.startedNoDevice": ["version"],
+        "log.device.configUnreadable": ["file", "error", "aside"],
+        "log.device.displayGaveUp": [],
+        "log.device.displayRetry": [],
+        "log.device.notApplied": ["attempt", "fields"],
+        "log.device.propertyGaveUp": ["property", "value"],
+        "log.device.propertyRetry": ["property", "value"],
+        "log.device.rateGaveUp": ["value"],
+        "log.device.rateRetry": ["value"],
+        "log.discovery.broadcast": ["target", "seconds"],
+        "log.discovery.device": ["label", "name", "ip", "type", "version", "port", "id", "sn"],
+        "log.discovery.foundBroadcast": ["id", "ip"],
+        "log.discovery.foundScan": ["id", "ip"],
+        "log.discovery.labelScan": [],
+        "log.discovery.labelSearch": [],
+        "log.discovery.notFound": ["id"],
+        "log.discovery.nothing": [],
+        "log.discovery.reply": ["label", "ip", "bytes", "hex"],
+        "log.discovery.result": ["target", "result"],
+        "log.discovery.scanPlan": ["nets", "count", "seconds"],
+        "log.discovery.scanResult": ["count", "result"],
+        "log.discovery.unreadable": ["label", "ip", "error"],
+        "log.energy.meterJump": ["old", "new"],
+        "log.frame.capabilities": [],
+        "log.frame.fault": [],
+        "log.frame.group": ["number"],
+        "log.frame.notice": [],
+        "log.frame.properties": [],
+        "log.frame.query": [],
+        "log.frame.set": [],
+        "log.frame.setProperties": [],
+        "log.frame.setState": [],
+        "log.frame.state": [],
+        "log.frame.type": ["code"],
+        "log.history.csvNotSetAside": ["error"],
+        "log.history.damaged": ["file"],
+        "log.history.importUnreadable": ["count"],
+        "log.history.imported": ["rows", "files", "unreadable"],
+        "log.history.openFailed": ["code", "message"],
+        "log.history.sqlite": ["error"],
+        "log.keychain.accountNotReadable": ["error"],
+        "log.keychain.accountNotSaved": ["error"],
+        "log.keychain.notReadable": ["service", "error"],
+        "log.keychain.notRemoved": ["service", "error"],
+        "log.keychain.notSaved": ["service", "error", "bytes"],
+        "log.keychain.sessionNotSaved": ["error"],
+        "log.lan.connecting": ["host", "port"],
+        "log.lan.disconnected": ["host"],
+        "log.lan.droppedFrames": ["host", "count"],
+        "log.lan.error": ["host", "error"],
+        "log.lan.handshake": ["bytes"],
+        "log.lan.handshakeOk": [],
+        "log.lan.retry": ["host", "error"],
+        "log.language.set": ["language"],
+        "log.language.setPseudo": ["language"],
+        "log.level.error": [],
+        "log.level.warning": [],
+        "log.packet.badHeader": ["length"],
+        "log.path.cloud": [],
+        "log.path.lan": [],
+        "log.polling.diagnostics": ["line"],
+        "log.polling.fastGroup": ["group"],
+        "log.polling.fastProperties": [],
+        "log.polling.started": [],
+        "log.polling.state": ["line"],
+        "log.relocate.loginFailed": ["ip", "error"],
+        "log.relocate.moved": ["ip", "old"],
+        "log.relocate.notSaved": ["error"],
+        "log.relocate.searchFailed": ["error"],
+        "log.relocate.searching": ["id"],
+        "log.relocate.unchanged": ["ip"],
+        "log.scene.unreadable": ["file", "aside", "count"],
+        "log.scenes.notSaved": ["error"],
+        "log.session.cloudSetup": ["name", "id"],
+        "log.session.manualSetup": ["name", "ip"],
+        "log.session.notUsable": ["error"],
+        "log.session.reset": [],
+        "log.session.setupNotRemoved": ["error"],
+        "log.session.timersDeleted": [],
+        "log.settings.backgroundPolling": ["seconds"],
+        "log.settings.betaChannel": ["state"],
+        "log.settings.connectionMode": ["mode"],
+        "log.settings.currency": ["value"],
+        "log.settings.detailedLog": ["state"],
+        "log.settings.historyCSV": ["state"],
+        "log.settings.languageAfterRestart": ["value"],
+        "log.settings.refresh": ["seconds"],
+        "log.settings.windowVisible": [],
+        "log.stateLine.diagnostics": ["hz", "targetHz", "watts", "amps", "volts", "t1", "t2", "t3", "t4", "tp", "eev", "indoorFan", "outdoorFan"],
+        "log.stateLine.line": ["power", "mode", "target", "indoor", "outdoor", "fan", "watts", "rate"],
+        "log.timer.actionOff": [],
+        "log.timer.actionOn": [],
+        "log.timer.ended": ["name", "reason"],
+        "log.timer.firing": ["action", "suffix"],
+        "log.timer.missed": ["name", "time"],
+        "log.timer.nameOff": [],
+        "log.timer.nameOn": [],
+        "log.timer.offDeleted": [],
+        "log.timer.offIn": ["minutes"],
+        "log.timer.onAt": ["time"],
+        "log.timer.onDeleted": [],
+        "log.timer.repeat": [],
+        "log.timer.switchedByHand": [],
+        "log.token.accepted": [],
+        "log.token.error": ["kind", "error"],
+        "log.token.fetch": ["name", "ip", "id", "account"],
+        "log.token.none": ["order", "kind"],
+        "log.token.received": ["order"],
+        "log.token.rejected": ["order"],
+        "log.transport.pathDown": ["path"],
+        "log.transport.via": ["path"],
+        "log.updates.aborted": ["error"],
+        "log.updates.automatic": ["state", "feed"],
+        "log.updates.betaChannel": ["state"],
+        "log.updates.downloaded": ["version"],
+        "log.updates.found": ["version"],
+        "log.updates.installNow": ["version"],
+        "log.updates.remind": [],
         "main.comfort.display": [],
         "main.comfort.eco": [],
         "main.comfort.frostProtection": [],
@@ -22548,10 +28092,26 @@ extension StringsData {
         "mode.verb.dry": [],
         "mode.verb.fan": [],
         "mode.verb.heat": [],
+        "notices.dotnet.usage": [],
+        "notices.expat.usage": [],
+        "notices.icu.usage": [],
         "notices.intro": [],
         "notices.licenseText": [],
+        "notices.mideaAcLan.usage": [],
+        "notices.mideaBeautifulAir.usage": [],
+        "notices.msmartNg.usage": [],
+        "notices.platform.all": [],
+        "notices.platform.macOnly": [],
+        "notices.platform.windowsOnly": [],
+        "notices.sparkle.usage": [],
+        "notices.sqlite.copyright": [],
+        "notices.sqlite.usage": [],
+        "notices.swiftCrypto.usage": [],
+        "notices.swiftRuntime.usage": [],
+        "notices.trademark": [],
         "notices.windows.licenseTextName": ["name"],
         "notices.windows.trademarks": [],
+        "notices.winsparkle.usage": [],
         "options.address.example": [],
         "options.address.orHost": [],
         "options.fan.autoCaption": [],
@@ -23990,6 +29550,624 @@ public enum L {
             public static func withShortcut(text: String, shortcut: String) -> String { Localizer.text("keys.windows.withShortcut", ["text": text, "shortcut": shortcut]) }
         }
     }
+    public enum Kit {
+        public enum Cloud {
+            /// Access key unreadable
+            public static var accessKeyUnreadable: String { Localizer.text("kit.cloud.accessKeyUnreadable") }
+            /// no reply from the air conditioner
+            public static var noApplianceReply: String { Localizer.text("kit.cloud.noApplianceReply") }
+            /// no reply within {seconds} s
+            public static func noReplyWithin(seconds: String) -> String { Localizer.text("kit.cloud.noReplyWithin", ["seconds": seconds]) }
+            /// no text
+            public static var noText: String { Localizer.text("kit.cloud.noText") }
+            /// Session key does not match
+            public static var sessionKeyMismatch: String { Localizer.text("kit.cloud.sessionKeyMismatch") }
+            /// Session key unreadable
+            public static var sessionKeyUnreadable: String { Localizer.text("kit.cloud.sessionKeyUnreadable") }
+            /// Session keys missing
+            public static var sessionKeysMissing: String { Localizer.text("kit.cloud.sessionKeysMissing") }
+            public enum Todo {
+                /// Try again later or sign in with the MSmartHome app.
+                public static var accountLocked: String { Localizer.text("kit.cloud.todo.accountLocked") }
+                /// Klimacontrol keeps checking regularly.
+                public static var applianceOffline: String { Localizer.text("kit.cloud.todo.applianceOffline") }
+                /// Check the internet connection and try again.
+                public static var network: String { Localizer.text("kit.cloud.todo.network") }
+                /// Try again later.
+                public static var retryLater: String { Localizer.text("kit.cloud.todo.retryLater") }
+                /// Try again later or set up the air conditioner using the Wi-Fi search.
+                public static var serviceUnavailable: String { Localizer.text("kit.cloud.todo.serviceUnavailable") }
+                /// Klimacontrol signs in again automatically; otherwise try again later.
+                public static var sessionExpired: String { Localizer.text("kit.cloud.todo.sessionExpired") }
+                /// Check whether the air conditioner is set up in exactly this account.
+                public static var tokenRejected: String { Localizer.text("kit.cloud.todo.tokenRejected") }
+                /// Check whether it is set up in exactly this account in the MSmartHome app.
+                public static var unknownAppliance: String { Localizer.text("kit.cloud.todo.unknownAppliance") }
+                /// Enter the credentials from the MSmartHome app again in the settings.
+                public static var wrongCredentials: String { Localizer.text("kit.cloud.todo.wrongCredentials") }
+            }
+            public enum What {
+                /// The Midea account is temporarily locked.
+                public static var accountLocked: String { Localizer.text("kit.cloud.what.accountLocked") }
+                /// According to the Midea Cloud, the air conditioner is off or without power.
+                public static var applianceOffline: String { Localizer.text("kit.cloud.what.applianceOffline") }
+                /// The Midea Cloud replied unexpectedly.
+                public static var badReply: String { Localizer.text("kit.cloud.what.badReply") }
+                /// The Midea Cloud is not reachable.
+                public static var network: String { Localizer.text("kit.cloud.what.network") }
+                /// The Midea Cloud reports an error.
+                public static var other: String { Localizer.text("kit.cloud.what.other") }
+                /// The Midea Cloud reports an error: {text}.
+                public static func otherWithText(text: String) -> String { Localizer.text("kit.cloud.what.otherWithText", ["text": text]) }
+                /// The Midea Cloud is currently not issuing credentials through this access.
+                public static var serviceUnavailable: String { Localizer.text("kit.cloud.what.serviceUnavailable") }
+                /// The sign-in to the Midea Cloud has expired.
+                public static var sessionExpired: String { Localizer.text("kit.cloud.what.sessionExpired") }
+                /// The air conditioner rejects the credentials from the Cloud.
+                public static var tokenRejected: String { Localizer.text("kit.cloud.what.tokenRejected") }
+                /// The Cloud does not know this air conditioner.
+                public static var unknownAppliance: String { Localizer.text("kit.cloud.what.unknownAppliance") }
+                /// The email or password of the Midea account is wrong.
+                public static var wrongCredentials: String { Localizer.text("kit.cloud.what.wrongCredentials") }
+            }
+        }
+        public enum Config {
+            /// The address of the air conditioner is not a valid IPv4 address with port.
+            public static var invalidAddress: String { Localizer.text("kit.config.invalidAddress") }
+            /// Token or key is not valid hex (expected 128 or 64 characters).
+            public static var invalidHex: String { Localizer.text("kit.config.invalidHex") }
+            /// The file contains no air conditioner.
+            public static var noDevice: String { Localizer.text("kit.config.noDevice") }
+            /// Protocol version V{version} is not supported (V3 only).
+            public static func unsupportedVersion(version: String) -> String { Localizer.text("kit.config.unsupportedVersion", ["version": version]) }
+        }
+        public enum Control {
+            /// eco
+            public static var eco: String { Localizer.text("kit.control.eco") }
+            /// fan
+            public static var fan: String { Localizer.text("kit.control.fan") }
+            /// frost protection
+            public static var freeze: String { Localizer.text("kit.control.freeze") }
+            /// mode
+            public static var mode: String { Localizer.text("kit.control.mode") }
+            /// on/off
+            public static var power: String { Localizer.text("kit.control.power") }
+            /// ionizer
+            public static var purifier: String { Localizer.text("kit.control.purifier") }
+            /// swing
+            public static var swing: String { Localizer.text("kit.control.swing") }
+            /// target
+            public static var target: String { Localizer.text("kit.control.target") }
+            /// turbo
+            public static var turbo: String { Localizer.text("kit.control.turbo") }
+        }
+        public enum Device {
+            /// no state message
+            public static var noState: String { Localizer.text("kit.device.noState") }
+        }
+        public enum Discovery {
+            /// Discovery reply has the wrong length
+            public static var badLength: String { Localizer.text("kit.discovery.badLength") }
+            /// Discovery reply has the wrong signature
+            public static var badSignature: String { Localizer.text("kit.discovery.badSignature") }
+            /// No active network found. Is the computer connected to Wi-Fi or Ethernet?
+            public static var noNetwork: String { Localizer.text("kit.discovery.noNetwork") }
+            /// Device profile too short
+            public static var profileTooShort: String { Localizer.text("kit.discovery.profileTooShort") }
+            /// Search not possible: {error}
+            public static func searchFailed(error: String) -> String { Localizer.text("kit.discovery.searchFailed", ["error": error]) }
+            /// Discovery reply too short
+            public static var tooShort: String { Localizer.text("kit.discovery.tooShort") }
+            /// Unknown device (V1 is not supported)
+            public static var unknownDevice: String { Localizer.text("kit.discovery.unknownDevice") }
+        }
+        public enum Error {
+            /// Sign-in to the air conditioner failed: {message}
+            public static func authentication(message: String) -> String { Localizer.text("kit.error.authentication", ["message": message]) }
+            /// Encryption error ({code})
+            public static func crypto(code: String) -> String { Localizer.text("kit.error.crypto", ["code": code]) }
+            /// Unexpected reply: {message}
+            public static func invalidResponse(message: String) -> String { Localizer.text("kit.error.invalidResponse", ["message": message]) }
+            /// No connection to the air conditioner: {detail}
+            public static func noConnection(detail: String) -> String { Localizer.text("kit.error.noConnection", ["detail": detail]) }
+            /// No reply.
+            public static var noReply: String { Localizer.text("kit.error.noReply") }
+            /// The air conditioner did not accept the change. Another app may be controlling it right now.
+            public static var notApplied: String { Localizer.text("kit.error.notApplied") }
+            /// No connection to the air conditioner: {reason} It is unclear whether the change arrived. Please che…
+            public static func outcomeUnknown(reason: String) -> String { Localizer.text("kit.error.outcomeUnknown", ["reason": reason]) }
+            /// Protocol error: {message}
+            public static func `protocol`(message: String) -> String { Localizer.text("kit.error.protocol", ["message": message]) }
+            /// The air conditioner is not responding.
+            public static var timeout: String { Localizer.text("kit.error.timeout") }
+        }
+        public enum Frame {
+            /// Checksum wrong
+            public static var badChecksum: String { Localizer.text("kit.frame.badChecksum") }
+            /// Device type 0x{type}
+            public static func deviceType(type: String) -> String { Localizer.text("kit.frame.deviceType", ["type": type]) }
+            /// Frame without payload
+            public static var noPayload: String { Localizer.text("kit.frame.noPayload") }
+            /// Frame too short
+            public static var tooShort: String { Localizer.text("kit.frame.tooShort") }
+        }
+        public enum Generic {
+            /// Error
+            public static var error: String { Localizer.text("kit.generic.error") }
+        }
+        public enum Keychain {
+            /// The credentials could not be saved to the keychain. Try again; the old data is kept. (Status {statu…
+            public static func saveFailed(status: String) -> String { Localizer.text("kit.keychain.saveFailed", ["status": status]) }
+            /// The data is too large for the secret store. Please report this. ({bytes} bytes)
+            public static func tooLarge(bytes: String) -> String { Localizer.text("kit.keychain.tooLarge", ["bytes": bytes]) }
+            /// The keychain is locked or denied access. Unlock the Mac or allow access, then try again. (Status {s…
+            public static func unavailable(status: String) -> String { Localizer.text("kit.keychain.unavailable", ["status": status]) }
+            /// The stored entry is unreadable. Enter the credentials again in the settings.
+            public static var unreadable: String { Localizer.text("kit.keychain.unreadable") }
+        }
+        public enum Lan {
+            /// The air conditioner did not respond in time (time limit reached). Try again.
+            public static var budget: String { Localizer.text("kit.lan.budget") }
+            /// macOS does not let the app use the local network. Turn on Klimacontrol in System Settings → Privacy…
+            public static var localNetworkMac: String { Localizer.text("kit.lan.localNetworkMac") }
+            /// The air conditioner is not reachable on the network. Is the PC on the same Wi-Fi or network as the …
+            public static var localNetworkWindows: String { Localizer.text("kit.lan.localNetworkWindows") }
+            /// not connected
+            public static var notConnected: String { Localizer.text("kit.lan.notConnected") }
+            /// unexpected packet type
+            public static var unexpectedType: String { Localizer.text("kit.lan.unexpectedType") }
+        }
+        public enum Packet {
+            /// Invalid marker byte
+            public static var badMarker: String { Localizer.text("kit.packet.badMarker") }
+            /// MD5 signature does not match
+            public static var badMd5: String { Localizer.text("kit.packet.badMd5") }
+            /// SHA256 of the reply does not match
+            public static var badSha: String { Localizer.text("kit.packet.badSha") }
+            /// Invalid packet start
+            public static var badStart: String { Localizer.text("kit.packet.badStart") }
+            /// The air conditioner reports an error (token expired or connection busy)
+            public static var deviceError: String { Localizer.text("kit.packet.deviceError") }
+            /// Handshake reply has {count} instead of 64 bytes
+            public static func handshakeSize(count: String) -> String { Localizer.text("kit.packet.handshakeSize", ["count": count]) }
+            /// Packet length does not match
+            public static var lengthMismatch: String { Localizer.text("kit.packet.lengthMismatch") }
+            /// Not signed in
+            public static var notLoggedIn: String { Localizer.text("kit.packet.notLoggedIn") }
+            /// Padding does not match the packet length
+            public static var paddingMismatch: String { Localizer.text("kit.packet.paddingMismatch") }
+            /// Token or key do not match the air conditioner
+            public static var tokenMismatch: String { Localizer.text("kit.packet.tokenMismatch") }
+            /// Packet too short
+            public static var tooShort: String { Localizer.text("kit.packet.tooShort") }
+            /// Packet truncated
+            public static var truncated: String { Localizer.text("kit.packet.truncated") }
+            /// Unexpected handshake reply
+            public static var unexpectedHandshake: String { Localizer.text("kit.packet.unexpectedHandshake") }
+            /// Unexpected packet type {type}
+            public static func unexpectedType(type: String) -> String { Localizer.text("kit.packet.unexpectedType", ["type": type]) }
+            /// Unknown packet {data}
+            public static func unknownPacket(data: String) -> String { Localizer.text("kit.packet.unknownPacket", ["data": data]) }
+            /// Unknown packet type
+            public static var unknownType: String { Localizer.text("kit.packet.unknownType") }
+        }
+        public enum Socket {
+            /// Timeout while connecting to {host}
+            public static func connectTimeout(host: String) -> String { Localizer.text("kit.socket.connectTimeout", ["host": host]) }
+            /// Socket: {error}
+            public static func createFailed(error: String) -> String { Localizer.text("kit.socket.createFailed", ["error": error]) }
+            /// Address {host} invalid
+            public static func invalidHost(host: String) -> String { Localizer.text("kit.socket.invalidHost", ["host": host]) }
+            /// Winsock not available
+            public static var winsock: String { Localizer.text("kit.socket.winsock") }
+        }
+    }
+    public enum Log {
+        public enum Account {
+            /// Cloud sign-in failed: {error}
+            public static func loginFailed(error: String) -> String { Localizer.text("log.account.loginFailed", ["error": error]) }
+            /// Cloud account removed
+            public static var removed: String { Localizer.text("log.account.removed") }
+        }
+        public enum App {
+            /// History exported as CSV
+            public static var csvExported: String { Localizer.text("log.app.csvExported") }
+            /// Start at login: {state}
+            public static func loginItem(state: String) -> String { Localizer.text("log.app.loginItem", ["state": state]) }
+            /// Start at login: default at first launch
+            public static var loginItemDefault: String { Localizer.text("log.app.loginItemDefault") }
+            /// Login item not changed: {error}
+            public static func loginItemFailed(error: String) -> String { Localizer.text("log.app.loginItemFailed", ["error": error]) }
+            /// Notifications for timers not allowed
+            public static var notificationsDenied: String { Localizer.text("log.app.notificationsDenied") }
+            /// Notifications: {error}
+            public static func notificationsError(error: String) -> String { Localizer.text("log.app.notificationsError", ["error": error]) }
+            /// Restart
+            public static var restart: String { Localizer.text("log.app.restart") }
+            /// Restart not possible: {error}
+            public static func restartNotPossible(error: String) -> String { Localizer.text("log.app.restartNotPossible", ["error": error]) }
+        }
+        public enum Backup {
+            /// Credentials exported to {file}
+            public static func exported(file: String) -> String { Localizer.text("log.backup.exported", ["file": file]) }
+            /// Previous setup not set aside: {error}
+            public static func notSetAside(error: String) -> String { Localizer.text("log.backup.notSetAside", ["error": error]) }
+            /// Backup rejected by the air conditioner: {error}
+            public static func rejected(error: String) -> String { Localizer.text("log.backup.rejected", ["error": error]) }
+            /// Backup restored: {name} @ {ip}{verified}{skipped}
+            public static func restored(name: String, ip: String, verified: String, skipped: String) -> String { Localizer.text("log.backup.restored", ["name": name, "ip": ip, "verified": verified, "skipped": skipped]) }
+            /// , {count} scenes not imported
+            public static func scenesSkipped(count: String) -> String { Localizer.text("log.backup.scenesSkipped", ["count": count]) }
+            /// , air conditioner not reachable (unchecked)
+            public static var unverified: String { Localizer.text("log.backup.unverified") }
+            /// , checked with the air conditioner
+            public static var verified: String { Localizer.text("log.backup.verified") }
+        }
+        public enum Bridge {
+            /// Bridge: data for the interface cannot be encoded ({type}): {error}
+            public static func encodeFailed(type: String, error: String) -> String { Localizer.text("log.bridge.encodeFailed", ["type": type, "error": error]) }
+            /// History export failed ({code})
+            public static func exportFailed(code: String) -> String { Localizer.text("log.bridge.exportFailed", ["code": code]) }
+            /// Time zone: Windows zone cannot be mapped to an IANA zone, UTC stays
+            public static var timeZone: String { Localizer.text("log.bridge.timeZone") }
+        }
+        public enum Change {
+            /// Eco {state}
+            public static func eco(state: String) -> String { Localizer.text("log.change.eco", ["state": state]) }
+            /// Fan {value}
+            public static func fan(value: String) -> String { Localizer.text("log.change.fan", ["value": value]) }
+            /// Frost protection {state}
+            public static func freeze(state: String) -> String { Localizer.text("log.change.freeze", ["state": state]) }
+            /// Mode {value}
+            public static func mode(value: String) -> String { Localizer.text("log.change.mode", ["value": value]) }
+            /// off
+            public static var off: String { Localizer.text("log.change.off") }
+            /// on
+            public static var on: String { Localizer.text("log.change.on") }
+            /// Ionizer {state}
+            public static func purifier(state: String) -> String { Localizer.text("log.change.purifier", ["state": state]) }
+            /// Swing {state}
+            public static func swing(state: String) -> String { Localizer.text("log.change.swing", ["state": state]) }
+            /// Target {value}
+            public static func target(value: String) -> String { Localizer.text("log.change.target", ["value": value]) }
+            /// Turbo {state}
+            public static func turbo(state: String) -> String { Localizer.text("log.change.turbo", ["state": state]) }
+        }
+        public enum Cloud {
+            /// Cloud: air conditioner found (id {id})
+            public static func applianceFound(id: String) -> String { Localizer.text("log.cloud.applianceFound", ["id": id]) }
+            /// Cloud: keychain not readable – no new sign-in ({error})
+            public static func keychainUnreadable(error: String) -> String { Localizer.text("log.cloud.keychainUnreadable", ["error": error]) }
+            /// Cloud {kind}: {error}
+            public static func kindError(kind: String, error: String) -> String { Localizer.text("log.cloud.kindError", ["kind": kind, "error": error]) }
+            /// Cloud sign-in ({kind}) succeeded for {account}
+            public static func loginOk(kind: String, account: String) -> String { Localizer.text("log.cloud.loginOk", ["kind": kind, "account": account]) }
+            /// offline
+            public static var offline: String { Localizer.text("log.cloud.offline") }
+            /// online
+            public static var online: String { Localizer.text("log.cloud.online") }
+            /// Cloud search with account {account}
+            public static func search(account: String) -> String { Localizer.text("log.cloud.search", ["account": account]) }
+            /// no air conditioner in the account
+            public static var searchEmpty: String { Localizer.text("log.cloud.searchEmpty") }
+            /// Cloud search {kind}: {error}
+            public static func searchError(kind: String, error: String) -> String { Localizer.text("log.cloud.searchError", ["kind": kind, "error": error]) }
+            /// {name} id {id} {state}
+            public static func searchItem(name: String, id: String, state: String) -> String { Localizer.text("log.cloud.searchItem", ["name": name, "id": id, "state": state]) }
+            /// Cloud search ({kind}): {result}
+            public static func searchResult(kind: String, result: String) -> String { Localizer.text("log.cloud.searchResult", ["kind": kind, "result": result]) }
+            /// Cloud session expired (older than 30 days) – no longer used
+            public static var sessionExpired: String { Localizer.text("log.cloud.sessionExpired") }
+            /// Cloud session invalid – signing in once more ({account})
+            public static func sessionInvalid(account: String) -> String { Localizer.text("log.cloud.sessionInvalid", ["account": account]) }
+            /// Cloud session reused ({kind}) – no new sign-in
+            public static func sessionReused(kind: String) -> String { Localizer.text("log.cloud.sessionReused", ["kind": kind]) }
+            /// Cloud: only air conditioner in the account used (id {id})
+            public static func singleAppliance(id: String) -> String { Localizer.text("log.cloud.singleAppliance", ["id": id]) }
+            /// Cloud {kind} stopped until the next sign-in in the settings: {error}
+            public static func stopped(kind: String, error: String) -> String { Localizer.text("log.cloud.stopped", ["kind": kind, "error": error]) }
+        }
+        public enum Commands {
+            /// Command: {change}
+            public static func change(change: String) -> String { Localizer.text("log.commands.change", ["change": change]) }
+            /// Set command not applied after 3 attempts – resetting and reading again
+            public static var notApplied: String { Localizer.text("log.commands.notApplied") }
+            /// Command: limit power to {percent} %
+            public static func rate(percent: String) -> String { Localizer.text("log.commands.rate", ["percent": percent]) }
+            /// Connection restored
+            public static var restored: String { Localizer.text("log.commands.restored") }
+        }
+        public enum Common {
+            /// off
+            public static var off: String { Localizer.text("log.common.off") }
+            /// on
+            public static var on: String { Localizer.text("log.common.on") }
+        }
+        public enum Core {
+            /// Klimacontrol {version} started – air conditioner {name} @ {ip}
+            public static func started(version: String, name: String, ip: String) -> String { Localizer.text("log.core.started", ["version": version, "name": name, "ip": ip]) }
+            /// Klimacontrol {version} started – no air conditioner set up yet
+            public static func startedNoDevice(version: String) -> String { Localizer.text("log.core.startedNoDevice", ["version": version]) }
+        }
+        public enum Device {
+            /// {file} unreadable ({error}) – set aside as {aside}
+            public static func configUnreadable(file: String, error: String, aside: String) -> String { Localizer.text("log.device.configUnreadable", ["file": file, "error": error, "aside": aside]) }
+            /// Display toggle not applied – giving up
+            public static var displayGaveUp: String { Localizer.text("log.device.displayGaveUp") }
+            /// Display toggle not applied – trying once more
+            public static var displayRetry: String { Localizer.text("log.device.displayRetry") }
+            /// Set command not applied (attempt {attempt}/3): {fields}
+            public static func notApplied(attempt: String, fields: String) -> String { Localizer.text("log.device.notApplied", ["attempt": attempt, "fields": fields]) }
+            /// {property} = {value} not applied – giving up
+            public static func propertyGaveUp(property: String, value: String) -> String { Localizer.text("log.device.propertyGaveUp", ["property": property, "value": value]) }
+            /// {property} = {value} not applied – retrying
+            public static func propertyRetry(property: String, value: String) -> String { Localizer.text("log.device.propertyRetry", ["property": property, "value": value]) }
+            /// Power limit {value} % not applied – giving up
+            public static func rateGaveUp(value: String) -> String { Localizer.text("log.device.rateGaveUp", ["value": value]) }
+            /// Power limit {value} % not applied – retrying
+            public static func rateRetry(value: String) -> String { Localizer.text("log.device.rateRetry", ["value": value]) }
+        }
+        public enum Discovery {
+            /// Search: broadcast to {target} port 6445 and 20086 (3× each), waiting {seconds} s
+            public static func broadcast(target: String, seconds: String) -> String { Localizer.text("log.discovery.broadcast", ["target": target, "seconds": seconds]) }
+            /// {label}: {name} {ip} type 0x{type} V{version} port {port} id {id} SN {sn}
+            public static func device(label: String, name: String, ip: String, type: String, version: String, port: String, id: String, sn: String) -> String { Localizer.text("log.discovery.device", ["label": label, "name": name, "ip": ip, "type": type, "version": version, "port": port, "id": id, "sn": sn]) }
+            /// Air conditioner {id} found by broadcast at {ip}
+            public static func foundBroadcast(id: String, ip: String) -> String { Localizer.text("log.discovery.foundBroadcast", ["id": id, "ip": ip]) }
+            /// Air conditioner {id} found by network scan at {ip}
+            public static func foundScan(id: String, ip: String) -> String { Localizer.text("log.discovery.foundScan", ["id": id, "ip": ip]) }
+            /// Network scan
+            public static var labelScan: String { Localizer.text("log.discovery.labelScan") }
+            /// Search
+            public static var labelSearch: String { Localizer.text("log.discovery.labelSearch") }
+            /// Air conditioner {id} not found on the network
+            public static func notFound(id: String) -> String { Localizer.text("log.discovery.notFound", ["id": id]) }
+            /// nothing found
+            public static var nothing: String { Localizer.text("log.discovery.nothing") }
+            /// {label}: reply from {ip} ({bytes} bytes) {hex}…
+            public static func reply(label: String, ip: String, bytes: String, hex: String) -> String { Localizer.text("log.discovery.reply", ["label": label, "ip": ip, "bytes": bytes, "hex": hex]) }
+            /// Search at {target}: {result}
+            public static func result(target: String, result: String) -> String { Localizer.text("log.discovery.result", ["target": target, "result": result]) }
+            /// Network scan: {nets} → {count} addresses, waiting {seconds} s
+            public static func scanPlan(nets: String, count: String, seconds: String) -> String { Localizer.text("log.discovery.scanPlan", ["nets": nets, "count": count, "seconds": seconds]) }
+            /// Network scan over {count} addresses: {result}
+            public static func scanResult(count: String, result: String) -> String { Localizer.text("log.discovery.scanResult", ["count": count, "result": result]) }
+            /// {label}: reply from {ip} not readable: {error}
+            public static func unreadable(label: String, ip: String, error: String) -> String { Localizer.text("log.discovery.unreadable", ["label": label, "ip": ip, "error": error]) }
+        }
+        public enum Energy {
+            /// Meter reading jumped back ({old} → {new} kWh) – daily consumption restarts now
+            public static func meterJump(old: String, new: String) -> String { Localizer.text("log.energy.meterJump", ["old": old, "new": new]) }
+        }
+        public enum Frame {
+            /// capabilities
+            public static var capabilities: String { Localizer.text("log.frame.capabilities") }
+            /// fault message
+            public static var fault: String { Localizer.text("log.frame.fault") }
+            /// group {number}
+            public static func group(number: String) -> String { Localizer.text("log.frame.group", ["number": number]) }
+            /// message
+            public static var notice: String { Localizer.text("log.frame.notice") }
+            /// properties
+            public static var properties: String { Localizer.text("log.frame.properties") }
+            /// query
+            public static var query: String { Localizer.text("log.frame.query") }
+            /// set command
+            public static var set: String { Localizer.text("log.frame.set") }
+            /// set properties
+            public static var setProperties: String { Localizer.text("log.frame.setProperties") }
+            /// set state
+            public static var setState: String { Localizer.text("log.frame.setState") }
+            /// state
+            public static var state: String { Localizer.text("log.frame.state") }
+            /// type {code}
+            public static func type(code: String) -> String { Localizer.text("log.frame.type", ["code": code]) }
+        }
+        public enum History {
+            /// verlauf.csv not set aside: {error}
+            public static func csvNotSetAside(error: String) -> String { Localizer.text("log.history.csvNotSetAside", ["error": error]) }
+            /// History database damaged – set aside as {file}
+            public static func damaged(file: String) -> String { Localizer.text("log.history.damaged", ["file": file]) }
+            /// – {count} file(s) not readable, next attempt at the next start
+            public static func importUnreadable(count: String) -> String { Localizer.text("log.history.importUnreadable", ["count": count]) }
+            /// History: {rows} rows from {files} CSV file(s) imported into the database{unreadable}
+            public static func imported(rows: String, files: String, unreadable: String) -> String { Localizer.text("log.history.imported", ["rows": rows, "files": files, "unreadable": unreadable]) }
+            /// History database cannot be opened ({code}): {message}
+            public static func openFailed(code: String, message: String) -> String { Localizer.text("log.history.openFailed", ["code": code, "message": message]) }
+            /// History (SQLite): {error}
+            public static func sqlite(error: String) -> String { Localizer.text("log.history.sqlite", ["error": error]) }
+        }
+        public enum Keychain {
+            /// Cloud account not readable: {error}
+            public static func accountNotReadable(error: String) -> String { Localizer.text("log.keychain.accountNotReadable", ["error": error]) }
+            /// Cloud account not saved: {error}
+            public static func accountNotSaved(error: String) -> String { Localizer.text("log.keychain.accountNotSaved", ["error": error]) }
+            /// Secret store: {service} not readable ({error})
+            public static func notReadable(service: String, error: String) -> String { Localizer.text("log.keychain.notReadable", ["service": service, "error": error]) }
+            /// Secret store: {service} not removed ({error})
+            public static func notRemoved(service: String, error: String) -> String { Localizer.text("log.keychain.notRemoved", ["service": service, "error": error]) }
+            /// Secret store: {service} not saved ({error}, {bytes} bytes)
+            public static func notSaved(service: String, error: String, bytes: String) -> String { Localizer.text("log.keychain.notSaved", ["service": service, "error": error, "bytes": bytes]) }
+            /// Cloud session not saved: {error}
+            public static func sessionNotSaved(error: String) -> String { Localizer.text("log.keychain.sessionNotSaved", ["error": error]) }
+        }
+        public enum Lan {
+            /// Connecting to {host}:{port} (TCP, V3) …
+            public static func connecting(host: String, port: String) -> String { Localizer.text("log.lan.connecting", ["host": host, "port": port]) }
+            /// Connection to {host} closed
+            public static func disconnected(host: String) -> String { Localizer.text("log.lan.disconnected", ["host": host]) }
+            /// {host}: {count} late frames discarded
+            public static func droppedFrames(host: String, count: String) -> String { Localizer.text("log.lan.droppedFrames", ["host": host, "count": count]) }
+            /// {host}: {error}
+            public static func error(host: String, error: String) -> String { Localizer.text("log.lan.error", ["host": host, "error": error]) }
+            /// TCP connected, sending handshake (token {bytes} bytes, redacted)
+            public static func handshake(bytes: String) -> String { Localizer.text("log.lan.handshake", ["bytes": bytes]) }
+            /// Handshake ok, session key negotiated (valid 12 h)
+            public static var handshakeOk: String { Localizer.text("log.lan.handshakeOk") }
+            /// {host}: {error} – retrying
+            public static func retry(host: String, error: String) -> String { Localizer.text("log.lan.retry", ["host": host, "error": error]) }
+        }
+        public enum Language {
+            /// Language: {language}
+            public static func set(language: String) -> String { Localizer.text("log.language.set", ["language": language]) }
+            /// Language: {language} (pseudo)
+            public static func setPseudo(language: String) -> String { Localizer.text("log.language.setPseudo", ["language": language]) }
+        }
+        public enum Level {
+            /// ERROR
+            public static var error: String { Localizer.text("log.level.error") }
+            /// WARNING
+            public static var warning: String { Localizer.text("log.level.warning") }
+        }
+        public enum Packet {
+            /// 8370 header with nonsensical length {length} discarded
+            public static func badHeader(length: String) -> String { Localizer.text("log.packet.badHeader", ["length": length]) }
+        }
+        public enum Path {
+            /// Cloud
+            public static var cloud: String { Localizer.text("log.path.cloud") }
+            /// Wi-Fi
+            public static var lan: String { Localizer.text("log.path.lan") }
+        }
+        public enum Polling {
+            /// Diagnostics: {line}
+            public static func diagnostics(line: String) -> String { Localizer.text("log.polling.diagnostics", ["line": line]) }
+            /// Fast refresh (block group {group})
+            public static func fastGroup(group: String) -> String { Localizer.text("log.polling.fastGroup", ["group": group]) }
+            /// Fast refresh (block properties and consumption)
+            public static var fastProperties: String { Localizer.text("log.polling.fastProperties") }
+            /// Polling started
+            public static var started: String { Localizer.text("log.polling.started") }
+            /// State: {line}
+            public static func state(line: String) -> String { Localizer.text("log.polling.state", ["line": line]) }
+        }
+        public enum Relocate {
+            /// Air conditioner found at {ip}, sign-in failed: {error}
+            public static func loginFailed(ip: String, error: String) -> String { Localizer.text("log.relocate.loginFailed", ["ip": ip, "error": error]) }
+            /// Air conditioner now at {ip} (before: {old})
+            public static func moved(ip: String, old: String) -> String { Localizer.text("log.relocate.moved", ["ip": ip, "old": old]) }
+            /// New address not saved: {error}
+            public static func notSaved(error: String) -> String { Localizer.text("log.relocate.notSaved", ["error": error]) }
+            /// Search for the air conditioner failed: {error}
+            public static func searchFailed(error: String) -> String { Localizer.text("log.relocate.searchFailed", ["error": error]) }
+            /// Looking for the air conditioner (id {id}) on Wi-Fi …
+            public static func searching(id: String) -> String { Localizer.text("log.relocate.searching", ["id": id]) }
+            /// Air conditioner still at {ip}
+            public static func unchanged(ip: String) -> String { Localizer.text("log.relocate.unchanged", ["ip": ip]) }
+        }
+        public enum Scene {
+            /// {file} unreadable – set aside as {aside}, {count} scene(s) rescued
+            public static func unreadable(file: String, aside: String, count: String) -> String { Localizer.text("log.scene.unreadable", ["file": file, "aside": aside, "count": count]) }
+        }
+        public enum Scenes {
+            /// Scenes not saved: {error}
+            public static func notSaved(error: String) -> String { Localizer.text("log.scenes.notSaved", ["error": error]) }
+        }
+        public enum Session {
+            /// Air conditioner set up via the Cloud: {name} (id {id})
+            public static func cloudSetup(name: String, id: String) -> String { Localizer.text("log.session.cloudSetup", ["name": name, "id": id]) }
+            /// Air conditioner set up with entered credentials: {name} @ {ip}
+            public static func manualSetup(name: String, ip: String) -> String { Localizer.text("log.session.manualSetup", ["name": name, "ip": ip]) }
+            /// Air conditioner not usable: {error}
+            public static func notUsable(error: String) -> String { Localizer.text("log.session.notUsable", ["error": error]) }
+            /// Setup reset
+            public static var reset: String { Localizer.text("log.session.reset") }
+            /// Setup not removed: {error}
+            public static func setupNotRemoved(error: String) -> String { Localizer.text("log.session.setupNotRemoved", ["error": error]) }
+            /// App timers deleted (no air conditioner set up any more)
+            public static var timersDeleted: String { Localizer.text("log.session.timersDeleted") }
+        }
+        public enum Settings {
+            /// No window visible – polling every {seconds} s
+            public static func backgroundPolling(seconds: String) -> String { Localizer.text("log.settings.backgroundPolling", ["seconds": seconds]) }
+            /// Pre-releases: {state}
+            public static func betaChannel(state: String) -> String { Localizer.text("log.settings.betaChannel", ["state": state]) }
+            /// Connection path: {mode}
+            public static func connectionMode(mode: String) -> String { Localizer.text("log.settings.connectionMode", ["mode": mode]) }
+            /// Currency: {value}
+            public static func currency(value: String) -> String { Localizer.text("log.settings.currency", ["value": value]) }
+            /// Detailed log {state}
+            public static func detailedLog(state: String) -> String { Localizer.text("log.settings.detailedLog", ["state": state]) }
+            /// History as CSV: {state}
+            public static func historyCSV(state: String) -> String { Localizer.text("log.settings.historyCSV", ["state": state]) }
+            /// Language after restart: {value}
+            public static func languageAfterRestart(value: String) -> String { Localizer.text("log.settings.languageAfterRestart", ["value": value]) }
+            /// Refresh every {seconds} s
+            public static func refresh(seconds: String) -> String { Localizer.text("log.settings.refresh", ["seconds": seconds]) }
+            /// Window visible
+            public static var windowVisible: String { Localizer.text("log.settings.windowVisible") }
+        }
+        public enum StateLine {
+            /// Compressor {hz}/{targetHz} Hz, {watts} W, {amps} A, {volts} V, T1–T4 {t1}/{t2}/{t3}/{t4}, TP {tp}, …
+            public static func diagnostics(hz: String, targetHz: String, watts: String, amps: String, volts: String, t1: String, t2: String, t3: String, t4: String, tp: String, eev: String, indoorFan: String, outdoorFan: String) -> String { Localizer.text("log.stateLine.diagnostics", ["hz": hz, "targetHz": targetHz, "watts": watts, "amps": amps, "volts": volts, "t1": t1, "t2": t2, "t3": t3, "t4": t4, "tp": tp, "eev": eev, "indoorFan": indoorFan, "outdoorFan": outdoorFan]) }
+            /// {power}, {mode}, target {target}, indoor {indoor}, outdoor {outdoor}, fan {fan}, {watts}, limit {ra…
+            public static func line(power: String, mode: String, target: String, indoor: String, outdoor: String, fan: String, watts: String, rate: String) -> String { Localizer.text("log.stateLine.line", ["power": power, "mode": mode, "target": target, "indoor": indoor, "outdoor": outdoor, "fan": fan, "watts": watts, "rate": rate]) }
+        }
+        public enum Timer {
+            /// turn off
+            public static var actionOff: String { Localizer.text("log.timer.actionOff") }
+            /// turn on
+            public static var actionOn: String { Localizer.text("log.timer.actionOn") }
+            /// Timer “{name}” ended: {reason}
+            public static func ended(name: String, reason: String) -> String { Localizer.text("log.timer.ended", ["name": name, "reason": reason]) }
+            /// Timer firing: {action}{suffix}
+            public static func firing(action: String, suffix: String) -> String { Localizer.text("log.timer.firing", ["action": action, "suffix": suffix]) }
+            /// App timer “{name}” missed (was due {time})
+            public static func missed(name: String, time: String) -> String { Localizer.text("log.timer.missed", ["name": name, "time": time]) }
+            /// off
+            public static var nameOff: String { Localizer.text("log.timer.nameOff") }
+            /// on
+            public static var nameOn: String { Localizer.text("log.timer.nameOn") }
+            /// Timer “off” deleted
+            public static var offDeleted: String { Localizer.text("log.timer.offDeleted") }
+            /// Timer: off in {minutes} min
+            public static func offIn(minutes: String) -> String { Localizer.text("log.timer.offIn", ["minutes": minutes]) }
+            /// Timer: on at {time}
+            public static func onAt(time: String) -> String { Localizer.text("log.timer.onAt", ["time": time]) }
+            /// Timer “on” deleted
+            public static var onDeleted: String { Localizer.text("log.timer.onDeleted") }
+            /// (repeat)
+            public static var `repeat`: String { Localizer.text("log.timer.repeat") }
+            /// air conditioner has been switched by hand in the meantime
+            public static var switchedByHand: String { Localizer.text("log.timer.switchedByHand") }
+        }
+        public enum Token {
+            /// The air conditioner accepted the token – setup complete
+            public static var accepted: String { Localizer.text("log.token.accepted") }
+            /// {kind}: {error}
+            public static func error(kind: String, error: String) -> String { Localizer.text("log.token.error", ["kind": kind, "error": error]) }
+            /// Fetching token for {name} ({ip}, id {id}) with account {account}
+            public static func fetch(name: String, ip: String, id: String, account: String) -> String { Localizer.text("log.token.fetch", ["name": name, "ip": ip, "id": id, "account": account]) }
+            /// No token for udpid ({order} endian, {kind})
+            public static func none(order: String, kind: String) -> String { Localizer.text("log.token.none", ["order": order, "kind": kind]) }
+            /// Token received ({order} endian), checking with the air conditioner …
+            public static func received(order: String) -> String { Localizer.text("log.token.received", ["order": order]) }
+            /// The air conditioner rejects this token ({order} endian) – trying the other variant
+            public static func rejected(order: String) -> String { Localizer.text("log.token.rejected", ["order": order]) }
+        }
+        public enum Transport {
+            /// {path} not reachable – trying the next path
+            public static func pathDown(path: String) -> String { Localizer.text("log.transport.pathDown", ["path": path]) }
+            /// Connection via {path}
+            public static func via(path: String) -> String { Localizer.text("log.transport.via", ["path": path]) }
+        }
+        public enum Updates {
+            /// Updates: aborted ({error})
+            public static func aborted(error: String) -> String { Localizer.text("log.updates.aborted", ["error": error]) }
+            /// Updates: download automatically, beta channel {state} ({feed})
+            public static func automatic(state: String, feed: String) -> String { Localizer.text("log.updates.automatic", ["state": state, "feed": feed]) }
+            /// Updates: beta channel {state}
+            public static func betaChannel(state: String) -> String { Localizer.text("log.updates.betaChannel", ["state": state]) }
+            /// Updates: version {version} downloaded, waiting for restart or quit
+            public static func downloaded(version: String) -> String { Localizer.text("log.updates.downloaded", ["version": version]) }
+            /// Updates: version {version} found
+            public static func found(version: String) -> String { Localizer.text("log.updates.found", ["version": version]) }
+            /// Updates: installing version {version} now at your request
+            public static func installNow(version: String) -> String { Localizer.text("log.updates.installNow", ["version": version]) }
+            /// Updates: reminder in 24 h
+            public static var remind: String { Localizer.text("log.updates.remind") }
+        }
+    }
     public enum Main {
         public enum Comfort {
             /// Display
@@ -24557,15 +30735,71 @@ public enum L {
         }
     }
     public enum Notices {
+        public enum Dotnet {
+            /// Runtime and user interface (Windows Presentation Foundation) of the Windows app, shipped self-conta…
+            public static var usage: String { Localizer.text("notices.dotnet.usage") }
+        }
+        public enum Expat {
+            /// XML parser that WinSparkle uses for the appcast; included in the shipped WinSparkle.dll (COPYING.ex…
+            public static var usage: String { Localizer.text("notices.expat.usage") }
+        }
+        public enum Icu {
+            /// Unicode and locale data for Foundation (_FoundationICU.dll), part of the Swift runtime shipped with…
+            public static var usage: String { Localizer.text("notices.icu.usage") }
+        }
         /// Klimacontrol is built on the following open-source projects. Their licenses require the copyright n…
         public static var intro: String { Localizer.text("notices.intro") }
         /// License text
         public static var licenseText: String { Localizer.text("notices.licenseText") }
+        public enum MideaAcLan {
+            /// Model for the key scheme of the MSmartHome Cloud (session key from accessToken and randomData).
+            public static var usage: String { Localizer.text("notices.mideaAcLan.usage") }
+        }
+        public enum MideaBeautifulAir {
+            /// Model for Cloud control through NetHome Plus (transparent send, data key, CSV encoding) and for the…
+            public static var usage: String { Localizer.text("notices.mideaBeautifulAir.usage") }
+        }
+        public enum MsmartNg {
+            /// Model for the local Midea protocol: V2/V3 packets, handshake and encryption, discovery on the netwo…
+            public static var usage: String { Localizer.text("notices.msmartNg.usage") }
+        }
+        public enum Platform {
+            /// All
+            public static var all: String { Localizer.text("notices.platform.all") }
+            /// Mac only
+            public static var macOnly: String { Localizer.text("notices.platform.macOnly") }
+            /// Windows only
+            public static var windowsOnly: String { Localizer.text("notices.platform.windowsOnly") }
+        }
+        public enum Sparkle {
+            /// Updates of the Mac app (Sparkle 2.10.1): looks for new versions, checks their EdDSA signature and i…
+            public static var usage: String { Localizer.text("notices.sparkle.usage") }
+        }
+        public enum Sqlite {
+            /// SQLite is in the public domain; there is no copyright notice.
+            public static var copyright: String { Localizer.text("notices.sqlite.copyright") }
+            /// History database in the Windows version (amalgamation 3.54.1, included unmodified). On macOS, Klima…
+            public static var usage: String { Localizer.text("notices.sqlite.usage") }
+        }
+        public enum SwiftCrypto {
+            /// Cryptography (AES, SHA-256, HMAC, MD5) in the Windows version, included as a library. On macOS, Kli…
+            public static var usage: String { Localizer.text("notices.swiftCrypto.usage") }
+        }
+        public enum SwiftRuntime {
+            /// Runtime of the Windows version, shipped next to the app (swiftCore.dll, Foundation, Dispatch and ot…
+            public static var usage: String { Localizer.text("notices.swiftRuntime.usage") }
+        }
+        /// Klimacontrol is not a Midea product and is not affiliated with Midea. Midea, MSmartHome, NetHome Pl…
+        public static var trademark: String { Localizer.text("notices.trademark") }
         public enum Windows {
             /// License text {name}
             public static func licenseTextName(name: String) -> String { Localizer.text("notices.windows.licenseTextName", ["name": name]) }
             /// Klimacontrol is not a Midea product and is not affiliated with Midea. Midea, MSmartHome, NetHome Pl…
             public static var trademarks: String { Localizer.text("notices.windows.trademarks") }
+        }
+        public enum Winsparkle {
+            /// Updates of the Windows app (WinSparkle 0.9.4): looks for new versions, checks their EdDSA signature…
+            public static var usage: String { Localizer.text("notices.winsparkle.usage") }
         }
     }
     public enum Options {

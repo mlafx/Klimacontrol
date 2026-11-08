@@ -29,7 +29,7 @@ struct LogSettings: View {
             VStack(alignment: .leading, spacing: 3) {
                 HStack {
                     Toggle(L.Settings.Log.Detailed.title, isOn: $debug)
-                        .onChange(of: debug) { _, v in AppLog.debugEnabled = v; AppLog.write("Ausführliches Protokoll \(v ? "an" : "aus")") }
+                        .onChange(of: debug) { _, v in AppLog.debugEnabled = v; AppLog.write(L.Log.Settings.detailedLog(state: v ? L.Log.Common.on : L.Log.Common.off)) }
                     // Ohne Debug gibt es keine DEBUG-Zeilen zum Ausblenden.
                     Toggle(L.Settings.Log.EventsOnly.title, isOn: $eventsOnly)
                         .disabled(!debug)

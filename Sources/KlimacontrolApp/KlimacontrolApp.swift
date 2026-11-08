@@ -126,7 +126,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         case .none, .wait: return
         case .register:
             if !LoginItem.enabled {
-                AppLog.write("Beim Anmelden starten: Standard beim ersten Start")
+                AppLog.write(L.Log.App.loginItemDefault)
                 _ = LoginItem.set(true)
             }
         }
@@ -158,8 +158,8 @@ final class TimerNotifier {
         guard !asked, let center else { return }
         asked = true
         center.requestAuthorization(options: [.alert, .sound]) { granted, error in
-            if let error { AppLog.debug("Mitteilungen: \(error.localizedDescription)") }
-            if !granted { AppLog.write("Mitteilungen für Timer nicht erlaubt") }
+            if let error { AppLog.debug(L.Log.App.notificationsError(error: error.localizedDescription)) }
+            if !granted { AppLog.write(L.Log.App.notificationsDenied) }
         }
     }
 

@@ -100,37 +100,38 @@ public enum Fmt {
 
     private static func pad(_ v: Int) -> String { v < 10 ? "0\(v)" : "\(v)" }
 
-    /// Was sich zwischen zwei Zuständen geändert hat, fürs Protokoll, immer deutsch mit deutschem Zahlenformat („ein, Modus Kühlen, Soll 22°“).
+    /// Was sich zwischen zwei Zuständen geändert hat, fürs Protokoll in der Sprache der Oberfläche mit deutschem Zahlenformat („ein, Modus Kühlen, Soll 22°“).
     public static func change(from a: ACState, to b: ACState) -> String {
-        func onOff(_ v: Bool) -> String { v ? "an" : "aus" }
+        func onOff(_ v: Bool) -> String { v ? L.Log.Common.on : L.Log.Common.off }
         var parts: [String] = []
-        if a.power != b.power { parts.append(b.power ? "ein" : "aus") }
-        if a.mode != b.mode { parts.append("Modus \(b.mode.label)") }
-        if a.targetTemperature != b.targetTemperature { parts.append("Soll \(target(b.targetTemperature, profile: .germany))") }
-        if a.fanSpeed != b.fanSpeed { parts.append("Lüfter \(b.fanLabel)") }
-        if a.swing != b.swing { parts.append("Schwenken \(onOff(b.swing == .vertical))") }
-        if a.eco != b.eco { parts.append("Eco \(onOff(b.eco))") }
-        if a.turbo != b.turbo { parts.append("Turbo \(onOff(b.turbo))") }
-        if a.purifier != b.purifier { parts.append("Ionisierer \(onOff(b.purifier))") }
-        if a.freezeProtection != b.freezeProtection { parts.append("Frostschutz \(onOff(b.freezeProtection))") }
+        if a.power != b.power { parts.append(b.power ? L.Log.Change.on : L.Log.Change.off) }
+        if a.mode != b.mode { parts.append(L.Log.Change.mode(value: b.mode.title)) }
+        if a.targetTemperature != b.targetTemperature { parts.append(L.Log.Change.target(value: target(b.targetTemperature, profile: .germany))) }
+        if a.fanSpeed != b.fanSpeed { parts.append(L.Log.Change.fan(value: b.fanTitle)) }
+        if a.swing != b.swing { parts.append(L.Log.Change.swing(state: onOff(b.swing == .vertical))) }
+        if a.eco != b.eco { parts.append(L.Log.Change.eco(state: onOff(b.eco))) }
+        if a.turbo != b.turbo { parts.append(L.Log.Change.turbo(state: onOff(b.turbo))) }
+        if a.purifier != b.purifier { parts.append(L.Log.Change.purifier(state: onOff(b.purifier))) }
+        if a.freezeProtection != b.freezeProtection { parts.append(L.Log.Change.freeze(state: onOff(b.freezeProtection))) }
         return parts.joined(separator: ", ")
     }
 
     /// Eine Zeile Zustand fürs Ausführliches Protokoll.
     public static func stateLine(_ s: ACState) -> String {
-        "\(s.power ? "ein" : "aus"), \(s.mode.label), Soll \(target(s.targetTemperature, profile: .germany)), "
-            + "innen \(temp(s.indoorTemperature, profile: .germany)), "
-            + "außen \(temp(s.outdoorTemperature, profile: .germany)), Lüfter \(s.fanLabel), "
-            + "\(watts(s.powerWatts, profile: .germany)), "
-            + "Begrenzung \(s.ratePercent.map { "\($0) %" } ?? "–")"
+L.Log.StateLine.line(
+            power: s.power ? L.Log.Change.on : L.Log.Change.off, mode: s.mode.title,
+            target: target(s.targetTemperature, profile: .germany), indoor: temp(s.indoorTemperature, profile: .germany),
+            outdoor: temp(s.outdoorTemperature, profile: .germany), fan: s.fanTitle,
+            watts: watts(s.powerWatts, profile: .germany), rate: s.ratePercent.map { "\($0) %" } ?? "–")
     }
 
     /// Eine Zeile Diagnose fürs Ausführliches Protokoll (-1 bzw. nan = nicht geliefert).
     public static func diagnosticsLine(_ d: Diagnostics) -> String {
-        "Verdichter \(d.compressorHz ?? -1)/\(d.compressorTargetHz ?? -1) Hz, \(d.compressorPowerW ?? -1) W, "
-            + "\(d.currentA ?? -1) A, \(d.voltageV ?? -1) V, T1–T4 \(d.t1IndoorAir ?? .nan)/\(d.t2IndoorCoil ?? .nan)/"
-            + "\(d.t3OutdoorCoil ?? .nan)/\(d.t4OutdoorAir ?? .nan), TP \(d.tpDischarge ?? -1), EEV \(d.eevOpening ?? -1), "
-            + "Lüfter \(d.indoorFanRpm ?? -1)/\(d.outdoorFanRpm ?? -1) U/min"
+L.Log.StateLine.diagnostics(
+            hz: "\(d.compressorHz ?? -1)", targetHz: "\(d.compressorTargetHz ?? -1)", watts: "\(d.compressorPowerW ?? -1)",
+            amps: "\(d.currentA ?? -1)", volts: "\(d.voltageV ?? -1)", t1: "\(d.t1IndoorAir ?? .nan)", t2: "\(d.t2IndoorCoil ?? .nan)",
+            t3: "\(d.t3OutdoorCoil ?? .nan)", t4: "\(d.t4OutdoorAir ?? .nan)", tp: "\(d.tpDischarge ?? -1)",
+            eev: "\(d.eevOpening ?? -1)", indoorFan: "\(d.indoorFanRpm ?? -1)", outdoorFan: "\(d.outdoorFanRpm ?? -1)")
     }
 }
 

@@ -91,7 +91,7 @@ public final class HistoryLog: @unchecked Sendable {
             n += 1
         }
         do { try FileManager.default.moveItem(at: url, to: target) } catch {
-            AppLog.error("verlauf.csv nicht beiseitegelegt: \(error.localizedDescription)")
+            AppLog.error(L.Log.History.csvNotSetAside(error: error.localizedDescription))
         }
     }
 

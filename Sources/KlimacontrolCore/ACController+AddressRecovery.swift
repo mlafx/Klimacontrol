@@ -45,10 +45,10 @@ extension ACController {
         defer { relocating = false }
         relocation.lastRun = now()
         let startConfig = configGeneration
-        AppLog.write("Suche die Anlage (id \(cfg.deviceId)) im WLAN …")
+        AppLog.write(L.Log.Relocate.searching(id: String(cfg.deviceId)))
         let found: (ip: String, port: UInt16)?
         do { found = try await locate(cfg.deviceId) } catch {
-            AppLog.error("Suche nach der Anlage fehlgeschlagen: \(error.localizedDescription)")
+            AppLog.error(L.Log.Relocate.searchFailed(error: error.localizedDescription))
             found = nil
         }
         guard configGeneration == startConfig, config == cfg else { return false }
@@ -57,7 +57,7 @@ extension ACController {
             return false
         }
         if found.ip == cfg.ip {
-            AppLog.write("Anlage weiter unter \(cfg.ip)")
+            AppLog.write(L.Log.Relocate.unchanged(ip: cfg.ip))
             await refreshNow()
             relocateDone(lastRefreshFailed
                 ? L.Message.Relocate.sameNoReply(ip: cfg.ip)
@@ -70,7 +70,7 @@ extension ACController {
         guard let checked = try? candidate.validated() else { return false }
         let check = await checkExclusively(checked)
         if let error = check.error {
-            AppLog.error("Anlage unter \(found.ip) gefunden, Anmeldung gescheitert: \(error.localizedDescription)")
+            AppLog.error(L.Log.Relocate.loginFailed(ip: found.ip, error: error.localizedDescription))
             if check.isRejected {
                 relocateDone(L.Message.Relocate.rejected(ip: found.ip))
             } else {
@@ -82,11 +82,11 @@ extension ACController {
         }
         guard configGeneration == startConfig, config == cfg else { return false }
         do { try checked.save(to: paths.config) } catch {
-            AppLog.error("Neue Adresse nicht gespeichert: \(error.localizedDescription)")
+            AppLog.error(L.Log.Relocate.notSaved(error: error.localizedDescription))
             relocateDone(L.Message.Relocate.saveFailed)
             return false
         }
-        AppLog.write("Anlage jetzt unter \(checked.ip) (vorher \(cfg.ip))")
+        AppLog.write(L.Log.Relocate.moved(ip: checked.ip, old: cfg.ip))
         use(checked)
         relocateDone(L.Message.Relocate.moved(ip: checked.ip))
         return true
