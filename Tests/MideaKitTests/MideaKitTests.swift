@@ -352,11 +352,11 @@ final class MideaKitTests: XCTestCase {
         let text = try loggedText {
             AppLog.write(#"Antwort {"token":"abc","password":"x"}"#)
             AppLog.write("Anfrage password=geheim&sessionId=1")
-            AppLog.write(#"maskiert {\"token\":\"abc\",\"userInfo\":{\"email\":\"a@b.de\"}}"#)
+            AppLog.write(#"maskiert {\"token\":\"abc\",\"userInfo\":{\"email\":\"user@example.com\"}}"#)
         }
         XCTAssertFalse(text.contains("abc"), text)
         XCTAssertFalse(text.contains("geheim"), text)
-        XCTAssertFalse(text.contains("a@b.de"), text)
+        XCTAssertFalse(text.contains("user@example.com"), text)
         XCTAssertTrue(text.contains(#"{"token":"***","password":"***"}"#), text)
         XCTAssertTrue(text.contains("password=***&sessionId=***"), text)
         XCTAssertTrue(text.contains(#"\"token\":\"***\""#), text)

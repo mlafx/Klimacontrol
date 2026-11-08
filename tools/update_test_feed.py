@@ -45,7 +45,7 @@ Geklärt aus Quellen (nicht an der App ausprobiert; endgültig zeigt es erst der
    connection" im Sparkle-Protokoll):
    (a) file://: Für die Update-Datei selbst unbelegt; für das DMG im Enclosure ausgeschlossen: Sparkle 2.10.1 meldet
        "The download request URL must use http or https (%@)". Also kein Rückfall.
-   (b) Lokales HTTPS mit eigenem Zertifikat (--base-url https://127.0.0.1:<port>): Markus muss das Zertifikat in seinem
+   (b) Lokales HTTPS mit eigenem Zertifikat (--base-url https://127.0.0.1:<port>): der Autor muss das Zertifikat in seinem
        Anmelde-Schlüsselbund als vertrauenswürdig für SSL eintragen (Schlüsselbundverwaltung, Vertrauen,
        "Immer vertrauen"); das Skript liefert nur HTTP und braucht dafür einen TLS-Proxy (z. B. `caddy reverse-proxy
        --from https://127.0.0.1:8443 --to 127.0.0.1:8765` mit `tls internal`) oder man startet http.server selbst mit

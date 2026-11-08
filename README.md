@@ -19,7 +19,7 @@ V3, Cloud-Zugriff optional.**
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/Lizenz-MIT-blue" alt="Lizenz: MIT"></a>
-  <img src="https://img.shields.io/badge/macOS%2015%2B%20%C2%B7%20Windows%2011-lightgrey" alt="macOS 15+ · Windows 11">
+  <img src="https://img.shields.io/badge/macOS%2015%2B%20%C2%B7%20Windows%2010%2B-lightgrey" alt="macOS 15+ · Windows 10+">
 </p>
 
 [Überblick](#überblick) · [Funktionen](#funktionen) · [Voraussetzungen](#voraussetzungen) ·
@@ -65,7 +65,7 @@ Windows).
 
 - Midea PortaSplit im selben lokalen Netzwerk wie der Rechner; UDP 6445/20086 (Suche) und TCP 6444 (Steuerung) müssen
   erreichbar sein. Andere Midea-Anlagen mit Protokoll V3 sind voraussichtlich kompatibel, aber nicht getestet.
-- macOS 15 oder neuer (Apple Silicon und Intel) bzw. Windows 11 (x64)
+- macOS 15 oder neuer (Apple Silicon und Intel) bzw. Windows 10 oder neuer (x64)
 - Midea-Konto (MSmartHome oder NetHome Plus) **oder** Token und Schlüssel der Anlage
 
 ## Installation
@@ -78,8 +78,9 @@ Die Installationspakete stehen unter [Releases](https://github.com/mlafx/Klimaco
 | Windows | `Klimacontrol-Windows-<Version>-Setup.exe` | Installation ohne Administratorrechte. Den Netzwerkzugriff für **private** Netzwerke in der Firewall freigeben. |
 
 > [!NOTE]
-> Das Windows-Setup ist nicht Authenticode-signiert; SmartScreen zeigt beim ersten Start einen Hinweis („Weitere
-> Informationen“ → „Trotzdem ausführen“). Updates werden unabhängig davon per EdDSA-Signatur geprüft.
+> Beim ersten Start des aus dem Browser geladenen Windows-Setups zeigt Windows einen Sicherheitshinweis (SmartScreen
+> „Der Computer wurde durch Windows geschützt“ mit „Weitere Informationen“ → „Trotzdem ausführen“, oder „Unbekannter
+> Herausgeber“ mit „Ausführen“). Updates über die App zeigen ihn nicht. Updates werden unabhängig davon per EdDSA-Signatur geprüft.
 
 ## Einrichtung
 

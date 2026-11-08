@@ -27,7 +27,7 @@ aus und legt das Release an. Stabil: --latest, ohne Update-Datei der Beta. Beta:
 Datei hängt immer am festen Vorabrelease „beta“ (wird bei Bedarf einmal angelegt, die Datei dort ersetzt).
 
 --check-published prüft nach dem Veröffentlichen die Adressen, die die Apps lesen (latest und beta): Status, Version,
-Signatur, Erreichbarkeit der Archive. Es braucht den Schlüssel (nur Markus führt es aus) und liest nur.
+Signatur, Erreichbarkeit der Archive. Es braucht den Schlüssel (nur der Autor führt es aus) und liest nur.
 
 --rollback ist die Notbremse: kaputtes Release auf „Vorabrelease“ stellen, vorige Fassung wieder zum neuesten machen.
 Nichts wird gelöscht, keine Tags werden verschoben; die Korrektur erscheint als nächste Fehlerbehebungs-Version.
@@ -372,8 +372,9 @@ def release_notes(version, section, files, en_section=None, beta=None):
         if f.name in purpose:
             lines.append(f"| `{f.name}` | {purpose[f.name]} |")
     if not beta:
-        lines += ["", "Das Windows-Setup ist nicht signiert, Windows zeigt beim ersten Start deshalb einen SmartScreen-Hinweis",
-                  "(„Weitere Informationen“ → „Trotzdem ausführen“)."]
+        lines += ["", "Beim ersten Start des aus dem Browser geladenen Windows-Setups zeigt Windows einen Sicherheitshinweis",
+                  "(SmartScreen „Der Computer wurde durch Windows geschützt“ mit „Weitere Informationen“ → „Trotzdem ausführen“, "
+                  "oder „Unbekannter Herausgeber“ mit „Ausführen“). Updates über die App zeigen ihn nicht."]
     lines += ["", "Prüfsummen (SHA-256) stehen in `SHA256SUMS.txt`. `updateinfo-*.xml` lesen die Apps für ihre Updates.", ""]
     if en_section is not None:
         lines += ["---", "", "## English", ""]
@@ -382,8 +383,9 @@ def release_notes(version, section, files, en_section=None, beta=None):
                       "is turned on in Settings → General.", ""]
         lines += [en_section.strip(), "", "Mac: open the DMG and drag Klimacontrol to Applications."]
         if not beta:
-            lines += ["", "Windows: run the setup (no administrator rights needed). The setup is not signed; Windows SmartScreen "
-                      "shows a notice on first start (More info → Run anyway)."]
+            lines += ["", "Windows: run the setup (no administrator rights needed). When the setup is downloaded in a browser, "
+                      "Windows shows a security notice on first start (SmartScreen “Windows protected your PC” with "
+                      "More info → Run anyway, or “Unknown publisher” with Run). Updates through the app do not show it."]
         lines += ["", "SHA-256 checksums are in `SHA256SUMS.txt`.", ""]
     return "\n".join(lines)
 

@@ -109,7 +109,7 @@ final class AppUpdater {
         alert.messageText = L.Updates.Mac.promptTitle
         alert.informativeText = L.Updates.Mac.promptMessage(version: version)
         alert.addButton(withTitle: L.App.restartNow)
-        alert.addButton(withTitle: L.Prompt.SetupDone.later)
+        alert.addButton(withTitle: L.Updates.Restart.later)
         NSApp.activate()
         if alert.runModal() == .alertFirstButtonReturn {
             installNow()

@@ -26033,6 +26033,24 @@ extension StringsData {
         }
       }
     },
+    "updates.restart.later" : {
+      "comment" : "Update-Hinweis: Knopf, Neustart später",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Später"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Later"
+          }
+        }
+      }
+    },
     "way.auto" : {
       "comment" : "Hilfe zur Verbindungsart Automatisch",
       "extractionState" : "manual",
@@ -27603,6 +27621,7 @@ extension StringsData {
         "updates.mac.promptMessage",
         "updates.mac.promptTitle",
         "updates.mac.ready",
+        "updates.restart.later",
         "way.auto",
         "way.cloud",
         "way.lan",
@@ -29052,6 +29071,7 @@ extension StringsData {
         "updates.mac.promptMessage": ["version"],
         "updates.mac.promptTitle": [],
         "updates.mac.ready": ["version"],
+        "updates.restart.later": [],
         "way.auto": [],
         "way.cloud": [],
         "way.lan": [],
@@ -32564,6 +32584,10 @@ public enum L {
             public static var promptTitle: String { Localizer.text("updates.mac.promptTitle") }
             /// Version {version} is ready and will be installed when the app quits.
             public static func ready(version: String) -> String { Localizer.text("updates.mac.ready", ["version": version]) }
+        }
+        public enum Restart {
+            /// Later
+            public static var later: String { Localizer.text("updates.restart.later") }
         }
     }
     public enum Way {

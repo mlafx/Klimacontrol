@@ -278,11 +278,11 @@ public class CoreTests : IDisposable
     public void FehlerEinesBefehlsStehtImProtokollOhneArgumente()
     {
         bridge.CommandResult = "Anmeldung fehlgeschlagen.";
-        core.Send("cloudLogin", ("account", "a@b.de"), ("password", "geheim123"));
+        core.Send("cloudLogin", ("account", "user@example.com"), ("password", "geheim123"));
         var line = Assert.Single(bridge.Traces);
         Assert.Equal("log.windows.commandFailed cloudLogin: Anmeldung fehlgeschlagen.", line);
         Assert.DoesNotContain("geheim123", line);
-        Assert.DoesNotContain("a@b.de", line);
+        Assert.DoesNotContain("user@example.com", line);
     }
 
     [Fact]

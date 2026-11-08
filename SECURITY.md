@@ -13,8 +13,8 @@ neueste Version. Ich melde mich dort und sage Bescheid, sobald es eine Lösung g
   (Sparkle) und Windows (WinSparkle) prüfen die Signatur gegen den öffentlichen Schlüssel in
   [`tools/UPDATE_PUBLIC_KEY`](tools/UPDATE_PUBLIC_KEY), bevor sie etwas installieren.
 - **Mac:** Die App ist mit einer Developer ID signiert und von Apple notarisiert.
-- **Windows:** Das Setup ist nicht Authenticode-signiert, Windows zeigt beim ersten Start deshalb einen
-  SmartScreen-Hinweis. Die Prüfsummen aller Dateien stehen in `SHA256SUMS.txt` am jeweiligen Release.
+- **Windows:** Beim ersten Start des aus dem Browser geladenen Setups zeigt Windows einen
+  Sicherheitshinweis (SmartScreen oder „Unbekannter Herausgeber“); Updates über die App zeigen ihn nicht. Die Prüfsummen aller Dateien stehen in `SHA256SUMS.txt` am jeweiligen Release.
 - **Zugangsdaten** der Anlage (Token und Schlüssel) und das Midea-Passwort bleiben auf dem eigenen Rechner: in einer
   nur für den Benutzer lesbaren Datei bzw. im Schlüsselbund oder in der Windows-Anmeldeinformationsverwaltung. Im
   Protokoll werden sie geschwärzt.
@@ -37,7 +37,8 @@ touch"); details are then exchanged privately. Only the latest version is suppor
   and Windows (WinSparkle) verify the signature against the public key in
   [`tools/UPDATE_PUBLIC_KEY`](tools/UPDATE_PUBLIC_KEY) before installing anything.
 - **Mac:** The app is signed with a Developer ID and notarized by Apple.
-- **Windows:** The setup is not Authenticode-signed, so Windows shows a SmartScreen warning on first launch. The
+- **Windows:** When the setup is downloaded in a browser, Windows shows a security notice on first launch
+  (SmartScreen or “Unknown publisher”); updates through the app do not show it. The
   checksums of all files are in `SHA256SUMS.txt` on each release.
 - **Credentials** of the air conditioner (token and key) and the Midea password stay on your own computer: in a file
   readable only by the user, or in the Keychain or the Windows Credential Manager. They are redacted in the log.

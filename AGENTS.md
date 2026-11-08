@@ -33,6 +33,7 @@ Windows: `powershell -ExecutionPolicy Bypass -File tools\build_windows.ps1 -App`
 | Verlauf, CSV, Datenbank | 7.6, Anhang B | `History.swift`, `HistoryDB.swift` |
 | Tests schreiben oder reparieren | 11 | `Tests/` |
 | Version, CHANGELOG, Ausgabe, Signatur | 14 | `tools/`, `CHANGELOG.md` |
+| Release durchführen | 14.4, 14.1, 14.2 | `tools/make_release.py`, `tools/build_app.sh` |
 | Updates (Sparkle/WinSparkle), Release | 14.1 | `AppUpdate.swift`, `Updater.swift`, `tools/make_release.py` |
 
 ---
@@ -854,7 +855,7 @@ nach einem neuen Build nicht erneut nach Freigaben (Netzwerk, Schlüsselbund); a
 
 Gebaut wird außerhalb des Projektordners (`%LOCALAPPDATA%\Klimacontrol-build`), darum funktioniert es auch in
 Cloud-Sync-Ordnern. Die fertige App braucht weder Swift noch .NET installiert. Unter Windows laufen weniger
-MideaKit-Tests als am Mac (zuletzt 125 statt 132), weil einige nur auf Darwin übersetzt werden (u. a.
+MideaKit-Tests als am Mac (zuletzt 130 statt 137), weil einige nur auf Darwin übersetzt werden (u. a.
 `LANLoopbackTests`, der echte TCP-Weg gegen 127.0.0.1).
 
 ---
@@ -1158,7 +1159,7 @@ Muster: „What happened. What to do. (code)“. „Klimacontrol“ und „Porta
 - **Testaufbau D3/1 und D3/3:** `tools/update_test_feed.py` stellt eine lokale, echt signierte Update-Datei bereit, mit der
   das originale DMG der vorigen Fassung auf die neue (bzw. die Probe-Fassung) aktualisiert wird; Aufruf und Optionen
   stehen im Kopf des Skripts.
-- **Testaufbau D3/2 und D3/3 (Windows):** `tools/update_test_feed_win.py` (Aufruf im Kopf) liefert Setup und signierte `updateinfo-win.xml` auf `http://127.0.0.1:<port>/`; `tools/check_windows_upgrade.ps1` hält den Zustand vor und nach dem Update fest und vergleicht. 1.1.0.0 kennt keinen Test-Feed: 1.1.0.0 → 1.2.0.0 wird über die WinSparkle-Schalter (Registry) ausgelöst. Ab 1.2.0.0 gilt der echte Weg über `KLIMACONTROL_UPDATE_TEST_FEED`. WinSparkle prüft die Signatur des Setups, nicht die der Update-Datei. Ein über WinSparkle geladenes Setup zeigt keine SmartScreen-Warnung, nur der Browser-Download bei der Erstinstallation.
+- **Testaufbau D3/2 und D3/3 (Windows):** `tools/update_test_feed_win.py` (Aufruf im Kopf) liefert Setup und signierte `updateinfo-win.xml` auf `http://127.0.0.1:<port>/`; `tools/check_windows_upgrade.ps1` hält den Zustand vor und nach dem Update fest und vergleicht. 1.1.0.0 kennt keinen Test-Feed: 1.1.0.0 → 1.2.0.0 wird mit dem Setup und den WinSparkle-Kommandozeilenschaltern ausgelöst. Ab 1.2.0.0 gilt der echte Weg über `KLIMACONTROL_UPDATE_TEST_FEED`. WinSparkle prüft die Signatur des Setups, nicht die der Update-Datei. Ein über WinSparkle geladenes Setup zeigt keine SmartScreen-Warnung, nur der Browser-Download bei der Erstinstallation.
 
 #### Schutz der installierten Fassungen (Pflicht bei jedem Release)
 
@@ -1270,6 +1271,39 @@ Beispiel:
 - „Nur Cloud“ setzt ein angemeldetes Midea-Konto voraus.
 - Mac: Die Einstellung „Größe“ skaliert auch Knöpfe und Regler.
 ```
+
+### 14.4 Release Schritt für Schritt
+
+Voraussetzungen: Tests beider Plattformen grün, D3-Prüfungen abgehakt (Ergebnis in der Übergabe), `CHANGELOG.md` und
+`CHANGELOG.en.md` vollständig, Freigabe des Autors. Regeln dahinter stehen in 14.1 (D1–D4) und 14.2.
+
+1. Mac-Sperre setzen, Windows-Briefkasten lesen, `git status` sauber, Zweig `entwicklung-<x.y>`.
+2. Datum in beide CHANGELOG-Köpfe: `## [<Version>] – JJJJ-MM-TT` (englisch ebenso).
+3. `python3 tools/sync_release_notes.py && python3 tools/sync_strings.py --check && tools/test.sh`
+4. Commit „Release <Version>: Datum im CHANGELOG“.
+5. Mac: `KLIMACONTROL_NOTARY_PROFILE=klimacontrol tools/build_app.sh` (Tests, Notarisierung von ZIP und DMG, Ausgabe in `dist/mac/`).
+6. Windows, nach dem OneDrive-Abgleich und Bescheid über den Briefkasten: `powershell -ExecutionPolicy Bypass -File tools\build_windows.ps1 -Zip`
+   erzeugt `dist\windows\Klimacontrol-Windows-<Version>-Setup.exe`; Windows meldet die SHA-256.
+7. Mac: `shasum -a 256 dist/windows/Klimacontrol-Windows-<Version>-Setup.exe` gegen die Meldung prüfen; `git status` sauber.
+8. `python3 tools/make_release.py` erzeugt `releases/v<Version>/`; `RELEASE_NOTES.md` und `updateinfo-*.xml` ansehen.
+
+Ab hier nur auf ausdrückliches Kommando des Autors (veröffentlicht):
+
+9. `git push -u origin entwicklung-<x.y>`
+10. `gh pr create --repo mlafx/Klimacontrol --base main --head entwicklung-<x.y> --title "Klimacontrol <Version>"`, dann
+    `gh pr merge <Nr> --repo mlafx/Klimacontrol --merge` (Merge-Commit, kein Squash, kein Rebase; ohne KI-Hinweis).
+11. `git fetch origin && git tag -a v<Version> -m "Klimacontrol <Version>" origin/main && git push origin v<Version>`
+    (Tag auf den Merge-Commit; `gh release create` nimmt den vorhandenen Tag).
+12. `python3 tools/make_release.py --publish` baut den Ordner neu (der alte wird zu `…alt-<Zeit>`), legt das Release als „latest“
+    an und hängt die Beta-Datei an das Vorabrelease „beta“.
+13. `python3 tools/make_release.py --check-published` (D3/8).
+14. Installierte Vorversionen auf Mac und Windows beobachten (Update kommt an); Mac-Sperre frei, `erledigt` in den Briefkasten.
+
+Notbremse: `python3 tools/make_release.py --rollback v<Version> v<vorige>` zeigt die zwei `gh release edit`-Befehle, mit
+`--execute` werden sie ausgeführt (D4). Die Korrektur kommt als nächste Fehlerbehebungs-Version; nichts löschen, keine Tags verschieben.
+
+Beta (nur Mac): wie oben mit `tools/build_app.sh --beta <n>` und `make_release.py --beta <n>`; Tag `v<Version>b<n>`, kein Pull Request
+nach `main`, das Vorabrelease zeigt auf den Entwicklungszweig.
 
 ---
 
