@@ -736,6 +736,8 @@ sonst nichts: maximiert, gekachelt und Vollbild werden nicht verändert). Passen
 Bildschirm, bleibt nur die zuletzt geöffnete Spalte (mit Ansage). Im Vollbild sind Verlauf und Diagnose eingeblendet
 (vorher gespeicherter Zustand kehrt beim Verlassen zurück), „Immer im Vordergrund“ ist dort ausgesetzt, der
 Fensterhintergrund ist deckend. `ControlStack` bleibt unverändert (auch im Menüleisten-Fenster).
+Die Diagnose-Spalte erscheint nur mit einem Zustand der Anlage (`hasState`); ohne Verbindung (z. B. Test ohne Anlage) fehlt
+sie, das ist kein Fehler. Während des Ziehens an der Fenstergröße bleibt die Fläche der Graphen eingefroren (9.3).
 
 ### 9.2 Tastenkürzel
 
@@ -820,6 +822,9 @@ nach einem neuen Build nicht erneut nach Freigaben (Netzwerk, Schlüsselbund); a
   WinSparkle-Dialog in der Sprache der App (`win_sparkle_set_lang`).
 - Bedienung: Einstellungen → Allgemein → „Updates“ (Version, „Jetzt suchen …“, Status) und Menü Klimacontrol → „Nach
   Updates suchen …“. Kein Schalter. Ohne Bundle (`swift run`) ist Sparkle aus.
+- **Rückmeldung nach manueller Suche:** Mac zeigt einen `NSAlert` („aktuell“ bzw. „hat nicht geklappt“) nur bei einer vom
+  Nutzer ausgelösten Suche (`userInitiated`); Hintergrundsuchen bleiben still. Windows zeigt das über die
+  WinSparkle-Oberfläche (`win_sparkle_check_update_with_ui`).
 - Die App wird außerhalb von OneDrive zusammengesetzt und signiert: OneDrive hängt Dateiattribute an (codesign
   scheitert) und zerlegt Framework-Symlinks (Konfliktkopien wie „Sparkle 2.framework“). Nach `dist/mac` kommen nur
   DMG, ZIP und Texte.
@@ -1198,7 +1203,7 @@ Region, Mac „Jetzt neu starten · Später“.
 1. Mac: vorige Fassung (originales DMG) → neue Fassung. Update-Adresse nur zum Test umleiten
    (`defaults write de.mlafx.klimacontrol SUFeedURL …`, danach `defaults delete de.mlafx.klimacontrol SUFeedURL`),
    lokale, echt signierte Update-Datei. Prüfen: still installiert, Neustart, „Neu in …“, Einstellungen erhalten, keine
-   neuen Rückfragen.
+   neuen Rückfragen. Ablauf: „Mac-Update-Prüfung Schritt für Schritt“ unten.
 2. Windows: vorige Fassung → neue Fassung (1.1.0.0 → 1.2.0.0 über WinSparkle-Schalter, später über den Test-Feed): kein Sprachdialog im Setup, gleicher Ordner, kein zweiter
    Uninstall-Eintrag, Autostart unverändert.
 3. Neue Fassung → Probe-Fassung (nächste Bau-Nummer): „Jetzt neu starten · Später“; eine unsignierte Update-Datei wird
@@ -1212,6 +1217,29 @@ Region, Mac „Jetzt neu starten · Später“.
    Signaturen gültig (läuft automatisch in `verify_release_dir()` und vor `--publish` als Plan-Prüfung).
 8. Nach dem Veröffentlichen: beide `latest/download`-Adressen liefern HTTP 200, die neue Version und eine gültige
    Signatur: `python3 tools/make_release.py --check-published [<Version>]` (liest nur, braucht den Schlüssel).
+
+**Befund 1.0.x:** Mac 1.0.x liest `appcast-mac.xml`, Windows 1.0.x `appcast-windows.xml`. Fehlten diese Dateien am
+„latest“-Release, bekamen 1.0.x-Installationen kein Update (404). Darum legt `make_release.py` die byte-gleichen Kopien an
+(D1), und `--check-published` prüft sie.
+
+**Mac-Update-Prüfung Schritt für Schritt** (D3/1 und D3/3):
+
+1. Vorher `defaults export de.mlafx.klimacontrol <Datei>` (Testinstanzen teilen die UserDefaults-Domäne mit der
+   installierten App). Die installierte App beendet nur der Nutzer selbst; ein Beenden per `osascript` lehnt der
+   Auto-Modus ab.
+2. Originales DMG der Vorversion installieren (Programme-Ordner).
+3. `python3 tools/update_test_feed.py --dmg <neues DMG> --serve [--key-file <Datei>]` (Optionen im Skriptkopf): lokale,
+   echt signierte Update-Datei auf `http://127.0.0.1:<port>/`. Für D3/3 mit `--version <Probe>`, zusätzlich mit
+   `--unsigned` (muss abgelehnt werden).
+4. Umleitung: Fassungen unter 1.2: `defaults write de.mlafx.klimacontrol SUFeedURL http://127.0.0.1:<port>/updateinfo-mac.xml`.
+   Ab 1.2.0.0: App mit `open --env KLIMACONTROL_UPDATE_TEST_FEED=http://127.0.0.1:<port>/updateinfo-mac.xml <App>` starten.
+5. `defaults delete de.mlafx.klimacontrol SULastCheckTime`, damit sofort gesucht wird; Suche mit „Nach Updates suchen …“
+   (per UI-Scripting auslösbar). Das Hinweisfenster per Fenster-ID fotografieren (`screencapture -l <ID>`).
+6. Prüfen: still geladen, Neustart (ab 1.2.0.0 „Jetzt neu starten · Später“), „Neu in …“, Einstellungen erhalten, keine
+   neuen Rückfragen.
+7. Aufräumen: `defaults delete de.mlafx.klimacontrol SUFeedURL`, ggf. `SUInitialFailedFeedSigningValidationDate` löschen,
+   `lastSeenVersion` prüfen, Server stoppen, Testdateien (`~/Library/Caches/Klimacontrol-update-test/`) in den
+   Papierkorb, Einstellungen mit `defaults import` zurückspielen.
 
 **D4 – Notbremse:** Release auf „Vorabrelease“ stellen und `gh release edit v<vorige Version> --latest`; die Korrektur
 kommt als nächste Fehlerbehebungs-Version (z. B. `1.2.0.1`). `python3 tools/make_release.py --rollback <kaputt> <vorige>`
@@ -1284,6 +1312,18 @@ Beispiel:
 - „Nur Cloud“ setzt ein angemeldetes Midea-Konto voraus.
 - Mac: Die Einstellung „Größe“ skaliert auch Knöpfe und Regler.
 ```
+
+### 14.3a QA-Checkliste für Oberflächen-Releases
+
+Vor dem Bau am fertigen Bündel prüfen (Anlage nur lesen, 5):
+
+- Start mit „Neu in …“ (nach Update oder bei zurückgesetztem `lastSeenVersion`).
+- Hauptfenster: kleinste und größte Größe, alle Spaltenkombinationen, Vollbild hinein und heraus, Zoom.
+- Themen Standard und Kontrast, je hell und dunkel; alle drei Größen; Umfang Einfach und Alles.
+- Alle Einstellungsreiter, Menüleiste, Mini-Fenster.
+- Englisch (`-AppleLanguages '(en)'`) und Pseudo-Sprache (`KLIMACONTROL_PSEUDO=1`): nichts abgeschnitten oder unübersetzt.
+- Grafikspeicher beim Größenändern und Umschalten der Spalten (`footprint <PID>`), keine Dauerspitzen.
+- Vorher UserDefaults sichern (`defaults export`), nachher zurückspielen.
 
 ### 14.4 Release Schritt für Schritt
 
@@ -1376,6 +1416,8 @@ Gruppe/Byte in `Diagnostics` und `Response` lesen, in `HistorySample`/CSV-Kopf n
   gemessen. Heute wird 0xF als Protokollfehler gewertet, nicht als Ablehnung; ändern erst nach einem Mitschnitt.
 - Unbekannte Werte der Anlage: Anhang D.
 
+- Das Windows-Hauptfenster ist bereits in der Größe veränderbar; die Regeln des Mac-Fensters (9.1, `MainWindowLayout`)
+  werden für 1.3 angeglichen.
 - Windows: Die Einstellungen in `%LOCALAPPDATA%\Klimacontrol.exe.plist` liest swift-corelibs-foundation; ist die Datei
   kaputt oder von einem anderen Werkzeug umgeschrieben, gelten still alle Standardwerte (seit 1.0 so). Die Datei nur als
   Text ändern, nie mit einer XML-Bibliothek neu schreiben. Robusteres Lesen ist für später vorgemerkt.

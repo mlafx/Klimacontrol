@@ -1,14 +1,21 @@
 # Prueft eine Setup-Installation von Klimacontrol vor und nach einem Update (D3/2). Nur lesend: schreibt nichts
 # ausser der Ergebnisdatei %LOCALAPPDATA%\Klimacontrol-D3\<Name>.json. Fasst %LOCALAPPDATA%\Klimacontrol (Daten,
 # Zugangsdaten) nicht an und liest keine Geheimnisse.
-#   -Snapshot <Name>        Zustand festhalten (Uninstall-Eintrag, Autostart, WinSparkle-Werte, Programmordner, Verknuepfungen)
+# Die Kern-Einstellungen (%LOCALAPPDATA%\Klimacontrol.exe.plist) werden nur gelesen: festgehalten werden die
+# Schluesselnamen und, als einzige Werte, language und lastSeenVersion.
+#   -Snapshot <Name>        Zustand festhalten (Uninstall-Eintrag, Autostart, WinSparkle-Werte, Programmordner, Verknuepfungen, plist)
 #   -Compare <A> <B>        zwei Zustaende vergleichen und die Bedingungen von D3/2 pruefen
+#   -OutDir <Ordner>        Ausgabeordner statt %LOCALAPPDATA%\Klimacontrol-D3 (fuer Proben)
+#   -PlistPath <Datei>      plist statt %LOCALAPPDATA%\Klimacontrol.exe.plist (fuer Proben)
 # Nur ASCII (Windows PowerShell 5.1).
-param([string]$Snapshot, [string[]]$Compare)
+param([string]$Snapshot, [string[]]$Compare, [string]$OutDir, [string]$PlistPath)
 
 $ErrorActionPreference = "Stop"
 $appId = "{1EAA2BD1-F86E-420F-A62C-4057C87B34F8}_is1"
 $dir = Join-Path $env:LOCALAPPDATA "Klimacontrol-D3"
+if ($OutDir) { $dir = $OutDir }
+$plist = Join-Path $env:LOCALAPPDATA "Klimacontrol.exe.plist"
+if ($PlistPath) { $plist = $PlistPath }
 $progDir = Join-Path $env:LOCALAPPDATA "Programs\Klimacontrol"
 
 function Read-Values($path) {
@@ -17,6 +24,32 @@ function Read-Values($path) {
     $k = Get-Item $path
     foreach ($n in $k.GetValueNames()) { $o[$n] = [string]$k.GetValue($n) }
     return $o
+}
+
+# Nur Schluesselnamen (oberste Ebene) sowie language und lastSeenVersion; sonst keine Werte.
+function Read-Plist($path) {
+    $r = [ordered]@{ Exists = (Test-Path $path); Keys = @(); Language = $null; LastSeenVersion = $null; Error = $null }
+    if (-not $r.Exists) { return $r }
+    try {
+        $x = New-Object System.Xml.XmlDocument
+        $x.XmlResolver = $null
+        $x.Load($path)
+        $top = $x.SelectSingleNode("/plist/dict")
+        if ($null -eq $top) { throw "kein plist/dict" }
+        $keys = @()
+        foreach ($n in $top.ChildNodes) {
+            if ($n.NodeType -ne [System.Xml.XmlNodeType]::Element -or $n.Name -ne "key") { continue }
+            $keys += [string]$n.InnerText
+            $v = $n.NextSibling
+            while ($null -ne $v -and $v.NodeType -ne [System.Xml.XmlNodeType]::Element) { $v = $v.NextSibling }
+            if ($null -ne $v -and $n.InnerText -eq "language") { $r.Language = [string]$v.InnerText }
+            if ($null -ne $v -and $n.InnerText -eq "lastSeenVersion") { $r.LastSeenVersion = [string]$v.InnerText }
+        }
+        $r.Keys = @($keys | Sort-Object -Unique)
+    } catch {
+        $r.Error = "plist nicht lesbar: " + $_.Exception.Message
+    }
+    return $r
 }
 
 function Get-State {
@@ -52,6 +85,7 @@ function Get-State {
     }
     $startMenu = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\Klimacontrol.lnk"
     $desktop = Join-Path ([Environment]::GetFolderPath("DesktopDirectory")) "Klimacontrol.lnk"
+    $pl = Read-Plist $plist
     return [ordered]@{
         Created = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
         UninstallEntryCount = $entries.Count
@@ -62,6 +96,11 @@ function Get-State {
         Files = $files
         StartMenuShortcut = (Test-Path $startMenu)
         DesktopShortcut = (Test-Path $desktop)
+        PlistExists = $pl.Exists
+        PlistKeys = $pl.Keys
+        PlistLanguage = $pl.Language
+        PlistLastSeenVersion = $pl.LastSeenVersion
+        PlistError = $pl.Error
     }
 }
 
@@ -76,10 +115,11 @@ if ($Snapshot) {
     New-Item -ItemType Directory -Force $dir | Out-Null
     $out = Join-Path $dir "$Snapshot.json"
     if (Test-Path $out) { Write-Host "Abbruch: $out gibt es schon (anderen Namen waehlen)"; exit 1 }
-    $json = (Get-State) | ConvertTo-Json -Depth 6
+    $state = Get-State
+    $json = $state | ConvertTo-Json -Depth 6
     [IO.File]::WriteAllText($out, $json, (New-Object Text.UTF8Encoding $false))
     Write-Host "Zustand gespeichert: $out"
-    Write-Host "Uninstall-Eintraege: $((Get-State).UninstallEntryCount)"
+    Write-Host "Uninstall-Eintraege: $($state.UninstallEntryCount)"
     exit 0
 }
 
@@ -117,6 +157,27 @@ if ($Compare -and $Compare.Count -eq 2) {
     foreach ($p in ($fa.Keys | Sort-Object)) {
         if (-not $fb.ContainsKey($p)) { Write-Host "ENTFALLEN $p" }
     }
+    function Has($o, $n) { return ($null -ne $o.PSObject.Properties[$n]) }
+    function Show($o, $n) {
+        if (-not (Has $o $n)) { return "unbekannt" }
+        $v = $o.$n
+        if ($null -eq $v -or "$v" -eq "") { return "(leer)" }
+        return "$v"
+    }
+    Write-Host "INFO    plist vorhanden: $(Show $a 'PlistExists') -> $(Show $b 'PlistExists')"
+    if ((Has $a 'PlistError') -and $a.PlistError) { Write-Host "INFO    plist vorher: $($a.PlistError)" }
+    if ((Has $b 'PlistError') -and $b.PlistError) { Write-Host "INFO    plist nachher: $($b.PlistError)" }
+    if ((Has $a 'PlistKeys') -and (Has $b 'PlistKeys')) {
+        $ka = @($a.PlistKeys); $kb = @($b.PlistKeys)
+        $onlyA = @($ka | Where-Object { $kb -notcontains $_ })
+        $onlyB = @($kb | Where-Object { $ka -notcontains $_ })
+        Write-Host "INFO    plist-Schluessel nur vorher: $(if ($onlyA.Count) { $onlyA -join ', ' } else { '(keine)' })"
+        Write-Host "INFO    plist-Schluessel nur nachher: $(if ($onlyB.Count) { $onlyB -join ', ' } else { '(keine)' })"
+    } else {
+        Write-Host "INFO    plist-Schluessel: unbekannt (aelterer Snapshot)"
+    }
+    Write-Host "INFO    language: $(Show $a 'PlistLanguage') -> $(Show $b 'PlistLanguage')"
+    Write-Host "INFO    lastSeenVersion: $(Show $a 'PlistLastSeenVersion') -> $(Show $b 'PlistLastSeenVersion')"
     Check (@($b.Files).Count -gt 0) "Programmordner nachher nicht leer ($(@($b.Files).Count) Dateien)"
     if ($bad -gt 0) { Write-Host "$bad Bedingung(en) verletzt"; exit 1 }
     Write-Host "Alle Bedingungen erfuellt"
