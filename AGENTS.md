@@ -74,10 +74,10 @@ gehören in den Kern, damit Mac und Windows sich gleich verhalten. Die Mac-App s
 | C-Schnittstelle des Kerns | `Sources/KlimacontrolBridge/` | Swift, überall übersetzt, DLL nur Windows |
 | SQLite-Amalgamation (Verlauf unter Windows/Linux) | `Sources/CSQLite/` | C, **nicht ändern** (Herkunft in `Sources/CSQLite/README.md`) |
 | Windows-App + Tests | `windows/KlimacontrolTray/`, `windows/KlimacontrolTray.Tests/` | C# / .NET 10 / WPF |
-| Swift-Tests | `Tests/MideaKitTests/`, `Tests/KlimacontrolCoreTests/` | XCTest |
+| Swift-Tests | `Tests/MideaKitTests/`, `Tests/KlimacontrolCoreTests/` | XCTest; gemeinsame Daten für Swift und C# in `Tests/Shared/` (Rundungstabelle) |
 | Bau- und Hilfsskripte, `VERSION`, App-Symbol | `tools/` | zsh, PowerShell, Python, Swift |
 | Text-Katalog (Deutsch, Englisch), daraus `StringsData.swift` | `l10n/Localizable.xcstrings` | JSON (String Catalog), alle Plattformen |
-| Versionshinweise, Sicherheitshinweise | `CHANGELOG.md`, `CHANGELOG.en.md` (in Arbeit), `SECURITY.md` | Markdown |
+| Versionshinweise, Sicherheitshinweise | `CHANGELOG.md`, `CHANGELOG.en.md`, `SECURITY.md` | Markdown |
 | Lizenzhinweise, Screenshots fürs README | `docs/THIRD_PARTY_NOTICES.md`, `docs/screenshots/` | – |
 | Bauausgaben | `dist/mac/`, `dist/windows/` (gitignoriert) | – |
 | Private Unterlagen | `_privat/` (gitignoriert, nie committen) | – |
@@ -156,7 +156,7 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 | `LoginItemDefault.swift` | Regel „Beim Anmelden starten“ als Standard: einmalig beim ersten Start aus einem Programme-Ordner (auch nach Updates), nie aus DMG/Build-Ordner |
 | `ReleaseNotes.swift`, `ReleaseNotesData.swift`, `ACController+WhatsNew.swift` | „Neu in dieser Version“: eingebetteter CHANGELOG (`ReleaseNotesData.swift`, erzeugt von `tools/sync_release_notes.py`), Zerlegen und Plattformfilter, Regel `WhatsNew.pending`, Merker `lastSeenVersion`; deutsch und englisch (`CHANGELOG.en.md`, Rückfall deutsch mit Hinweis) |
 | `AppUpdate.swift` | Updates: Repository, Appcast-Adressen für Mac und Windows, Standard-Suchintervall (täglich) |
-| `Localizer.swift` | Sprache des Prozesses (`AppLanguage`, `LanguageChoice`), einmal festgelegt; Texte, Platzhalter, Mehrzahl, Rückfall Englisch, Pseudo-Sprache, Test-Haken; `text(_:language:)` holt einen Text in einer bestimmten Sprache (Protokollzeilen deutsch, CSV-Import beider Sprachen) |
+| `Localizer.swift` | Sprache des Prozesses (`AppLanguage`, `LanguageChoice`), einmal festgelegt; Texte, Platzhalter, Mehrzahl, Rückfall Englisch, Pseudo-Sprache, Test-Haken; `text(_:language:)` holt einen Text in einer bestimmten Sprache (CSV-Import beider Sprachen, Test-Haken); Protokollzeilen folgen der Sprache der Oberfläche |
 | `DisplayNames.swift` | Anzeigenamen für Typen aus MideaKit (Modus, Lüfter, Weg, Szene; Datumswörter `DateWords`), damit die Typen in MideaKit für Datenbank und CSV stabil deutsch bleiben (`title`/`fanTitle`/`summaryText` statt `label`/`summary`) |
 | `StringsData.swift` | erzeugt von `tools/sync_strings.py`: eingebetteter Katalog und typisierte Schlüssel `L.…` – nicht von Hand ändern |
 | `FormatProfile.swift` | Zahlen- und Zeitformate (Dezimal-/Tausenderzeichen, 12/24 h, Tag/Monat) aus den Regionseinstellungen; Standard de-DE |
@@ -203,6 +203,7 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 | `BridgeCommands.swift` | Befehlstabelle (`.device` braucht eine eingerichtete Anlage, `.always` nicht), gruppiert wie 8.3 |
 | `BridgeArgs.swift` | Parameter (`JSONValue`, `CommandArgs`, strenge Typen), Meldungen |
 | `BridgeJobs.swift` | lange Aufträge (`BridgeJob`: Zähler und Ergebnis, z. B. `loginSeq`/`exportSeq`) |
+| `BridgeDisplay.swift` | Anzeige-Katalog im Schnappschuss: `options`, `availability`, fertige Anzeigetexte aus dem Kern |
 | `BridgeEnergy.swift` | `kc_energy_json`: Verbrauch je Zeitraum mit fertigen Texten |
 | `WindowsTimeZone.swift` | nur Windows: setzt in `kc_init` die Standardzone aus der Windows-Zone (über ICU), weil `TimeZone.current` dort GMT liefert |
 
@@ -213,6 +214,9 @@ Vertrag in Abschnitt 8.
 | Pfad | Inhalt |
 |---|---|
 | `KlimacontrolTray/Native.cs` | P/Invoke auf `res\KlimacontrolBridge.dll`, `ExpectedApi` |
+| `KlimacontrolTray/Localization.cs` | `L`: Texte der Oberfläche aus dem Katalog des Kerns (`kc_strings_json`), `{l:T …}` in XAML |
+| `KlimacontrolTray/Formats.cs` | C#-Spiegel von `FormatProfile`: Zahlen, Uhrzeit, Datum nach den Regionseinstellungen, Rundung wie Swift (`Tests/Shared/rounding-table.json`) |
+| `KlimacontrolTray/StartupText.cs` | Texte vor dem Laden des Katalogs (Startfehler), je Text Deutsch/Englisch nach der Anzeigesprache von Windows |
 | `KlimacontrolTray/Core.cs` | Brücken-Hülle: Start, Pumpe (`kc_pump` ~30 ms), Prüfung `kc_api_version`, Befehle |
 | `KlimacontrolTray/Model.cs` | C#-Abbild des JSON-Schnappschusses (inkl. `options`/`availability` des Anzeige-Katalogs) |
 | `KlimacontrolTray/BridgeCommands.cs` | `Cmd`: alle Befehlsnamen als Konstanten (gegen die Bridge geprüft) |
@@ -227,7 +231,7 @@ Vertrag in Abschnitt 8.
 | `KlimacontrolTray/Updates.cs` | WinSparkle (Updates): Feed und Intervall aus dem Kern, Schlüssel aus `tools/UPDATE_PUBLIC_KEY`, nur bei Setup-Installation aktiv |
 | `KlimacontrolTray/Klimacontrol.ico` | Programmsymbol (aus `tools/AppIcon.icns`, `tools/make_ico.ps1`) |
 | `installer/Klimacontrol.iss` | Setup (Inno Setup 6): ohne Administratorrechte nach `%LOCALAPPDATA%\Programs\Klimacontrol`, Startmenü und Desktop |
-| `KlimacontrolTray.Tests/` | `CoreTests`, `LayoutTests`, `ThemeTests`, `VertragTests` + `Vertrag/bridge-muster.json` |
+| `KlimacontrolTray.Tests/` | `CoreTests`, `LayoutTests`, `ThemeTests`, `AppearanceTextTests`, `LocalizationTests`, `VertragTests` + `Vertrag/bridge-muster.json` |
 
 ### 2.6 `tools/`
 
@@ -238,8 +242,9 @@ Vertrag in Abschnitt 8.
 | `build_app.sh` | Mac-App universal bauen, Sparkle einbetten, signieren, optional notarisieren, DMG + ZIP; `--no-test`, `--beta <n>` (Version `<VERSION>b<n>`), `--out <Ordner>` (Probebau statt `dist/mac`); schreibt die zweisprachigen `InfoPlist.strings` (`de.lproj`/`en.lproj`) und `CFBundleLocalizations` |
 | `make_release.py` | Release-Ordner `releases/v<Version>/` bzw. Beta `releases/v<Version>b<n>/` (`--beta <n>`): Pakete, Update-Dateien (`updateinfo-mac.xml`, `-win.xml`, `-mac-beta.xml`, als letzter Schritt mit dem Update-Schlüssel signiert und geprüft), Prüfsummen, Release-Text (deutsch und englisch); `--publish` legt das GitHub-Release an, `--check-published` prüft die veröffentlichten Adressen (liest nur), `--rollback <kaputt> <vorige> [--execute]` ist die Notbremse |
 | `test_make_release.py` | Selbsttest für `make_release.py` mit Probedateien und nachgebildetem `sign_update` (`python3 -I tools/test_make_release.py`; läuft auch in `ReleaseScriptTests`) |
-| `update_test_feed.py` | lokale, signierte Update-Datei zum Prüfen der Updates vor dem Release (Abschnitt 14.1) |
+| `update_test_feed.py` | lokale, signierte Update-Datei zum Prüfen der Updates vor dem Release (Abschnitt 14.1); `--serve-only <Ordner>` liefert einen vorhandenen Ordner nur aus |
 | `UPDATE_PUBLIC_KEY` | öffentlicher EdDSA-Schlüssel der Updates (Mac: Info.plist, Windows: WinSparkle) |
+| `check_windows_upgrade.ps1` | Windows, nur lesend: Zustand einer Setup-Installation vor und nach einem Update festhalten und vergleichen (D3/2); **nur ASCII** |
 | `build_windows.ps1` | Windows: Swift-Kern + DLL + WPF-App bauen, alle Tests, optional ZIP, Setup, Installation; **nur ASCII** (PowerShell 5.1) |
 | `make_ico.ps1` | Windows-Programmsymbol `Klimacontrol.ico` aus `AppIcon.icns` erzeugen |
 | `make_vectors.py` | Testvektoren aus msmart-ng erzeugen |
@@ -248,7 +253,7 @@ Vertrag in Abschnitt 8.
 | `make_dmg.sh`, `dmg_settings.py`, `make_dmg_background.swift` | Installations-DMG (`build_app.sh` ruft `make_dmg.sh`): Hintergrund mit Titel, Anleitung und Pfeil zeichnen, Finder-Ansicht mit **dmgbuild** schreiben; `dmg_requirements.txt` legt Versionen und Prüfsummen fest (pip `--require-hashes`) |
 | `check_traces.py` | Spurensuche im fertigen Paket (Benutzer-, Rechnernamen, Pfade), von `build_app.sh` aufgerufen |
 | `sync_strings.py` | prüft `l10n/Localizable.xcstrings`, schreibt ihn sortiert zurück und erzeugt `StringsData.swift`; `--check`, `--add` (einfachen Text anlegen), `--merge-parts` (Katalog-Teile zusammenführen, siehe 13.2) |
-| `sync_release_notes.py` | bettet `CHANGELOG.md` (und `CHANGELOG.en.md`, falls vorhanden) in `ReleaseNotesData.swift` ein |
+| `sync_release_notes.py` | bettet `CHANGELOG.md` (und `CHANGELOG.en.md`, falls vorhanden) in `ReleaseNotesData.swift` ein; `--check` vergleicht nur (`test.sh` und `build_app.sh` brechen bei veraltetem Stand ab, ebenso bei `sync_strings.py --check`) |
 
 ---
 
@@ -857,14 +862,15 @@ MideaKit-Tests als am Mac (zuletzt 125 statt 132), weil einige nur auf Darwin ü
 | Ziel | Dateien (Auswahl) |
 |---|---|
 | `MideaKitTests` | `TestSupport` (Vektoren, `Locked`, `TestClock`, `TestFrames`, `FakeTransport`), `MideaKitTests` (Rahmen, Antworten), `TransportTests` (Wegwahl, Sperren), `PortaSplitDeviceTests` (Gerät mit Fake-Transport), `CloudTests`, `RobustnessTests` (kaputte Rahmen), `PlatformTests` (Krypto-Vektoren, Schlüsselbund), `ConcurrencyTests`, `LANLoopbackTests` (echter TCP-Weg gegen 127.0.0.1, nur Darwin), `TestIsolationTests`, `vectors.json` |
-| `KlimacontrolCoreTests` | `TestSupport` (`CoreTestCase`, `FakeDevice`, `SpyPlatform`, `MemorySettings`, `waitUntil`, `AsyncGate`), `KlimacontrolCoreTests`, `ControllerTests`, `HistoryTests` (Spalten, Kopfzeilen wörtlich, Rundläufe), `LogTextTests` (Schlüssel und deutscher Text in MideaKit gegen den Katalog, Übersetzer), `DisplayCatalogTests` (Anzeige-Katalog wörtlich), `ACControllerUITests`, `SetupTests`, `SetupFlowTests`, `TimerEnergyTests`, `EnergyPeriodTests` (Verbrauch je Zeitraum, Sommerzeit, Zählerwechsel), `AppearanceTests`, `VersionTests` (CHANGELOG-Kopf = `tools/VERSION`), `ThirdPartyNoticesTests` (Swift-Texte = `docs/THIRD_PARTY_NOTICES.md`), `AppUpdateTests` (Feed, Intervall und Schlüssel passen zu `build_app.sh`), `ReleaseProtectionTests` (D1-Werte wörtlich, Abschnitt 14.1), `ReleaseScriptTests` (startet `tools/test_make_release.py`, nur Mac), `LocalizerTests`, `StringsCatalogTests`, `FormatProfileTests`, `AppVersionTests`, `ChangelogParityTests`, `SettingsLocaleTests`, `DisplayNamesTests`, `AppLanguageTests`, `HistoryLanguageTests`, englische Teststände je Bereich (`MessageEnglishTests`, `PromptEnglishTests`, `OptionsEnglishTests`, `StatusEnglishTests`, `SetupEnglishTests`), `EnglishLeakTests` (kein Deutsch im englischen Katalog und in allen gesammelten Anzeigetexten, Pseudo-Sprache findet Texte am Katalog vorbei, Protokollzeilen bleiben deutsch), `AppSourceTextsTests` (kein deutscher Text in `Sources/KlimacontrolApp`) |
+| `KlimacontrolCoreTests` | `TestSupport` (`CoreTestCase`, `FakeDevice`, `SpyPlatform`, `MemorySettings`, `waitUntil`, `AsyncGate`), `KlimacontrolCoreTests`, `ControllerTests`, `HistoryTests` (Spalten, Kopfzeilen wörtlich, Rundläufe), `LogTextTests` (Schlüssel und deutscher Text in MideaKit gegen den Katalog, Übersetzer), `DisplayCatalogTests` (Anzeige-Katalog wörtlich), `ACControllerUITests`, `SetupTests`, `SetupFlowTests`, `TimerEnergyTests`, `EnergyPeriodTests` (Verbrauch je Zeitraum, Sommerzeit, Zählerwechsel), `AppearanceTests`, `VersionTests` (CHANGELOG-Kopf = `tools/VERSION`), `ThirdPartyNoticesTests` (Swift-Texte = `docs/THIRD_PARTY_NOTICES.md`), `AppUpdateTests` (Feed, Intervall und Schlüssel passen zu `build_app.sh`), `ReleaseProtectionTests` (D1-Werte wörtlich, Abschnitt 14.1), `ReleaseScriptTests` (startet `tools/test_make_release.py`, nur Mac), `LocalizerTests`, `StringsCatalogTests`, `FormatProfileTests` (liest `Tests/Shared/rounding-table.json`), `AppVersionTests`, `ChangelogParityTests`, `SettingsLocaleTests`, `DisplayNamesTests`, `AppLanguageTests`, `HistoryLanguageTests`, englische Teststände je Bereich (`MessageEnglishTests`, `PromptEnglishTests`, `OptionsEnglishTests`, `StatusEnglishTests`, `SetupEnglishTests`), `EnglishLeakTests` (kein Deutsch im englischen Katalog und in allen gesammelten Anzeigetexten, Pseudo-Sprache findet Texte am Katalog vorbei, Protokollzeilen folgen der Sprache der Oberfläche), `AppSourceTextsTests` (kein deutscher Text in `Sources/KlimacontrolApp`) |
 | `KlimacontrolBridgeTests` | `BridgeDisplayTests` (Katalog-Felder), `BridgeContractTests`: jedes Feld des echten Schnappschusses steht in `bridge-muster.json` (Gegenrichtung zu `VertragTests`); `BridgeCommandTests`: Parametertypen, Meldungen, Befehlsnamen gegen `Cmd` in C#; `BridgeEnergyTests` (`kc_energy_json`), `BridgeLocaleTests` (`kc_set_locale`, `kc_strings_json`, Befehle `language`/`currency`), `BridgeEnglishTests`, `BridgeWhatsNewTests` |
-| Windows (C#) | `CoreTests`, `LayoutTests`, `ThemeTests`, `AppearanceTextTests` (Darstellung wie am Mac), `VertragTests` (Schnappschuss, Befehlsnamen, Anzeige-Katalog, keine eigenen Listen/Grenzen in der Oberfläche) |
+| Windows (C#) | `CoreTests`, `LayoutTests`, `ThemeTests`, `AppearanceTextTests` (Darstellung wie am Mac), `LocalizationTests` (Textschlüssel und Katalog), `VertragTests` (Schnappschuss, Befehlsnamen, Anzeige-Katalog, keine eigenen Listen/Grenzen in der Oberfläche) |
 
-Stand zuletzt: Mac 547 Tests (MideaKit 132, Kern 374, Bridge 41; 5 übersprungen, davon 2 bewusst: Live-Scan, echter
-Schlüsselbund, dazu der Rundlauf-Test zur Sommerzeit in Zonen ohne Sommerzeit; Rest: englischer CHANGELOG, der erst ab 1.2.0.0 existiert), Windows zuletzt 382 Swift + 146 C#
-(MideaKit 125, Kern 229, Bridge 28 mit `WindowsTimeZoneTests`; Windows noch nicht neu gezählt). Zeitzonen-Tests nehmen eine feste Zone
-(`TimeZone(identifier:)`) oder die Ortszeit über `Calendar.current.timeZone`.
+Stand zuletzt: Mac 558 Tests (MideaKit 136, Kern 381, Bridge 41; 2 übersprungen, beide bewusst: Live-Scan, echter
+Schlüsselbund). Windows zuletzt 382 Swift + 146 C# (MideaKit 125, Kern 229, Bridge 28 mit `WindowsTimeZoneTests`;
+Windows noch nicht neu gezählt). Zeitzonen-Tests nehmen eine feste Zone (`TimeZone(identifier:)`) oder die Ortszeit über
+`Calendar.current.timeZone`. Die Rundungstabelle `Tests/Shared/rounding-table.json` liest Swift (`#filePath`, keine
+Ressource) und C# gemeinsam.
 
 ### 11.2 Isolation – Tests fassen nichts Echtes an
 
