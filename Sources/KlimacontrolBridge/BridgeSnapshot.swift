@@ -213,6 +213,7 @@ struct Snapshot: Encodable {
     var noticeDetail: MessageDTO? = nil
     /// Die Darstellung entspricht dem Standard dieser Plattform („Auf Standard zurücksetzen“ ausgegraut).
     var appearanceIsStandard = true
+    var appearanceCustomized = false
     var onTimerChip: String? = nil
     /// Rückfrage beim Beenden, solange ein App-Timer gestellt ist (nil = ohne Rückfrage beenden).
     var quitPrompt: PromptDTO? = nil

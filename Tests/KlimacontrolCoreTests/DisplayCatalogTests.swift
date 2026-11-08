@@ -465,6 +465,25 @@ final class DisplayCatalogTests: CoreTestCase {
         XCTAssertTrue(c.appearanceIsStandard)
     }
 
+    func testAppearanceTabTexts() {
+        XCTAssertEqual(L.Settings.Appearance.Display.section, "Anzeige")
+        XCTAssertEqual(L.Settings.Appearance.WindowMenu.section, "Fenster und Menüleiste")
+        XCTAssertEqual(L.Settings.Appearance.WindowNotify.section, "Fenster und Infobereich")
+        XCTAssertEqual(L.Settings.Appearance.Customize.title, "Anpassen")
+        XCTAssertEqual(L.Settings.Appearance.Theme.customized, "angepasst")
+        XCTAssertEqual(L.Settings.Appearance.Theme.restore, "Thema wiederherstellen")
+        XCTAssertEqual(L.Settings.Appearance.Theme.selected, "ausgewählt")
+    }
+
+    func testAppearanceIsCustomized() throws {
+        let c = try controller(now: local())
+        XCTAssertFalse(c.appearanceIsCustomized)
+        change(c) { $0.glow = 0.5 }
+        XCTAssertTrue(c.appearanceIsCustomized)
+        c.applyTheme(c.appearance.theme)
+        XCTAssertFalse(c.appearanceIsCustomized)
+    }
+
     // MARK: Meldungen und Rückfragen
 
     func testBackupImportedMessages() {

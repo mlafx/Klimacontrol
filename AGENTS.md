@@ -590,6 +590,10 @@ in `SettingsKey` anlegen, nie als String-Literal in einer Oberfläche.
 - `Appearance.standard` muss **exakt** dem Aussehen vor Einführung des Reiters „Darstellung“ entsprechen.
 - Ein Thema (`preset`/`applying`) setzt nur Aussehens-Werte; Größe, „Groß angezeigt“, Umfang, „Animationen
   reduzieren“, Vordergrund, Menüleisten-Text und animiertes Symbol bleiben erhalten.
+- `Appearance.isCustomized` (`ACController.appearanceIsCustomized`, Schnappschuss-Feld `appearanceCustomized`): ein Aussehens-Wert
+  weicht von `applying(theme)` ab (Regler mit Toleranz); Größe, Groß angezeigt, Umfang, Animationen reduzieren, Vordergrund,
+  Menüleisten-Text und animiertes Symbol zählen nicht. Die Themenkachel trägt dann „angepasst“, „Thema wiederherstellen“
+  ruft `applyTheme` für das gewählte Thema auf.
 - Decoding ist robust: fehlende, unbekannte oder falsch getippte Felder → Standard, Zahlen werden geklemmt, nie ein
   Fehler (eine kaputte Einstellung darf den Start nie verhindern). Tests in `AppearanceTests`.
 - Bewegte Effekte nur, wenn `motionAllowed` (weder „Animationen reduzieren“ noch System-„Bewegung reduzieren“), nur
@@ -675,7 +679,7 @@ gleichen beide ab.
 Bedienregeln (Modus, Eco, Turbo, Ein/Aus, Lüfter-Zonen) setzt die Bridge über die Kern-Funktionen (`setMode`,
 `setEco`, …), nie über `update { … }` mit eigenen Regeln. Fertige Anzeigetexte kommen ebenfalls aus dem Kern
 (`miniValue`, `miniCaption`, `working`, `relocateMessage`, `heroValue`, `heroCaption`, `costLine`, `menuTitle`,
-`staleText`, `noticeDetail` …). Der Schnappschuss trägt außerdem `options` (Listen, Grenzen, feste Rückfragen) und
+`staleText`, `noticeDetail` …). Der Schnappschuss trägt außerdem `appearanceCustomized`, `options` (Listen, Grenzen, feste Rückfragen) und
 `availability` (je Schalter `enabled`/`why`); Rückfragen zu Befehlen kommen über `importResult.text`/`prompt`,
 `setup.completion.prompt`, `quitPrompt`, `whatsNew` (nach einem Update; bestätigen mit Befehl `dismissWhatsNew`) und `options.prompts.forget`/`forgetNeedsBackup` (Auswahl über `forgetNeedsBackup`);
 `options.prompts.cloudNeedsAccount` erklärt, warum „Nur Cloud“ ohne Midea-Konto nicht geht. `options.energy` trägt Arten,
@@ -700,6 +704,10 @@ Schnappschuss mit eigenem Zähler (`loginSeq`, `setupSeq`, `relocateSeq`, `impor
 ## 9. Mac-App
 
 ### 9.1 Fenster und Szenen
+
+Der Reiter „Darstellung“ ist von oben: Vorschau · Thema (fünf Kacheln mit Mini-Vorschau, Hell/Dunkel/System, bei Abweichung
+„Thema wiederherstellen“) · Anzeige (Größe, Groß angezeigt, Umfang) · Fenster und Menüleiste · „Anpassen“ (zugeklappt;
+Farbe, Hintergrund, Transparenz, Unschärfe, Leuchten, Ziffern, Bewegung) · Auf Standard zurücksetzen.
 
 Hauptfenster (Kopf, große Zahl, Bedienung; links Verlauf ⌘G, rechts Diagnose ⌘D, unten Fußzeile mit Verlauf ·
 Aktualisieren/Einstellungen · Diagnose), Menüleiste (`MenuBarExtra` mit Schnellsteuerung), Mini-Fenster

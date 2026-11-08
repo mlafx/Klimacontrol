@@ -216,4 +216,7 @@ extension ACController {
 
     /// Die Darstellung entspricht `Appearance.standard` dieser Plattform („Auf Standard zurücksetzen“ ausgegraut).
     public var appearanceIsStandard: Bool { UIOptions.isStandard(appearance) }
+
+    /// Das Aussehen weicht vom gewählten Thema ab („angepasst“, „Thema wiederherstellen“).
+    public var appearanceIsCustomized: Bool { appearance.isCustomized }
 }

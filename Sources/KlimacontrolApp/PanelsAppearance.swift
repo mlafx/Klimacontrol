@@ -5,99 +5,50 @@ import SwiftUI
 
 // MARK: - Einstellungen → Darstellung
 
-/// Reiter „Darstellung“: Thema, Farben, Hintergrund, große Zahl, Bewegung, Fenster, Menüleiste. Jede Änderung wirkt
+/// Reiter „Darstellung“: Thema (Kacheln), Anzeige, Fenster und Menüleiste; Feinheiten unter „Anpassen“. Jede Änderung wirkt
 /// sofort (Live-Vorschau oben und alle Fenster) und wird dauerhaft gespeichert (`ACController.setAppearance`).
 struct AppearanceSettings: View {
     @Environment(ACController.self) var model
     @Environment(\.openWindow) private var openWindow
     @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
     @State private var confirmReset = false
+    @AppStorage("appearance.customizeOpen") private var customizeOpen = false
 
     var body: some View {
         let a = model.appearance
+        let reduced = !a.motionAllowed(systemReduceMotion: systemReduceMotion)
         Form {
             Section { AppearancePreview() }
 
-            Section(L.Settings.Appearance.Theme.title) {
-                SettingRow(title: L.Settings.Appearance.Theme.title, help: L.Settings.Appearance.Theme.help) {
-                    Picker(L.Settings.Appearance.Theme.title, selection: Binding(get: { a.theme }, set: { model.applyTheme($0) })) {
-                        ForEach(Appearance.Theme.allCases, id: \.self) { Text($0.label).tag($0) }
-                    }
-                    .labelsHidden().fixedSize()
-                }
-            }
-
-            Section(L.Settings.Appearance.Colors.title) {
+            Section {
+                ThemeTiles(selected: a.theme, customized: model.appearanceIsCustomized) { model.applyTheme($0) }
                 SettingRow(title: L.Settings.Appearance.Scheme.title, help: L.Settings.Appearance.Scheme.help(computer: HostWords.current.computer)) {
                     Picker(L.Settings.Appearance.Scheme.title, selection: bind(\.scheme)) {
                         ForEach(Appearance.Scheme.allCases, id: \.self) { Text($0.label).tag($0) }
                     }
                     .pickerStyle(.segmented).labelsHidden().fixedSize()
                 }
-                SettingRow(title: L.Settings.Appearance.Colors.title, help: L.Settings.Appearance.Accent.help) {
-                    Picker(L.Settings.Appearance.Colors.title, selection: bind(\.accent)) {
-                        ForEach(Appearance.Accent.allCases, id: \.self) { Text($0.label).tag($0) }
+                if model.appearanceIsCustomized {
+                    SettingRow(title: L.Settings.Appearance.Theme.restore, help: L.Settings.Appearance.Theme.restoreHelp) {
+                        Button(L.Settings.Appearance.Theme.restore) { model.applyTheme(a.theme) }
                     }
-                    .labelsHidden().fixedSize()
                 }
-                if a.accent == .custom {
-                    SettingRow(title: L.Settings.Appearance.CustomColor.title, help: L.Settings.Appearance.CustomColor.help) { ColorSwatches(selection: bind(\.customColor)) }
-                }
+            } header: {
+                Text(L.Settings.Appearance.Theme.title)
+            } footer: {
+                Text(L.Settings.Appearance.Theme.help).font(.caption).foregroundStyle(.secondary)
             }
 
-            Section(L.Settings.Appearance.Background.title) {
-                SettingRow(title: L.Settings.Appearance.Background.title, help: L.Settings.Appearance.Background.help) {
-                    Picker(L.Settings.Appearance.Background.title, selection: bind(\.background)) {
-                        ForEach(Appearance.Background.allCases, id: \.self) { Text($0.label).tag($0) }
-                    }
-                    .pickerStyle(.segmented).labelsHidden().fixedSize()
-                }
-                PercentSlider(title: L.Settings.Appearance.Transparency.title, help: L.Settings.Appearance.Transparency.help,
-                              value: bind(\.transparency), range: Appearance.transparencyRange)
-                SettingRow(title: L.Settings.Appearance.Blur.title, help: L.Settings.Appearance.Blur.help) {
-                    HStack {
-                        Slider(value: bind(\.blur), in: Appearance.blurRange, step: 1).frame(width: 160)
-                            .accessibilityLabel(L.Settings.Appearance.Blur.title)
-                            .accessibilityValue(L.Settings.Appearance.Accessibility.points(count: Int(a.blur)))
-                        Text(L.Settings.Appearance.Unit.points(value: Fmt.num(a.blur, 0))).monospacedDigit().foregroundStyle(.secondary).frame(width: 44, alignment: .trailing)
-                    }
-                }
-            }
-
-            Section(L.Settings.Appearance.Hero.section) {
-                PercentSlider(title: L.Settings.Appearance.Glow.title, help: L.Settings.Appearance.Glow.help,
-                              value: bind(\.glow), range: Appearance.glowRange)
+            Section(L.Settings.Appearance.Display.section) {
                 segmented(L.Settings.Appearance.Size.title, L.Settings.Appearance.Size.help, \.size, Appearance.SizeClass.allCases) { $0.label }
-                segmented(L.Settings.Appearance.Digits.title, L.Settings.Appearance.Digits.help, \.digits, Appearance.DigitStyle.allCases) { $0.label }
                 segmented(L.Settings.Appearance.HeroValue.title, L.Settings.Appearance.HeroValue.help,
                           \.hero, Appearance.HeroValue.allCases) { $0.label }
                 segmented(L.Settings.Appearance.Scope.title, L.Settings.Appearance.Scope.help,
                           \.scope, Appearance.Scope.allCases) { $0.label }
             }
 
-            Section {
-                toggle(L.Settings.Appearance.Lively.title, L.Settings.Appearance.Lively.help, \.lively)
-                    .disabled(!a.motionAllowed(systemReduceMotion: systemReduceMotion))
-                toggle(L.Settings.Appearance.Weather.title, L.Settings.Appearance.Weather.help, \.weather)
-                    .disabled(!a.motionAllowed(systemReduceMotion: systemReduceMotion))
-                toggle(L.Settings.Appearance.ReduceMotion.title, L.Settings.Appearance.ReduceMotion.help, \.reduceMotion)
-            } header: {
-                Text(L.Settings.Appearance.Motion.section)
-            } footer: {
-                if systemReduceMotion {
-                    Text(L.Settings.Appearance.Mac.reduceMotionSystem)
-                        .font(.caption).foregroundStyle(.secondary)
-                }
-            }
-
-            Section(L.Settings.Appearance.Window.section) {
+            Section(L.Settings.Appearance.WindowMenu.section) {
                 toggle(L.Settings.Appearance.AlwaysOnTop.title, L.Settings.Appearance.AlwaysOnTop.help, \.alwaysOnTop)
-                SettingRow(title: L.Settings.Appearance.Mini.title, help: L.Settings.Appearance.Mac.miniHelp) {
-                    Button(L.Settings.Appearance.Mini.open) { openWindow(id: "mini") }
-                }
-            }
-
-            Section(L.Settings.Appearance.Mac.menuBarSection) {
                 SettingRow(title: L.Settings.Appearance.MenuBar.title, help: L.Settings.Appearance.MenuBar.help) {
                     Picker(L.Settings.Appearance.MenuBar.accessibility, selection: bind(\.menuBarText)) {
                         ForEach(Appearance.MenuBarText.allCases, id: \.self) { Text($0.label).tag($0) }
@@ -105,7 +56,52 @@ struct AppearanceSettings: View {
                     .labelsHidden().fixedSize()
                 }
                 toggle(L.Settings.Appearance.MenuBarColored.title, L.Settings.Appearance.MenuBarColored.help, \.menuBarColored)
-                toggle(L.Settings.Appearance.MenuBarAnimated.title, L.Settings.Appearance.MenuBarAnimated.help, \.menuBarAnimated)
+                SettingRow(title: L.Settings.Appearance.Mini.title, help: L.Settings.Appearance.Mac.miniHelp) {
+                    Button(L.Settings.Appearance.Mini.open) { openWindow(id: "mini") }
+                }
+            }
+
+            Section {
+                DisclosureGroup(isExpanded: $customizeOpen) {
+                    SettingRow(title: L.Settings.Appearance.Colors.title, help: L.Settings.Appearance.Accent.help) {
+                        Picker(L.Settings.Appearance.Colors.title, selection: bind(\.accent)) {
+                            ForEach(Appearance.Accent.allCases, id: \.self) { Text($0.label).tag($0) }
+                        }
+                        .labelsHidden().fixedSize()
+                    }
+                    if a.accent == .custom {
+                        SettingRow(title: L.Settings.Appearance.CustomColor.title, help: L.Settings.Appearance.CustomColor.help) { ColorSwatches(selection: bind(\.customColor)) }
+                    }
+                    SettingRow(title: L.Settings.Appearance.Background.title, help: L.Settings.Appearance.Background.help) {
+                        Picker(L.Settings.Appearance.Background.title, selection: bind(\.background)) {
+                            ForEach(Appearance.Background.allCases, id: \.self) { Text($0.label).tag($0) }
+                        }
+                        .pickerStyle(.segmented).labelsHidden().fixedSize()
+                    }
+                    PercentSlider(title: L.Settings.Appearance.Transparency.title, help: L.Settings.Appearance.Transparency.help,
+                                  value: bind(\.transparency), range: Appearance.transparencyRange)
+                    SettingRow(title: L.Settings.Appearance.Blur.title, help: L.Settings.Appearance.Blur.help) {
+                        HStack {
+                            Slider(value: bind(\.blur), in: Appearance.blurRange, step: 1).frame(width: 160)
+                                .accessibilityLabel(L.Settings.Appearance.Blur.title)
+                                .accessibilityValue(L.Settings.Appearance.Accessibility.points(count: Int(a.blur)))
+                            Text(L.Settings.Appearance.Unit.points(value: Fmt.num(a.blur, 0))).monospacedDigit().foregroundStyle(.secondary).frame(width: 44, alignment: .trailing)
+                        }
+                    }
+                    PercentSlider(title: L.Settings.Appearance.Glow.title, help: L.Settings.Appearance.Glow.help,
+                                  value: bind(\.glow), range: Appearance.glowRange)
+                    segmented(L.Settings.Appearance.Digits.title, L.Settings.Appearance.Digits.help, \.digits, Appearance.DigitStyle.allCases) { $0.label }
+                    toggle(L.Settings.Appearance.Lively.title, L.Settings.Appearance.Lively.help, \.lively).disabled(reduced)
+                    toggle(L.Settings.Appearance.Weather.title, L.Settings.Appearance.Weather.help, \.weather).disabled(reduced)
+                    toggle(L.Settings.Appearance.MenuBarAnimated.title, L.Settings.Appearance.MenuBarAnimated.help, \.menuBarAnimated)
+                    toggle(L.Settings.Appearance.ReduceMotion.title, L.Settings.Appearance.ReduceMotion.help, \.reduceMotion)
+                    if systemReduceMotion {
+                        Text(L.Settings.Appearance.Mac.reduceMotionSystem)
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                } label: {
+                    SettingRow(title: L.Settings.Appearance.Customize.title, help: L.Settings.Appearance.Customize.help) { EmptyView() }
+                }
             }
 
             Section {
@@ -148,6 +144,60 @@ struct AppearanceSettings: View {
             }
             .pickerStyle(.segmented).labelsHidden().fixedSize()
         }
+    }
+}
+
+/// Fünf Themenkacheln mit Mini-Vorschau im eigenen Aussehen des Themas (ohne Animation und Diagramme).
+private struct ThemeTiles: View {
+    @Environment(\.colorScheme) private var systemScheme
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    let selected: Appearance.Theme
+    let customized: Bool
+    let choose: (Appearance.Theme) -> Void
+
+    var body: some View {
+        HStack(spacing: 10) {
+            ForEach(Appearance.Theme.allCases, id: \.self) { theme in
+                tile(theme)
+            }
+        }
+        .padding(.vertical, 2)
+    }
+
+    private func tile(_ theme: Appearance.Theme) -> some View {
+        let preset = Appearance.preset(theme)
+        let scheme: ColorScheme = switch preset.scheme {
+        case .system: systemScheme
+        case .light: .light
+        case .dark: .dark
+        }
+        let style = ThemeStyle(appearance: preset, mode: .cool, colorScheme: scheme, reduceMotion: reduceMotion)
+        let on = theme == selected
+        let shape = RoundedRectangle(cornerRadius: 10, style: .continuous)
+        return Button { choose(theme) } label: {
+            VStack(spacing: 4) {
+                Text(Fmt.target(24))
+                    .font(style.heroFont(size: 26))
+                    .foregroundStyle(style.tint)
+                    .klimaGlow(style.tint)
+                    .lineLimit(1).minimumScaleFactor(0.6)
+                Text(theme.label).font(.caption.weight(on ? .semibold : .regular)).foregroundStyle(.primary).lineLimit(1)
+                if on && customized {
+                    Text(L.Settings.Appearance.Theme.customized).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+                }
+            }
+            .frame(maxWidth: .infinity, minHeight: 72)
+            .padding(.horizontal, 4).padding(.vertical, 8)
+            .background(shape.fill(style.windowBackground))
+            .overlay(shape.strokeBorder(on ? Color.accentColor : Color.secondary.opacity(0.3), lineWidth: on ? 2.5 : 1))
+            .contentShape(shape)
+            .environment(\.colorScheme, scheme)
+            .environment(\.klimaTheme, style)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(theme.label)
+        .accessibilityValue(on ? (customized ? "\(L.Settings.Appearance.Theme.selected), \(L.Settings.Appearance.Theme.customized)" : L.Settings.Appearance.Theme.selected) : "")
+        .accessibilityAddTraits(on ? .isSelected : [])
     }
 }
 

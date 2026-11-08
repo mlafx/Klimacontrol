@@ -265,6 +265,7 @@ extension Snapshot {
         }
         noticeDetail = c.noticeMessage.map { MessageDTO(what: $0.what, todo: $0.todo, code: $0.code) }
         appearanceIsStandard = c.appearanceIsStandard
+        appearanceCustomized = c.appearanceIsCustomized
         onTimerChip = c.onTimerChip
         quitPrompt = c.quitPrompt().map(PromptDTO.init)
         forgetNeedsBackup = c.forgetNeedsBackup

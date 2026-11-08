@@ -245,6 +245,17 @@ public struct Appearance: Codable, Equatable, Sendable {
         return a
     }
 
+    /// Ein Aussehens-Wert weicht vom Thema ab (Größe, Groß angezeigt, Umfang und die übrigen Bedienwerte zählen nicht).
+    public var isCustomized: Bool {
+        let own = clamped()
+        var base = applying(theme)
+        // Regler liefern Werte wie 0.15000000000000002; Abweichungen unter einer halben Reglerstufe zählen nicht.
+        if abs(base.transparency - own.transparency) < 0.001 { base.transparency = own.transparency }
+        if abs(base.blur - own.blur) < 0.001 { base.blur = own.blur }
+        if abs(base.glow - own.glow) < 0.001 { base.glow = own.glow }
+        return own != base
+    }
+
     /// Zahlen in ihre Grenzen; nicht endliche Werte werden zum Standard.
     public func clamped() -> Appearance {
         var a = self

@@ -11693,6 +11693,312 @@ extension StringsData {
         }
       }
     },
+    "log.windows.autostartNotUpdated" : {
+      "comment" : "Windows: UI-Protokoll, App.xaml.cs KeepAutostartPath",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Windows starten: Eintrag nicht nachgeführt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start with Windows: entry not updated"
+          }
+        }
+      }
+    },
+    "log.windows.cleanupFailed" : {
+      "comment" : "Windows: UI-Protokoll, App.xaml.cs FailStart",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufräumen nach Startfehler"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cleanup after startup error"
+          }
+        }
+      }
+    },
+    "log.windows.commandFailed" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs Send, uiVisible",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Befehl"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR command"
+          }
+        }
+      }
+    },
+    "log.windows.coreStopFailed" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs Stop, App.xaml.cs StopCore",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Kern beenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR stopping core"
+          }
+        }
+      }
+    },
+    "log.windows.crash" : {
+      "comment" : "Windows: UI-Protokoll, App.xaml.cs CatchErrors",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER (Absturz)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR (crash)"
+          }
+        }
+      }
+    },
+    "log.windows.crashTerminating" : {
+      "comment" : "Windows: UI-Protokoll, App.xaml.cs CatchErrors",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER (Absturz, Programm endet)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR (crash, program ends)"
+          }
+        }
+      }
+    },
+    "log.windows.dataUnreadable" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs Read",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Kern-Daten nicht lesbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR core data unreadable"
+          }
+        }
+      }
+    },
+    "log.windows.errorBackground" : {
+      "comment" : "Windows: UI-Protokoll, App.xaml.cs ReportError",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Hintergrund"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR background task"
+          }
+        }
+      }
+    },
+    "log.windows.errorUi" : {
+      "comment" : "Windows: UI-Protokoll, App.xaml.cs ReportError",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Oberfläche"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR UI"
+          }
+        }
+      }
+    },
+    "log.windows.liveUnreadable" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs Poll",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Kern-Daten (busy/nextRefresh) nicht lesbar, letzter Stand bleibt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR core data (busy/nextRefresh) unreadable, last state kept"
+          }
+        }
+      }
+    },
+    "log.windows.localeNotApplied" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs Start",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprache/Format nicht übernommen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language/format not applied"
+          }
+        }
+      }
+    },
+    "log.windows.startDialogFailed" : {
+      "comment" : "Windows: UI-Protokoll, App.xaml.cs FailStart",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Startfehler-Dialog"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Startup error dialog"
+          }
+        }
+      }
+    },
+    "log.windows.startFailed" : {
+      "comment" : "Windows: UI-Protokoll, App.xaml.cs FailStart",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER beim Start"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR during startup"
+          }
+        }
+      }
+    },
+    "log.windows.stateFailed" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs ReadSnapshot",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Kern konnte den Zustand nicht liefern (jsonError), letzter Stand bleibt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR core could not provide the state (jsonError), last state kept"
+          }
+        }
+      }
+    },
+    "log.windows.stateMissing" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs ReadSnapshot",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Kern liefert keinen Zustand, letzter Stand bleibt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR core returns no state, last state kept"
+          }
+        }
+      }
+    },
+    "log.windows.stateUnreadable" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs ReadSnapshot",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Kern-Zustand nicht lesbar, letzter Stand bleibt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR core state unreadable, last state kept"
+          }
+        }
+      }
+    },
+    "log.windows.uiChanged" : {
+      "comment" : "Windows: UI-Protokoll, Core.cs Changed-Abonnenten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FEHLER Oberfläche (Changed)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR UI (Changed)"
+          }
+        }
+      }
+    },
     "main.comfort.display" : {
       "comment" : "Funktion weitere Funktionen (Anzeige am Gerät)",
       "extractionState" : "manual",
@@ -17879,6 +18185,42 @@ extension StringsData {
         }
       }
     },
+    "settings.appearance.customize.help" : {
+      "comment" : "Darstellung: Kurzinfo zum Bereich Anpassen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farbe, Hintergrund, Transparenz, Unschärfe, Leuchten, Ziffern und Bewegung."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Color, background, transparency, blur, glow, digits and motion."
+          }
+        }
+      }
+    },
+    "settings.appearance.customize.title" : {
+      "comment" : "Darstellung: zugeklappter Bereich mit den Feinheiten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anpassen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Customize"
+          }
+        }
+      }
+    },
     "settings.appearance.digits.help" : {
       "comment" : "Darstellung: Kurzinfo Ziffernstil",
       "extractionState" : "manual",
@@ -17911,6 +18253,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Digit style"
+          }
+        }
+      }
+    },
+    "settings.appearance.display.section" : {
+      "comment" : "Darstellung: Abschnitt mit Größe, Groß angezeigt, Umfang",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzeige"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display"
           }
         }
       }
@@ -18037,24 +18397,6 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Animated background"
-          }
-        }
-      }
-    },
-    "settings.appearance.mac.menuBarSection" : {
-      "comment" : "Darstellung Mac: Abschnitt",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menüleiste"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menu bar"
           }
         }
       }
@@ -18653,6 +18995,24 @@ extension StringsData {
         }
       }
     },
+    "settings.appearance.theme.customized" : {
+      "comment" : "Darstellung: Marke an der Themenkachel, wenn Werte vom Thema abweichen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "angepasst"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Customized"
+          }
+        }
+      }
+    },
     "settings.appearance.theme.help" : {
       "comment" : "Darstellung: Kurzinfo Thema",
       "extractionState" : "manual",
@@ -18660,13 +19020,67 @@ extension StringsData {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Setzt alle Werte darunter auf einmal; danach lässt sich jeder einzeln ändern."
+            "value" : "Ein Thema setzt Farben, Hintergrund und Ziffern auf einmal. Feinheiten stehen unter „Anpassen“."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sets all values below at once; you can then change each one separately."
+            "value" : "A theme sets colors, background and digits at once. Fine-tuning is under “Customize”."
+          }
+        }
+      }
+    },
+    "settings.appearance.theme.restore" : {
+      "comment" : "Darstellung: Knopf neben den Themenkacheln",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thema wiederherstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore theme"
+          }
+        }
+      }
+    },
+    "settings.appearance.theme.restoreHelp" : {
+      "comment" : "Darstellung: Kurzinfo Thema wiederherstellen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setzt die Werte unter „Anpassen“ auf das gewählte Thema zurück. Größe, Umfang und Fenster bleiben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resets the values under “Customize” to the selected theme. Size, scope and window settings stay."
+          }
+        }
+      }
+    },
+    "settings.appearance.theme.selected" : {
+      "comment" : "Darstellung: VoiceOver-Wert der gewählten Themenkachel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ausgewählt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selected"
           }
         }
       }
@@ -18811,6 +19225,42 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Window"
+          }
+        }
+      }
+    },
+    "settings.appearance.windowMenu.section" : {
+      "comment" : "Darstellung (Mac): Abschnitt Vordergrund, Menüleiste, Mini-Fenster",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenster und Menüleiste"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Window and menu bar"
+          }
+        }
+      }
+    },
+    "settings.appearance.windowNotify.section" : {
+      "comment" : "Darstellung (Windows): Abschnitt Vordergrund, Infobereich, Mini-Fenster",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenster und Infobereich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Window and notification area"
           }
         }
       }
@@ -26449,6 +26899,23 @@ extension StringsData {
         "log.updates.found",
         "log.updates.installNow",
         "log.updates.remind",
+        "log.windows.autostartNotUpdated",
+        "log.windows.cleanupFailed",
+        "log.windows.commandFailed",
+        "log.windows.coreStopFailed",
+        "log.windows.crash",
+        "log.windows.crashTerminating",
+        "log.windows.dataUnreadable",
+        "log.windows.errorBackground",
+        "log.windows.errorUi",
+        "log.windows.liveUnreadable",
+        "log.windows.localeNotApplied",
+        "log.windows.startDialogFailed",
+        "log.windows.startFailed",
+        "log.windows.stateFailed",
+        "log.windows.stateMissing",
+        "log.windows.stateUnreadable",
+        "log.windows.uiChanged",
         "main.comfort.display",
         "main.comfort.eco",
         "main.comfort.frostProtection",
@@ -26790,8 +27257,11 @@ extension StringsData {
         "settings.appearance.colors.title",
         "settings.appearance.customColor.help",
         "settings.appearance.customColor.title",
+        "settings.appearance.customize.help",
+        "settings.appearance.customize.title",
         "settings.appearance.digits.help",
         "settings.appearance.digits.title",
+        "settings.appearance.display.section",
         "settings.appearance.glow.help",
         "settings.appearance.glow.title",
         "settings.appearance.hero.section",
@@ -26799,7 +27269,6 @@ extension StringsData {
         "settings.appearance.heroValue.title",
         "settings.appearance.lively.help",
         "settings.appearance.lively.title",
-        "settings.appearance.mac.menuBarSection",
         "settings.appearance.mac.miniHelp",
         "settings.appearance.mac.reduceMotionSystem",
         "settings.appearance.menuBar.accessibility",
@@ -26833,7 +27302,11 @@ extension StringsData {
         "settings.appearance.scope.title",
         "settings.appearance.size.help",
         "settings.appearance.size.title",
+        "settings.appearance.theme.customized",
         "settings.appearance.theme.help",
+        "settings.appearance.theme.restore",
+        "settings.appearance.theme.restoreHelp",
+        "settings.appearance.theme.selected",
         "settings.appearance.theme.title",
         "settings.appearance.transparency.help",
         "settings.appearance.transparency.title",
@@ -26842,6 +27315,8 @@ extension StringsData {
         "settings.appearance.weather.help",
         "settings.appearance.weather.title",
         "settings.appearance.window.section",
+        "settings.appearance.windowMenu.section",
+        "settings.appearance.windowNotify.section",
         "settings.appearance.windows.blurHelp",
         "settings.appearance.windows.customColorName",
         "settings.appearance.windows.digitsHelp",
@@ -27878,6 +28353,23 @@ extension StringsData {
         "log.updates.found": ["version"],
         "log.updates.installNow": ["version"],
         "log.updates.remind": [],
+        "log.windows.autostartNotUpdated": [],
+        "log.windows.cleanupFailed": [],
+        "log.windows.commandFailed": [],
+        "log.windows.coreStopFailed": [],
+        "log.windows.crash": [],
+        "log.windows.crashTerminating": [],
+        "log.windows.dataUnreadable": [],
+        "log.windows.errorBackground": [],
+        "log.windows.errorUi": [],
+        "log.windows.liveUnreadable": [],
+        "log.windows.localeNotApplied": [],
+        "log.windows.startDialogFailed": [],
+        "log.windows.startFailed": [],
+        "log.windows.stateFailed": [],
+        "log.windows.stateMissing": [],
+        "log.windows.stateUnreadable": [],
+        "log.windows.uiChanged": [],
         "main.comfort.display": [],
         "main.comfort.eco": [],
         "main.comfort.frostProtection": [],
@@ -28219,8 +28711,11 @@ extension StringsData {
         "settings.appearance.colors.title": [],
         "settings.appearance.customColor.help": [],
         "settings.appearance.customColor.title": [],
+        "settings.appearance.customize.help": [],
+        "settings.appearance.customize.title": [],
         "settings.appearance.digits.help": [],
         "settings.appearance.digits.title": [],
+        "settings.appearance.display.section": [],
         "settings.appearance.glow.help": [],
         "settings.appearance.glow.title": [],
         "settings.appearance.hero.section": [],
@@ -28228,7 +28723,6 @@ extension StringsData {
         "settings.appearance.heroValue.title": [],
         "settings.appearance.lively.help": [],
         "settings.appearance.lively.title": [],
-        "settings.appearance.mac.menuBarSection": [],
         "settings.appearance.mac.miniHelp": [],
         "settings.appearance.mac.reduceMotionSystem": [],
         "settings.appearance.menuBar.accessibility": [],
@@ -28262,7 +28756,11 @@ extension StringsData {
         "settings.appearance.scope.title": [],
         "settings.appearance.size.help": [],
         "settings.appearance.size.title": [],
+        "settings.appearance.theme.customized": [],
         "settings.appearance.theme.help": [],
+        "settings.appearance.theme.restore": [],
+        "settings.appearance.theme.restoreHelp": [],
+        "settings.appearance.theme.selected": [],
         "settings.appearance.theme.title": [],
         "settings.appearance.transparency.help": [],
         "settings.appearance.transparency.title": [],
@@ -28271,6 +28769,8 @@ extension StringsData {
         "settings.appearance.weather.help": [],
         "settings.appearance.weather.title": [],
         "settings.appearance.window.section": [],
+        "settings.appearance.windowMenu.section": [],
+        "settings.appearance.windowNotify.section": [],
         "settings.appearance.windows.blurHelp": [],
         "settings.appearance.windows.customColorName": ["color"],
         "settings.appearance.windows.digitsHelp": [],
@@ -30167,6 +30667,42 @@ public enum L {
             /// Updates: reminder in 24 h
             public static var remind: String { Localizer.text("log.updates.remind") }
         }
+        public enum Windows {
+            /// Start with Windows: entry not updated
+            public static var autostartNotUpdated: String { Localizer.text("log.windows.autostartNotUpdated") }
+            /// Cleanup after startup error
+            public static var cleanupFailed: String { Localizer.text("log.windows.cleanupFailed") }
+            /// ERROR command
+            public static var commandFailed: String { Localizer.text("log.windows.commandFailed") }
+            /// ERROR stopping core
+            public static var coreStopFailed: String { Localizer.text("log.windows.coreStopFailed") }
+            /// ERROR (crash)
+            public static var crash: String { Localizer.text("log.windows.crash") }
+            /// ERROR (crash, program ends)
+            public static var crashTerminating: String { Localizer.text("log.windows.crashTerminating") }
+            /// ERROR core data unreadable
+            public static var dataUnreadable: String { Localizer.text("log.windows.dataUnreadable") }
+            /// ERROR background task
+            public static var errorBackground: String { Localizer.text("log.windows.errorBackground") }
+            /// ERROR UI
+            public static var errorUi: String { Localizer.text("log.windows.errorUi") }
+            /// ERROR core data (busy/nextRefresh) unreadable, last state kept
+            public static var liveUnreadable: String { Localizer.text("log.windows.liveUnreadable") }
+            /// Language/format not applied
+            public static var localeNotApplied: String { Localizer.text("log.windows.localeNotApplied") }
+            /// Startup error dialog
+            public static var startDialogFailed: String { Localizer.text("log.windows.startDialogFailed") }
+            /// ERROR during startup
+            public static var startFailed: String { Localizer.text("log.windows.startFailed") }
+            /// ERROR core could not provide the state (jsonError), last state kept
+            public static var stateFailed: String { Localizer.text("log.windows.stateFailed") }
+            /// ERROR core returns no state, last state kept
+            public static var stateMissing: String { Localizer.text("log.windows.stateMissing") }
+            /// ERROR core state unreadable, last state kept
+            public static var stateUnreadable: String { Localizer.text("log.windows.stateUnreadable") }
+            /// ERROR UI (Changed)
+            public static var uiChanged: String { Localizer.text("log.windows.uiChanged") }
+        }
     }
     public enum Main {
         public enum Comfort {
@@ -31080,11 +31616,21 @@ public enum L {
                 /// Custom color
                 public static var title: String { Localizer.text("settings.appearance.customColor.title") }
             }
+            public enum Customize {
+                /// Color, background, transparency, blur, glow, digits and motion.
+                public static var help: String { Localizer.text("settings.appearance.customize.help") }
+                /// Customize
+                public static var title: String { Localizer.text("settings.appearance.customize.title") }
+            }
             public enum Digits {
                 /// Style of the large number.
                 public static var help: String { Localizer.text("settings.appearance.digits.help") }
                 /// Digit style
                 public static var title: String { Localizer.text("settings.appearance.digits.title") }
+            }
+            public enum Display {
+                /// Display
+                public static var section: String { Localizer.text("settings.appearance.display.section") }
             }
             public enum Glow {
                 /// A glow in the mode color around the large number.
@@ -31109,8 +31655,6 @@ public enum L {
                 public static var title: String { Localizer.text("settings.appearance.lively.title") }
             }
             public enum Mac {
-                /// Menu bar
-                public static var menuBarSection: String { Localizer.text("settings.appearance.mac.menuBarSection") }
                 /// Small floating window with temperature and on/off (⇧⌘M).
                 public static var miniHelp: String { Localizer.text("settings.appearance.mac.miniHelp") }
                 /// “Reduce motion” is turned on in System Settings; effects stay off.
@@ -31201,8 +31745,16 @@ public enum L {
                 public static var title: String { Localizer.text("settings.appearance.size.title") }
             }
             public enum Theme {
-                /// Sets all values below at once; you can then change each one separately.
+                /// Customized
+                public static var customized: String { Localizer.text("settings.appearance.theme.customized") }
+                /// A theme sets colors, background and digits at once. Fine-tuning is under “Customize”.
                 public static var help: String { Localizer.text("settings.appearance.theme.help") }
+                /// Restore theme
+                public static var restore: String { Localizer.text("settings.appearance.theme.restore") }
+                /// Resets the values under “Customize” to the selected theme. Size, scope and window settings stay.
+                public static var restoreHelp: String { Localizer.text("settings.appearance.theme.restoreHelp") }
+                /// Selected
+                public static var selected: String { Localizer.text("settings.appearance.theme.selected") }
                 /// Theme
                 public static var title: String { Localizer.text("settings.appearance.theme.title") }
             }
@@ -31227,6 +31779,14 @@ public enum L {
             public enum Window {
                 /// Window
                 public static var section: String { Localizer.text("settings.appearance.window.section") }
+            }
+            public enum WindowMenu {
+                /// Window and menu bar
+                public static var section: String { Localizer.text("settings.appearance.windowMenu.section") }
+            }
+            public enum WindowNotify {
+                /// Window and notification area
+                public static var section: String { Localizer.text("settings.appearance.windowNotify.section") }
             }
             public enum Windows {
                 /// How softly the background blurs behind the cards. On Windows this comes from the system’s glass eff…

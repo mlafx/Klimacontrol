@@ -207,6 +207,7 @@
                       "accessibility": "Zuletzt bekannte Werte, Stand 14:32: 24°"},
     "noticeDetail": {"what": "Timer gestellt.", "todo": "", "code": null},
     "appearanceIsStandard": false,
+    "appearanceCustomized": true,
     "onTimerChip": "Ein morgen 07:00",
     "quitPrompt": {"title": "Klimacontrol beenden?", "message": "Timer „Aus“ heute um 22:30 ist gestellt.", "cancel": "Geöffnet lassen",
                    "confirm": "Trotzdem beenden", "warning": false},

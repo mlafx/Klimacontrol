@@ -17875,6 +17875,42 @@
         }
       }
     },
+    "settings.appearance.customize.help" : {
+      "comment" : "Darstellung: Kurzinfo zum Bereich Anpassen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farbe, Hintergrund, Transparenz, Unschärfe, Leuchten, Ziffern und Bewegung."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Color, background, transparency, blur, glow, digits and motion."
+          }
+        }
+      }
+    },
+    "settings.appearance.customize.title" : {
+      "comment" : "Darstellung: zugeklappter Bereich mit den Feinheiten",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anpassen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Customize"
+          }
+        }
+      }
+    },
     "settings.appearance.digits.help" : {
       "comment" : "Darstellung: Kurzinfo Ziffernstil",
       "extractionState" : "manual",
@@ -17907,6 +17943,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Digit style"
+          }
+        }
+      }
+    },
+    "settings.appearance.display.section" : {
+      "comment" : "Darstellung: Abschnitt mit Größe, Groß angezeigt, Umfang",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzeige"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display"
           }
         }
       }
@@ -18033,24 +18087,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Animated background"
-          }
-        }
-      }
-    },
-    "settings.appearance.mac.menuBarSection" : {
-      "comment" : "Darstellung Mac: Abschnitt",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menüleiste"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menu bar"
           }
         }
       }
@@ -18649,6 +18685,24 @@
         }
       }
     },
+    "settings.appearance.theme.customized" : {
+      "comment" : "Darstellung: Marke an der Themenkachel, wenn Werte vom Thema abweichen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "angepasst"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Customized"
+          }
+        }
+      }
+    },
     "settings.appearance.theme.help" : {
       "comment" : "Darstellung: Kurzinfo Thema",
       "extractionState" : "manual",
@@ -18656,13 +18710,67 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Setzt alle Werte darunter auf einmal; danach lässt sich jeder einzeln ändern."
+            "value" : "Ein Thema setzt Farben, Hintergrund und Ziffern auf einmal. Feinheiten stehen unter „Anpassen“."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sets all values below at once; you can then change each one separately."
+            "value" : "A theme sets colors, background and digits at once. Fine-tuning is under “Customize”."
+          }
+        }
+      }
+    },
+    "settings.appearance.theme.restore" : {
+      "comment" : "Darstellung: Knopf neben den Themenkacheln",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thema wiederherstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore theme"
+          }
+        }
+      }
+    },
+    "settings.appearance.theme.restoreHelp" : {
+      "comment" : "Darstellung: Kurzinfo Thema wiederherstellen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setzt die Werte unter „Anpassen“ auf das gewählte Thema zurück. Größe, Umfang und Fenster bleiben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resets the values under “Customize” to the selected theme. Size, scope and window settings stay."
+          }
+        }
+      }
+    },
+    "settings.appearance.theme.selected" : {
+      "comment" : "Darstellung: VoiceOver-Wert der gewählten Themenkachel",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ausgewählt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selected"
           }
         }
       }
@@ -18807,6 +18915,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Window"
+          }
+        }
+      }
+    },
+    "settings.appearance.windowMenu.section" : {
+      "comment" : "Darstellung (Mac): Abschnitt Vordergrund, Menüleiste, Mini-Fenster",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenster und Menüleiste"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Window and menu bar"
+          }
+        }
+      }
+    },
+    "settings.appearance.windowNotify.section" : {
+      "comment" : "Darstellung (Windows): Abschnitt Vordergrund, Infobereich, Mini-Fenster",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenster und Infobereich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Window and notification area"
           }
         }
       }
