@@ -1363,6 +1363,10 @@ Gruppe/Byte in `Diagnostics` und `Response` lesen, in `HistorySample`/CSV-Kopf n
   gemessen. Heute wird 0xF als Protokollfehler gewertet, nicht als Ablehnung; ändern erst nach einem Mitschnitt.
 - Unbekannte Werte der Anlage: Anhang D.
 
+- Windows: Die Einstellungen in `%LOCALAPPDATA%\Klimacontrol.exe.plist` liest swift-corelibs-foundation; ist die Datei
+  kaputt oder von einem anderen Werkzeug umgeschrieben, gelten still alle Standardwerte (seit 1.0 so). Die Datei nur als
+  Text ändern, nie mit einer XML-Bibliothek neu schreiben. Robusteres Lesen ist für später vorgemerkt.
+
 ## 17. Lizenz und Marken
 
 Klimacontrol steht unter der MIT-Lizenz (`LICENSE`). Das Protokoll ist nachgebaut nach msmart-ng,

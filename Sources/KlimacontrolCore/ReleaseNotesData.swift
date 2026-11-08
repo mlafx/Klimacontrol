@@ -19,6 +19,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 - Mac: Einstellungen → Allgemein → Updates: Vorabversionen (Beta) können bezogen werden, standardmäßig aus.
 - Windows: Setup auf Deutsch und Englisch, passend zur Anzeigesprache von Windows.
 - Signalton lässt sich im Hauptfenster unter „Weitere Funktionen“ schalten.
+- Mac: „Nach Updates suchen …“ meldet auch, wenn keine neue Version vorliegt oder die Suche nicht geklappt hat.
 
 ### Geändert
 - Zahlen, Uhrzeiten und Datumsangaben folgen den Regionseinstellungen des Systems, zum Beispiel Dezimalpunkt oder 12-Stunden-Format.
@@ -109,6 +110,7 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 - Mac: Settings → General → Updates: pre-release (beta) versions can be received, off by default.
 - Windows: Setup in German and English, matching the Windows display language.
 - The beep can be switched on and off in the main window under “More features”.
+- Mac: “Check for updates…” also reports when no new version is available or the check did not work.
 
 ### Changed
 - Numbers, times and dates follow the system's regional settings, for example decimal point or 12-hour format.
