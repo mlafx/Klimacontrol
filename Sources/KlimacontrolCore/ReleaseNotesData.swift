@@ -40,7 +40,8 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 - Sicherung einlesen: Eine unlesbare Szene verwarf still alle Szenen der Sicherung.
 - Adresse neu suchen: Eine ungültige gefundene Adresse endete ohne Rückmeldung.
 - Mini-Fenster: Bei „Groß angezeigt: Raum“ ohne Raumtemperatur stand „–“ statt der Solltemperatur.
-- Mac: ⌘↑ und ⌘↓ verstellten beim Lüften die Solltemperatur.
+- ⌘↑/⌘↓ (Mac) bzw. Strg+↑/↓ (Windows) verstellten beim Lüften die Solltemperatur.
+- Windows: Zahl und Text im Infobereich zeigten beim Lüften ein Soll und rundeten Raumtemperaturen bei x,5 ab.
 - Technischer Unterbau überarbeitet, zahlreiche kleinere Fehler behoben.
 
 ## [1.2.0.0] – 2026-11-08
@@ -166,7 +167,8 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 - Restore backup: One unreadable scene silently discarded all scenes of the backup.
 - Find address again: An invalid address found by the search ended without any feedback.
 - Mini window: With the room temperature shown large but not reported, “–” appeared instead of the target temperature.
-- Mac: ⌘↑ and ⌘↓ changed the target temperature in Fan mode.
+- ⌘↑/⌘↓ (Mac) and Ctrl+↑/↓ (Windows) changed the target temperature in Fan mode.
+- Windows: The number and text in the notification area showed a target in Fan mode and rounded room temperatures ending in .5 down.
 - Technical foundation reworked, numerous minor bugs fixed.
 
 ## [1.2.0.0] – 2026-11-08

@@ -26119,24 +26119,6 @@
         }
       }
     },
-    "tray.tip.roomTarget" : {
-      "comment" : "Windows: Kurzinfo am Symbol, Raum und Soll",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "{room} · {target}"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "{room} · {target}"
-          }
-        }
-      }
-    },
     "tray.tip.searching" : {
       "comment" : "Windows: Kurzinfo am Symbol beim Verbinden, Schritt Suche",
       "extractionState" : "manual",
@@ -26169,24 +26151,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "{status} · {room}"
-          }
-        }
-      }
-    },
-    "tray.tip.statusTarget" : {
-      "comment" : "Windows: Kurzinfo am Symbol, Zustand und Soll",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "{status} · {target}"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "{status} · {target}"
           }
         }
       }

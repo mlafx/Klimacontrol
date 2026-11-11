@@ -343,6 +343,10 @@ extension Snapshot {
             let a = c.availability(f)
             return (f.rawValue, AvailabilityDTO(enabled: a.enabled, why: a.why))
         })
+        // Lüftersperre beim Trocknen und Stellbarkeit der Solltemperatur (−/+, Regler, Tastenkürzel): Regeln des Kerns.
+        let dry = c.state?.mode == .dry
+        availability["fan"] = AvailabilityDTO(enabled: !dry, why: dry ? UIOptions.fanLockedText : nil)
+        availability["target"] = AvailabilityDTO(enabled: UIText.targetAdjustable(c.state), why: nil)
         connectionTooltip = c.connectionTooltip
         uiConnectionState = stateName(c.uiConnectionState)
         uiStaleSince = c.uiStaleSince?.timeIntervalSince1970

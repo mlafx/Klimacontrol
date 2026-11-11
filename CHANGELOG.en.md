@@ -34,7 +34,8 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 - Restore backup: One unreadable scene silently discarded all scenes of the backup.
 - Find address again: An invalid address found by the search ended without any feedback.
 - Mini window: With the room temperature shown large but not reported, “–” appeared instead of the target temperature.
-- Mac: ⌘↑ and ⌘↓ changed the target temperature in Fan mode.
+- ⌘↑/⌘↓ (Mac) and Ctrl+↑/↓ (Windows) changed the target temperature in Fan mode.
+- Windows: The number and text in the notification area showed a target in Fan mode and rounded room temperatures ending in .5 down.
 - Technical foundation reworked, numerous minor bugs fixed.
 
 ## [1.2.0.0] – 2026-11-08

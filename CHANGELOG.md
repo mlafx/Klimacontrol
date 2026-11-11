@@ -36,7 +36,8 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 - Sicherung einlesen: Eine unlesbare Szene verwarf still alle Szenen der Sicherung.
 - Adresse neu suchen: Eine ungültige gefundene Adresse endete ohne Rückmeldung.
 - Mini-Fenster: Bei „Groß angezeigt: Raum“ ohne Raumtemperatur stand „–“ statt der Solltemperatur.
-- Mac: ⌘↑ und ⌘↓ verstellten beim Lüften die Solltemperatur.
+- ⌘↑/⌘↓ (Mac) bzw. Strg+↑/↓ (Windows) verstellten beim Lüften die Solltemperatur.
+- Windows: Zahl und Text im Infobereich zeigten beim Lüften ein Soll und rundeten Raumtemperaturen bei x,5 ab.
 - Technischer Unterbau überarbeitet, zahlreiche kleinere Fehler behoben.
 
 ## [1.2.0.0] – 2026-11-08

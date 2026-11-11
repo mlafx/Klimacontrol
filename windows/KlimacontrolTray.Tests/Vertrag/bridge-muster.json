@@ -198,6 +198,8 @@
                 "updatesCheckButton": "Jetzt suchen …"}
     },
     "availability": {
+      "fan": {"enabled": false, "why": "Beim Trocknen regelt die Anlage den Lüfter selbst."},
+      "target": {"enabled": true},
       "swing": {"enabled": true, "why": "Lamellen schwenken auf und ab"},
       "eco": {"enabled": true, "why": "Eco gibt es nur beim Kühlen"},
       "turbo": {"enabled": true, "why": "Turbo an/aus – die Lüfterstufe bleibt."},

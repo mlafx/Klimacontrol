@@ -26123,24 +26123,6 @@ extension StringsData {
         }
       }
     },
-    "tray.tip.roomTarget" : {
-      "comment" : "Windows: Kurzinfo am Symbol, Raum und Soll",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "{room} · {target}"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "{room} · {target}"
-          }
-        }
-      }
-    },
     "tray.tip.searching" : {
       "comment" : "Windows: Kurzinfo am Symbol beim Verbinden, Schritt Suche",
       "extractionState" : "manual",
@@ -26173,24 +26155,6 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "{status} · {room}"
-          }
-        }
-      }
-    },
-    "tray.tip.statusTarget" : {
-      "comment" : "Windows: Kurzinfo am Symbol, Zustand und Soll",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "{status} · {target}"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "{status} · {target}"
           }
         }
       }
@@ -28058,10 +28022,8 @@ extension StringsData {
         "tray.tip.line",
         "tray.tip.notConfigured",
         "tray.tip.reading",
-        "tray.tip.roomTarget",
         "tray.tip.searching",
         "tray.tip.statusRoom",
-        "tray.tip.statusTarget",
         "updates.checkButton",
         "updates.checking",
         "updates.current",
@@ -29532,10 +29494,8 @@ extension StringsData {
         "tray.tip.line": ["name", "text"],
         "tray.tip.notConfigured": [],
         "tray.tip.reading": [],
-        "tray.tip.roomTarget": ["room", "target"],
         "tray.tip.searching": [],
         "tray.tip.statusRoom": ["status", "room"],
-        "tray.tip.statusTarget": ["status", "target"],
         "updates.checkButton": [],
         "updates.checking": [],
         "updates.current": [],
@@ -33076,14 +33036,10 @@ public enum L {
             public static var notConfigured: String { Localizer.text("tray.tip.notConfigured") }
             /// reading values…
             public static var reading: String { Localizer.text("tray.tip.reading") }
-            /// {room} · {target}
-            public static func roomTarget(room: String, target: String) -> String { Localizer.text("tray.tip.roomTarget", ["room": room, "target": target]) }
             /// finding the air conditioner…
             public static var searching: String { Localizer.text("tray.tip.searching") }
             /// {status} · {room}
             public static func statusRoom(status: String, room: String) -> String { Localizer.text("tray.tip.statusRoom", ["status": status, "room": room]) }
-            /// {status} · {target}
-            public static func statusTarget(status: String, target: String) -> String { Localizer.text("tray.tip.statusTarget", ["status": status, "target": target]) }
         }
     }
     public enum Updates {

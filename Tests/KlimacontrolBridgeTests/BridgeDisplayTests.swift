@@ -74,7 +74,9 @@ final class BridgeDisplayTests: XCTestCase {
         s.mode = .heat
         controller.state = s
         var a = try XCTUnwrap(json()["availability"] as? [String: [String: Any]])
-        XCTAssertEqual(Set(a.keys), Set(UIOptions.ComfortFeature.allCases.map(\.rawValue)))
+        XCTAssertEqual(Set(a.keys), Set(UIOptions.ComfortFeature.allCases.map(\.rawValue) + ["fan", "target"]))
+        XCTAssertEqual(a["fan"]?["enabled"] as? Bool, true)
+        XCTAssertEqual(a["target"]?["enabled"] as? Bool, true)
         XCTAssertEqual(a["eco"]?["enabled"] as? Bool, false)
         XCTAssertEqual(a["eco"]?["why"] as? String, "Eco gibt es nur beim Kühlen")
         XCTAssertEqual(a["freezeProtection"]?["enabled"] as? Bool, true)
@@ -83,6 +85,15 @@ final class BridgeDisplayTests: XCTestCase {
         a = try XCTUnwrap(json()["availability"] as? [String: [String: Any]])
         XCTAssertEqual(a["eco"]?["enabled"] as? Bool, true)
         XCTAssertEqual(a["freezeProtection"]?["enabled"] as? Bool, false)
+        s.mode = .dry
+        controller.state = s
+        a = try XCTUnwrap(json()["availability"] as? [String: [String: Any]])
+        XCTAssertEqual(a["fan"]?["enabled"] as? Bool, false)
+        XCTAssertEqual(a["fan"]?["why"] as? String, UIOptions.fanLockedText)
+        s.mode = .fan
+        controller.state = s
+        a = try XCTUnwrap(json()["availability"] as? [String: [String: Any]])
+        XCTAssertEqual(a["target"]?["enabled"] as? Bool, false)
     }
 
     func testDisplayTexts() throws {
