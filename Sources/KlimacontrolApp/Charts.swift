@@ -8,12 +8,14 @@ import SwiftUI
 // Das Fenster (Filtern, Ausdünnen, Kennzahlen) wird im Hintergrund gelesen und nur bei neuem Zeitraum bzw.
 // Mittelungsfenster neu berechnet (`ChartWindowKey`): Jeder Neuaufbau kostet kurz ~190 MB Grafikspeicher (Metal).
 // Marks in Equatable-Ansichten, Mauszeiger-Anzeige als eigene Ebene: Mausbewegung baut die Graphen nicht neu.
+// Einspaltig stehen Leistung, Temperatur und Außen in einer Karte, bleiben aber getrennte `Chart`-Ansichten: Ein
+// gemeinsames `Chart` baute bei jeder Änderung einer Reihe alle neu auf.
 
 struct ChartsPanel: View {
     @Environment(ACController.self) var model
     @Environment(\.klimaTheme) private var theme
     @Environment(HistoryStore.self) var history
-    /// Nur der Modus (für die Farbe der Leistungskurve) statt `model.state`: sonst liefe dieser Body bei jeder Abfrage.
+    /// Nur der Modus (für die Farbe der Sollkurve) statt `model.state`: sonst liefe dieser Body bei jeder Abfrage.
     let mode: OperationalMode?
     let close: () -> Void
     @AppStorage(SettingsKey.chartRange) private var range = UIOptions.chartRangeDefault
@@ -21,8 +23,8 @@ struct ChartsPanel: View {
     @State private var window = ChartWindow()
     @State private var loaded = false
     @State private var settled = CGSize.zero
-    /// Höhe der Spalte ohne die Graphen, je Anordnung gemessen (einspaltig, Raster).
-    @State private var overhead: [Bool: Double] = [:]
+    /// Höhe der Spalte ohne die Graphen, je Anordnung gemessen (Raster ja/nein, eigener Außengraph ja/nein).
+    @State private var overhead: [Int: Double] = [:]
 
     var body: some View {
         // Die Zeitscheibe wird ausdrücklich getrieben (alle 30 s), nicht durch zufälliges Neuzeichnen des
@@ -48,9 +50,10 @@ struct ChartsPanel: View {
         .task(id: key) {
             let db = history.db
             let now = Date()
-            let since = now.addingTimeInterval(-key.range)
+            let range = key.range
+            let since = now.addingTimeInterval(-range)
             let fresh = await Task.detached(priority: .userInitiated) {
-                ChartWindow(db.samples(since: since, now: now), stats: db.stats(since: since), now: now)
+                ChartWindow(db.samples(since: since, now: now), stats: db.stats(since: since), range: range, now: now)
             }.value
             guard !Task.isCancelled else { return }
             if fresh != window { window = fresh }
@@ -60,27 +63,43 @@ struct ChartsPanel: View {
 
     private func column(size: CGSize) -> some View {
         let w = window
+        let combined = model.appearance.temperatureCombined
         let grid = MainWindowLayout.historyUsesGrid(width: size.width)
-        let heights = MainWindowLayout.chartHeights(columnHeight: size.height, grid: grid, overhead: overhead[grid])
+        let layoutKey = (grid ? 1 : 0) + (combined ? 2 : 0)
+        let heights = MainWindowLayout.chartHeights(columnHeight: size.height, grid: grid, overhead: overhead[layoutKey],
+                                                    separateOutdoor: !combined)
         let inner = size.width - 40
         let cardWidth = grid ? (inner - 16) / 2 : inner
+        let plotWidth = max(0, (cardWidth - 2 * ChartLayout.cardPadding - ChartLayout.axisWidth).rounded(.down))
         let hasCharts = loaded && w.data.count >= 2
-        let colors = SeriesColors(theme)
-        let topHeight = grid ? max(heights.power, heights.temperature) : nil
-        let bottomHeight = grid ? max(heights.outdoor, heights.energy) : nil
-        let hasOutdoor = hasCharts && !w.outdoor.isEmpty
+        let separateOutdoor = hasCharts && !combined && !w.outdoor.isEmpty
+        let style = ChartStyle(theme, mode: mode)
+        // Ohne Datenbank gibt es auch keinen Verbrauch; der Hinweis oben sagt, warum.
+        let available = history.db.isOpen
+        let showsEnergy = loaded && available
+        // Im Raster ohne eigenen Außengraphen nimmt der Verbrauch die ganze untere Zeile: ruhiger als ein leerer Platz.
+        let energyWide = grid && !separateOutdoor
+        let topHeight = max(heights.power, heights.temperature)
+        let bottomHeight = separateOutdoor ? max(heights.outdoor, heights.energy) : heights.energy
         let applied: Double
         if grid {
-            applied = (hasCharts ? topHeight ?? 0 : 0) + (hasOutdoor || loaded ? bottomHeight ?? 0 : 0)
+            applied = (hasCharts ? topHeight : 0) + (separateOutdoor || showsEnergy ? bottomHeight : 0)
         } else {
-            applied = (hasCharts ? heights.power + heights.temperature : 0) + (hasOutdoor ? heights.outdoor : 0)
-                + (loaded ? heights.energy : 0)
+            applied = (hasCharts ? heights.power + heights.temperature : 0) + (separateOutdoor ? heights.outdoor : 0)
+                + (showsEnergy ? heights.energy : 0)
         }
-        let power = PowerChart(points: w.power, time: w.timeDomain, tint: mode.map { theme.tint(for: $0) } ?? .accentColor,
-                               range: range, height: topHeight ?? heights.power, fill: grid)
-        let temperature = TemperatureChart(window: w, range: range, colors: colors, height: topHeight ?? heights.temperature, fill: grid)
-        let outdoor = OutdoorChart(window: w, range: range, color: colors.outdoor, height: bottomHeight ?? heights.outdoor, fill: grid)
-        let energy = EnergySection(chartHeight: bottomHeight ?? heights.energy, plotWidth: (cardWidth - 24 - 50).rounded(.down), fill: grid)
+        let stats = UIText.chartStats(w.stats, price: model.pricePerKWh, currency: model.currency)
+        let power = PowerSection(window: w, range: range, style: style, stats: stats,
+                                 height: grid ? topHeight : heights.power, plotWidth: plotWidth, showsTime: grid)
+        let temperature = TemperatureSection(window: w, range: range, style: style, combined: combined,
+                                             height: grid ? topHeight : heights.temperature, plotWidth: plotWidth,
+                                             showsTime: grid || !separateOutdoor)
+        let outdoor = OutdoorSection(window: w, range: range, style: style, height: grid ? bottomHeight : heights.outdoor,
+                                     plotWidth: plotWidth, fill: grid)
+        let energyWidth = energyWide ? inner : cardWidth
+        let energy = EnergySection(chartHeight: grid ? bottomHeight : heights.energy,
+                                   plotWidth: max(0, (energyWidth - 2 * ChartLayout.cardPadding - ChartLayout.axisWidth).rounded(.down)),
+                                   fill: grid)
         return VStack(alignment: .leading, spacing: 16) {
             // Schließen rechts wie bei der Diagnose – links säße es neben den Fensterknöpfen.
             HStack {
@@ -94,11 +113,10 @@ struct ChartsPanel: View {
                 Button(action: close) { Image(systemName: "xmark") }
                     .buttonStyle(.borderless).help(L.Charts.hideHelp).accessibilityLabel(L.Charts.hide)
             }
-            SummaryTiles(avg: w.stats.avgWatts, peak: w.stats.peakWatts, kwh: w.stats.kWh, price: model.pricePerKWh, currency: model.currency)
             if !loaded {
                 Color.clear.frame(height: 120)
             } else if w.data.count < 2 {
-                Text(L.Charts.tooFew)
+                Text(available ? L.Charts.tooFew : L.Charts.unavailable)
                     .font(.callout).foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, minHeight: 120)
             }
@@ -107,31 +125,52 @@ struct ChartsPanel: View {
                 Grid(alignment: .topLeading, horizontalSpacing: 16, verticalSpacing: 16) {
                     if hasCharts {
                         GridRow {
-                            power
-                            temperature
+                            power.chartCard(fill: true)
+                            temperature.chartCard(fill: true)
                         }
                     }
                     GridRow {
-                        if hasCharts, !w.outdoor.isEmpty { outdoor }
-                        if loaded { energy }
+                        if separateOutdoor { outdoor.chartCard(fill: true) }
+                        if showsEnergy { energy.gridCellColumns(energyWide ? 2 : 1) }
                     }
                 }
             } else {
                 if hasCharts {
-                    power
-                    temperature
-                    if !w.outdoor.isEmpty { outdoor }
+                    VStack(alignment: .leading, spacing: 0) {
+                        power
+                        ChartDivider()
+                        temperature
+                        if separateOutdoor {
+                            ChartDivider()
+                            outdoor
+                        }
+                    }
+                    .chartCard(fill: false)
                 }
-                if loaded { energy }
+                if showsEnergy { energy }
             }
         }
         .padding(20)
         .frame(width: size.width, alignment: .topLeading)
         .onGeometryChange(for: CGFloat.self) { $0.size.height.rounded(.up) } action: { h in
             let value = max(0, Double(h) - applied)
-            if overhead[grid] != value, hasCharts { overhead[grid] = value }
+            if overhead[layoutKey] != value, hasCharts { overhead[layoutKey] = value }
         }
     }
+}
+
+/// Maße, die alle Graphen teilen: Mit gleich breiter Y-Achsenspalte stehen die Graphen einer Karte bündig untereinander
+/// und teilen sich die Zeitachse.
+enum ChartLayout {
+    static let cardPadding = 12.0
+    /// Breite der Beschriftung der Y-Achse (rechts) und Abstand zur Zeichenfläche.
+    static let axisLabelWidth = 46.0
+    static let axisSpacing = 6.0
+    static var axisWidth: Double { axisLabelWidth + axisSpacing }
+    /// Modus-Band unter der Leistung: Höhe und Abstand zur Nulllinie.
+    static let bandHeight = 4.0
+    static let bandGap = 5.0
+    static let lineWidth = 1.75
 }
 
 /// Wann die Graphen neu gelesen werden. Die Datenbank mittelt auf ~600 Zeitfenster (Länge = Zeitraum / 600, an der
@@ -160,40 +199,40 @@ struct ChartWindow: Equatable {
     var power: [HistorySample] = []
     var indoor: [HistorySample] = []
     var target: [HistorySample] = []
+    /// Gemessene Außenwerte (Anzeige unter dem Mauszeiger) und die geglättete Linie mit denselben Zeiten.
     var outdoor: [HistorySample] = []
-    /// Y-Bereiche: Raum/Soll im Temperaturgraph, Außen im eigenen Graphen darunter – je mit voller Höhe.
-    /// Gemeinsame Zeitachse aller drei Graphen (sonst beginnt der Außengraph beim ersten Außenwert).
+    var outdoorLine: [HistorySample] = []
+    /// Zeiten, in denen die Anlage lief, je Betriebsart (Modus-Band).
+    var modeRuns: [HistorySample.ModeRun] = []
+    /// Gemeinsame Zeitachse aller Graphen (sonst beginnt der Außengraph beim ersten Außenwert).
     var timeDomain: ClosedRange<Date>?
-    var insideRange: ClosedRange<Double>?
-    var outsideRange: ClosedRange<Double>?
+    var powerAxis: ChartAxis?
+    /// Raum und Soll; mit Außen im selben Graphen die gemeinsame Achse über alle drei Reihen.
+    var insideAxis: ChartAxis?
+    var combinedAxis: ChartAxis?
+    var outsideAxis: ChartAxis?
     /// Kennzahlen aus allen Punkten der Datenbank, nicht aus den gemittelten Graphenpunkten.
     var stats = HistoryStats()
 
     init() {}
 
     /// `now`: Die Zeitachse endet bei „jetzt“, nicht beim letzten Punkt – eine Lücke am Ende bleibt sichtbar.
-    init(_ data: [HistorySample], stats: HistoryStats, now: Date = Date()) {
+    init(_ data: [HistorySample], stats: HistoryStats, range: TimeInterval, now: Date = Date()) {
         self.stats = stats
         self.data = data
         power = data.filter { $0.power != nil }
         indoor = data.filter { $0.indoor != nil }
         target = data.filter { $0.target != nil }
         outdoor = data.filter { $0.outdoor != nil }
+        let gap = UIOptions.chartGapThreshold(range: range)
+        outdoorLine = HistorySample.smoothedOutdoor(outdoor, span: HistorySample.outdoorSmoothingSpan(range: range), gapLimit: gap)
+        modeRuns = HistorySample.modeRuns(data, gapLimit: gap)
         if let first = data.first?.time, let last = data.last?.time, first < last { timeDomain = first...max(last, now) }
-        insideRange = Self.range(indoor.compactMap(\.indoor) + target.compactMap(\.target))
-        outsideRange = Self.range(outdoor.compactMap(\.outdoor))
-    }
-
-    /// Min…Max mit 1° Luft, mindestens 4° breit (bei einem einzigen Wert ±2°); `nil` ohne Werte.
-    static func range(_ values: [Double]) -> ClosedRange<Double>? {
-        guard var lo = values.min(), var hi = values.max() else { return nil }
-        lo -= 1
-        hi += 1
-        if hi - lo < 4 {
-            let mid = (lo + hi) / 2
-            (lo, hi) = (mid - 2, mid + 2)
-        }
-        return lo...hi
+        powerAxis = ChartAxis.power(power.compactMap(\.power))
+        let inside = indoor.compactMap(\.indoor) + target.compactMap(\.target)
+        insideAxis = ChartAxis.temperature(inside)
+        combinedAxis = ChartAxis.temperature(inside + outdoor.compactMap(\.outdoor))
+        outsideAxis = ChartAxis.temperature(outdoor.compactMap(\.outdoor))
     }
 }
 
@@ -236,260 +275,390 @@ enum ChartNames {
     static let series = L.Charts.Axis.series
     static let room = L.Charts.Series.room
     static let target = L.Charts.Series.target
+    static let outdoor = L.Charts.Series.outdoor
 }
 
-struct SummaryTiles: View {
-    let avg: Double?
-    let peak: Double?
-    let kwh: Double?
-    let price: Double
-    let currency: String
+/// Farben der Graphen aus dem Thema: Leistung und Raum in der Vordergrundfarbe, Soll in der Modusfarbe, Außen neutral
+/// grau, das Modus-Band je Betriebsart. Farbe nur mit Bedeutung; die Reihen unterscheiden sich zusätzlich im Strich.
+struct ChartStyle: Equatable {
+    static let outdoorBase = Color(red: 0.50, green: 0.52, blue: 0.56)
+
+    var line = Color.primary.opacity(0.85)
+    var target = Color.accentColor
+    var outdoor = Self.outdoorBase
+    var modes: [OperationalMode: Color] = [:]
+
+    init() {}
+
+    init(_ theme: ThemeStyle, mode: OperationalMode?) {
+        // Vordergrund bleibt `primary` (hell/dunkel); eine feste Umrechnung verlöre den Wechsel.
+        target = theme.tint(for: mode)
+        outdoor = theme.series(Self.outdoorBase)
+        modes = Dictionary(uniqueKeysWithValues: OperationalMode.allCases.map { ($0, theme.tint(for: $0)) })
+    }
+
+    func color(for mode: OperationalMode) -> Color { modes[mode] ?? target }
+
+    static let targetStroke = StrokeStyle(lineWidth: ChartLayout.lineWidth, dash: [5, 3])
+    static let outdoorStroke = StrokeStyle(lineWidth: ChartLayout.lineWidth + 0.25, lineCap: .round, dash: [0.5, 3.5])
+    static let solidStroke = StrokeStyle(lineWidth: ChartLayout.lineWidth, lineCap: .round, lineJoin: .round)
+}
+
+// MARK: - Abschnitte (Überschrift, Graph, Zeile darunter)
+
+private struct ChartSectionTitle: View {
+    let title: String
+    let icon: String
 
     var body: some View {
-        HStack(spacing: 8) {
-            tile("bolt", L.Charts.Tile.avg, Fmt.watts(avg), help: L.Charts.Tile.avgHelp)
-            tile("bolt.fill", L.Charts.Tile.peak, Fmt.watts(peak), help: L.Charts.Tile.peakHelp)
-            tile("sum", L.Energy.title, Fmt.kwh(kwh), help: L.Charts.Tile.consumptionHelp)
-            tile("banknote", L.Charts.Tile.cost, Fmt.money(kwh.map { $0 * price }, currency: currency),
-                 help: L.Charts.Tile.costHelp(price: Fmt.num(price, 2), currency: currency))
-        }
-    }
-
-    private func tile(_ icon: String, _ title: String, _ value: String, help: String) -> some View {
-        VStack(spacing: 3) {
-            Image(systemName: icon).font(.caption).foregroundStyle(.secondary)
-            Text(value).font(.system(.callout, design: .rounded).weight(.semibold).monospacedDigit())
-                .lineLimit(1).minimumScaleFactor(0.7)
-            Text(title).font(.caption2).foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 10)
-        .plainCard(radius: 12)
-        .help(help)
-        .accessibilityElement(children: .combine)
-        .accessibilityHint(help)
+        Label(title, systemImage: icon).font(.subheadline.weight(.medium))
+            .accessibilityAddTraits(.isHeader)
     }
 }
 
-struct PowerChart: View {
-    let points: [HistorySample]
-    let time: ClosedRange<Date>?
-    let tint: Color
+/// Feine Trennlinie zwischen den Graphen einer Karte.
+private struct ChartDivider: View {
+    var body: some View {
+        Rectangle().fill(Color.primary.opacity(0.10)).frame(height: 0.5)
+            .padding(.vertical, 10)
+            .accessibilityHidden(true)
+    }
+}
+
+struct PowerSection: View {
+    let window: ChartWindow
     let range: TimeInterval
-    var height = 150.0
+    let style: ChartStyle
+    let stats: [UIText.ChartStat]
+    let height: Double
+    let plotWidth: Double
+    let showsTime: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            ChartSectionTitle(title: L.Charts.power, icon: "bolt")
+            PowerMarks(points: window.power, runs: window.modeRuns, axis: window.powerAxis ?? .fixed(0...3),
+                       time: window.timeDomain, style: style, range: range, height: height, plotWidth: plotWidth,
+                       showsTime: showsTime)
+                .equatable()
+                .frame(height: height)
+                .chartSummary(L.Charts.power, window.power.compactMap(\.power)) { Fmt.watts($0) }
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .firstTextBaseline) {
+                    ModeLegend(runs: window.modeRuns, style: style)
+                    Spacer(minLength: 12)
+                    StatsLine(stats: stats)
+                }
+                VStack(alignment: .leading, spacing: 4) {
+                    StatsLine(stats: stats)
+                    ModeLegend(runs: window.modeRuns, style: style)
+                }
+            }
+        }
+    }
+}
+
+/// „Mittel 229 W · Spitze 767 W · 1,10 kWh · 0,33 €“; jeder Teil mit Kurzinfo und als eigenes Element für VoiceOver.
+private struct StatsLine: View {
+    let stats: [UIText.ChartStat]
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(Array(stats.enumerated()), id: \.offset) { i, s in
+                if i > 0 { Text(" · ").accessibilityHidden(true) }
+                Text(s.text).help(s.help).accessibilityHint(s.help)
+            }
+        }
+        .font(.caption.monospacedDigit())
+        .foregroundStyle(.secondary)
+        .lineLimit(1)
+        .fixedSize()
+    }
+}
+
+/// Legende des Modus-Bands: Farbstreifen und Name je Betriebsart, die im Zeitraum vorkam.
+private struct ModeLegend: View {
+    let runs: [HistorySample.ModeRun]
+    let style: ChartStyle
+
+    private var modes: [OperationalMode] {
+        var seen: [OperationalMode] = []
+        for r in runs where !seen.contains(r.mode) { seen.append(r.mode) }
+        return seen
+    }
+
+    var body: some View {
+        if !modes.isEmpty {
+            HStack(spacing: 10) {
+                ForEach(modes, id: \.self) { m in
+                    HStack(spacing: 5) {
+                        RoundedRectangle(cornerRadius: 1).fill(style.color(for: m))
+                            .frame(width: 14, height: ChartLayout.bandHeight)
+                        Text(m.title)
+                    }
+                }
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .fixedSize()
+            .help(L.Charts.modeBandHelp)
+            .accessibilityElement(children: .combine)
+            .accessibilityHint(L.Charts.modeBandHelp)
+        }
+    }
+}
+
+/// Linienmuster in der Legende (durchgezogen, gestrichelt, gepunktet).
+private struct LegendItem: View {
+    let title: String
+    let color: Color
+    let stroke: StrokeStyle
+
+    var body: some View {
+        HStack(spacing: 5) {
+            Path { p in
+                p.move(to: CGPoint(x: 0, y: 1.5))
+                p.addLine(to: CGPoint(x: 16, y: 1.5))
+            }
+            .stroke(color, style: stroke)
+            .frame(width: 16, height: 3)
+            Text(title)
+        }
+    }
+}
+
+struct TemperatureSection: View {
+    let window: ChartWindow
+    let range: TimeInterval
+    let style: ChartStyle
+    let combined: Bool
+    let height: Double
+    let plotWidth: Double
+    let showsTime: Bool
+
+    private var showsOutdoor: Bool { combined && !window.outdoor.isEmpty }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .firstTextBaseline) {
+                ChartSectionTitle(title: L.Charts.temperature, icon: "thermometer.medium")
+                Spacer(minLength: 12)
+                HStack(spacing: 12) {
+                    LegendItem(title: ChartNames.room, color: style.line, stroke: ChartStyle.solidStroke)
+                    LegendItem(title: ChartNames.target, color: style.target, stroke: ChartStyle.targetStroke)
+                    if showsOutdoor {
+                        LegendItem(title: ChartNames.outdoor, color: style.outdoor, stroke: ChartStyle.outdoorStroke)
+                    }
+                }
+                .font(.caption).foregroundStyle(.secondary).fixedSize()
+                .accessibilityHidden(true)
+            }
+            TemperatureMarks(window: window, range: range, style: style, outdoor: showsOutdoor, plotWidth: plotWidth,
+                             showsTime: showsTime)
+                .equatable()
+                .frame(height: height)
+                .temperatureSummary(window, outdoor: showsOutdoor)
+        }
+    }
+}
+
+struct OutdoorSection: View {
+    let window: ChartWindow
+    let range: TimeInterval
+    let style: ChartStyle
+    let height: Double
+    let plotWidth: Double
     var fill = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Label(L.Charts.power, systemImage: "bolt").font(.subheadline.weight(.medium))
-            PowerMarks(points: points, time: time, tint: tint, range: range)
+            ChartSectionTitle(title: L.Charts.outdoor, icon: "sun.max")
+            OutdoorMarks(line: window.outdoorLine, measured: window.outdoor, time: window.timeDomain,
+                         axis: window.outsideAxis ?? .fixed(UIOptions.chartOutdoorAxis), range: range, color: style.outdoor,
+                         plotWidth: plotWidth)
                 .equatable()
-                .frame(height: height)
-                .chartSummary(L.Charts.power, points.compactMap(\.power)) { Fmt.watts($0) }
+                // Im Raster so hoch wie die Karte: Die Verbrauchskarte daneben bestimmt die Zeilenhöhe (Summe, Legende)
+                // und hat eine feste Höhe je Graphenhöhe, darum wächst auch dieser Graph nur in deren 20-pt-Stufen.
+                .frame(minHeight: height, idealHeight: height, maxHeight: fill ? .infinity : height)
+                .chartSummary(L.Charts.outdoor, window.outdoor.compactMap(\.outdoor)) { Fmt.temp($0) }
         }
-        .frame(maxHeight: fill ? .infinity : nil, alignment: .top)
-        .padding(12)
-        .plainCard(radius: 14)
     }
 }
 
-/// Nur von den Daten abhängig. IDs sind die Positionen (0 … ~600): Zeitstempel als ID ließen die interne
-/// ID-Tabelle von Charts mit jedem weitergerückten Fenster wachsen.
+// MARK: - Graphen (nur von den Daten abhängig)
+//
+// IDs sind die Positionen (0 … ~600): Zeitstempel als ID ließen die interne ID-Tabelle von Charts mit jedem
+// weitergerückten Fenster wachsen.
+
 private struct PowerMarks: View, Equatable {
     let points: [HistorySample]
+    let runs: [HistorySample.ModeRun]
+    let axis: ChartAxis
     let time: ClosedRange<Date>?
-    let tint: Color
+    let style: ChartStyle
     let range: TimeInterval
+    let height: Double
+    let plotWidth: Double
+    let showsTime: Bool
     /// Gehört zum Vergleich: ändern sich die Formate zur Laufzeit, baut sich der Graph neu auf.
     var format = FormatProfile.current
 
+    /// Unter der Nulllinie liegt das Modus-Band; der Bereich wird dafür nach unten verlängert (Höhe der Zeichenfläche
+    /// geschätzt: Graph ohne Zeitbeschriftung).
+    private var shown: ChartAxis {
+        let plot = max(40, height - (showsTime ? 22 : 4))
+        return axis.extendedBelow(fraction: (ChartLayout.bandHeight + ChartLayout.bandGap) / plot)
+    }
+
     var body: some View {
+        let shown = shown
+        let bandTop = shown.min + (axis.min - shown.min) * ChartLayout.bandHeight / (ChartLayout.bandHeight + ChartLayout.bandGap)
+        let domain = time ?? Date().addingTimeInterval(-range)...Date()
         Chart {
+            ForEach(runs.indices, id: \.self) { i in
+                let r = runs[i]
+                RectangleMark(xStart: .value(ChartNames.time, r.start), xEnd: .value(ChartNames.time, r.end),
+                              yStart: .value(ChartNames.watt, shown.min), yEnd: .value(ChartNames.watt, bandTop))
+                    .foregroundStyle(style.color(for: r.mode))
+            }
             ForEach(ChartSegment.split(points, range: range), id: \.id) { seg in
                 ForEach(seg.points.indices, id: \.self) { i in
                     let s = seg.points[i]
                     // Nicht stapeln: Lauf und Lücken-Brücke teilen sich ihre Nahtpunkte.
-                    AreaMark(x: .value(ChartNames.time, s.time), y: .value(ChartNames.watt, s.power ?? 0),
-                             series: .value(ChartNames.segment, seg.id), stacking: .unstacked)
-                        .foregroundStyle(.linearGradient(colors: [tint.opacity(0.45), tint.opacity(0.05)],
-                                                         startPoint: .top, endPoint: .bottom))
+                    AreaMark(x: .value(ChartNames.time, s.time), yStart: .value(ChartNames.watt, 0),
+                             yEnd: .value(ChartNames.watt, s.power ?? 0), series: .value(ChartNames.segment, seg.id))
+                        .foregroundStyle(style.line.opacity(0.07))
                         .interpolationMethod(seg.gap ? .linear : .monotone)
                         .opacity(seg.gap ? ChartSegment.gapOpacity : 1)
                     LineMark(x: .value(ChartNames.time, s.time), y: .value(ChartNames.watt, s.power ?? 0),
                              series: .value(ChartNames.segment, seg.id))
-                        .foregroundStyle(tint)
+                        .foregroundStyle(style.line)
+                        .lineStyle(ChartStyle.solidStroke)
                         .interpolationMethod(seg.gap ? .linear : .monotone)
                         .opacity(seg.gap ? ChartSegment.gapOpacity : 1)
                 }
             }
         }
-        .chartYAxisLabel("W")
-        .chartXScale(domain: time ?? Date().addingTimeInterval(-range)...Date())
-        .timeAxis(range: range)
+        .valueAxis(axis, shown: shown, unit: "W")
+        .chartXScale(domain: domain)
+        .timeAxis(domain: domain, range: range, plotWidth: plotWidth, labels: showsTime)
         .chartOverlay { proxy in
             HoverOverlay(proxy: proxy, points: points) { p in
                 p.power.map { w in
-                    HoverPick(y: w, color: tint, label: HoverLabel(value: Fmt.watts(w), time: p.time, range: range))
+                    HoverPick(y: w, color: style.line, label: HoverLabel(value: Fmt.watts(w), time: p.time, range: range))
                 }
             }
         }
     }
 }
 
-/// Raum (Ist) und Soll. Außen hat einen eigenen Graphen darunter (`OutdoorChart`): Er liegt meist weit unter
-/// Raum/Soll und hätte beide sonst auf einen schmalen Streifen gestaucht.
-struct TemperatureChart: View {
-    let window: ChartWindow
-    let range: TimeInterval
-    var colors = SeriesColors()
-    var height = 180.0
-    var fill = false
-
-    // Neutrale Reihenfarben: Orange/Grün/Blau stehen für die Modi Heizen/Entfeuchten/Kühlen.
-    static let indoorColor = SeriesColors.indoorBase
-    static let targetColor = SeriesColors.targetBase
-    static let outdoorColor = SeriesColors.outdoorBase
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Label(L.Charts.temperature, systemImage: "thermometer.medium").font(.subheadline.weight(.medium))
-            TemperatureMarks(window: window, range: range, colors: colors)
-                .equatable()
-                .frame(height: height)
-                .chartSummary(L.Appearance.Hero.room, window.indoor.compactMap(\.indoor)) { Fmt.temp($0) }
-        }
-        .frame(maxHeight: fill ? .infinity : nil, alignment: .top)
-        .padding(12)
-        .plainCard(radius: 14)
-    }
-}
-
+/// Raum (Ist) und Soll, auf Wunsch mit Außen. Ohne Außen hat dieser Graph eine eigene Skala: Außen liegt meist weit
+/// unter Raum/Soll und hätte beide sonst auf einen schmalen Streifen gestaucht.
 private struct TemperatureMarks: View, Equatable {
     let window: ChartWindow
     let range: TimeInterval
-    let colors: SeriesColors
+    let style: ChartStyle
+    let outdoor: Bool
+    let plotWidth: Double
+    let showsTime: Bool
     /// Gehört zum Vergleich: ändern sich die Formate zur Laufzeit, baut sich der Graph neu auf.
     var format = FormatProfile.current
 
     var body: some View {
+        let axis = (outdoor ? window.combinedAxis : window.insideAxis) ?? .fixed(UIOptions.chartTemperatureAxis)
+        let domain = window.timeDomain ?? Date().addingTimeInterval(-range)...Date()
         Chart {
-            ForEach(ChartSegment.split(window.indoor, range: range), id: \.id) { seg in
-                ForEach(seg.points.indices, id: \.self) { i in
-                    let s = seg.points[i]
-                    LineMark(x: .value(ChartNames.time, s.time), y: .value("°C", s.indoor ?? 0), series: .value(ChartNames.series, "\(ChartNames.room) \(seg.id)"))
-                        .foregroundStyle(by: .value(ChartNames.series, ChartNames.room))
-                        .interpolationMethod(seg.gap ? .linear : .monotone)
-                        .opacity(seg.gap ? ChartSegment.gapOpacity : 1)
+            if outdoor {
+                ForEach(ChartSegment.split(window.outdoorLine, range: range), id: \.id) { seg in
+                    ForEach(seg.points.indices, id: \.self) { i in
+                        let s = seg.points[i]
+                        LineMark(x: .value(ChartNames.time, s.time), y: .value("°C", s.outdoor ?? 0),
+                                 series: .value(ChartNames.series, "\(ChartNames.outdoor) \(seg.id)"))
+                            .foregroundStyle(style.outdoor)
+                            .lineStyle(ChartStyle.outdoorStroke)
+                            .interpolationMethod(seg.gap ? .linear : .monotone)
+                            .opacity(seg.gap ? ChartSegment.gapOpacity : 1)
+                    }
                 }
             }
             ForEach(ChartSegment.split(window.target, range: range), id: \.id) { seg in
                 ForEach(seg.points.indices, id: \.self) { i in
                     let s = seg.points[i]
-                    LineMark(x: .value(ChartNames.time, s.time), y: .value("°C", s.target ?? 0), series: .value(ChartNames.series, "\(ChartNames.target) \(seg.id)"))
-                        .foregroundStyle(by: .value(ChartNames.series, ChartNames.target))
-                        .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
+                    LineMark(x: .value(ChartNames.time, s.time), y: .value("°C", s.target ?? 0),
+                             series: .value(ChartNames.series, "\(ChartNames.target) \(seg.id)"))
+                        .foregroundStyle(style.target)
+                        .lineStyle(ChartStyle.targetStroke)
                         .interpolationMethod(seg.gap ? .linear : .stepEnd)
                         .opacity(seg.gap ? ChartSegment.gapOpacity : 1)
                 }
             }
+            ForEach(ChartSegment.split(window.indoor, range: range), id: \.id) { seg in
+                ForEach(seg.points.indices, id: \.self) { i in
+                    let s = seg.points[i]
+                    LineMark(x: .value(ChartNames.time, s.time), y: .value("°C", s.indoor ?? 0),
+                             series: .value(ChartNames.series, "\(ChartNames.room) \(seg.id)"))
+                        .foregroundStyle(style.line)
+                        .lineStyle(ChartStyle.solidStroke)
+                        .interpolationMethod(seg.gap ? .linear : .monotone)
+                        .opacity(seg.gap ? ChartSegment.gapOpacity : 1)
+                }
+            }
         }
-        .chartForegroundStyleScale([ChartNames.room: colors.indoor, ChartNames.target: colors.target])
-        .chartLegend(position: .bottom, alignment: .leading)
-        .chartYAxisLabel("°C")
-        .chartYScale(domain: window.insideRange ?? UIOptions.chartTemperatureAxis)
-        .chartXScale(domain: window.timeDomain ?? Date().addingTimeInterval(-range)...Date())
-        .timeAxis(range: range)
+        .valueAxis(axis, unit: "°C")
+        .chartXScale(domain: domain)
+        .timeAxis(domain: domain, range: range, plotWidth: plotWidth, labels: showsTime)
         .chartOverlay { proxy in
             HoverOverlay(proxy: proxy, points: window.indoor) { p in
                 p.indoor.map { y in
-                    HoverPick(y: y, color: colors.indoor,
-                              label: HoverLabel(value: Fmt.temp(y), time: p.time, range: range,
-                                                extra: [p.target.map { L.Charts.hoverTarget(target: Fmt.target($0)) }].compactMap { $0 }))
+                    let extra = [p.target.map { L.Charts.hoverTarget(target: Fmt.target($0)) },
+                                 outdoor ? p.outdoor.map { L.Charts.hoverOutdoor(outdoor: Fmt.temp($0)) } : nil]
+                    return HoverPick(y: y, color: style.line,
+                                     label: HoverLabel(value: Fmt.temp(y), time: p.time, range: range,
+                                                       extra: extra.compactMap { $0 }))
                 }
             }
         }
     }
 }
 
-/// Außentemperatur als eigener, flacher Graph unter dem Temperaturgraphen – mit eigener Skala in voller Höhe.
-struct OutdoorChart: View {
-    let window: ChartWindow
-    let range: TimeInterval
-    var color = SeriesColors.outdoorBase
-    var height = 120.0
-    var fill = false
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Label(L.Charts.outdoor, systemImage: "sun.max").font(.subheadline.weight(.medium))
-            OutdoorMarks(points: window.outdoor, time: window.timeDomain, domain: window.outsideRange ?? UIOptions.chartOutdoorAxis, range: range, color: color)
-                .equatable()
-                .frame(height: height)
-                .chartSummary(L.Charts.outdoor, window.outdoor.compactMap(\.outdoor)) { Fmt.temp($0) }
-        }
-        .frame(maxHeight: fill ? .infinity : nil, alignment: .top)
-        .padding(12)
-        .plainCard(radius: 14)
-    }
-}
-
+/// Außentemperatur als eigener, flacher Graph mit eigener Skala in voller Höhe. Gezeichnet wird das gleitende Mittel
+/// (der Fühler springt zwischen zwei Werten); unter dem Mauszeiger steht der gemessene Wert.
 private struct OutdoorMarks: View, Equatable {
-    let points: [HistorySample]
+    let line: [HistorySample]
+    let measured: [HistorySample]
     let time: ClosedRange<Date>?
-    let domain: ClosedRange<Double>
+    let axis: ChartAxis
     let range: TimeInterval
     let color: Color
+    let plotWidth: Double
     /// Gehört zum Vergleich: ändern sich die Formate zur Laufzeit, baut sich der Graph neu auf.
     var format = FormatProfile.current
 
     var body: some View {
+        let domain = time ?? Date().addingTimeInterval(-range)...Date()
         Chart {
-            ForEach(ChartSegment.split(points, range: range), id: \.id) { seg in
+            ForEach(ChartSegment.split(line, range: range), id: \.id) { seg in
                 ForEach(seg.points.indices, id: \.self) { i in
                     let s = seg.points[i]
-                    AreaMark(x: .value(ChartNames.time, s.time), yStart: .value("°C", domain.lowerBound),
-                             yEnd: .value("°C", s.outdoor ?? 0), series: .value(ChartNames.segment, seg.id))
-                        .foregroundStyle(.linearGradient(colors: [color.opacity(0.30), color.opacity(0.03)],
-                                                         startPoint: .top, endPoint: .bottom))
-                        .interpolationMethod(seg.gap ? .linear : .monotone)
-                        .opacity(seg.gap ? ChartSegment.gapOpacity : 1)
                     LineMark(x: .value(ChartNames.time, s.time), y: .value("°C", s.outdoor ?? 0), series: .value(ChartNames.segment, seg.id))
                         .foregroundStyle(color)
+                        .lineStyle(ChartStyle.outdoorStroke)
                         .interpolationMethod(seg.gap ? .linear : .monotone)
                         .opacity(seg.gap ? ChartSegment.gapOpacity : 1)
                 }
             }
         }
-        .chartYAxisLabel("°C")
-        .chartYScale(domain: domain)
-        .chartXScale(domain: time ?? Date().addingTimeInterval(-range)...Date())
-        .timeAxis(range: range)
+        .valueAxis(axis, unit: "°C")
+        .chartXScale(domain: domain)
+        .timeAxis(domain: domain, range: range, plotWidth: plotWidth, labels: true)
         .chartOverlay { proxy in
-            HoverOverlay(proxy: proxy, points: points) { p in
+            HoverOverlay(proxy: proxy, points: line) { p in
                 p.outdoor.map { y in
-                    HoverPick(y: y, color: color, label: HoverLabel(value: Fmt.temp(y), time: p.time, range: range))
+                    let value = HistorySample.nearest(in: measured, to: p.time)?.outdoor ?? y
+                    return HoverPick(y: y, color: color, label: HoverLabel(value: Fmt.temp(value), time: p.time, range: range))
                 }
             }
         }
-    }
-}
-
-/// Reihenfarben der Temperaturgraphen im Thema (Standard = neutrale Farben).
-struct SeriesColors: Equatable {
-    static let indoorBase = Color.primary.opacity(0.85)
-    static let targetBase = Color(red: 0.85, green: 0.25, blue: 0.55)
-    static let outdoorBase = Color(red: 0.50, green: 0.52, blue: 0.56)
-
-    var indoor = Self.indoorBase
-    var target = Self.targetBase
-    var outdoor = Self.outdoorBase
-
-    init() {}
-
-    init(_ theme: ThemeStyle) {
-        // Raum bleibt die Vordergrundfarbe (hell/dunkel); eine feste Umrechnung verlöre den Wechsel.
-        target = theme.series(Self.targetBase)
-        outdoor = theme.series(Self.outdoorBase)
     }
 }
 
@@ -591,15 +760,25 @@ struct HoverLabel: View {
 extension View {
     /// Ein einziges Element für VoiceOver statt hunderter Punkte: „Leistung: zuletzt 412 W, niedrigster 0 W, höchster 980 W“.
     func chartSummary(_ title: String, _ values: [Double], _ format: (Double) -> String) -> some View {
-        let text: String
-        if let last = values.last, let lo = values.min(), let hi = values.max() {
-            text = L.Charts.summary(last: format(last), low: format(lo), high: format(hi))
-        } else {
-            text = L.Charts.summaryNone
+        accessibilityElement(children: .ignore)
+            .accessibilityLabel(title)
+            .accessibilityValue(Self.summaryText(values, format))
+    }
+
+    /// Temperaturgraph für VoiceOver: Raum, mit Außen im selben Graphen auch dessen Werte („…; Außen: zuletzt …“).
+    func temperatureSummary(_ w: ChartWindow, outdoor: Bool) -> some View {
+        var text = Self.summaryText(w.indoor.compactMap(\.indoor)) { Fmt.temp($0) }
+        if outdoor {
+            text += "; " + ChartNames.outdoor + ": " + Self.summaryText(w.outdoor.compactMap(\.outdoor)) { Fmt.temp($0) }
         }
         return accessibilityElement(children: .ignore)
-            .accessibilityLabel(title)
+            .accessibilityLabel(ChartNames.room)
             .accessibilityValue(text)
+    }
+
+    private static func summaryText(_ values: [Double], _ format: (Double) -> String) -> String {
+        guard let last = values.last, let lo = values.min(), let hi = values.max() else { return L.Charts.summaryNone }
+        return L.Charts.summary(last: format(last), low: format(lo), high: format(hi))
     }
 
     /// Schlichte Karte statt Glas für die Graphen: Glas rechnet bei jedem Neuzeichnen des Inhalts den Hintergrund
@@ -611,19 +790,51 @@ extension View {
                 .overlay(RoundedRectangle(cornerRadius: radius).strokeBorder(Color.primary.opacity(0.08), lineWidth: 0.5))
         )
     }
+
+    /// Karte um einen oder mehrere Graphen; im Raster füllt sie die Zeilenhöhe.
+    func chartCard(fill: Bool) -> some View {
+        frame(maxWidth: .infinity, maxHeight: fill ? .infinity : nil, alignment: .topLeading)
+            .padding(ChartLayout.cardPadding)
+            .plainCard(radius: 14)
+    }
 }
 
 extension View {
-    /// Zeitachse mit den Formaten des Kerns: Die automatische Beschriftung von Charts mischt Sprache und Region
-    /// („7 Nov at 22:00“) und wird abgeschnitten.
-    func timeAxis(range: TimeInterval) -> some View {
-        chartXAxis {
-            AxisMarks(values: .automatic(desiredCount: range > 86400 ? 7 : 6)) { value in
+    /// Y-Achse nach der Rechnung des Kerns, damit Mac und Windows dieselben Gitterlinien zeigen; Zahlen im Format
+    /// des Kerns, die Einheit an der obersten Linie. Die Beschriftung steht rechts in fester Breite, damit alle
+    /// Graphen einer Karte dieselbe Zeichenfläche haben. `shown` ist der gezeichnete Bereich, falls er über die
+    /// Gitterlinien hinausgeht (Modus-Band).
+    func valueAxis(_ axis: ChartAxis, shown: ChartAxis? = nil, unit: String) -> some View {
+        let ticks = axis.ticks
+        return chartYScale(domain: (shown ?? axis).domain).chartYAxis {
+            AxisMarks(position: .trailing, values: ticks) { value in
                 AxisGridLine()
-                AxisTick()
-                AxisValueLabel {
-                    if let d = value.as(Date.self) {
-                        Text(range > 86400 ? Fmt.dayMonth(d) : Fmt.clock(d))
+                AxisValueLabel(horizontalSpacing: ChartLayout.axisSpacing) {
+                    if let v = value.as(Double.self) {
+                        Text(v == ticks.last ? "\(Fmt.num(v, 0)) \(unit)" : Fmt.num(v, 0))
+                            .lineLimit(1)
+                            .frame(width: ChartLayout.axisLabelWidth, alignment: .leading)
+                    }
+                }
+            }
+        }
+    }
+
+    /// Zeitachse auf runden Ortszeiten aus dem Kern (`ChartAxis.timeTicks`), mit den Formaten des Kerns: Die
+    /// automatische Beschriftung von Charts mischt Sprache und Region („7 Nov at 22:00“) und kürzt die letzte zu „…“.
+    /// Ohne `labels` nur die Gitterlinien (Graphen über dem untersten in einer Karte).
+    func timeAxis(domain: ClosedRange<Date>, range: TimeInterval, plotWidth: Double, labels: Bool) -> some View {
+        let ticks = ChartAxis.timeTicks(domain: domain, range: range, plotWidth: plotWidth,
+                                        labelHalfWidth: range > 86400 ? 20 : 16)
+        return chartXAxis {
+            AxisMarks(values: ticks) { value in
+                AxisGridLine()
+                if labels {
+                    AxisTick()
+                    AxisValueLabel(collisionResolution: .disabled) {
+                        if let d = value.as(Date.self) {
+                            Text(range > 86400 ? Fmt.dayMonth(d) : Fmt.clock(d)).fixedSize()
+                        }
                     }
                 }
             }

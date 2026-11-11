@@ -2,8 +2,8 @@ import Foundation
 import Synchronization
 
 /// Erkennt Testläufe (XCTest, swift-testing, `swift test`), damit Protokoll und Schlüsselbund dort nie echt sind.
-enum TestEnvironment {
-    static let isRunningTests: Bool = {
+public enum TestEnvironment {
+    public static let isRunningTests: Bool = {
         let p = ProcessInfo.processInfo
         let name = p.processName
         if name.hasSuffix("xctest") || name.contains("PackageTests") || name == "swiftpm-testing-helper" { return true }

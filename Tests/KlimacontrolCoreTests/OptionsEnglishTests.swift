@@ -30,6 +30,14 @@ final class OptionsEnglishTests: XCTestCase {
         }
     }
 
+    func testTemperatureScaleEnglish() {
+        english {
+            XCTAssertEqual(UIText.temperatureScaleRoom(19), "Room 19.0°")
+            XCTAssertEqual(L.Main.Power.stateOn, "On")
+            XCTAssertEqual(L.Main.Power.stateOff, "Off")
+        }
+    }
+
     func testFanCaptionEnglish() {
         english {
             var s = ACState()

@@ -433,18 +433,27 @@ public final class HistoryDB: @unchecked Sendable {
         let from = Self.unix(start)
         let bucket = max(1, max(1, Self.unix(now) - from) / points)
         // Alte Zeilen haben im Aus-Zustand 10,0 °C außen als Platzhalter – kein Messwert.
+        // Modus je Fenster: der häufigste unter den Zeilen mit laufender Anlage (SQLite liefert zur Spalte neben
+        // MAX(n) die Zeile mit dem Höchstwert).
         let sql = """
-            SELECT MIN(zeit), AVG(leistung_w), AVG(innen_c),
-                   AVG(CASE WHEN ein = 1 OR aussen_c <> 10.0 THEN aussen_c END),
-                   MAX(CASE WHEN ein = 1 THEN soll_c END), MAX(ein)
-            FROM verlauf WHERE zeit >= ? GROUP BY zeit / ? ORDER BY 1
+            WITH haeufig AS (
+                SELECT k, modus, MAX(n) FROM (
+                    SELECT zeit / ?2 AS k, modus, COUNT(*) AS n FROM verlauf
+                    WHERE zeit >= ?1 AND ein = 1 AND modus IS NOT NULL AND modus <> '' GROUP BY k, modus)
+                GROUP BY k)
+            SELECT MIN(v.zeit), AVG(v.leistung_w), AVG(v.innen_c),
+                   AVG(CASE WHEN v.ein = 1 OR v.aussen_c <> 10.0 THEN v.aussen_c END),
+                   MAX(CASE WHEN v.ein = 1 THEN v.soll_c END), MAX(v.ein), MAX(h.modus)
+            FROM verlauf v LEFT JOIN haeufig h ON h.k = v.zeit / ?2
+            WHERE v.zeit >= ?1 GROUP BY v.zeit / ?2 ORDER BY 1
             """
         var out: [HistorySample] = []
         out.reserveCapacity(min(points, 10_000) + 2)
         withConnectionLocked { c in
             try c.query(sql, [.integer(from), .integer(bucket)]) { s in
                 out.append(HistorySample(time: s.date(0), power: s.double(1), indoor: s.double(2), outdoor: s.double(3),
-                                         target: s.double(4), on: s.int(5) == 1))
+                                         target: s.double(4), on: s.int(5) == 1,
+                                         mode: HistorySample.mode(stored: s.text(6))))
             }
         }
         return out

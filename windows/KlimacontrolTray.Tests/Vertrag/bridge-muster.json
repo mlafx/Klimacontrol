@@ -45,6 +45,7 @@
     "goalLine": "Kühlt · noch 1,0° bis zum Ziel",
     "historyCSV": false,
     "historyRevision": 7,
+    "historyUnavailable": true,
     "ip": "192.168.1.40",
     "lastRefreshFailed": false,
     "lastUpdate": 1762358395.25,
@@ -128,7 +129,8 @@
     "appearance": {"theme": "neon", "scheme": "dark", "accent": "custom", "customColor": "gray", "background": "glassStrong",
                    "transparency": 0.55, "blur": 30, "glow": 0.8, "size": "large", "digits": "bold", "hero": "room",
                    "scope": "simple", "lively": true, "weather": true, "reduceMotion": false, "alwaysOnTop": true,
-                   "menuBarText": "roomTarget", "menuBarColored": true, "menuBarAnimated": true},
+                   "menuBarText": "roomTarget", "menuBarColored": true, "menuBarAnimated": true,
+                   "temperatureCombined": true},
     "updateFeedURL": "https://github.com/mlafx/Klimacontrol/releases/latest/download/updateinfo-win.xml",
     "updateCheckInterval": 86400,
     "options": {
@@ -144,9 +146,24 @@
       "credentials": {"tokenLength": 128, "keyLength": 64, "defaultPort": 6444, "addressPlaceholder": "192.168.1.20",
                       "addressExample": "z. B. 192.168.1.20", "addressOrHostPrompt": "oder Adresse, z. B. 192.168.1.20",
                       "tokenPrompt": "128 Zeichen (0–9, a–f)", "keyPrompt": "64 Zeichen (0–9, a–f)"},
-      "chart": {"ranges": [{"label": "1 h", "seconds": 3600}, {"label": "6 h", "seconds": 21600}], "defaultRange": 21600,
+      "temperatureScale": {"min": 16, "max": 30,
+                           "labels": [{"value": 16, "fraction": 0, "text": "16°"}, {"value": 25, "fraction": 0.6428571428571429, "text": "25°"},
+                                      {"value": 30, "fraction": 1, "text": "30°"}],
+                           "emphasized": [{"value": 20, "fraction": 0.2857142857142857}, {"value": 25, "fraction": 0.6428571428571429}]},
+      "chart": {"ranges": [{"label": "1 h", "seconds": 3600, "tickMinutes": 10, "tickLabelHalfWidth": 16},
+                           {"label": "6 h", "seconds": 21600, "tickMinutes": 60, "tickLabelHalfWidth": 16},
+                           {"label": "7 Tage", "seconds": 604800, "tickMinutes": 1440, "tickLabelHalfWidth": 20}], "defaultRange": 21600,
                 "windowCount": 600, "gapFactor": 3, "gapMinSeconds": 180,
                 "temperatureAxis": {"min": 16, "max": 30}, "outdoorAxis": {"min": 0, "max": 10}},
+      "window": {"controlWidth": 480, "historyMin": 460, "historyBalanced": 700, "historyGridFrom": 880,
+                 "diagnosticsMin": 340, "diagnosticsMax": 400, "controlsOnlyMaxWidth": 520,
+                 "minimumHeight": {"compact": 470, "normal": 520, "large": 600},
+                 "historyBaseHeight": 840, "singleOverhead": 340, "gridOverhead": 290, "gridRowMax": 520,
+                 "chartStep": 20, "energyBarMaxWidth": 56,
+                 "chartMin": {"power": 120, "temperature": 150, "outdoor": 80, "energy": 150},
+                 "chartMax": {"power": 260, "temperature": 340, "outdoor": 180, "energy": 240},
+                 "gridChartMin": {"power": 180, "temperature": 180, "outdoor": 150, "energy": 150},
+                 "chartWeights": {"power": 3, "temperature": 3, "outdoor": 2}},
       "energy": {"kinds": [{"id": "day", "label": "Tage", "count": 14}, {"id": "week", "label": "Wochen", "count": 8}],
                  "defaultKind": "day", "title": "Verbrauch", "help": "Verbrauch laut Zähler der Anlage.",
                  "legend": "Heller Balken: Zeitraum läuft noch.",
@@ -217,6 +234,7 @@
                  "versions": [{"version": "1.0.1.2", "heading": "Version 1.0.1.2",
                                "sections": [{"title": "Hinzugefügt", "items": ["Beispielpunkt.", "Zweiter Punkt\n– Unterpunkt."]}]}]},
     "fanCaption": "Mittel · 60 %",
+    "scaleRoom": {"value": 25.5, "fraction": 0.6785714285714286, "text": "Raum 25,5°"},
     "maintenanceHints": ["Filter reinigen: Die Anlage bittet um eine Filterreinigung (siehe Bedienungsanleitung)."],
     "errorCodeValue": "keiner",
     "filterValue": "in Ordnung",
@@ -252,12 +270,16 @@
     "todayKWh": 2.4
   },
   "history": [
-    {"indoor": 25.5, "on": true, "outdoor": 29.0, "power": 410.0, "t": 1762358395.25, "target": 24.0}
+    {"indoor": 25.5, "mode": 2, "on": true, "outdoor": 29.0, "outdoorSmooth": 28.75, "power": 410.0, "t": 1762358395.25, "target": 24.0}
   ],
   "stats": {
     "avgWatts": 350.5,
     "kWh": 2.4,
-    "peakWatts": 620.0
+    "peakWatts": 620.0,
+    "line": [{"text": "Mittel 351 W", "help": "Mittlere Leistung im gewählten Zeitraum"},
+             {"text": "Spitze 620 W", "help": "Höchste gemessene Leistung im gewählten Zeitraum"},
+             {"text": "2,40 kWh", "help": "Aus den Messwerten des Zeitraums berechnet."},
+             {"text": "0,72 €", "help": "Verbrauch des Zeitraums mal heutigem Strompreis (0,30 € je kWh) – auch für ältere Tage."}]
   },
   "notices": [
     {"copyright": ["Copyright (c) Beispiel"], "id": "sqlite", "license": "Public Domain", "licenseText": "…",

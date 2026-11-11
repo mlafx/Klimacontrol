@@ -94,20 +94,41 @@ final class MainWindowLayoutTests: XCTestCase {
     func testChartHeights() {
         XCTAssertEqual(M.chartHeights(columnHeight: 0), .init())
         XCTAssertEqual(M.chartHeights(columnHeight: M.historyBaseHeight), .init())
+        XCTAssertEqual(M.historyBaseHeight, M.singleOverhead + 120 + 150 + 80 + 150)
         let mid = M.chartHeights(columnHeight: M.historyBaseHeight + 160)
-        XCTAssertEqual(mid.power, 150 + 60)
-        XCTAssertEqual(mid.temperature, 180 + 60)
-        XCTAssertEqual(mid.outdoor, 120 + 40)
+        XCTAssertEqual(mid.power, 120 + 60)
+        XCTAssertEqual(mid.temperature, 150 + 60)
+        XCTAssertEqual(mid.outdoor, 80 + 40)
         XCTAssertEqual(mid.energy, 150)
         let tall = M.chartHeights(columnHeight: 5000)
-        XCTAssertEqual([tall.power, tall.temperature, tall.outdoor, tall.energy], [300, 360, 240, 240])
-        for h in stride(from: 900.0, to: 2600.0, by: 37) {
+        XCTAssertEqual([tall.power, tall.temperature, tall.outdoor, tall.energy], [260, 340, 180, 240])
+        for h in stride(from: 800.0, to: 2600.0, by: 37) {
             let c = M.chartHeights(columnHeight: h)
-            for (v, room) in [(c.power - 150, 150.0), (c.temperature - 180, 180), (c.outdoor - 120, 120), (c.energy - 150, 90)]
+            for (v, room) in [(c.power - 120, 140.0), (c.temperature - 150, 190), (c.outdoor - 80, 100), (c.energy - 150, 90)]
             where v != room {
                 XCTAssertEqual(v.truncatingRemainder(dividingBy: 20), 0)
             }
         }
+    }
+
+    /// Außen im Temperaturgraphen: kein eigener Außengraph, Leistung und Temperatur teilen sich den Platz.
+    func testChartHeightsWithoutSeparateOutdoor() {
+        let base = M.chartHeights(columnHeight: 0, separateOutdoor: false)
+        XCTAssertEqual([base.power, base.temperature, base.outdoor, base.energy], [120, 150, 0, 150])
+        let start = M.singleOverhead + 120 + 150 + 150
+        XCTAssertEqual(M.chartHeights(columnHeight: start, separateOutdoor: false), base)
+        let mid = M.chartHeights(columnHeight: start + 120, separateOutdoor: false)
+        XCTAssertEqual([mid.power, mid.temperature, mid.outdoor, mid.energy], [180, 210, 0, 150])
+        let tall = M.chartHeights(columnHeight: 5000, separateOutdoor: false)
+        XCTAssertEqual([tall.power, tall.temperature, tall.outdoor, tall.energy], [260, 340, 0, 240])
+        for h in stride(from: 700.0, to: 2400.0, by: 29) {
+            let c = M.chartHeights(columnHeight: h, separateOutdoor: false)
+            XCTAssertEqual(c.outdoor, 0)
+            XCTAssertEqual((c.power - 120).truncatingRemainder(dividingBy: 20), 0)
+            XCTAssertTrue(c.temperature == 340 || (c.temperature - 150).truncatingRemainder(dividingBy: 20) == 0)
+        }
+        let grid = M.chartHeights(columnHeight: 1290, grid: true, overhead: 290, separateOutdoor: false)
+        XCTAssertEqual([grid.power, grid.outdoor, grid.energy], [500, 0, 500])
     }
 
     func testChartHeightsWithMeasuredOverhead() {

@@ -376,6 +376,22 @@ public enum UIText {
     public static var fanModeCaption: String { L.Hero.fanModeCaption }
     public static var notConfiguredCaption: String { L.Hero.notConfiguredCaption }
 
+    // MARK: Skala der Solltemperatur
+
+    /// Beschriftete Werte unter dem Regler der Solltemperatur (Enden und eine Mitte).
+    public static let temperatureScaleLabels: [Double] = [16, 25, 30]
+    /// Betonte Striche an der Skala.
+    public static let temperatureScaleEmphasized: [Double] = [20, 25]
+
+    /// Lage eines Werts auf der Skala (0 = 16°, 1 = 30°); Werte außerhalb stehen am Rand.
+    public static func temperatureScaleFraction(_ value: Double) -> Double {
+        let span = UIOptions.temperatureMax - UIOptions.temperatureMin
+        return min(1, max(0, (value - UIOptions.temperatureMin) / span))
+    }
+
+    /// Beschriftung der Raum-Marke an der Skala: „Raum 19,0°“.
+    public static func temperatureScaleRoom(_ room: Double) -> String { L.Main.Hero.scaleRoom(value: Fmt.temp(room)) }
+
     // MARK: Hilfsfunktionen
 
     /// Teilt einen fertigen Satz „Was ist passiert. Was tun.“ nach dem ersten Satzende in `what` und `todo`.

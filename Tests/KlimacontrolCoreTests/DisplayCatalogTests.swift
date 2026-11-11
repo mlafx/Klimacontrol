@@ -285,6 +285,20 @@ final class DisplayCatalogTests: CoreTestCase {
         XCTAssertEqual(c.heroCaption, "Kühlt")
     }
 
+    func testTemperatureScale() {
+        XCTAssertEqual(UIText.temperatureScaleLabels, [16, 25, 30])
+        XCTAssertEqual(UIText.temperatureScaleEmphasized, [20, 25])
+        XCTAssertEqual(UIText.temperatureScaleFraction(16), 0)
+        XCTAssertEqual(UIText.temperatureScaleFraction(30), 1)
+        XCTAssertEqual(UIText.temperatureScaleFraction(23), 0.5)
+        XCTAssertEqual(UIText.temperatureScaleFraction(12.5), 0, "unter 16° steht die Marke am linken Rand")
+        XCTAssertEqual(UIText.temperatureScaleFraction(33), 1, "über 30° steht die Marke am rechten Rand")
+        XCTAssertEqual(UIText.temperatureScaleRoom(19), "Raum 19,0°")
+        XCTAssertEqual(UIText.temperatureScaleRoom(12.46), "Raum 12,5°")
+        XCTAssertEqual(L.Main.Power.stateOn, "Ein")
+        XCTAssertEqual(L.Main.Power.stateOff, "Aus")
+    }
+
     // MARK: Kosten
 
     /// Tagesbeginn wie ihn der Kern speichert (Anlage 42 = `Self.config`).

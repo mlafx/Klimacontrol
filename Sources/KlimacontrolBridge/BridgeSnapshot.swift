@@ -146,6 +146,8 @@ struct Snapshot: Encodable {
     var debugLog: Bool
     var historyCSV: Bool
     var historyRevision: Int
+    /// Die Verlaufsdatenbank ließ sich nicht öffnen: statt „zu wenig Daten“ den Katalogtext `charts.unavailable` zeigen.
+    var historyUnavailable = false
     var setup: SetupDTO
     /// Startanzeige: Verbindungsschritt ("searching", "handshake", "reading"; nil = verbunden/keine Verbindung),
     /// `connectSlow` = dauert länger als üblich (> 10 s), `staleSince` = Werte nicht live seit (Unix-Zeit),
@@ -220,6 +222,9 @@ struct Snapshot: Encodable {
     /// „Neu einrichten“ fragt mit `options.prompts.forgetNeedsBackup` (WLAN-Zugangsdaten noch nicht gesichert).
     var forgetNeedsBackup = false
     var fanCaption = ""
+    /// Raum-Marke an der Skala der Solltemperatur (Lage wie `options.temperatureScale`, Text „Raum 23,0°“);
+    /// nil ohne gemessene Raumtemperatur.
+    var scaleRoom: OptionsDTO.TemperatureScale.Mark? = nil
     var maintenanceHints: [String] = []
     var errorCodeValue = ""
     var filterValue = ""
@@ -337,6 +342,7 @@ func phaseName(_ p: ConnectPhase) -> String {
     snap.setup.completion = setup.completion.map {
         CompletionDTO(path: $0.path.rawValue, suggestLANOnly: $0.suggestLANOnly, offerBackup: $0.offerBackup, note: $0.note)
     }
+    snap.historyUnavailable = !c.history.db.isOpen
     snap.connectPhase = c.connectPhase.map(phaseName)
     snap.connectSlow = c.connectSlow
     snap.staleSince = c.staleSince?.timeIntervalSince1970

@@ -56,8 +56,7 @@ struct TimerRow: View, Equatable {
             }
         }
         .font(.callout)
-        .padding(.horizontal, 12).padding(.vertical, 8)
-        .klimaCard(radius: 12)
+        // Karte und Innenabstand setzt der Aufrufer (gemeinsame Karte mit den Szenen).
     }
 
     private func chip(_ text: String, _ icon: String, cancel: @escaping () -> Void) -> some View {

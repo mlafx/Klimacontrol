@@ -55,9 +55,15 @@ extension ACController {
     public func showNotice(_ text: String) { showNotice(UserMessage(what: text, todo: "")) }
 
     /// Wie `showNotice(_:)` mit Text und Code getrennt (der Code steht klein am Ende).
-    public func showNotice(_ message: UserMessage) {
+    public func showNotice(_ message: UserMessage) { showNotice(message, persistent: false) }
+
+    /// `persistent`: bleibt stehen, bis der Nutzer ihn wegklickt oder ein Befehl ihn ersetzt (kein Ablauf nach
+    /// `noticeSeconds`).
+    public func showNotice(_ message: UserMessage, persistent: Bool) {
         noticeTask?.cancel()
+        noticeTask = nil
         noticeMessage = message
+        guard !persistent else { return }
         noticeTask = Task { [weak self, seconds = noticeSeconds] in
             try? await Task.sleep(for: .seconds(seconds))
             guard !Task.isCancelled else { return }
@@ -69,6 +75,24 @@ extension ACController {
         noticeTask?.cancel()
         noticeTask = nil
         if noticeMessage != nil { noticeMessage = nil }
+    }
+
+    /// Ergebnis von `SettingsFileCheck.run` nach dem Start melden (Bridge nach `kc_init`): Protokollzeile in der Sprache
+    /// der Oberfläche und, wenn die Einstellungen zurückgesetzt wurden, ein Hinweis ohne Ablaufzeit.
+    /// `fileName` = Name der geprüften Datei (für das Protokoll).
+    public func reportSettingsFileCheck(_ outcome: SettingsFileCheck.Outcome, fileName: String) {
+        switch outcome {
+        case .missing, .empty, .valid:
+            return
+        case .readFailed(let error):
+            AppLog.error(L.Log.Settings.unreadable(file: fileName, error: error))
+        case .movedAside(let aside), .copiedAside(let aside):
+            AppLog.error(L.Log.Settings.damaged(file: aside))
+            showNotice(UserMessage(what: L.Message.settingsReset(file: aside), todo: ""), persistent: true)
+        case .asideFailed(let error):
+            AppLog.error(L.Log.Settings.asideFailed(file: fileName, error: error))
+            showNotice(UserMessage(what: L.Message.settingsResetLost, todo: ""), persistent: true)
+        }
     }
 
     // MARK: Startanzeige (Verbindungsschritte)

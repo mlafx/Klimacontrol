@@ -2233,6 +2233,24 @@
         }
       }
     },
+    "charts.hoverOutdoor" : {
+      "comment" : "Verlauf: Zeile unter dem Wert beim Überfahren des Temperaturgraphen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außen {outdoor}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outdoor {outdoor}"
+          }
+        }
+      }
+    },
     "charts.hoverTarget" : {
       "comment" : "Graphen: Zeile unter dem Mauszeiger",
       "extractionState" : "manual",
@@ -2247,6 +2265,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Target {target}"
+          }
+        }
+      }
+    },
+    "charts.modeBandHelp" : {
+      "comment" : "Verlauf: Kurzinfo zur Legende des Modus-Bands",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farbiges Band unter der Leistung: Zeit, in der die Anlage lief, in der Farbe der Betriebsart."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colored band below the power: time the air conditioner was running, in the color of its mode."
           }
         }
       }
@@ -2305,6 +2341,24 @@
         }
       }
     },
+    "charts.series.outdoor" : {
+      "comment" : "Verlauf: Legende und VoiceOver-Name der Außentemperatur im Temperaturgraphen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outdoor"
+          }
+        }
+      }
+    },
     "charts.series.room" : {
       "comment" : "Graphen: Reihe Raumtemperatur",
       "extractionState" : "manual",
@@ -2337,6 +2391,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Target"
+          }
+        }
+      }
+    },
+    "charts.stat.avg" : {
+      "comment" : "Verlauf: Kennzahl unter dem Leistungsgraphen, mittlere Leistung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mittel {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average {value}"
+          }
+        }
+      }
+    },
+    "charts.stat.peak" : {
+      "comment" : "Verlauf: Kennzahl unter dem Leistungsgraphen, höchste Leistung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spitze {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peak {value}"
           }
         }
       }
@@ -2553,6 +2643,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Not enough data yet. The history fills with every refresh of the air conditioner."
+          }
+        }
+      }
+    },
+    "charts.unavailable" : {
+      "comment" : "Verlauf: Hinweis statt der Graphen, wenn sich die Verlaufsdatenbank nicht öffnen lässt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Verlauf kann nicht gespeichert werden. Einzelheiten stehen im Protokoll. (history-open)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History cannot be saved. See the log for details. (history-open)"
           }
         }
       }
@@ -5061,6 +5169,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "{value}  (target {target})"
+          }
+        }
+      }
+    },
+    "energy.average" : {
+      "comment" : "Verbrauch: Legende der gestrichelten Linie (Durchschnitt der abgeschlossenen Zeiträume)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durchschnitt {kwh}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average {kwh}"
           }
         }
       }
@@ -10987,6 +11113,24 @@
         }
       }
     },
+    "log.settings.asideFailed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungsdatei {file} defekt, beiseitelegen gescheitert ({error})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings file {file} damaged, could not set it aside ({error})"
+          }
+        }
+      }
+    },
     "log.settings.backgroundPolling" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -11059,6 +11203,24 @@
         }
       }
     },
+    "log.settings.damaged" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungsdatei defekt – beiseitegelegt als {file}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings file damaged – set aside as {file}"
+          }
+        }
+      }
+    },
     "log.settings.detailedLog" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -11127,6 +11289,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Refresh every {seconds} s"
+          }
+        }
+      }
+    },
+    "log.settings.unreadable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungsdatei {file} nicht lesbar ({error}) – unverändert gelassen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings file {file} not readable ({error}) – left unchanged"
           }
         }
       }
@@ -11613,6 +11793,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Updates: beta channel {state}"
+          }
+        }
+      }
+    },
+    "log.updates.betaFallback" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beta-Kanal nicht erreichbar ({error}) – Suche im stabilen Kanal"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beta channel not reachable ({error}) – checking the stable channel"
           }
         }
       }
@@ -12499,6 +12697,24 @@
         }
       }
     },
+    "main.hero.scaleRoom" : {
+      "comment" : "Hauptfenster: Marke der Raumtemperatur an der Skala der Solltemperatur, z. B. „Raum 19,0°“",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raum {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room {value}"
+          }
+        }
+      }
+    },
     "main.hero.targetTemperature" : {
       "comment" : "VoiceOver: Regler Solltemperatur",
       "extractionState" : "manual",
@@ -12729,6 +12945,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "More…"
+          }
+        }
+      }
+    },
+    "main.power.stateOff" : {
+      "comment" : "Hauptfenster und Menüleiste: Beschriftung am Ein/Aus-Knopf, wenn die Anlage aus ist",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        }
+      }
+    },
+    "main.power.stateOn" : {
+      "comment" : "Hauptfenster und Menüleiste: Beschriftung am Ein/Aus-Knopf, wenn die Anlage läuft",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On"
           }
         }
       }
@@ -15699,6 +15951,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The air conditioner's setup is incomplete."
+          }
+        }
+      }
+    },
+    "message.settingsReset" : {
+      "comment" : "Hinweis nach dem Start, wenn die Einstellungsdatei unlesbar war (Windows)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Einstellungen waren beschädigt und wurden zurückgesetzt. Die alte Datei liegt als {file} im selben Ordner. (settings-reset)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The settings were damaged and have been reset. The old file is in the same folder as {file}. (settings-reset)"
+          }
+        }
+      }
+    },
+    "message.settingsResetLost" : {
+      "comment" : "Hinweis nach dem Start, wenn die Einstellungsdatei unlesbar war und nicht beiseitegelegt werden konnte (Windows)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Einstellungen waren beschädigt und wurden zurückgesetzt. Die alte Datei ließ sich nicht sichern. (settings-reset)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The settings were damaged and have been reset. The old file could not be kept. (settings-reset)"
           }
         }
       }
@@ -19005,6 +19293,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Size"
+          }
+        }
+      }
+    },
+    "settings.appearance.temperatureCombined.help" : {
+      "comment" : "Einstellungen, Darstellung, Anzeige: Hilfetext zum Schalter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raum, Soll und Außen in einem Graphen mit gemeinsamer Skala. Aus: Außen hat einen eigenen Graphen, Raum und Soll nutzen die volle Höhe."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room, target, and outdoor in one chart with a shared scale. Off: outdoor has its own chart, and room and target use the full height."
+          }
+        }
+      }
+    },
+    "settings.appearance.temperatureCombined.title" : {
+      "comment" : "Einstellungen, Darstellung, Anzeige: Schalter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außentemperatur im Temperaturgraphen zeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show outdoor temperature in the temperature chart"
           }
         }
       }

@@ -30,7 +30,7 @@ private struct ScenesList: View, Equatable {
 
     var body: some View {
         DisclosureGroup(isExpanded: $expanded) {
-            scenesContent.padding(.top, 6)
+            scenesContent.padding(.top, 8)
         } label: {
             // Gleiche Optik wie die Abschnittstitel LÜFTER/KOMFORT (SectionTitle), damit die Hierarchie durchgeht.
             Text(label).font(.caption.weight(.semibold)).foregroundStyle(.secondary)
@@ -81,7 +81,7 @@ private struct ScenesList: View, Equatable {
                 Text(L.Main.Scene.empty)
                     .font(.caption).foregroundStyle(.secondary)
             } else {
-                LazyVGrid(columns: [GridItem(.flexible(), spacing: 6), GridItem(.flexible(), spacing: 6)], spacing: 6) {
+                LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
                     ForEach(scenes) { scene in
                         let active = activeIDs.contains(scene.id)
                         let tint = OperationalMode(rawValue: scene.mode).map { theme.tint(for: $0) } ?? .accentColor
@@ -98,11 +98,12 @@ private struct ScenesList: View, Equatable {
                                 Spacer(minLength: 0)
                                 if active { Image(systemName: "checkmark").font(.caption.weight(.bold)) }
                             }
-                            .padding(.horizontal, 10).padding(.vertical, 7)
+                            .padding(.horizontal, 12).padding(.vertical, 8)
                             .foregroundStyle(active ? theme.label(on: tint) : .primary)
-                            .klimaCard(tint: active ? tint : nil, radius: 12, interactive: true)
+                            .klimaInner(tint: active ? tint : nil)
+                            .contentShape(Rectangle())
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(PressDimStyle())
                         .contextMenu {
                             Button(L.Main.Scene.deleteMenu, role: .destructive) { deleting = scene }
                         }

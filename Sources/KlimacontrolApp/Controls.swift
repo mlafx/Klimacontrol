@@ -20,7 +20,7 @@ struct ModePicker: View, Equatable {
     private let modes: [OperationalMode] = [.cool, .heat, .dry, .fan, .auto]
 
     var body: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: 8) {
             ForEach(modes, id: \.self) { m in
                 let selected = power && mode == m
                 Button {
@@ -28,14 +28,15 @@ struct ModePicker: View, Equatable {
                 } label: {
                     VStack(spacing: 4) {
                         Image(systemName: m.symbol).font(.system(size: 16, weight: .medium))
-                        Text(m.title).font(.caption)
+                        Text(m.title).font(.caption.weight(selected ? .semibold : .regular))
+                            .lineLimit(1).minimumScaleFactor(0.8)
                     }
-                    .frame(maxWidth: .infinity, minHeight: 50)
+                    .frame(maxWidth: .infinity, minHeight: 56)
                     .foregroundStyle(selected ? theme.label(on: theme.tint(for: m)) : .primary)
-                    .klimaCard(tint: selected ? theme.tint(for: m) : nil, radius: 12, interactive: true)
+                    .klimaInner(tint: selected ? theme.tint(for: m) : nil)
                     .contentShape(Rectangle())
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(PressDimStyle())
                 .help(selected ? L.Main.Mode.active(mode: m.title)
                       : (power ? L.Main.Mode.switchTo(mode: m.title) : L.Main.Mode.turnOnWith(mode: m.title)))
                 .accessibilityAddTraits(selected ? .isSelected : [])

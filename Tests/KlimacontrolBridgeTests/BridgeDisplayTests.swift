@@ -114,6 +114,63 @@ final class BridgeDisplayTests: XCTestCase {
         XCTAssertEqual((try json()["quitPrompt"] as? [String: Any])?["title"] as? String, "Klimacontrol beenden?")
     }
 
+    func testWindowRulesComeFromMainWindowLayout() throws {
+        let o = try XCTUnwrap(json()["options"] as? [String: Any])
+        let w = try XCTUnwrap(o["window"] as? [String: Any])
+        let widths: [String: Double] = [
+            "controlWidth": MainWindowLayout.controlWidth, "historyMin": MainWindowLayout.historyMin,
+            "historyBalanced": MainWindowLayout.historyBalanced, "historyGridFrom": MainWindowLayout.historyGridFrom,
+            "diagnosticsMin": MainWindowLayout.diagnosticsMin, "diagnosticsMax": MainWindowLayout.diagnosticsMax,
+            "controlsOnlyMaxWidth": MainWindowLayout.controlsOnlyMaxWidth,
+            "historyBaseHeight": MainWindowLayout.historyBaseHeight, "singleOverhead": MainWindowLayout.singleOverhead,
+            "gridOverhead": MainWindowLayout.gridOverhead, "gridRowMax": MainWindowLayout.gridRowMax,
+            "chartStep": MainWindowLayout.chartStep, "energyBarMaxWidth": MainWindowLayout.energyBarMaxWidth,
+        ]
+        for (key, value) in widths {
+            XCTAssertEqual((w[key] as? NSNumber)?.doubleValue, value, key)
+        }
+        let heights = try XCTUnwrap(w["minimumHeight"] as? [String: Double])
+        XCTAssertEqual(heights, ["compact": 470, "normal": 520, "large": 600])
+        XCTAssertEqual(w["chartMin"] as? [String: Double], ["power": 120, "temperature": 150, "outdoor": 80, "energy": 150])
+        XCTAssertEqual(w["chartMax"] as? [String: Double], ["power": 260, "temperature": 340, "outdoor": 180, "energy": 240])
+        XCTAssertEqual(w["gridChartMin"] as? [String: Double], ["power": 180, "temperature": 180, "outdoor": 150, "energy": 150])
+        // Gegenprobe: Mehr Platz als die Höchsthöhen ändert nichts mehr.
+        let huge = MainWindowLayout.chartHeights(columnHeight: 10_000)
+        XCTAssertEqual(w["chartMax"] as? [String: Double],
+                       ["power": huge.power, "temperature": huge.temperature, "outdoor": huge.outdoor, "energy": huge.energy])
+    }
+
+    /// Die Bridge nennt die Lückenregel als Faktor und Mindestwert; beides muss `UIOptions.chartGapThreshold` ergeben.
+    func testChartGapRuleMatchesTheCore() throws {
+        let chart = try XCTUnwrap((json()["options"] as? [String: Any])?["chart"] as? [String: Any])
+        let factor = try XCTUnwrap((chart["gapFactor"] as? NSNumber)?.doubleValue)
+        let minimum = try XCTUnwrap((chart["gapMinSeconds"] as? NSNumber)?.doubleValue)
+        let windows = try XCTUnwrap((chart["windowCount"] as? NSNumber)?.doubleValue)
+        let ranges: [Double] = UIOptions.chartRanges.map(\.seconds) + [0, 60, 30 * 86400, 365 * 86400]
+        for range in ranges {
+            XCTAssertEqual(max(minimum, factor * max(1, range / windows)), UIOptions.chartGapThreshold(range: range),
+                           accuracy: 1e-9, "Zeitraum \(range) s")
+        }
+    }
+
+    func testHistoryUnavailableFollowsTheDatabase() throws {
+        XCTAssertEqual(try json()["historyUnavailable"] as? Bool, false)
+
+        let blocked = FileManager.default.temporaryDirectory.appendingPathComponent("klimacontrol-bridge-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: blocked) }
+        // Ein Ordner an der Stelle der Datenbank lässt sich nicht öffnen (und wird nicht als kaputte Datei beiseitegelegt).
+        try FileManager.default.createDirectory(at: blocked.appendingPathComponent("verlauf.sqlite"),
+                                                withIntermediateDirectories: true)
+        let accounts = CloudAccountStore(load: { nil }, save: { _ in }, clear: {}, verify: { _, _ in })
+        let c = ACController(appVersion: "test", settings: NoSettings(), paths: CorePaths(directory: blocked),
+                             platform: NoPlatform(), accounts: accounts,
+                             makeDevice: { _, _, _ in throw MideaError.connectionFailed("Test") }, autostart: false)
+        defer { c.stop() }
+        XCTAssertFalse(c.history.db.isOpen)
+        let j = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(snapshotJSON(c).utf8)) as? [String: Any])
+        XCTAssertEqual(j["historyUnavailable"] as? Bool, true)
+    }
+
     func testSnapshotStaysStable() throws {
         XCTAssertEqual(snapshotJSON(controller), snapshotJSON(controller), "feste Schlüsselreihenfolge, keine zufälligen Werte")
     }

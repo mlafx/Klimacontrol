@@ -14,16 +14,18 @@ struct CompactView: View {
     @State private var contentHeight: CGFloat = 420
 
     var body: some View {
+        let size = CGSize(width: 380, height: min(max(contentHeight, 1), 760))
         ScrollView {
             CompactContent()
-                .padding(14)
+                .padding(16)
                 // Meldet nur echte Höhenänderungen (ganze Punkte), statt bei jedem Layout eine Preference zu setzen.
                 .onGeometryChange(for: CGFloat.self) { $0.size.height.rounded(.up) } action: { contentHeight = $0 }
         }
-        .frame(width: 380, height: min(max(contentHeight, 1), 760))
+        .frame(width: size.width, height: size.height)
         .modifier(GlassContainer())
         .focusedSceneValue(\.klimacontrolControls, true)
         .background(VisibilityProbe { model.setUIVisible("menu", $0) })
+        .background(MenuBarWindowFitter(size: size))
     }
 }
 
@@ -33,7 +35,7 @@ private struct CompactContent: View {
     var body: some View {
         let simple = model.appearance.scope == .simple
         let roomBig = model.appearance.hero == .room
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 16) {
             if let s = model.state {
                 let staleSince = model.uiStaleSince
                 // Alte Werte: Statuszeile sagt „Stand HH:MM · nicht aktuell“, Zahl und Knöpfe abgeblendet.
@@ -49,7 +51,7 @@ private struct CompactContent: View {
                 }
                 if !simple { ReadingsStrip(state: s) }
                 MaintenanceHint(state: s, compact: true)
-                ControlStack(state: s, stale: staleSince != nil, simple: simple)
+                ControlStack(state: s, stale: staleSince != nil, simple: simple, roomShownElsewhere: false)
             } else if model.config == nil {
                 Text(L.Menu.noDevice)
                     .font(.callout).fixedSize(horizontal: false, vertical: true)

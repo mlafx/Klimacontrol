@@ -87,6 +87,7 @@ final class Locked<Value: Sendable>: Sendable {
     init(_ value: Value) { mutex = Mutex(value) }
     var value: Value { mutex.withLock { $0 } }
     func set(_ value: Value) { mutex.withLock { $0 = value } }
+    func mutate(_ body: (inout Value) -> Void) { mutex.withLock { body(&$0) } }
 }
 
 /// Nachgebildete Anlage: merkt sich Befehle, kann Fehler werfen und Antworten zurückhalten (`refreshGate`).

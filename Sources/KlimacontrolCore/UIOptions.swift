@@ -157,8 +157,10 @@ public enum UIOptions {
 
     /// Ab dieser Lücke zwischen zwei Punkten bricht die Linie ab: das Dreifache des Punktabstands, mindestens 3 min.
     public static func chartGapThreshold(range: TimeInterval) -> TimeInterval {
-        max(180, 3 * max(1, range / Double(chartWindowCount)))
+        max(chartGapMinSeconds, chartGapFactor * max(1, range / Double(chartWindowCount)))
     }
+    public static let chartGapFactor = 3.0
+    public static let chartGapMinSeconds = 180.0
 
     // MARK: Gültigkeit je Modus
 

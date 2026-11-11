@@ -40,6 +40,30 @@ final class AppUpdateTests: XCTestCase {
         XCTAssertEqual(AppUpdate.feedMac, "https://github.com/mlafx/Klimacontrol/releases/latest/download/updateinfo-mac.xml")
     }
 
+    func testMacFeedOverride() {
+        let test = "http://127.0.0.1:8765/updateinfo-mac.xml"
+        XCTAssertNil(AppUpdate.macFeedOverride(beta: false, testFeed: nil, stableFallback: false), "stabil: Info.plist")
+        XCTAssertEqual(AppUpdate.macFeedOverride(beta: true, testFeed: nil, stableFallback: false), AppUpdate.feedMacBeta)
+        XCTAssertNil(AppUpdate.macFeedOverride(beta: true, testFeed: nil, stableFallback: true), "Rückfall: Info.plist")
+        for beta in [false, true] {
+            for fallback in [false, true] {
+                XCTAssertEqual(AppUpdate.macFeedOverride(beta: beta, testFeed: test, stableFallback: fallback), test)
+            }
+        }
+        XCTAssertEqual(AppUpdate.macFeedOverride(beta: true, testFeed: "http://localhost:8765/x.xml", stableFallback: false),
+                       AppUpdate.feedMacBeta)
+    }
+
+    func testBetaFallbackRule() {
+        XCTAssertTrue(AppUpdate.fallsBackToStable(betaFeedUsed: true, updateFound: false, noUpdate: false))
+        XCTAssertFalse(AppUpdate.fallsBackToStable(betaFeedUsed: false, updateFound: false, noUpdate: false),
+                       "stabiler Kanal, Testumleitung oder schon im Rückfall")
+        XCTAssertFalse(AppUpdate.fallsBackToStable(betaFeedUsed: true, updateFound: true, noUpdate: false),
+                       "Fehler beim Laden oder Installieren")
+        XCTAssertFalse(AppUpdate.fallsBackToStable(betaFeedUsed: true, updateFound: false, noUpdate: true),
+                       "Beta-Datei gelesen, kein Update")
+    }
+
     func testMacBuildScriptUsesTheSameFeedIntervalAndKey() throws {
         let script = try String(contentsOf: root.appendingPathComponent("tools/build_app.sh"), encoding: .utf8)
         XCTAssertTrue(script.contains("<key>SUFeedURL</key><string>\(AppUpdate.feedMac)</string>"))

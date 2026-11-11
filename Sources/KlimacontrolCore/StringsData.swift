@@ -2237,6 +2237,24 @@ extension StringsData {
         }
       }
     },
+    "charts.hoverOutdoor" : {
+      "comment" : "Verlauf: Zeile unter dem Wert beim Überfahren des Temperaturgraphen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außen {outdoor}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outdoor {outdoor}"
+          }
+        }
+      }
+    },
     "charts.hoverTarget" : {
       "comment" : "Graphen: Zeile unter dem Mauszeiger",
       "extractionState" : "manual",
@@ -2251,6 +2269,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Target {target}"
+          }
+        }
+      }
+    },
+    "charts.modeBandHelp" : {
+      "comment" : "Verlauf: Kurzinfo zur Legende des Modus-Bands",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farbiges Band unter der Leistung: Zeit, in der die Anlage lief, in der Farbe der Betriebsart."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colored band below the power: time the air conditioner was running, in the color of its mode."
           }
         }
       }
@@ -2309,6 +2345,24 @@ extension StringsData {
         }
       }
     },
+    "charts.series.outdoor" : {
+      "comment" : "Verlauf: Legende und VoiceOver-Name der Außentemperatur im Temperaturgraphen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outdoor"
+          }
+        }
+      }
+    },
     "charts.series.room" : {
       "comment" : "Graphen: Reihe Raumtemperatur",
       "extractionState" : "manual",
@@ -2341,6 +2395,42 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Target"
+          }
+        }
+      }
+    },
+    "charts.stat.avg" : {
+      "comment" : "Verlauf: Kennzahl unter dem Leistungsgraphen, mittlere Leistung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mittel {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average {value}"
+          }
+        }
+      }
+    },
+    "charts.stat.peak" : {
+      "comment" : "Verlauf: Kennzahl unter dem Leistungsgraphen, höchste Leistung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spitze {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peak {value}"
           }
         }
       }
@@ -2557,6 +2647,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Not enough data yet. The history fills with every refresh of the air conditioner."
+          }
+        }
+      }
+    },
+    "charts.unavailable" : {
+      "comment" : "Verlauf: Hinweis statt der Graphen, wenn sich die Verlaufsdatenbank nicht öffnen lässt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Verlauf kann nicht gespeichert werden. Einzelheiten stehen im Protokoll. (history-open)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History cannot be saved. See the log for details. (history-open)"
           }
         }
       }
@@ -5065,6 +5173,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "{value}  (target {target})"
+          }
+        }
+      }
+    },
+    "energy.average" : {
+      "comment" : "Verbrauch: Legende der gestrichelten Linie (Durchschnitt der abgeschlossenen Zeiträume)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durchschnitt {kwh}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average {kwh}"
           }
         }
       }
@@ -10991,6 +11117,24 @@ extension StringsData {
         }
       }
     },
+    "log.settings.asideFailed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungsdatei {file} defekt, beiseitelegen gescheitert ({error})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings file {file} damaged, could not set it aside ({error})"
+          }
+        }
+      }
+    },
     "log.settings.backgroundPolling" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -11063,6 +11207,24 @@ extension StringsData {
         }
       }
     },
+    "log.settings.damaged" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungsdatei defekt – beiseitegelegt als {file}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings file damaged – set aside as {file}"
+          }
+        }
+      }
+    },
     "log.settings.detailedLog" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -11131,6 +11293,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Refresh every {seconds} s"
+          }
+        }
+      }
+    },
+    "log.settings.unreadable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungsdatei {file} nicht lesbar ({error}) – unverändert gelassen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings file {file} not readable ({error}) – left unchanged"
           }
         }
       }
@@ -11617,6 +11797,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Updates: beta channel {state}"
+          }
+        }
+      }
+    },
+    "log.updates.betaFallback" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beta-Kanal nicht erreichbar ({error}) – Suche im stabilen Kanal"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beta channel not reachable ({error}) – checking the stable channel"
           }
         }
       }
@@ -12503,6 +12701,24 @@ extension StringsData {
         }
       }
     },
+    "main.hero.scaleRoom" : {
+      "comment" : "Hauptfenster: Marke der Raumtemperatur an der Skala der Solltemperatur, z. B. „Raum 19,0°“",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raum {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room {value}"
+          }
+        }
+      }
+    },
     "main.hero.targetTemperature" : {
       "comment" : "VoiceOver: Regler Solltemperatur",
       "extractionState" : "manual",
@@ -12733,6 +12949,42 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "More…"
+          }
+        }
+      }
+    },
+    "main.power.stateOff" : {
+      "comment" : "Hauptfenster und Menüleiste: Beschriftung am Ein/Aus-Knopf, wenn die Anlage aus ist",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        }
+      }
+    },
+    "main.power.stateOn" : {
+      "comment" : "Hauptfenster und Menüleiste: Beschriftung am Ein/Aus-Knopf, wenn die Anlage läuft",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On"
           }
         }
       }
@@ -15703,6 +15955,42 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "The air conditioner's setup is incomplete."
+          }
+        }
+      }
+    },
+    "message.settingsReset" : {
+      "comment" : "Hinweis nach dem Start, wenn die Einstellungsdatei unlesbar war (Windows)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Einstellungen waren beschädigt und wurden zurückgesetzt. Die alte Datei liegt als {file} im selben Ordner. (settings-reset)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The settings were damaged and have been reset. The old file is in the same folder as {file}. (settings-reset)"
+          }
+        }
+      }
+    },
+    "message.settingsResetLost" : {
+      "comment" : "Hinweis nach dem Start, wenn die Einstellungsdatei unlesbar war und nicht beiseitegelegt werden konnte (Windows)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Einstellungen waren beschädigt und wurden zurückgesetzt. Die alte Datei ließ sich nicht sichern. (settings-reset)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The settings were damaged and have been reset. The old file could not be kept. (settings-reset)"
           }
         }
       }
@@ -19009,6 +19297,42 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Size"
+          }
+        }
+      }
+    },
+    "settings.appearance.temperatureCombined.help" : {
+      "comment" : "Einstellungen, Darstellung, Anzeige: Hilfetext zum Schalter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raum, Soll und Außen in einem Graphen mit gemeinsamer Skala. Aus: Außen hat einen eigenen Graphen, Raum und Soll nutzen die volle Höhe."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room, target, and outdoor in one chart with a shared scale. Off: outdoor has its own chart, and room and target use the full height."
+          }
+        }
+      }
+    },
+    "settings.appearance.temperatureCombined.title" : {
+      "comment" : "Einstellungen, Darstellung, Anzeige: Schalter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außentemperatur im Temperaturgraphen zeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show outdoor temperature in the temperature chart"
           }
         }
       }
@@ -26415,12 +26739,17 @@ extension StringsData {
         "charts.axis.watt",
         "charts.hide",
         "charts.hideHelp",
+        "charts.hoverOutdoor",
         "charts.hoverTarget",
+        "charts.modeBandHelp",
         "charts.outdoor",
         "charts.power",
         "charts.range",
+        "charts.series.outdoor",
         "charts.series.room",
         "charts.series.target",
+        "charts.stat.avg",
+        "charts.stat.peak",
         "charts.summary",
         "charts.summaryNone",
         "charts.temperature",
@@ -26433,6 +26762,7 @@ extension StringsData {
         "charts.tile.peakHelp",
         "charts.title",
         "charts.tooFew",
+        "charts.unavailable",
         "charts.windows.rangeName",
         "charts.windows.tooFew",
         "commands.alwaysOnTop",
@@ -26567,6 +26897,7 @@ extension StringsData {
         "diagnostics.panel.unitSteps",
         "diagnostics.panel.windows.showInExplorerHelp",
         "diagnostics.panel.withTarget",
+        "energy.average",
         "energy.cost.approx",
         "energy.help",
         "energy.kind.day",
@@ -26896,14 +27227,17 @@ extension StringsData {
         "log.session.reset",
         "log.session.setupNotRemoved",
         "log.session.timersDeleted",
+        "log.settings.asideFailed",
         "log.settings.backgroundPolling",
         "log.settings.betaChannel",
         "log.settings.connectionMode",
         "log.settings.currency",
+        "log.settings.damaged",
         "log.settings.detailedLog",
         "log.settings.historyCSV",
         "log.settings.languageAfterRestart",
         "log.settings.refresh",
+        "log.settings.unreadable",
         "log.settings.windowVisible",
         "log.stateLine.diagnostics",
         "log.stateLine.line",
@@ -26931,6 +27265,7 @@ extension StringsData {
         "log.updates.aborted",
         "log.updates.automatic",
         "log.updates.betaChannel",
+        "log.updates.betaFallback",
         "log.updates.downloaded",
         "log.updates.found",
         "log.updates.installNow",
@@ -26980,6 +27315,7 @@ extension StringsData {
         "main.hero.a11yRoomTarget",
         "main.hero.a11yTarget",
         "main.hero.degrees",
+        "main.hero.scaleRoom",
         "main.hero.targetTemperature",
         "main.message.codeLabel",
         "main.message.refreshHelp",
@@ -26993,6 +27329,8 @@ extension StringsData {
         "main.more.hint",
         "main.more.less",
         "main.more.more",
+        "main.power.stateOff",
+        "main.power.stateOn",
         "main.power.turnOff",
         "main.power.turnOffHelp",
         "main.power.turnOn",
@@ -27158,6 +27496,8 @@ extension StringsData {
         "message.scenes.notSaved",
         "message.session.incomplete.todo",
         "message.session.incomplete.what",
+        "message.settingsReset",
+        "message.settingsResetLost",
         "mode.auto",
         "mode.cool",
         "mode.dry",
@@ -27339,6 +27679,8 @@ extension StringsData {
         "settings.appearance.scope.title",
         "settings.appearance.size.help",
         "settings.appearance.size.title",
+        "settings.appearance.temperatureCombined.help",
+        "settings.appearance.temperatureCombined.title",
         "settings.appearance.theme.customized",
         "settings.appearance.theme.help",
         "settings.appearance.theme.restore",
@@ -27871,12 +28213,17 @@ extension StringsData {
         "charts.axis.watt": [],
         "charts.hide": [],
         "charts.hideHelp": [],
+        "charts.hoverOutdoor": ["outdoor"],
         "charts.hoverTarget": ["target"],
+        "charts.modeBandHelp": [],
         "charts.outdoor": [],
         "charts.power": [],
         "charts.range": [],
+        "charts.series.outdoor": [],
         "charts.series.room": [],
         "charts.series.target": [],
+        "charts.stat.avg": ["value"],
+        "charts.stat.peak": ["value"],
         "charts.summary": ["last", "low", "high"],
         "charts.summaryNone": [],
         "charts.temperature": [],
@@ -27889,6 +28236,7 @@ extension StringsData {
         "charts.tile.peakHelp": [],
         "charts.title": [],
         "charts.tooFew": [],
+        "charts.unavailable": [],
         "charts.windows.rangeName": ["label"],
         "charts.windows.tooFew": [],
         "commands.alwaysOnTop": [],
@@ -28023,6 +28371,7 @@ extension StringsData {
         "diagnostics.panel.unitSteps": [],
         "diagnostics.panel.windows.showInExplorerHelp": [],
         "diagnostics.panel.withTarget": ["value", "target"],
+        "energy.average": ["kwh"],
         "energy.cost.approx": ["cost"],
         "energy.help": [],
         "energy.kind.day": [],
@@ -28352,14 +28701,17 @@ extension StringsData {
         "log.session.reset": [],
         "log.session.setupNotRemoved": ["error"],
         "log.session.timersDeleted": [],
+        "log.settings.asideFailed": ["file", "error"],
         "log.settings.backgroundPolling": ["seconds"],
         "log.settings.betaChannel": ["state"],
         "log.settings.connectionMode": ["mode"],
         "log.settings.currency": ["value"],
+        "log.settings.damaged": ["file"],
         "log.settings.detailedLog": ["state"],
         "log.settings.historyCSV": ["state"],
         "log.settings.languageAfterRestart": ["value"],
         "log.settings.refresh": ["seconds"],
+        "log.settings.unreadable": ["file", "error"],
         "log.settings.windowVisible": [],
         "log.stateLine.diagnostics": ["hz", "targetHz", "watts", "amps", "volts", "t1", "t2", "t3", "t4", "tp", "eev", "indoorFan", "outdoorFan"],
         "log.stateLine.line": ["power", "mode", "target", "indoor", "outdoor", "fan", "watts", "rate"],
@@ -28387,6 +28739,7 @@ extension StringsData {
         "log.updates.aborted": ["error"],
         "log.updates.automatic": ["state", "feed"],
         "log.updates.betaChannel": ["state"],
+        "log.updates.betaFallback": ["error"],
         "log.updates.downloaded": ["version"],
         "log.updates.found": ["version"],
         "log.updates.installNow": ["version"],
@@ -28436,6 +28789,7 @@ extension StringsData {
         "main.hero.a11yRoomTarget": ["room", "target", "goal"],
         "main.hero.a11yTarget": ["target", "goal"],
         "main.hero.degrees": ["value"],
+        "main.hero.scaleRoom": ["value"],
         "main.hero.targetTemperature": [],
         "main.message.codeLabel": ["code"],
         "main.message.refreshHelp": [],
@@ -28449,6 +28803,8 @@ extension StringsData {
         "main.more.hint": [],
         "main.more.less": [],
         "main.more.more": [],
+        "main.power.stateOff": [],
+        "main.power.stateOn": [],
         "main.power.turnOff": [],
         "main.power.turnOffHelp": [],
         "main.power.turnOn": [],
@@ -28614,6 +28970,8 @@ extension StringsData {
         "message.scenes.notSaved": ["reason"],
         "message.session.incomplete.todo": [],
         "message.session.incomplete.what": [],
+        "message.settingsReset": ["file"],
+        "message.settingsResetLost": [],
         "mode.auto": [],
         "mode.cool": [],
         "mode.dry": [],
@@ -28795,6 +29153,8 @@ extension StringsData {
         "settings.appearance.scope.title": [],
         "settings.appearance.size.help": [],
         "settings.appearance.size.title": [],
+        "settings.appearance.temperatureCombined.help": [],
+        "settings.appearance.temperatureCombined.title": [],
         "settings.appearance.theme.customized": [],
         "settings.appearance.theme.help": [],
         "settings.appearance.theme.restore": [],
@@ -29495,8 +29855,12 @@ public enum L {
         public static var hide: String { Localizer.text("charts.hide") }
         /// Hide history (⌘G)
         public static var hideHelp: String { Localizer.text("charts.hideHelp") }
+        /// Outdoor {outdoor}
+        public static func hoverOutdoor(outdoor: String) -> String { Localizer.text("charts.hoverOutdoor", ["outdoor": outdoor]) }
         /// Target {target}
         public static func hoverTarget(target: String) -> String { Localizer.text("charts.hoverTarget", ["target": target]) }
+        /// Colored band below the power: time the air conditioner was running, in the color of its mode.
+        public static var modeBandHelp: String { Localizer.text("charts.modeBandHelp") }
         /// Outdoor temperature
         public static var outdoor: String { Localizer.text("charts.outdoor") }
         /// Power
@@ -29504,10 +29868,18 @@ public enum L {
         /// Period
         public static var range: String { Localizer.text("charts.range") }
         public enum Series {
+            /// Outdoor
+            public static var outdoor: String { Localizer.text("charts.series.outdoor") }
             /// Room
             public static var room: String { Localizer.text("charts.series.room") }
             /// Target
             public static var target: String { Localizer.text("charts.series.target") }
+        }
+        public enum Stat {
+            /// Average {value}
+            public static func avg(value: String) -> String { Localizer.text("charts.stat.avg", ["value": value]) }
+            /// Peak {value}
+            public static func peak(value: String) -> String { Localizer.text("charts.stat.peak", ["value": value]) }
         }
         /// latest {last}, lowest {low}, highest {high}
         public static func summary(last: String, low: String, high: String) -> String { Localizer.text("charts.summary", ["last": last, "low": low, "high": high]) }
@@ -29535,6 +29907,8 @@ public enum L {
         public static var title: String { Localizer.text("charts.title") }
         /// Not enough data yet. The history fills with every refresh of the air conditioner.
         public static var tooFew: String { Localizer.text("charts.tooFew") }
+        /// History cannot be saved. See the log for details. (history-open)
+        public static var unavailable: String { Localizer.text("charts.unavailable") }
         public enum Windows {
             /// Period {label}
             public static func rangeName(label: String) -> String { Localizer.text("charts.windows.rangeName", ["label": label]) }
@@ -29841,6 +30215,8 @@ public enum L {
         }
     }
     public enum Energy {
+        /// Average {kwh}
+        public static func average(kwh: String) -> String { Localizer.text("energy.average", ["kwh": kwh]) }
         public enum Cost {
             /// approx. {cost}
             public static func approx(cost: String) -> String { Localizer.text("energy.cost.approx", ["cost": cost]) }
@@ -30618,6 +30994,8 @@ public enum L {
             public static var timersDeleted: String { Localizer.text("log.session.timersDeleted") }
         }
         public enum Settings {
+            /// Settings file {file} damaged, could not set it aside ({error})
+            public static func asideFailed(file: String, error: String) -> String { Localizer.text("log.settings.asideFailed", ["file": file, "error": error]) }
             /// No window visible – polling every {seconds} s
             public static func backgroundPolling(seconds: String) -> String { Localizer.text("log.settings.backgroundPolling", ["seconds": seconds]) }
             /// Pre-releases: {state}
@@ -30626,6 +31004,8 @@ public enum L {
             public static func connectionMode(mode: String) -> String { Localizer.text("log.settings.connectionMode", ["mode": mode]) }
             /// Currency: {value}
             public static func currency(value: String) -> String { Localizer.text("log.settings.currency", ["value": value]) }
+            /// Settings file damaged – set aside as {file}
+            public static func damaged(file: String) -> String { Localizer.text("log.settings.damaged", ["file": file]) }
             /// Detailed log {state}
             public static func detailedLog(state: String) -> String { Localizer.text("log.settings.detailedLog", ["state": state]) }
             /// History as CSV: {state}
@@ -30634,6 +31014,8 @@ public enum L {
             public static func languageAfterRestart(value: String) -> String { Localizer.text("log.settings.languageAfterRestart", ["value": value]) }
             /// Refresh every {seconds} s
             public static func refresh(seconds: String) -> String { Localizer.text("log.settings.refresh", ["seconds": seconds]) }
+            /// Settings file {file} not readable ({error}) – left unchanged
+            public static func unreadable(file: String, error: String) -> String { Localizer.text("log.settings.unreadable", ["file": file, "error": error]) }
             /// Window visible
             public static var windowVisible: String { Localizer.text("log.settings.windowVisible") }
         }
@@ -30698,6 +31080,8 @@ public enum L {
             public static func automatic(state: String, feed: String) -> String { Localizer.text("log.updates.automatic", ["state": state, "feed": feed]) }
             /// Updates: beta channel {state}
             public static func betaChannel(state: String) -> String { Localizer.text("log.updates.betaChannel", ["state": state]) }
+            /// Beta channel not reachable ({error}) – checking the stable channel
+            public static func betaFallback(error: String) -> String { Localizer.text("log.updates.betaFallback", ["error": error]) }
             /// Updates: version {version} downloaded, waiting for restart or quit
             public static func downloaded(version: String) -> String { Localizer.text("log.updates.downloaded", ["version": version]) }
             /// Updates: version {version} found
@@ -30810,6 +31194,8 @@ public enum L {
             public static func a11yTarget(target: String, goal: String) -> String { Localizer.text("main.hero.a11yTarget", ["target": target, "goal": goal]) }
             /// {value} degrees
             public static func degrees(value: String) -> String { Localizer.text("main.hero.degrees", ["value": value]) }
+            /// Room {value}
+            public static func scaleRoom(value: String) -> String { Localizer.text("main.hero.scaleRoom", ["value": value]) }
             /// Target temperature
             public static var targetTemperature: String { Localizer.text("main.hero.targetTemperature") }
         }
@@ -30846,6 +31232,10 @@ public enum L {
             public static var more: String { Localizer.text("main.more.more") }
         }
         public enum Power {
+            /// Off
+            public static var stateOff: String { Localizer.text("main.power.stateOff") }
+            /// On
+            public static var stateOn: String { Localizer.text("main.power.stateOn") }
             /// Turn off
             public static var turnOff: String { Localizer.text("main.power.turnOff") }
             /// Turn off (⌘P)
@@ -31291,6 +31681,10 @@ public enum L {
                 public static var what: String { Localizer.text("message.session.incomplete.what") }
             }
         }
+        /// The settings were damaged and have been reset. The old file is in the same folder as {file}. (setti…
+        public static func settingsReset(file: String) -> String { Localizer.text("message.settingsReset", ["file": file]) }
+        /// The settings were damaged and have been reset. The old file could not be kept. (settings-reset)
+        public static var settingsResetLost: String { Localizer.text("message.settingsResetLost") }
     }
     public enum Mode {
         /// Auto
@@ -31783,6 +32177,12 @@ public enum L {
                 public static var help: String { Localizer.text("settings.appearance.size.help") }
                 /// Size
                 public static var title: String { Localizer.text("settings.appearance.size.title") }
+            }
+            public enum TemperatureCombined {
+                /// Room, target, and outdoor in one chart with a shared scale. Off: outdoor has its own chart, and roo…
+                public static var help: String { Localizer.text("settings.appearance.temperatureCombined.help") }
+                /// Show outdoor temperature in the temperature chart
+                public static var title: String { Localizer.text("settings.appearance.temperatureCombined.title") }
             }
             public enum Theme {
                 /// Customized

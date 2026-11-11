@@ -172,6 +172,12 @@ struct ThemeStyle: Equatable, Sendable {
     /// Trennlinie zwischen den Spalten des Hauptfensters.
     var separator: Color { isContrast ? Color.primary.opacity(0.6) : Color(nsColor: .separatorColor) }
 
+    /// Feine Linie innerhalb einer Karte (Kennzahlen im Kopf, Szenen/Timer, Modus/Lüfter).
+    var hairline: Color { isContrast ? Color.primary.opacity(0.6) : Color.primary.opacity(0.12) }
+
+    /// Fläche eines Knopfs innerhalb einer Glaskarte: kein zweites Glas, nur eine zarte Fläche.
+    var innerFill: Color { Color.primary.opacity(isContrast ? 0.08 : (isDark ? 0.07 : 0.05)) }
+
     /// Deckender Fensterhintergrund (Vollbild).
     var opaqueWindowBackground: Color { Color(nsColor: .windowBackgroundColor) }
 
@@ -214,6 +220,11 @@ struct ThemeStyle: Equatable, Sendable {
         case .large: return .large
         }
     }
+
+    /// Radius der großen Karten (Kopf, Modus und Lüfter, Szenen und Timer, Startanzeige).
+    static let cardRadius: CGFloat = 20
+    /// Radius der Elemente in einer Karte (Modus-Knöpfe, Szenen).
+    static let innerRadius: CGFloat = 12
 
     /// Schrift der großen Zahl; `size` ist die Grundgröße (z. B. 68), Größe und Ziffernstil kommen dazu.
     func heroFont(size: CGFloat) -> Font {
@@ -297,6 +308,44 @@ extension View {
 
     /// Schein in `color` um die große Zahl; Stärke aus der Darstellung (0 = nichts).
     func klimaGlow(_ color: Color) -> some View { modifier(KlimaGlow(color: color)) }
+
+    /// Knopf innerhalb einer Glaskarte: zarte Fläche, gewählt in `tint` (Glas auf Glas vermeidet macOS 26).
+    func klimaInner(tint: Color? = nil, radius: CGFloat = ThemeStyle.innerRadius) -> some View {
+        modifier(KlimaInner(tint: tint, radius: radius))
+    }
+
+    /// Gemeinsame Glaskarte für mehrere Bereiche (Modus und Lüfter, Szenen und Timer).
+    func klimaGroup() -> some View {
+        padding(16).frame(maxWidth: .infinity, alignment: .leading).klimaCard(radius: ThemeStyle.cardRadius)
+    }
+}
+
+struct KlimaInner: ViewModifier {
+    @Environment(\.klimaTheme) private var theme
+    let tint: Color?
+    let radius: CGFloat
+
+    func body(content: Content) -> some View {
+        let shape = RoundedRectangle(cornerRadius: radius)
+        content
+            .background(shape.fill(tint.map { $0.opacity(theme.isContrast ? 1 : 0.85) } ?? theme.innerFill))
+            .overlay {
+                if theme.edgeGlow, let tint {
+                    shape.strokeBorder(tint.opacity(0.9), lineWidth: 1)
+                        .shadow(color: tint.opacity(0.8), radius: 4)
+                        .allowsHitTesting(false)
+                } else if theme.isContrast {
+                    shape.strokeBorder(Color.primary.opacity(0.5), lineWidth: 1).allowsHitTesting(false)
+                }
+            }
+    }
+}
+
+/// Gedrückt leicht abgeblendet: Knöpfe mit `klimaInner` haben kein interaktives Glas, das darauf reagiert.
+struct PressDimStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label.opacity(configuration.isPressed ? 0.7 : 1)
+    }
 }
 
 struct KlimaCard: ViewModifier {

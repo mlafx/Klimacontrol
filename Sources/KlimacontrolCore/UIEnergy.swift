@@ -22,6 +22,9 @@ extension UIOptions {
     public static func energyChoice(_ kind: EnergyPeriodKind) -> EnergyKindChoice {
         energyKinds.first { $0.kind == kind } ?? energyKinds[0]
     }
+
+    /// Bis zu so vielen Balken steht der Wert über jedem Balken; bei mehr wäre er nicht mehr lesbar.
+    public static let energyValuesMaxBars = 14
 }
 
 extension UIText {
@@ -109,5 +112,42 @@ extension UIText {
         var text = L.Energy.Summary.total(kwh: Fmt.kwh(total), cost: Fmt.money(total * price, currency: currency))
         if periods.contains(where: \.fromMeasurement) { text += L.Energy.Summary.partly }
         return text
+    }
+
+    /// Durchschnitt der abgeschlossenen Zeiträume mit Wert (gestrichelte Linie); der laufende zählt nicht mit.
+    /// nil, wenn es keinen solchen Zeitraum gibt.
+    public static func energyAverage(_ periods: [EnergyPeriod]) -> Double? {
+        let done = periods.filter { !$0.current }.compactMap(\.shownKWh)
+        guard !done.isEmpty else { return nil }
+        return done.reduce(0, +) / Double(done.count)
+    }
+
+    /// Legende der Durchschnittslinie: „Durchschnitt 2,35 kWh“.
+    public static func energyAverageText(_ periods: [EnergyPeriod]) -> String? {
+        energyAverage(periods).map { L.Energy.average(kwh: Fmt.kwh($0)) }
+    }
+
+    /// Wert über dem Balken ohne Einheit: unter 10 mit einer Nachkommastelle („4,2“), sonst ganz („123“). nil ohne
+    /// Wert oder bei mehr als `UIOptions.energyValuesMaxBars` Balken.
+    public static func energyBarValue(_ p: EnergyPeriod, barCount: Int) -> String? {
+        guard barCount <= UIOptions.energyValuesMaxBars, let v = p.shownKWh else { return nil }
+        return Fmt.num(v, v < 9.95 ? 1 : 0)
+    }
+
+    /// Eine Kennzahl der Zeile unter dem Leistungsgraphen mit Kurzinfo.
+    public struct ChartStat: Equatable, Sendable {
+        public let text: String
+        public let help: String
+    }
+
+    /// Kennzahlen des Zeitraums als Zeile: „Mittel 229 W · Spitze 767 W · 1,10 kWh · 0,33 €“ (Teile mit Kurzinfo).
+    public static func chartStats(_ s: HistoryStats, price: Double, currency: String = UIOptions.currencyDefault) -> [ChartStat] {
+        [
+            ChartStat(text: L.Charts.Stat.avg(value: Fmt.watts(s.avgWatts)), help: L.Charts.Tile.avgHelp),
+            ChartStat(text: L.Charts.Stat.peak(value: Fmt.watts(s.peakWatts)), help: L.Charts.Tile.peakHelp),
+            ChartStat(text: Fmt.kwh(s.kWh), help: L.Charts.Tile.consumptionHelp),
+            ChartStat(text: Fmt.money(s.kWh.map { $0 * price }, currency: currency),
+                      help: L.Charts.Tile.costHelp(price: Fmt.num(price, 2), currency: currency)),
+        ]
     }
 }

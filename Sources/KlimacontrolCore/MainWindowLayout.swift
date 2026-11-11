@@ -103,46 +103,55 @@ public enum MainWindowLayout {
         }
     }
 
-    /// Höhe der Verlaufsspalte einspaltig mit allen Graphen in Mindesthöhe (Kopf, Kennzahlen, Rahmen eingerechnet, geschätzt).
-    public static let historyBaseHeight = 980.0
-    /// Geschätzte Höhe ohne die Graphen selbst (Kopf, Kennzahlen, Kartenränder, Abstände), bis die Oberfläche sie misst.
-    public static let singleOverhead = 380.0
-    public static let gridOverhead = 330.0
+    /// Höhe der Verlaufsspalte einspaltig mit allen Graphen (Außen eigener Graph) in Mindesthöhe, Kopf, Kennzahlenzeile
+    /// und Ränder eingerechnet (geschätzt).
+    public static var historyBaseHeight: Double { singleOverhead + baseHeightSum(separateOutdoor: true) }
+    /// Geschätzte Höhe ohne die Graphen selbst (Kopf, Überschriften, Kennzahlenzeile, Ränder, Abstände), bis die
+    /// Oberfläche sie misst.
+    public static let singleOverhead = 340.0
+    public static let gridOverhead = 290.0
     /// Höchsthöhe eines Graphen im 2 × 2-Raster.
     public static let gridRowMax = 520.0
     private static let gridTopMin = 180.0
     private static let gridBottomMin = 150.0
 
     public struct ChartHeights: Equatable, Sendable {
-        public var power = 150.0
-        public var temperature = 180.0
-        public var outdoor = 120.0
+        public var power = 120.0
+        public var temperature = 150.0
+        public var outdoor = 80.0
         public var energy = 150.0
     }
 
-    private static let chartMax = ChartHeights(power: 300, temperature: 360, outdoor: 240, energy: 240)
-    private static let chartWeights = [3.0, 3.0, 2.0]
+    private static let chartMax = ChartHeights(power: 260, temperature: 340, outdoor: 180, energy: 240)
+    /// Anteile, nach denen zusätzliche Höhe verteilt wird: Leistung, Temperatur, Außen (in dieser Reihenfolge).
+    public static let chartWeights = [3.0, 3.0, 2.0]
     public static let chartStep = 20.0
 
-    /// Zusätzliche Höhe geht anteilig (3 : 3 : 2) an Leistung, Temperatur und Außen bis zum Doppelten, danach an den
-    /// Verbrauch; Höhen in Stufen von 20 pt, der Rest bleibt leer.
-    /// Im 2 × 2-Raster (`grid`) teilen sich beide Zeilen die Höhe unter den Kennzahlen gleichmäßig (je Zeile bis 520 pt).
+    private static func baseHeightSum(separateOutdoor: Bool) -> Double {
+        let b = ChartHeights()
+        return b.power + b.temperature + (separateOutdoor ? b.outdoor : 0) + b.energy
+    }
+
+    /// Zusätzliche Höhe geht anteilig (3 : 3 : 2) an Leistung, Temperatur und Außen bis zu ihrer Höchsthöhe, danach an
+    /// den Verbrauch; Höhen in Stufen von 20 pt, der Rest bleibt leer. Ohne eigenen Außengraphen (`separateOutdoor`
+    /// aus: Außen steht im Temperaturgraphen) teilen sich Leistung und Temperatur den Platz, `outdoor` ist dann 0.
+    /// Im 2 × 2-Raster (`grid`) teilen sich beide Zeilen die Höhe unter dem Kopf gleichmäßig (je Zeile bis 520 pt).
     /// `overhead` ist die Höhe der Spalte ohne die Graphen (von der Oberfläche gemessen), sonst eine Schätzung.
-    public static func chartHeights(columnHeight: Double, grid: Bool = false, overhead: Double? = nil) -> ChartHeights {
+    public static func chartHeights(columnHeight: Double, grid: Bool = false, overhead: Double? = nil,
+                                    separateOutdoor: Bool = true) -> ChartHeights {
         if grid {
             let available = columnHeight - (overhead ?? gridOverhead)
             let share = available / 2
             let top = min(gridRowMax, max(gridTopMin, ((share + 0.001) / chartStep).rounded(.down) * chartStep))
             let bottom = min(gridRowMax, max(gridBottomMin, ((share + 0.001) / chartStep).rounded(.down) * chartStep))
-            return ChartHeights(power: top, temperature: top, outdoor: bottom, energy: bottom)
+            return ChartHeights(power: top, temperature: top, outdoor: separateOutdoor ? bottom : 0, energy: bottom)
         }
-        let columnHeight = columnHeight - (overhead ?? singleOverhead) + singleOverhead
         let base = ChartHeights()
-        let baseValues = [base.power, base.temperature, base.outdoor]
-        let maxValues = [chartMax.power, chartMax.temperature, chartMax.outdoor]
-        var extra = max(0, columnHeight - historyBaseHeight)
+        let baseValues = [base.power, base.temperature, separateOutdoor ? base.outdoor : 0]
+        let maxValues = [chartMax.power, chartMax.temperature, separateOutdoor ? chartMax.outdoor : 0]
+        var extra = max(0, columnHeight - (overhead ?? singleOverhead) - baseHeightSum(separateOutdoor: separateOutdoor))
         var add = [0.0, 0.0, 0.0]
-        var open = [0, 1, 2]
+        var open = separateOutdoor ? [0, 1, 2] : [0, 1]
         while extra > 0.5 && !open.isEmpty {
             let weight = open.map { chartWeights[$0] }.reduce(0, +)
             var used = 0.0
@@ -161,7 +170,7 @@ public enum MainWindowLayout {
         var out = base
         out.power += step(add[0], room: chartMax.power - base.power)
         out.temperature += step(add[1], room: chartMax.temperature - base.temperature)
-        out.outdoor += step(add[2], room: chartMax.outdoor - base.outdoor)
+        out.outdoor = separateOutdoor ? base.outdoor + step(add[2], room: chartMax.outdoor - base.outdoor) : 0
         let energyRoom = chartMax.energy - base.energy
         out.energy += step(min(max(0, extra), energyRoom), room: energyRoom)
         return out

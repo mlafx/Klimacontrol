@@ -24,6 +24,7 @@ final class AppearanceTests: CoreTestCase {
         XCTAssertEqual(a.menuBarText, .iconTarget)
         XCTAssertEqual(a.menuBarColored, Appearance.platformColoredIcon, "Mac einfarbig, Windows farbig wie bisher")
         XCTAssertFalse(a.menuBarAnimated)
+        XCTAssertFalse(a.temperatureCombined, "Außen bleibt eigener Graph")
         XCTAssertEqual(Appearance.preset(.standard), .standard)
         XCTAssertEqual(Appearance.MenuBarText.allCases, [.iconOnly, .iconTarget, .iconRoom, .roomTarget])
     }
@@ -66,6 +67,7 @@ final class AppearanceTests: CoreTestCase {
             a.menuBarAnimated = true
             a.alwaysOnTop = true
             a.reduceMotion = true
+            a.temperatureCombined = true
             XCTAssertFalse(a.isCustomized, "\(theme) Bedienwerte zählen nicht")
         }
         var a = Appearance.preset(.night)
@@ -103,13 +105,14 @@ final class AppearanceTests: CoreTestCase {
         a.alwaysOnTop = true
         a.menuBarText = .roomTarget
         a.menuBarAnimated = true
+        a.temperatureCombined = true
         let n = a.applying(.neon)
         XCTAssertEqual(n.theme, .neon)
         XCTAssertEqual(n.glow, Appearance.preset(.neon).glow)
         XCTAssertEqual(n.size, .large)
         XCTAssertEqual(n.hero, .room)
         XCTAssertEqual(n.scope, .simple)
-        XCTAssertTrue(n.reduceMotion && n.alwaysOnTop && n.menuBarAnimated)
+        XCTAssertTrue(n.reduceMotion && n.alwaysOnTop && n.menuBarAnimated && n.temperatureCombined)
         XCTAssertEqual(n.menuBarText, .roomTarget)
         // Reduzierte Bewegung schaltet den lebendigen Hintergrund des Neon-Themas ab.
         XCTAssertTrue(n.lively)
@@ -224,4 +227,32 @@ final class AppearanceTests: CoreTestCase {
         XCTAssertEqual(make().appearance, Appearance.preset(.night))
     }
 
+
+    // MARK: Außentemperatur im Temperaturgraphen
+
+    func testTemperatureCombinedDecodesRobustly() {
+        var a = Appearance.standard
+        a.temperatureCombined = true
+        XCTAssertTrue(a.json.contains("\"temperatureCombined\":true"))
+        XCTAssertEqual(Appearance.decode(a.json), a)
+        XCTAssertFalse(Appearance.decode("{}").temperatureCombined, "fehlt → Standard")
+        XCTAssertFalse(Appearance.decode(#"{"temperatureCombined": "ja"}"#).temperatureCombined, "falsch getippt → Standard")
+        XCTAssertFalse(Appearance.decode(#"{"temperatureCombined": 1}"#).temperatureCombined)
+        XCTAssertTrue(Appearance.decode(#"{"temperatureCombined": true}"#).temperatureCombined)
+        // Teil-Objekt ändert nur sein Feld; ein falsch getipptes Feld behält den bisherigen Wert.
+        XCTAssertTrue(Appearance.decode(#"{"blur": 12}"#, base: a).temperatureCombined)
+        XCTAssertTrue(Appearance.decode(#"{"temperatureCombined": null}"#, base: a).temperatureCombined)
+    }
+
+    func testTemperatureCombinedSurvivesThemeAndResets() {
+        let c = makeController()
+        var a = c.appearance
+        a.temperatureCombined = true
+        c.setAppearance(a)
+        XCTAssertFalse(c.appearanceIsCustomized)
+        c.applyTheme(.contrast)
+        XCTAssertTrue(c.appearance.temperatureCombined, "Thema ändert die Anordnung nicht")
+        c.resetAppearance()
+        XCTAssertFalse(c.appearance.temperatureCombined)
+    }
 }

@@ -149,17 +149,25 @@ private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
     /// Der Mac-Kern speichert den Schalter in den UserDefaults.
     static var betaEnabled: Bool { UserDefaults.standard.bool(forKey: SettingsKey.updateBetaChannel) }
 
+    /// true für genau eine Suche im stabilen Kanal, nachdem die Beta-Datei nicht lesbar war.
+    private var stableFallback = false
+    private var fallbackPending = false
+    private var betaFeedUsed = false
+    private var updateFound = false
+
     /// Ohne Beta nil: dann gelten `SUFeedURL` aus den Einstellungen (Testumleitung per `defaults write`) und die
     /// Info.plist. Sparkle fragt den Delegate zuerst.
     func feedURLString(for updater: SPUUpdater) -> String? {
-        if let test = AppUpdate.testFeedOverride(ProcessInfo.processInfo.environment[AppUpdate.testFeedVariable]) {
-            return test
-        }
-        return Self.betaEnabled ? AppUpdate.feedMacBeta : nil
+        let feed = AppUpdate.macFeedOverride(beta: Self.betaEnabled,
+                                             testFeed: ProcessInfo.processInfo.environment[AppUpdate.testFeedVariable],
+                                             stableFallback: stableFallback)
+        betaFeedUsed = feed == AppUpdate.feedMacBeta
+        return feed
     }
 
     func updater(_ updater: SPUUpdater, didFindValidUpdate item: SUAppcastItem) {
         AppLog.write(L.Log.Updates.found(version: item.displayVersionString))
+        updateFound = true
         userInitiated = false
         onStatus?(L.Updates.Mac.downloading(version: item.displayVersionString))
     }
@@ -176,7 +184,14 @@ private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
         AppRestart.skipQuitPrompt = false
         // Sparkle meldet „kein Update“ hier zusätzlich als Fehler – das ist kein Fehlschlag.
         let e = error as NSError
-        if e.domain == SUSparkleErrorDomain, e.code == Int(SUError.noUpdateError.rawValue) { return }
+        let noUpdate = e.domain == SUSparkleErrorDomain && e.code == Int(SUError.noUpdateError.rawValue)
+        // Die Beta-Datei gibt es erst mit der ersten Beta; ohne Rückfall bekäme der Beta-Kanal auch keine stabilen Updates.
+        if AppUpdate.fallsBackToStable(betaFeedUsed: betaFeedUsed, updateFound: updateFound, noUpdate: noUpdate) {
+            AppLog.write(L.Log.Updates.betaFallback(error: error.localizedDescription))
+            fallbackPending = true
+            return
+        }
+        if noUpdate { return }
         AppLog.write(L.Log.Updates.aborted(error: error.localizedDescription))
         onStatus?(UIText.updatesFailed)
         guard userInitiated else { return }
@@ -184,10 +199,21 @@ private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
         onManualResult?(UIText.updatesManualFailedTitle, UIText.updatesManualFailedMessage)
     }
 
+    /// Kommt nach `didAbortWithError`, wenn Sparkle die Sitzung schon beendet hat; eine neue Suche ist hier erlaubt.
+    func updater(_ updater: SPUUpdater, didFinishUpdateCycleFor updateCheck: SPUUpdateCheck, error: (any Error)?) {
+        betaFeedUsed = false
+        updateFound = false
+        stableFallback = fallbackPending
+        fallbackPending = false
+        if stableFallback { updater.checkForUpdatesInBackground() }
+    }
+
     /// Sparkle installiert beim Beenden ohnehin; true meldet, dass die App den sofortigen Weg über den Block anbietet.
     func updater(_ updater: SPUUpdater, willInstallUpdateOnQuit item: SUAppcastItem,
                  immediateInstallationBlock immediateInstallHandler: @escaping () -> Void) -> Bool {
         AppLog.write(L.Log.Updates.downloaded(version: item.displayVersionString))
+        // Die Sitzung bleibt bis zur Installation stehen, ihr Ende kommt nicht mehr an.
+        stableFallback = false
         onReady?(item.displayVersionString, immediateInstallHandler)
         return true
     }

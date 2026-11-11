@@ -1,0 +1,19 @@
+{
+  "comment": "Läufe für das Modus-Band unter dem Leistungsgraphen (HistorySample.modeRuns) für Swift (ModeRunsTableTests) und C#. samples: Verlaufspunkte nach Zeit sortiert, t in Sekunden, mode wie im Verlauf (1 Auto, 2 Kühlen, 3 Trocknen, 4 Heizen, 5 Lüften; null = aus). gapLimit = Lückengrenze des Zeitraums (in der App max(gapMinSeconds, gapFactor × Zeitraum / windowCount) aus options.chart). Regel: Ein Lauf gleicher Betriebsart reicht bis zum nächsten Punkt mit anderem Zustand (anderer Modus oder aus); liegt vor dem nächsten Punkt eine Lücke länger als gapLimit (strikt größer), endet er beim letzten eigenen Punkt. Läufe ohne Dauer (Ende = Anfang) entfallen.",
+  "cases": [
+    {"note": "leer", "gapLimit": 180, "samples": [], "runs": []},
+    {"note": "ein Punkt hat keine Dauer", "gapLimit": 180, "samples": [{"t": 0, "mode": 4}], "runs": []},
+    {"note": "nur aus", "gapLimit": 180, "samples": [{"t": 0, "mode": null}, {"t": 60, "mode": null}], "runs": []},
+    {"note": "Wechsel, Aus, Lücke", "gapLimit": 180, "samples": [{"t": 0, "mode": 4}, {"t": 60, "mode": 4}, {"t": 120, "mode": 2}, {"t": 180, "mode": null}, {"t": 240, "mode": 2}, {"t": 300, "mode": 2}, {"t": 900, "mode": 2}, {"t": 960, "mode": 2}], "runs": [{"mode": 4, "start": 0, "end": 120}, {"mode": 2, "start": 120, "end": 180}, {"mode": 2, "start": 240, "end": 300}, {"mode": 2, "start": 900, "end": 960}]},
+    {"note": "Abstand genau gapLimit ist keine Lücke", "gapLimit": 180, "samples": [{"t": 0, "mode": 2}, {"t": 180, "mode": 2}, {"t": 360, "mode": 2}], "runs": [{"mode": 2, "start": 0, "end": 360}]},
+    {"note": "Abstand eine Sekunde über gapLimit ist eine Lücke", "gapLimit": 180, "samples": [{"t": 0, "mode": 2}, {"t": 60, "mode": 2}, {"t": 241, "mode": 2}, {"t": 301, "mode": 2}], "runs": [{"mode": 2, "start": 0, "end": 60}, {"mode": 2, "start": 241, "end": 301}]},
+    {"note": "Moduswechsel nach einer Lücke: der alte Lauf endet beim letzten eigenen Punkt", "gapLimit": 180, "samples": [{"t": 0, "mode": 4}, {"t": 60, "mode": 4}, {"t": 600, "mode": 2}, {"t": 660, "mode": 2}], "runs": [{"mode": 4, "start": 0, "end": 60}, {"mode": 2, "start": 600, "end": 660}]},
+    {"note": "aus, Lücke, ein", "gapLimit": 180, "samples": [{"t": 0, "mode": null}, {"t": 1000, "mode": 4}, {"t": 1060, "mode": 4}], "runs": [{"mode": 4, "start": 1000, "end": 1060}]},
+    {"note": "ein einzelner Punkt zwischen Aus reicht bis zum nächsten Aus", "gapLimit": 180, "samples": [{"t": 0, "mode": null}, {"t": 60, "mode": 4}, {"t": 120, "mode": null}], "runs": [{"mode": 4, "start": 60, "end": 120}]},
+    {"note": "einzelner Punkt am Ende hat keine Dauer", "gapLimit": 180, "samples": [{"t": 0, "mode": null}, {"t": 60, "mode": 4}], "runs": []},
+    {"note": "einzelner Punkt vor einer Lücke entfällt", "gapLimit": 180, "samples": [{"t": 0, "mode": 4}, {"t": 1000, "mode": 4}, {"t": 1060, "mode": 4}], "runs": [{"mode": 4, "start": 1000, "end": 1060}]},
+    {"note": "Wechsel über eine Lücke hinweg, beide Punkte einzeln", "gapLimit": 30, "samples": [{"t": 0, "mode": 2}, {"t": 60, "mode": 4}], "runs": []},
+    {"note": "alle Betriebsarten nacheinander", "gapLimit": 180, "samples": [{"t": 0, "mode": 1}, {"t": 60, "mode": 2}, {"t": 120, "mode": 3}, {"t": 180, "mode": 4}, {"t": 240, "mode": 5}, {"t": 300, "mode": 5}], "runs": [{"mode": 1, "start": 0, "end": 60}, {"mode": 2, "start": 60, "end": 120}, {"mode": 3, "start": 120, "end": 180}, {"mode": 4, "start": 180, "end": 240}, {"mode": 5, "start": 240, "end": 300}]},
+    {"note": "7 Tage: Punktabstand 1008 s, gapLimit 3024", "gapLimit": 3024, "samples": [{"t": 0, "mode": 4}, {"t": 1008, "mode": 4}, {"t": 2016, "mode": 4}, {"t": 5040, "mode": 4}, {"t": 8065, "mode": 4}, {"t": 9073, "mode": null}], "runs": [{"mode": 4, "start": 0, "end": 5040}, {"mode": 4, "start": 8065, "end": 9073}]}
+  ]
+}

@@ -15,19 +15,30 @@ final class VersionTests: XCTestCase {
         XCTAssertTrue(head.hasPrefix("## [\(version)]"), "CHANGELOG-Kopf „\(head)“ passt nicht zu VERSION \(version)")
     }
 
-    /// Die Dateinamen der Pakete tragen die Version; „latest/download“ geht darum nicht, die Links im README
-    /// müssen beim Release mitwandern.
-    func testReadmeDownloadLinksMatchVersionFile() throws {
+    /// Die Download-Knöpfe im README zeigen dauerhaft auf „latest/download“ mit den festen Namen, die
+    /// tools/make_release.py als Kopien an jedes stabile Release hängt; so wandern sie beim Release nicht mit.
+    func testReadmeDownloadLinksUseFixedNamesFromReleaseScript() throws {
         let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-        let version = try String(contentsOf: root.appendingPathComponent("tools/VERSION"), encoding: .utf8)
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let script = try String(contentsOf: root.appendingPathComponent("tools/make_release.py"), encoding: .utf8)
+        func constant(_ name: String) throws -> String {
+            let line = try XCTUnwrap(script.split(separator: "\n").first { $0.hasPrefix("\(name) = \"") },
+                                     "tools/make_release.py: \(name) fehlt")
+            let value = line.dropFirst(name.count + 4).dropLast()
+            XCTAssertTrue(line.hasSuffix("\"") && !value.contains("\""), "tools/make_release.py: \(line)")
+            return String(value)
+        }
+        let mac = try constant("LATEST_MAC_DMG")
+        let windows = try constant("LATEST_WINDOWS_SETUP")
+        XCTAssertEqual(mac, "Klimacontrol-mac.dmg")
+        XCTAssertEqual(windows, "Klimacontrol-Windows-Setup.exe")
+
         let readme = try String(contentsOf: root.appendingPathComponent("README.md"), encoding: .utf8)
-        let base = "https://github.com/mlafx/Klimacontrol/releases/download/v\(version)/"
-        XCTAssertTrue(readme.contains(base + "Klimacontrol-\(version)-mac.dmg"), "README: Mac-Link passt nicht zu VERSION \(version)")
-        XCTAssertTrue(readme.contains(base + "Klimacontrol-Windows-\(version)-Setup.exe"),
-                      "README: Windows-Link passt nicht zu VERSION \(version)")
-        let links = readme.components(separatedBy: "/releases/download/").count - 1
-        XCTAssertEqual(links, 2, "README: unerwartete Zahl direkter Download-Links")
+        let base = "https://github.com/mlafx/Klimacontrol/releases/latest/download/"
+        XCTAssertTrue(readme.contains("\"\(base)\(mac)\""), "README: Mac-Knopf zeigt nicht auf \(base)\(mac)")
+        XCTAssertTrue(readme.contains("\"\(base)\(windows)\""), "README: Windows-Knopf zeigt nicht auf \(base)\(windows)")
+        XCTAssertEqual(readme.components(separatedBy: "/releases/latest/download/").count - 1, 2,
+                       "README: unerwartete Zahl von latest/download-Links")
+        XCTAssertFalse(readme.contains("/releases/download/"), "README: versionierter Download-Link")
     }
 
     func testEnglishChangelogHeadMatchesVersionFile() throws {

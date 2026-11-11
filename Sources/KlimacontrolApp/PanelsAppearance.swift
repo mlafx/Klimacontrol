@@ -45,6 +45,8 @@ struct AppearanceSettings: View {
                           \.hero, Appearance.HeroValue.allCases) { $0.label }
                 segmented(L.Settings.Appearance.Scope.title, L.Settings.Appearance.Scope.help,
                           \.scope, Appearance.Scope.allCases) { $0.label }
+                toggle(L.Settings.Appearance.TemperatureCombined.title, L.Settings.Appearance.TemperatureCombined.help,
+                       \.temperatureCombined)
             }
 
             Section(L.Settings.Appearance.WindowMenu.section) {

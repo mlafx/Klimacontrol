@@ -10,6 +10,21 @@ public enum AppUpdate {
     /// Beta-Kanal (nur Mac): feste Update-Datei am Vorabrelease „beta“, nie unter latest.
     public static let feedMacBeta = repository + "/releases/download/beta/updateinfo-mac-beta.xml"
     public static func feedMac(beta: Bool) -> String { beta ? feedMacBeta : feedMac }
+    /// Adresse, die der Mac-Updater statt `SUFeedURL` liest; nil = Info.plist. Die Testumleitung geht immer vor.
+    /// `stableFallback`: Die Beta-Datei war nicht lesbar (es gibt sie erst mit der ersten Beta), die Suche läuft
+    /// einmal im stabilen Kanal.
+    public static func macFeedOverride(beta: Bool, testFeed: String?, stableFallback: Bool) -> String? {
+        if let test = testFeedOverride(testFeed) { return test }
+        return beta && !stableFallback ? feedMacBeta : nil
+    }
+
+    /// Ob eine gescheiterte Suche einmal im stabilen Kanal wiederholt wird: nur, wenn sie die Beta-Datei las, noch kein
+    /// Update gefunden hatte und nicht bloß „kein Update“ meldete. Fehler beim Laden oder Installieren eines gefundenen
+    /// Updates zählen nicht.
+    public static func fallsBackToStable(betaFeedUsed: Bool, updateFound: Bool, noUpdate: Bool) -> Bool {
+        betaFeedUsed && !updateFound && !noUpdate
+    }
+
     public static let feedWindows = repository + "/releases/latest/download/updateinfo-win.xml"
     /// Standard: automatisch einmal am Tag suchen.
     public static let checkInterval = 86_400

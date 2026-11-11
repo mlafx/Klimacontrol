@@ -196,7 +196,7 @@ private struct ControlColumn: View {
     var body: some View {
         StickyFooterLayout(contentHeight: contentHeight > 0 ? contentHeight : Self.firstGuess) {
             ScrollView {
-                VStack(alignment: .leading, spacing: 18) {
+                VStack(alignment: .leading, spacing: 16) {
                     if model.config == nil {
                         SetupView()
                     } else {
@@ -213,7 +213,7 @@ private struct ControlColumn: View {
             }
             .scrollBounceBehavior(.basedOnSize)
             .modifier(ScrollEdgeHint())
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 8) {
                 if let msg = model.uiMessage {
                     MessageBanner(message: msg, quiet: model.uiDeviceOff,
                                   retry: model.lastRefreshFailed ? { Task { await model.refreshNow() } } : nil)
@@ -259,7 +259,7 @@ private struct LiveColumn: View {
 
     var body: some View {
         let simple = model.appearance.scope == .simple
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: 16) {
             if let s = model.state {
                 let stale = model.uiStaleSince != nil
                 HeroView(state: s, showReadings: !simple)
@@ -277,37 +277,56 @@ private struct LiveColumn: View {
     }
 }
 
-/// Bedienung unter dem Kopf, gleich in Hauptfenster und Menüleisten-Fenster: Modus, Lüfter, Komfort, Szenen, Timer.
-/// Mehrere Ansichten nebeneinander – der umgebende Stapel setzt seinen Abstand. Die vergleichbaren Teile rechnen nur
-/// neu, wenn sich ihre Eingaben ändern (`.equatable()`).
+/// Bedienung unter dem Kopf, gleich in Hauptfenster und Menüleisten-Fenster: Modus und Lüfter in einer Karte,
+/// Komfort, Szenen und Timer in einer Karte. Mehrere Ansichten nebeneinander – der umgebende Stapel setzt seinen
+/// Abstand. Die vergleichbaren Teile rechnen nur neu, wenn sich ihre Eingaben ändern (`.equatable()`).
 struct ControlStack: View {
     let state: ACState
     let stale: Bool
     let simple: Bool
+    /// Raumtemperatur steht schon anderswo (Hauptfenster: an der Skala bzw. groß); im Menüleisten-Fenster nicht.
+    var roomShownElsewhere = true
 
     var body: some View {
         let s = state
         // Alte Werte: Bedienelemente bleiben benutzbar, sehen aber nicht wie live aus.
         Group {
-            ModePicker(state: s).equatable()
-            if s.power {
-                FanControl(state: s).equatable()
-                if !simple { ComfortSection(state: s).equatable() }
+            VStack(alignment: .leading, spacing: 16) {
+                ModePicker(state: s).equatable()
+                if s.power {
+                    CardDivider()
+                    FanControl(state: s).equatable()
+                }
             }
+            .klimaGroup()
+            if s.power, !simple { ComfortSection(state: s).equatable() }
         }
         .staleDimmed(stale)
         if simple {
             // Umfang „Einfach“: Ein/Aus, Modus, Temperatur, Lüfter, Timer; der Rest unter „Mehr …“.
-            TimerRow(state: s).equatable()
+            TimerRow(state: s).equatable().klimaGroup()
             MoreSection {
-                ReadingsStrip(state: s)
+                ReadingsStrip(state: s, showRoom: !roomShownElsewhere)
                 if s.power { ComfortSection(state: s).equatable().staleDimmed(stale) }
                 ScenesSection()
             }
         } else {
-            ScenesSection()
-            TimerRow(state: s).equatable()
+            VStack(alignment: .leading, spacing: 8) {
+                ScenesSection()
+                CardDivider()
+                TimerRow(state: s).equatable()
+            }
+            .klimaGroup()
         }
+    }
+}
+
+/// Feine Trennlinie zwischen zwei Bereichen einer Karte.
+struct CardDivider: View {
+    @Environment(\.klimaTheme) private var theme
+
+    var body: some View {
+        Rectangle().fill(theme.hairline).frame(height: 1).accessibilityHidden(true)
     }
 }
 
@@ -318,8 +337,8 @@ struct MoreSection<Content: View>: View {
 
     var body: some View {
         DisclosureGroup(isExpanded: $expanded) {
-            VStack(alignment: .leading, spacing: 14) { content() }
-                .padding(.top, 6)
+            VStack(alignment: .leading, spacing: 16) { content() }
+                .padding(.top, 8)
         } label: {
             Text(expanded ? L.Main.More.less : L.Main.More.more).font(.caption.weight(.semibold)).foregroundStyle(.secondary)
                 .frame(minHeight: 22)
