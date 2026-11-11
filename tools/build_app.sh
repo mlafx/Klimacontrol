@@ -65,6 +65,9 @@ if command -v python3 >/dev/null 2>&1; then
   python3 tools/sync_release_notes.py --check || { echo "FEHLER: ReleaseNotesData.swift ist veraltet. Bitte 'python3 tools/sync_release_notes.py' ausführen." >&2; exit 1; }
 fi
 
+# Vorprüfung: dmgbuild-Umgebung jetzt einrichten, nicht erst nach Bau, Signatur und Notarisierung.
+zsh tools/make_dmg.sh --prepare
+
 if [ "$RUN_TESTS" = 1 ]; then
   echo "Tests …"
   if ! zsh tools/test.sh > "${TMPDIR:-/tmp}/klimacontrol-build-tests.log" 2>&1; then
