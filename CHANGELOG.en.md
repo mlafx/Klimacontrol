@@ -3,6 +3,34 @@
 Newest version first; sections "Added", "Changed", "Fixed", "Removed"; English, from the user's point of view.
 Versions have four parts, major.features.fixes.build. Earlier versions are available in German only.
 
+## [1.3.0.0] – in progress
+
+### Added
+- History: Power, temperature and outdoor temperature share one card with a common time axis.
+- History: A colored band below the power shows when the air conditioner ran in which mode.
+- Consumption: Value above each bar and a dashed line for the average of completed periods.
+- Appearance: Setting “Show outdoor temperature in the temperature chart”.
+- The target temperature scale shows the room temperature as a marker.
+- Windows: A damaged settings file is set aside and reported at startup instead of being silently replaced with default values.
+
+### Changed
+- Main window: Mode and fan, as well as scenes and timers, each share one card.
+- The power button is labeled “On” or “Off”.
+- History: Average, peak, consumption and cost appear as one line below the power instead of four tiles.
+- History: Target dashed in the color of the mode, outdoor temperature dotted gray and smoothed.
+- History: Power and temperatures use the same axes and grid lines on Mac and Windows.
+- Windows: The main window follows the same rules for columns and size as on the Mac; tabs and stacked columns are gone.
+- Windows: In Fan mode, the target temperature and its scale are hidden.
+
+### Fixed
+- Consumption: Labels under the bars were cut off or missing at the end.
+- History: The last time under the charts was cut off to “…”.
+- Mac: In full screen, an empty area remained below the outdoor temperature chart.
+- If the history cannot be saved, a notice appears instead of “Not enough data yet”.
+- Mac: With the beta channel turned on, every check failed while no pre-release existed, and stable updates were not installed.
+- Mac: The menu bar window stayed too tall after turning off the air conditioner and showed its content at the bottom without rounded corners.
+- Windows: Release notes in the update window were hard to read in dark mode.
+
 ## [1.2.0.0] – 2026-11-08
 
 ### Added

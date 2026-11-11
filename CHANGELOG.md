@@ -5,6 +5,34 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 `1.0.0.1`, Fehlerbehebung → `1.0.1.0`, Neues → `1.1.0.0`, Änderungen, die Einrichtung oder Daten unbrauchbar machen →
 `2.0.0.0`.
 
+## [1.3.0.0] – in Arbeit
+
+### Hinzugefügt
+- Verlauf: Leistung, Temperatur und Außentemperatur stehen in einer Karte mit gemeinsamer Zeitachse.
+- Verlauf: Ein farbiges Band unter der Leistung zeigt, wann die Anlage in welchem Modus lief.
+- Verbrauch: Wert über jedem Balken und gestrichelte Linie für den Durchschnitt der abgeschlossenen Zeiträume.
+- Darstellung: Einstellung „Außentemperatur im Temperaturgraphen zeigen“.
+- Die Skala der Solltemperatur zeigt die Raumtemperatur als Marke.
+- Windows: Eine beschädigte Einstellungsdatei wird beim Start beiseitegelegt und gemeldet, statt still durch Standardwerte ersetzt zu werden.
+
+### Geändert
+- Hauptfenster: Modus und Lüfter sowie Szenen und Timer stehen jeweils in einer gemeinsamen Karte.
+- Der Ein/Aus-Knopf ist mit „Ein“ bzw. „Aus“ beschriftet.
+- Verlauf: Mittel, Spitze, Verbrauch und Kosten stehen als Zeile unter der Leistung statt in vier Kacheln.
+- Verlauf: Soll gestrichelt in der Farbe des Modus, Außentemperatur grau gepunktet und geglättet.
+- Verlauf: Leistung und Temperaturen haben auf Mac und Windows dieselben Achsen und Gitterlinien.
+- Windows: Das Hauptfenster folgt denselben Regeln für Spalten und Größe wie am Mac; Reiter und gestapelte Spalten entfallen.
+- Windows: Beim Lüften sind Solltemperatur und Skala ausgeblendet.
+
+### Behoben
+- Verbrauch: Die Beschriftungen unter den Balken wurden abgeschnitten oder fehlten am Ende.
+- Verlauf: Die letzte Uhrzeit unter den Graphen wurde zu „…“ abgeschnitten.
+- Mac: Im Vollbild blieb unter dem Graphen der Außentemperatur eine leere Fläche.
+- Lässt sich der Verlauf nicht speichern, steht ein Hinweis statt „Noch zu wenig Daten“.
+- Mac: Mit eingeschaltetem Beta-Kanal scheiterte jede Suche, solange es keine Vorabversion gab, und stabile Updates blieben aus.
+- Mac: Das Menüleisten-Fenster blieb nach dem Ausschalten der Anlage zu hoch und zeigte den Inhalt ohne runde Ecken am unteren Rand.
+- Windows: Die Versionshinweise im Update-Fenster waren im dunklen Modus kaum lesbar.
+
 ## [1.2.0.0] – 2026-11-08
 
 ### Hinzugefügt

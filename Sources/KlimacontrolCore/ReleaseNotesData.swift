@@ -9,6 +9,34 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 `1.0.0.1`, Fehlerbehebung → `1.0.1.0`, Neues → `1.1.0.0`, Änderungen, die Einrichtung oder Daten unbrauchbar machen →
 `2.0.0.0`.
 
+## [1.3.0.0] – in Arbeit
+
+### Hinzugefügt
+- Verlauf: Leistung, Temperatur und Außentemperatur stehen in einer Karte mit gemeinsamer Zeitachse.
+- Verlauf: Ein farbiges Band unter der Leistung zeigt, wann die Anlage in welchem Modus lief.
+- Verbrauch: Wert über jedem Balken und gestrichelte Linie für den Durchschnitt der abgeschlossenen Zeiträume.
+- Darstellung: Einstellung „Außentemperatur im Temperaturgraphen zeigen“.
+- Die Skala der Solltemperatur zeigt die Raumtemperatur als Marke.
+- Windows: Eine beschädigte Einstellungsdatei wird beim Start beiseitegelegt und gemeldet, statt still durch Standardwerte ersetzt zu werden.
+
+### Geändert
+- Hauptfenster: Modus und Lüfter sowie Szenen und Timer stehen jeweils in einer gemeinsamen Karte.
+- Der Ein/Aus-Knopf ist mit „Ein“ bzw. „Aus“ beschriftet.
+- Verlauf: Mittel, Spitze, Verbrauch und Kosten stehen als Zeile unter der Leistung statt in vier Kacheln.
+- Verlauf: Soll gestrichelt in der Farbe des Modus, Außentemperatur grau gepunktet und geglättet.
+- Verlauf: Leistung und Temperaturen haben auf Mac und Windows dieselben Achsen und Gitterlinien.
+- Windows: Das Hauptfenster folgt denselben Regeln für Spalten und Größe wie am Mac; Reiter und gestapelte Spalten entfallen.
+- Windows: Beim Lüften sind Solltemperatur und Skala ausgeblendet.
+
+### Behoben
+- Verbrauch: Die Beschriftungen unter den Balken wurden abgeschnitten oder fehlten am Ende.
+- Verlauf: Die letzte Uhrzeit unter den Graphen wurde zu „…“ abgeschnitten.
+- Mac: Im Vollbild blieb unter dem Graphen der Außentemperatur eine leere Fläche.
+- Lässt sich der Verlauf nicht speichern, steht ein Hinweis statt „Noch zu wenig Daten“.
+- Mac: Mit eingeschaltetem Beta-Kanal scheiterte jede Suche, solange es keine Vorabversion gab, und stabile Updates blieben aus.
+- Mac: Das Menüleisten-Fenster blieb nach dem Ausschalten der Anlage zu hoch und zeigte den Inhalt ohne runde Ecken am unteren Rand.
+- Windows: Die Versionshinweise im Update-Fenster waren im dunklen Modus kaum lesbar.
+
 ## [1.2.0.0] – 2026-11-08
 
 ### Hinzugefügt
@@ -100,6 +128,34 @@ Erste öffentliche Fassung für Mac und Windows.
 
 Newest version first; sections "Added", "Changed", "Fixed", "Removed"; English, from the user's point of view.
 Versions have four parts, major.features.fixes.build. Earlier versions are available in German only.
+
+## [1.3.0.0] – in progress
+
+### Added
+- History: Power, temperature and outdoor temperature share one card with a common time axis.
+- History: A colored band below the power shows when the air conditioner ran in which mode.
+- Consumption: Value above each bar and a dashed line for the average of completed periods.
+- Appearance: Setting “Show outdoor temperature in the temperature chart”.
+- The target temperature scale shows the room temperature as a marker.
+- Windows: A damaged settings file is set aside and reported at startup instead of being silently replaced with default values.
+
+### Changed
+- Main window: Mode and fan, as well as scenes and timers, each share one card.
+- The power button is labeled “On” or “Off”.
+- History: Average, peak, consumption and cost appear as one line below the power instead of four tiles.
+- History: Target dashed in the color of the mode, outdoor temperature dotted gray and smoothed.
+- History: Power and temperatures use the same axes and grid lines on Mac and Windows.
+- Windows: The main window follows the same rules for columns and size as on the Mac; tabs and stacked columns are gone.
+- Windows: In Fan mode, the target temperature and its scale are hidden.
+
+### Fixed
+- Consumption: Labels under the bars were cut off or missing at the end.
+- History: The last time under the charts was cut off to “…”.
+- Mac: In full screen, an empty area remained below the outdoor temperature chart.
+- If the history cannot be saved, a notice appears instead of “Not enough data yet”.
+- Mac: With the beta channel turned on, every check failed while no pre-release existed, and stable updates were not installed.
+- Mac: The menu bar window stayed too tall after turning off the air conditioner and showed its content at the bottom without rounded corners.
+- Windows: Release notes in the update window were hard to read in dark mode.
 
 ## [1.2.0.0] – 2026-11-08
 
