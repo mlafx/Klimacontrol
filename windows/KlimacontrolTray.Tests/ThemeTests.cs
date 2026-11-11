@@ -1,3 +1,6 @@
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using Xunit;
@@ -136,4 +139,54 @@ public class ThemeTests
         Assert.Contains("Segoe UI Variable Display", Theme.DigitFontFor("thin").Family.Source);
         Assert.Contains("Arial Rounded", Theme.DigitFontFor("rounded").Family.Source);
     }
+
+    [Theory]
+    [InlineData("standard")]
+    [InlineData("night")]
+    [InlineData("neon")]
+    [InlineData("minimal")]
+    [InlineData("contrast")]
+    public void TextIsReadableOnInnerTiles(string theme)
+    {
+        // Neuer Aufbau: Elemente in Karten liegen auf Tile; deckend gerechnet (Matt, Kontrast).
+        foreach (var dark in new[] { false, true })
+        {
+            var p = Theme.PaletteFor(theme, dark);
+            var need = theme == "contrast" ? 7 : 4.5;
+            Assert.True(Theme.Contrast(p.Fg, p.Tile) >= need, $"{theme}/{dark}: Fg auf Tile");
+            Assert.True(Theme.Contrast(p.Sub, p.Tile) >= 4.5, $"{theme}/{dark}: Sub auf Tile");
+            Assert.True(Theme.Contrast(p.Sub, p.Card) >= 4.5, $"{theme}/{dark}: Sub auf Card");
+        }
+    }
+
+    [Fact]
+    public void ShapesMatchMacAndLandInResources()
+    {
+        Assert.Equal(20, Theme.CardRadius);
+        Assert.Equal(12, Theme.InnerRadius);
+        var r = new ResourceDictionary();
+        Theme.ApplyShapes(r);
+        Assert.Equal(new CornerRadius(20), r["CardRadius"]);
+        Assert.Equal(new CornerRadius(12), r["InnerRadius"]);
+        Assert.Equal(new Thickness(16), r["CardPadding"]);
+        Assert.Equal(Theme.CardCorner, r["CardRadius"]);
+        Assert.Equal(Theme.InnerCorner, r["InnerRadius"]);
+        // Zweiter Lauf mit gleichen Werten ersetzt nichts (sonst zeichnen alle DynamicResource-Nutzer neu).
+        var before = r["CardRadius"];
+        Theme.ApplyShapes(r);
+        Assert.Same(before, r["CardRadius"]);
+    }
+
+    [Fact]
+    public void ShapesFollowMacThemeStyle()
+    {
+        var swift = File.ReadAllText(Path.Combine(SourceDir(), "..", "..", "Sources", "KlimacontrolApp", "Theme.swift"));
+        double Value(string name) => double.Parse(
+            Regex.Match(swift, $@"static let {name}: CGFloat = ([0-9.]+)").Groups[1].Value,
+            System.Globalization.CultureInfo.InvariantCulture);
+        Assert.Equal(Theme.CardRadius, Value("cardRadius"));
+        Assert.Equal(Theme.InnerRadius, Value("innerRadius"));
+    }
+
+    static string SourceDir([CallerFilePath] string here = "") => Path.GetDirectoryName(here)!;
 }

@@ -36,6 +36,8 @@ public partial class FlyoutWindow : Window
         Appearance.Changed += OnAppearanceChanged;
         // Ohne Einrichtung nur der Hinweis aufs Hauptfenster.
         Controls.InlineSetup = false;
+        // Wie die Menüleiste am Mac: keine Skala unter dem Regler, dafür „Raum“ in den Kennzahlen.
+        Controls.RoomShownElsewhere = false;
         Controls.NavigatedAway += Close;
         outsideClick.Tick += (_, _) => CheckOutsideClick();
         SizeChanged += (_, _) => { if (IsVisible) Place(); };
@@ -63,9 +65,15 @@ public partial class FlyoutWindow : Window
         Dispatcher.BeginInvoke(() => { densityQueued = false; UpdateDensity(); }, DispatcherPriority.Loaded);
     }
 
-    /// Immer die normale Dichte messen, damit es nicht pendelt.
+    /// Immer die normale Dichte messen, damit es nicht pendelt. Die Höhe folgt dem Inhalt in beide Richtungen
+    /// (wächst und schrumpft, z. B. nach dem Ausschalten der Anlage) – nur solange SizeToContent steht.
     void UpdateDensity()
     {
+        if (SizeToContent != SizeToContent.Height)
+        {
+            App.Trace($"Fenster am Infobereich: SizeToContent war {SizeToContent}, wieder nach Inhalt");
+            SizeToContent = SizeToContent.Height;
+        }
         // DesiredSize enthält den Rand der Steuerung schon; 2 = Fensterrahmen.
         var need = Controls.NaturalHeight(Width - 2);
         Controls.Compact = need > Scroller.MaxHeight;

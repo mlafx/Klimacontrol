@@ -22,6 +22,9 @@ namespace KlimacontrolTray;
 /// - `Accent(modeTint)`: Farbe nach „Farben“ und Thema. Bei „Eigene“ und den Themen Nacht/Neon/Minimal werden auch die
 ///   Fluent-Akzentpinsel umgefärbt, sonst bleibt Fluent bei Windows.
 /// - `SizeFactor` skaliert nur Schriften; Abstände skaliert der Aufrufer selbst.
+/// - Formen wie am Mac (`ThemeStyle.cardRadius`/`innerRadius`): Ressourcen `CardRadius`, `InnerRadius` (CornerRadius)
+///   und `CardPadding` (Thickness), im Code `Theme.CardCorner`, `Theme.InnerCorner`, `Theme.CardInset`. Fest, unabhängig
+///   von Thema, Größe und Hohem Kontrast; eine Karte liegt auf dem Fenster, darin nur `Tile`-Flächen (kein Glas auf Glas).
 /// - `EdgeGlow` (Neon): Effekte kosten beim Software-Zeichnen spürbar CPU – nur an wenigen, ruhigen Flächen setzen.
 static class Theme
 {
@@ -217,6 +220,26 @@ static class Theme
         return FromHsv(h, s, v, c.A);
     }
 
+    /// Radius der großen Karten (Kopf, Modus und Lüfter, Szenen und Timer, Verlauf, Verbrauch).
+    public const double CardRadius = 20;
+    /// Radius der Elemente in einer Karte (Modus-Knöpfe, Szenen, Timer, Kacheln).
+    public const double InnerRadius = 12;
+    /// Innenabstand einer Karte.
+    public const double CardPadding = 16;
+
+    public static CornerRadius CardCorner => new(CardRadius);
+    public static CornerRadius InnerCorner => new(InnerRadius);
+    public static Thickness CardInset => new(CardPadding);
+
+    /// Formen als Ressourcen; gleiche Werte bleiben stehen, damit DynamicResource-Nutzer nicht neu zeichnen.
+    internal static void ApplyShapes(ResourceDictionary r)
+    {
+        void Put(string key, object value) { if (!Equals(r[key], value)) r[key] = value; }
+        Put("CardRadius", CardCorner);
+        Put("InnerRadius", InnerCorner);
+        Put("CardPadding", CardInset);
+    }
+
     /// Schriftfaktor für „Größe“: compact 0,9 · normal 1 · large 1,15 (Abstände skaliert der Aufrufer selbst).
     public static double SizeFactor => SizeFactorFor(Appearance.Current.Size);
 
@@ -299,7 +322,7 @@ static class Theme
     internal static Palette PaletteFor(string theme, bool dark) => (theme, dark) switch
     {
         // Nacht: gedimmt, warm-dunkle Flächen, gedämpfte Schrift, kühler Akzent statt Rot/Orange.
-        ("night", true) => P("#14110F", "#1A1614", "#241F1B", "#CFC6BA", "#8E857A", "#2E2823", "#8FA9C9",
+        ("night", true) => P("#14110F", "#1A1614", "#241F1B", "#CFC6BA", "#8F867B", "#2E2823", "#8FA9C9",
                              "#6E9F68", "#B59A4A", "#B8736F", "#2A1C1A"),
         ("night", false) => P("#EDE7DE", "#F1ECE4", "#E4DDD2", "#3A332C", "#6A6157", "#D6CEC2", "#3F5F86",
                               "#3F6E3A", "#7A5A12", "#8E3A33", "#F0DCD6"),
@@ -347,6 +370,7 @@ static class Theme
         if (app.ThemeMode != mode) app.ThemeMode = mode;
 
         ApplyFonts(app);
+        ApplyShapes(app.Resources);
 
         void Sys(string key, SolidColorBrush brush) => app.Resources[key] = brush;
         if (hc)

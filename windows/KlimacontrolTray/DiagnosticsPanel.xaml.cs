@@ -78,7 +78,7 @@ public partial class DiagnosticsPanel : UserControl
             loading.Visibility = Visibility.Visible;
             foreach (var e in content) e.Visibility = Visibility.Collapsed;
             Footer.Visibility = Visibility.Collapsed;
-            HintsText.Visibility = Visibility.Collapsed;
+            HintsBox.Visibility = Visibility.Collapsed;
             return;
         }
         if (loading != null) loading.Visibility = Visibility.Collapsed;
@@ -86,7 +86,7 @@ public partial class DiagnosticsPanel : UserControl
         Footer.Visibility = Visibility.Visible;
         // Hinweise zu Filter und Fehlercode aus dem Kern (leer = nichts zu tun).
         HintsText.Text = string.Join("\n", s.MaintenanceHints);
-        HintsText.Visibility = s.MaintenanceHints.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+        HintsBox.Visibility = s.MaintenanceHints.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
         var heating = st.Mode == 4;
         var rpm = L.T("diagnostics.panel.unitRpm");
         // Technische Herkunft (Eigenschaftscodes) nur im Tooltip, nicht im Text.
@@ -157,8 +157,10 @@ public partial class DiagnosticsPanel : UserControl
             g.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             var l = new TextBlock { FontSize = 13, TextTrimming = TextTrimming.CharacterEllipsis };
             g.Children.Add(l);
+            // Werte wie am Mac zurückhaltend und mit gleich breiten Ziffern (springen beim Aktualisieren nicht).
             var v = new TextBlock { FontSize = 13, Margin = new Thickness(8, 0, 0, 0) };
-            v.SetResourceReference(TextBlock.ForegroundProperty, "Fg");
+            v.SetResourceReference(TextBlock.ForegroundProperty, "Sub");
+            System.Windows.Documents.Typography.SetNumeralAlignment(v, FontNumeralAlignment.Tabular);
             Grid.SetColumn(v, 1);
             g.Children.Add(v);
             Sections.Children.Add(g);

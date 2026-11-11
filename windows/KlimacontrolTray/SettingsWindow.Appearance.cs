@@ -77,6 +77,7 @@ public partial class SettingsWindow
             LookDigitPreview.FontWeight = weight;
             SelectTag(LookBigBox, a.BigValue);
             SelectTag(LookScopeBox, a.Scope);
+            LookTemperatureCombinedBox.IsChecked = a.TemperatureCombined;
 
             LookLivingBox.IsChecked = a.LivingBackground;
             LookWeatherBox.IsChecked = a.WeatherEffects;
@@ -221,6 +222,7 @@ public partial class SettingsWindow
         if (box == LookLivingBox) Look(a => a with { LivingBackground = on });
         else if (box == LookWeatherBox) Look(a => a with { WeatherEffects = on });
         else if (box == LookReduceBox) Look(a => a with { ReduceAnimations = on });
+        else if (box == LookTemperatureCombinedBox) Look(a => a with { TemperatureCombined = on });
         else if (box == LookOnTopBox) Look(a => a with { AlwaysOnTop = on });
         else if (box == LookMiniBox) Look(a => a with { MiniWindow = on });
         else if (box == LookTrayColoredBox) Look(a => a with { TrayColored = on });

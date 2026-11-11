@@ -35,6 +35,7 @@ public partial class ScenesSection : UserControl
             Children = { plus, new TextBlock { Text = L.T("main.scene.save"), VerticalAlignment = VerticalAlignment.Center } },
         };
         ScenesExpander.IsExpanded = scenesOpen;
+        ControlPanel.RoundInner(SceneAdd);
 
         // Erst abmelden: Loaded kann beim Umhängen zwischen Spalten ohne Unloaded dazwischen kommen.
         Loaded += (_, _) =>
@@ -60,8 +61,8 @@ public partial class ScenesSection : UserControl
         };
     }
 
-    /// Kompakte Dichte: nur der Abstand nach oben wird kleiner. Ihn setzt der Baustein selbst (Margin), damit er nicht
-    /// doppelt zählt.
+    /// Kompakte Dichte: nur der Abstand zum Raster wird kleiner. Den Abstand nach außen setzt das ControlPanel (der
+    /// Baustein steht in der Karte mit dem Timer oder unter „Mehr …“).
     public bool Compact
     {
         get => compact;
@@ -73,8 +74,8 @@ public partial class ScenesSection : UserControl
         }
     }
 
-    /// Abstand nach oben nach Dichte und „Größe“ (`Theme.SizeFactor`).
-    internal void ApplyDensity() => Margin = new Thickness(0, Math.Round((compact ? 8 : 12) * Theme.SizeFactor), 0, 0);
+    /// Abstand zum Raster nach Dichte und „Größe“ (`Theme.SizeFactor`); die Knöpfe haben selbst 3 px Rand.
+    internal void ApplyDensity() => SceneGrid.Margin = new Thickness(-3, Math.Round((compact ? 3 : 6) * Theme.SizeFactor), -3, 0);
 
     /// Der Szenenname hat den Tastaturfokus (das Fenster am Infobereich soll dann z. B. nicht schließen).
     public bool IsTyping => SceneNameBox.IsKeyboardFocusWithin;
@@ -163,6 +164,8 @@ public partial class ScenesSection : UserControl
             HorizontalAlignment = HorizontalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Stretch,
             ToolTip = scene.Active ? L.F("main.scene.activeHelp", ("name", scene.Name)) : L.F("main.scene.applyHelp", ("name", scene.Name)),
         };
+        // Element in der Karte: innerer Radius wie die Modus-Knöpfe.
+        ControlPanel.RoundInner(b);
         // Aktiv = getönte Fläche mit weißer Schrift; für die Sprachausgabe „aktiv“.
         AutomationProperties.SetName(b, scene.Name);
         AutomationProperties.SetHelpText(b, scene.Summary);

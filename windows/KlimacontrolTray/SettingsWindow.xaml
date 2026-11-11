@@ -440,6 +440,16 @@
                   <ComboBoxItem Content="{l:T appearance.scope.all}" Tag="all"/>
                 </ComboBox>
               </Grid>
+              <Grid Style="{StaticResource Row}">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,12,0">
+                  <TextBlock Style="{StaticResource RowTitle}" Text="{l:T settings.appearance.temperatureCombined.title}"/>
+                  <TextBlock Style="{StaticResource RowHelp}" Text="{l:T settings.appearance.temperatureCombined.help}"/>
+                </StackPanel>
+                <local:ClickCheckBox x:Name="LookTemperatureCombinedBox" Grid.Column="1" VerticalAlignment="Center" MinWidth="0"
+                          AutomationProperties.Name="{l:T settings.appearance.temperatureCombined.title}"
+                          AutomationProperties.HelpText="{l:T settings.appearance.temperatureCombined.help}" Click="LookToggle_Click"/>
+              </Grid>
             </StackPanel>
           </Border>
 

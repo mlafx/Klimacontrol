@@ -64,6 +64,8 @@ public sealed class Snapshot
     public bool HistoryCSV { get; set; }
     /// Zählt neue Verlaufspunkte (HistoryStore.revision) – Graphen laden daran neu.
     public int HistoryRevision { get; set; }
+    /// Die Verlaufsdatenbank ließ sich nicht öffnen: statt „zu wenig Daten“ L.T("charts.unavailable") zeigen.
+    public bool HistoryUnavailable { get; set; }
     public SetupInfo Setup { get; set; } = new();
 
     /// Verbindungsschritt beim Verbinden: "searching" | "handshake" | "reading" | null (verbunden bzw. keine Verbindung).
@@ -150,6 +152,8 @@ public sealed class Snapshot
     /// „Neu einrichten“ fragt mit `Options.Prompts.ForgetNeedsBackup` (WLAN-Zugangsdaten noch nicht gesichert).
     public bool ForgetNeedsBackup { get; set; }
     public string FanCaption { get; set; } = "";
+    /// Raum-Marke an der Skala unter dem Regler (Lage schon an den Rand geklemmt); fehlt ohne Raumtemperatur.
+    public ScaleMark? ScaleRoom { get; set; }
     public List<string> MaintenanceHints { get; set; } = new();
     public string ErrorCodeValue { get; set; } = "";
     public string FilterValue { get; set; } = "";
@@ -270,7 +274,10 @@ public sealed class OptionsInfo
     public List<OffTimerChoice> OffTimerChoices { get; set; } = new();
     public FanOptions Fan { get; set; } = new();
     public CredentialOptions Credentials { get; set; } = new();
+    /// Skala unter dem Regler der Solltemperatur.
+    public TemperatureScaleOptions TemperatureScale { get; set; } = new();
     public ChartOptions Chart { get; set; } = new();
+    public WindowOptions Window { get; set; } = new();
     public EnergyOptions Energy { get; set; } = new();
     public List<ModeOption> ConnectionModes { get; set; } = new();
     public List<StepInfo> ConnectSteps { get; set; } = new();
@@ -289,6 +296,29 @@ public sealed class ChoiceInfo
 {
     public string Label { get; set; } = "";
     public double Seconds { get; set; }
+}
+
+/// Skala unter dem Regler der Solltemperatur (OptionsDTO.TemperatureScale).
+public sealed class TemperatureScaleOptions
+{
+    public double Min { get; set; }
+    public double Max { get; set; }
+    public List<ScaleMark> Labels { get; set; } = new();
+    /// Hervorgehobene Striche ohne Beschriftung.
+    public List<ScaleTick> Emphasized { get; set; } = new();
+}
+
+/// Strich auf der Spur: `Fraction` 0…1 zwischen den Knopfmitten (Einzug = halbe Knopfbreite).
+public class ScaleTick
+{
+    public double Value { get; set; }
+    public double Fraction { get; set; }
+}
+
+/// Beschriftete Marke („16°“, „Raum 23,0°“).
+public sealed class ScaleMark : ScaleTick
+{
+    public string? Text { get; set; }
 }
 
 public sealed class RefreshOptions
@@ -372,6 +402,9 @@ public sealed class EnergyResult
     public string Kind { get; set; } = "";
     public List<EnergyPeriod> Periods { get; set; } = new();
     public string Summary { get; set; } = "";
+    /// Durchschnitt der abgeschlossenen Zeiträume (gestrichelte Linie) und Text für die Legende; fehlt ohne solche.
+    public double? Average { get; set; }
+    public string? AverageText { get; set; }
     public string? Error { get; set; }
 }
 
@@ -389,12 +422,14 @@ public sealed class EnergyPeriod
     public string Name { get; set; } = "";
     public string Tooltip { get; set; } = "";
     public string CostText { get; set; } = "";
+    /// Wert über dem Balken („4,2“); fehlt ohne Wert oder bei zu vielen Balken.
+    public string? ValueText { get; set; }
     public double? Shown => KWh ?? MeasuredKWh;
 }
 
 public sealed class ChartOptions
 {
-    public List<ChoiceInfo> Ranges { get; set; } = new();
+    public List<ChartRangeInfo> Ranges { get; set; } = new();
     public double DefaultRange { get; set; }
     public int WindowCount { get; set; }
     /// Lücke = max(GapMinSeconds, GapFactor × Punktabstand), Punktabstand = Zeitraum / WindowCount.
@@ -402,6 +437,67 @@ public sealed class ChartOptions
     public double GapMinSeconds { get; set; }
     public RangeInfo TemperatureAxis { get; set; } = new();
     public RangeInfo OutdoorAxis { get; set; } = new();
+}
+
+/// Zeitraum des Verlaufs mit der Teilung seiner Zeitachse (ab 1440 min Datum statt Uhrzeit).
+public sealed class ChartRangeInfo
+{
+    public string Label { get; set; } = "";
+    public double Seconds { get; set; }
+    public int TickMinutes { get; set; }
+    /// Halbe Breite einer Achsenbeschriftung (Randprüfung der Marken).
+    public double TickLabelHalfWidth { get; set; }
+}
+
+/// Regeln des Hauptfensters (MainWindowLayout im Kern); Breiten der Seitenspalten schließen ihre Trennlinie ein.
+public sealed class WindowOptions
+{
+    public double ControlWidth { get; set; }
+    public double HistoryMin { get; set; }
+    /// Bis hierher bekommt der Verlauf zuerst allen zusätzlichen Platz, danach die Diagnose.
+    public double HistoryBalanced { get; set; }
+    /// Ab dieser Verlaufsbreite stehen die Graphen als 2 × 2 nebeneinander.
+    public double HistoryGridFrom { get; set; }
+    public double DiagnosticsMin { get; set; }
+    public double DiagnosticsMax { get; set; }
+    /// Ohne Verlauf und Diagnose ist das Fenster höchstens so breit.
+    public double ControlsOnlyMaxWidth { get; set; }
+    /// Mindesthöhe je Darstellungsgröße.
+    public SizeHeights MinimumHeight { get; set; } = new();
+    public double HistoryBaseHeight { get; set; }
+    public double SingleOverhead { get; set; }
+    public double GridOverhead { get; set; }
+    public double GridRowMax { get; set; }
+    public double ChartStep { get; set; }
+    public double EnergyBarMaxWidth { get; set; }
+    /// Graphenhöhen einspaltig ohne zusätzlichen Platz bzw. ganz ausgereizt, und kleinste Höhen im 2 × 2-Raster.
+    public ChartHeightsInfo ChartMin { get; set; } = new();
+    public ChartHeightsInfo ChartMax { get; set; } = new();
+    public ChartHeightsInfo GridChartMin { get; set; } = new();
+    /// Anteile an zusätzlicher Höhe; der Verbrauch bekommt nur den Rest.
+    public ChartWeightsInfo ChartWeights { get; set; } = new();
+}
+
+public sealed class ChartWeightsInfo
+{
+    public double Power { get; set; }
+    public double Temperature { get; set; }
+    public double Outdoor { get; set; }
+}
+
+public sealed class SizeHeights
+{
+    public double Compact { get; set; }
+    public double Normal { get; set; }
+    public double Large { get; set; }
+}
+
+public sealed class ChartHeightsInfo
+{
+    public double Power { get; set; }
+    public double Temperature { get; set; }
+    public double Outdoor { get; set; }
+    public double Energy { get; set; }
 }
 
 public sealed class ModeOption
@@ -486,6 +582,8 @@ public sealed class AppearanceInfo
     public string MenuBarText { get; set; } = "iconTarget";
     public bool MenuBarColored { get; set; }
     public bool MenuBarAnimated { get; set; }
+    /// Außentemperatur im Temperaturgraphen statt eigenem Graphen (Standard aus).
+    public bool TemperatureCombined { get; set; }
 }
 
 /// LastKnownDTO: letzter Verlaufspunkt (Unix-Sekunden).
@@ -713,6 +811,10 @@ public sealed class Sample
     public double? Outdoor { get; set; }
     public double? Target { get; set; }
     public bool On { get; set; }
+    /// Betriebsart (1 Auto, 2 Kühlen, 3 Trocknen, 4 Heizen, 5 Lüften), nur solange die Anlage lief; fehlt bei älterem Kern.
+    public int? Mode { get; set; }
+    /// Geglättete Außentemperatur für die Linie (der Hover zeigt `Outdoor`); fehlt ohne Außenwert.
+    public double? OutdoorSmooth { get; set; }
 }
 
 /// Kennzahlen eines Zeitraums (StatsDTO in Bridge.swift).
@@ -721,6 +823,14 @@ public sealed class HistoryStats
     public double? AvgWatts { get; set; }
     public double? PeakWatts { get; set; }
     public double? KWh { get; set; }
+    /// Kennzahlenzeile unter dem Leistungsgraphen (Mittel · Spitze · kWh · Kosten), fertig aus dem Kern.
+    public List<ChartStat> Line { get; set; } = new();
+}
+
+public sealed class ChartStat
+{
+    public string Text { get; set; } = "";
+    public string Help { get; set; } = "";
 }
 
 /// Betriebsarten und Lüfterstufen wie in MideaKit (Commands.swift), Reihenfolge und Farben wie die Mac-App.

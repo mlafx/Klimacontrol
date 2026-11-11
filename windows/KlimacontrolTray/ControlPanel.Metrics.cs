@@ -14,34 +14,30 @@ using System.Windows.Threading;
 
 namespace KlimacontrolTray;
 
-/// Kennzahlen unter der großen Zahl: Raum, Außen, Leistung, Kosten heute.
+/// Kennzahlen unter der großen Zahl (Raum, Außen, Leistung, Kosten heute) als ruhige Zeile: Name klein über dem Wert,
+/// ohne Symbole. „Raum“ nur, wenn die Raumtemperatur nicht schon an der Skala bzw. groß steht (`RoomShownElsewhere`).
 public partial class ControlPanel
 {
     readonly TextBlock roomValue, outdoorValue, powerValue, todayValue, todayCaption;
-    readonly FrameworkElement outdoorItem, powerItem, todayItem;
+    readonly FrameworkElement roomItem, outdoorItem, powerItem, todayItem;
     /// Kennzahlen zuletzt grau gezeichnet (alte Werte) – nur bei Wechsel umfärben.
     bool readingsStale;
 
-    /// Eine Kennzahl (Symbol, Titel, Wert) anlegen; zurück kommt der Wert-Text zum späteren Aktualisieren.
-    TextBlock Reading(string icon, string title, out FrameworkElement item, out TextBlock caption)
+    /// Eine Kennzahl (Titel, Wert) anlegen; zurück kommt der Wert-Text zum späteren Aktualisieren.
+    TextBlock Reading(string title, out FrameworkElement item, out TextBlock caption)
     {
         // Farbe über die Ressource, damit ein Wechsel hell/dunkel sie mitnimmt.
-        var head = new StackPanel { Orientation = Orientation.Horizontal };
-        var symbol = Icons.Make(icon, 11, null, 1.3);
-        symbol.SetResourceReference(Shape.StrokeProperty, "Sub");
-        caption = new TextBlock { Text = " " + title, FontSize = 11 };
+        caption = new TextBlock { Text = title, FontSize = 11 };
         caption.SetResourceReference(TextBlock.ForegroundProperty, "Sub");
-        head.Children.Add(symbol);
-        head.Children.Add(caption);
         // Schmale Spalte: Titel und Wert verkleinern statt abschneiden („Kosten seit 08:15“, „1,23 € · unsicher“).
-        var fit = new Viewbox { Child = head, Stretch = Stretch.Uniform, StretchDirection = StretchDirection.DownOnly, HorizontalAlignment = HorizontalAlignment.Center };
-        var value = new TextBlock { FontSize = 14, FontWeight = FontWeights.SemiBold };
+        var fit = new Viewbox { Child = caption, Stretch = Stretch.Uniform, StretchDirection = StretchDirection.DownOnly, HorizontalAlignment = HorizontalAlignment.Left };
+        var value = new TextBlock { FontSize = 14, FontWeight = FontWeights.SemiBold, Typography = { NumeralAlignment = FontNumeralAlignment.Tabular } };
         var valueFit = new Viewbox
         {
             Child = value, Stretch = Stretch.Uniform, StretchDirection = StretchDirection.DownOnly,
-            HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 2, 0, 0),
+            HorizontalAlignment = HorizontalAlignment.Left, Margin = new Thickness(0, 2, 0, 0),
         };
-        var panel = new StackPanel { Background = Brushes.Transparent, Margin = new Thickness(2, 0, 2, 0) };
+        var panel = new StackPanel { Background = Brushes.Transparent, Margin = new Thickness(0, 0, 8, 0) };
         panel.Children.Add(fit);
         panel.Children.Add(valueFit);
         Readings.Children.Add(panel);
@@ -62,6 +58,7 @@ public partial class ControlPanel
                 else v.SetResourceReference(TextBlock.ForegroundProperty, "Sub");
             }
         }
+        roomItem.Visibility = RoomShownElsewhere ? Visibility.Collapsed : Visibility.Visible;
         roomValue.Text = Fmt.Temp(st.Indoor);
         // Ausgeblendet zählt im UniformGrid nicht mit; „Außen“ fehlt bei ausgeschalteter Anlage.
         outdoorItem.Visibility = st.Power ? Visibility.Visible : Visibility.Collapsed;
@@ -70,7 +67,7 @@ public partial class ControlPanel
         powerValue.Text = Fmt.Watts(st.PowerWatts);
         powerItem.ToolTip = s.PowerCostHelp;
         // Titel, Wert und Kurzinfo der Kosten kommen fertig aus dem Kern.
-        todayCaption.Text = " " + s.CostLine.Title;
+        todayCaption.Text = s.CostLine.Title;
         todayValue.Text = s.CostLine.Value;
         if (!Equals(todayItem.ToolTip, s.CostLine.Help)) todayItem.ToolTip = s.CostLine.Help;
     }

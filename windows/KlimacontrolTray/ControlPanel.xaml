@@ -32,8 +32,8 @@
     <!-- Kopf: Name, Verbindung, Ein/Aus, Solltemperatur, Kennzahlen. Übereinander (Darstellung): die Fläche
          (Hero), der lebendige Hintergrund, der Inhalt (HeroBody), die Wetter-Ebene und bei Neon die leuchtende Kante. -->
     <Grid x:Name="HeroBox">
-    <Border x:Name="Hero" CornerRadius="8" BorderThickness="1" BorderBrush="{DynamicResource Line}"/>
-    <local:AmbientLayer x:Name="LivelyLayer" Kind="Lively"/>
+    <Border x:Name="Hero" CornerRadius="{DynamicResource CardRadius}" BorderThickness="1" BorderBrush="{DynamicResource Line}"/>
+    <local:AmbientLayer x:Name="LivelyLayer" Kind="Lively" CornerRadius="20"/>
     <Border x:Name="HeroBody" Padding="16">
       <StackPanel>
         <Grid>
@@ -49,11 +49,14 @@
               <TextBlock x:Name="StatusText" FontSize="12" Foreground="{DynamicResource Sub}" TextTrimming="CharacterEllipsis"/>
             </StackPanel>
           </StackPanel>
-          <Button x:Name="PowerButton" Grid.Column="1" Width="46" Height="46" Padding="0" Click="Power_Click" ToolTip="{l:T main.windows.powerToggle}">
+          <!-- Beschriftet („Ein“/„Aus“), damit der Zustand nicht nur an der Farbe hängt. -->
+          <Button x:Name="PowerButton" Grid.Column="1" MinHeight="44" Padding="12,0,16,0" Margin="8,0,0,0" VerticalAlignment="Center"
+                  Click="Power_Click" ToolTip="{l:T main.windows.powerToggle}">
             <Button.Template>
               <ControlTemplate TargetType="Button">
-                <Border x:Name="b" CornerRadius="23" Background="{TemplateBinding Background}" BorderBrush="{DynamicResource Line}" BorderThickness="1">
-                  <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Border x:Name="b" CornerRadius="22" Background="{TemplateBinding Background}" BorderBrush="{DynamicResource Line}" BorderThickness="1"
+                        MinHeight="{TemplateBinding MinHeight}">
+                  <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Border>
                 <ControlTemplate.Triggers>
                   <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="b" Property="Opacity" Value="0.85"/></Trigger>
@@ -82,18 +85,14 @@
             <Button x:Name="PlusButton" Grid.Column="2" Width="44" Height="44" Padding="0" VerticalAlignment="Center" Click="Plus_Click" ToolTip="{l:T main.step.warmer}"
                     AutomationProperties.Name="{l:T main.step.warmer}"/>
           </Grid>
-          <Grid x:Name="TempRow" Margin="0,8,0,0">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="Auto"/>
-              <ColumnDefinition/>
-              <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock x:Name="Min16" FontSize="11" VerticalAlignment="Center"/>
-            <Slider x:Name="TempSlider" Grid.Column="1" Margin="8,0" TickFrequency="1"
+          <!-- Regler 16–30, darunter die Skala mit der Raum-Marke (Lagen und Texte aus dem Kern). Die Skala hat dieselbe
+               Breite und linke Kante wie der Regler; ihr Einzug folgt dessen Knopf. -->
+          <StackPanel x:Name="TempRow" Margin="0,8,0,0">
+            <Slider x:Name="TempSlider" TickFrequency="1"
                     IsSnapToTickEnabled="True" TickPlacement="BottomRight" ValueChanged="TempSlider_ValueChanged"
                     AutomationProperties.Name="{l:T main.hero.targetTemperature}"/>
-            <TextBlock x:Name="Max30" Grid.Column="2" FontSize="11" VerticalAlignment="Center"/>
-          </Grid>
+            <local:TemperatureScale x:Name="TempScale" Margin="0,2,0,0"/>
+          </StackPanel>
         </StackPanel>
 
         <!-- Aus: Raumtemperatur groß -->
@@ -103,86 +102,132 @@
           <TextBlock x:Name="OffHint" FontSize="11" Foreground="{DynamicResource Sub}" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Margin="0,2,0,0"/>
         </StackPanel>
 
-        <UniformGrid x:Name="Readings" Rows="1" Margin="0,14,0,0"/>
+        <!-- Kennzahlen ohne Symbole, Name klein über dem Wert. Beim Umfang „Einfach“ stehen sie unter „Mehr …“. -->
+        <StackPanel x:Name="HeroReadingsHost">
+          <Border x:Name="HeroDivider" Height="1" Margin="0,14,0,0" Background="{DynamicResource Line}"/>
+          <UniformGrid x:Name="Readings" Rows="1" Margin="0,12,0,0"/>
+        </StackPanel>
       </StackPanel>
     </Border>
-    <local:AmbientLayer x:Name="WeatherLayer" Kind="Weather"/>
+    <local:AmbientLayer x:Name="WeatherLayer" Kind="Weather" CornerRadius="20"/>
     <!-- Neon: Kante in der Modusfarbe mit leichtem Schein – zwei blasse Ringe statt eines Effekts (Software-Zeichnen). -->
     <Grid x:Name="HeroEdge" IsHitTestVisible="False" Visibility="Collapsed">
-      <Border x:Name="EdgeHalo2" Margin="-4" CornerRadius="12" BorderThickness="2"/>
-      <Border x:Name="EdgeHalo1" Margin="-2" CornerRadius="10" BorderThickness="2"/>
-      <Border x:Name="EdgeLine" CornerRadius="8" BorderThickness="1"/>
+      <Border x:Name="EdgeHalo2" Margin="-4" CornerRadius="24" BorderThickness="2"/>
+      <Border x:Name="EdgeHalo1" Margin="-2" CornerRadius="22" BorderThickness="2"/>
+      <Border x:Name="EdgeLine" CornerRadius="{DynamicResource CardRadius}" BorderThickness="1"/>
     </Grid>
     </Grid>
 
     <!-- Startanzeige: eingerichtet, aber noch kein Zustand (zuletzt bekannte Werte bzw. Skelett und Schritte). -->
     <local:ConnectingView x:Name="Connecting" Visibility="Collapsed"/>
 
-    <UniformGrid x:Name="ModeGrid" Rows="1" Margin="-3,14,-3,0"/>
+    <!-- Modus und Lüfter in einer Karte -->
+    <Border x:Name="ControlsCard" Margin="0,14,0,0" Padding="{DynamicResource CardPadding}" CornerRadius="{DynamicResource CardRadius}"
+            Background="{DynamicResource Tile}" BorderBrush="{DynamicResource Edge}" BorderThickness="1">
+      <StackPanel>
+        <UniformGrid x:Name="ModeGrid" Rows="1" Margin="-3,0,-3,0"/>
+        <Border x:Name="FanDivider" Height="1" Margin="0,14,0,0" Background="{DynamicResource Line}"/>
 
-    <!-- Lüfter -->
-    <StackPanel x:Name="FanPanel" Margin="0,16,0,0">
-      <Grid>
-        <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Sub}" Text="{l:T main.section.fan}" VerticalAlignment="Center"/>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-          <TextBlock x:Name="FanValue" FontSize="12" Foreground="{DynamicResource Sub}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-          <!-- Checked/Unchecked statt Click: auch Leertaste und Sprachausgabe (Umschalten) schicken den Befehl. -->
-          <ToggleButton x:Name="FanAuto" Content="{l:T fan.auto}" FontSize="12" Padding="10,3" Checked="FanAuto_Changed" Unchecked="FanAuto_Changed"
-                        AutomationProperties.Name="{l:T main.windows.fanAutoName}"/>
+        <!-- Lüfter -->
+        <StackPanel x:Name="FanPanel" Margin="0,14,0,0">
+          <Grid>
+            <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Sub}" Text="{l:T main.section.fan}" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+              <TextBlock x:Name="FanValue" FontSize="12" Foreground="{DynamicResource Sub}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+              <!-- Checked/Unchecked statt Click: auch Leertaste und Sprachausgabe (Umschalten) schicken den Befehl. -->
+              <ToggleButton x:Name="FanAuto" Content="{l:T fan.auto}" FontSize="12" Padding="10,3" Checked="FanAuto_Changed" Unchecked="FanAuto_Changed"
+                            AutomationProperties.Name="{l:T main.windows.fanAutoName}"/>
+            </StackPanel>
+          </Grid>
+          <!-- Spur selbst gezeichnet (FanTrack): fest 1–100 %, beim Kühlen/Heizen links gestrichelt bis „Außengerät leise“,
+               rechts bis „Turbo“. Vom Regler bleibt nur der Knopf. -->
+          <Grid Margin="0,6,0,0">
+            <Canvas x:Name="FanTrack" IsHitTestVisible="False"/>
+            <Slider x:Name="FanSlider" Minimum="1" Maximum="100" SmallChange="1" LargeChange="10" IsMoveToPointEnabled="True"
+                    FocusVisualStyle="{x:Null}" ValueChanged="FanSlider_ValueChanged" SizeChanged="FanSlider_SizeChanged"
+                    AutomationProperties.Name="{l:T main.fan.percentLabel}">
+              <Slider.Template>
+                <ControlTemplate TargetType="Slider">
+                  <Grid Height="24" Background="Transparent">
+                    <Track x:Name="PART_Track">
+                      <Track.DecreaseRepeatButton>
+                        <RepeatButton Command="Slider.DecreaseLarge" Opacity="0" Focusable="False" IsTabStop="False"/>
+                      </Track.DecreaseRepeatButton>
+                      <Track.IncreaseRepeatButton>
+                        <RepeatButton Command="Slider.IncreaseLarge" Opacity="0" Focusable="False" IsTabStop="False"/>
+                      </Track.IncreaseRepeatButton>
+                      <Track.Thumb>
+                        <Thumb Width="20" Height="20">
+                          <Thumb.Template>
+                            <ControlTemplate TargetType="Thumb">
+                              <!-- Knopf wie der Windows-11-Regler: Ring in Flächenfarbe, Punkt in der Modusfarbe. -->
+                              <Grid>
+                                <Ellipse Fill="{DynamicResource Card}" Stroke="{DynamicResource Line}" StrokeThickness="1"/>
+                                <Ellipse x:Name="Dot" Width="10" Height="10"
+                                         Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Slider}}"/>
+                              </Grid>
+                              <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                  <Setter TargetName="Dot" Property="Width" Value="12"/>
+                                  <Setter TargetName="Dot" Property="Height" Value="12"/>
+                                </Trigger>
+                                <Trigger Property="IsDragging" Value="True">
+                                  <Setter TargetName="Dot" Property="Width" Value="8"/>
+                                  <Setter TargetName="Dot" Property="Height" Value="8"/>
+                                </Trigger>
+                              </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                          </Thumb.Template>
+                        </Thumb>
+                      </Track.Thumb>
+                    </Track>
+                  </Grid>
+                </ControlTemplate>
+              </Slider.Template>
+            </Slider>
+          </Grid>
+          <!-- Eine Zeile: Sprungmarken an ihrer Position, die Zonen als Symbole ganz außen (flache Knöpfe, FlatMark). -->
+          <Canvas x:Name="FanMarks" Height="22" ClipToBounds="False"/>
         </StackPanel>
-      </Grid>
-      <!-- Spur selbst gezeichnet (FanTrack): fest 1–100 %, beim Kühlen/Heizen links gestrichelt bis „Außengerät leise“,
-           rechts bis „Turbo“. Vom Regler bleibt nur der Knopf. -->
-      <Grid Margin="0,6,0,0">
-        <Canvas x:Name="FanTrack" IsHitTestVisible="False"/>
-        <Slider x:Name="FanSlider" Minimum="1" Maximum="100" SmallChange="1" LargeChange="10" IsMoveToPointEnabled="True"
-                FocusVisualStyle="{x:Null}" ValueChanged="FanSlider_ValueChanged" SizeChanged="FanSlider_SizeChanged"
-                AutomationProperties.Name="{l:T main.fan.percentLabel}">
-          <Slider.Template>
-            <ControlTemplate TargetType="Slider">
-              <Grid Height="24" Background="Transparent">
-                <Track x:Name="PART_Track">
-                  <Track.DecreaseRepeatButton>
-                    <RepeatButton Command="Slider.DecreaseLarge" Opacity="0" Focusable="False" IsTabStop="False"/>
-                  </Track.DecreaseRepeatButton>
-                  <Track.IncreaseRepeatButton>
-                    <RepeatButton Command="Slider.IncreaseLarge" Opacity="0" Focusable="False" IsTabStop="False"/>
-                  </Track.IncreaseRepeatButton>
-                  <Track.Thumb>
-                    <Thumb Width="20" Height="20">
-                      <Thumb.Template>
-                        <ControlTemplate TargetType="Thumb">
-                          <!-- Knopf wie der Windows-11-Regler: Ring in Flächenfarbe, Punkt in der Modusfarbe. -->
-                          <Grid>
-                            <Ellipse Fill="{DynamicResource Card}" Stroke="{DynamicResource Line}" StrokeThickness="1"/>
-                            <Ellipse x:Name="Dot" Width="10" Height="10"
-                                     Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Slider}}"/>
-                          </Grid>
-                          <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                              <Setter TargetName="Dot" Property="Width" Value="12"/>
-                              <Setter TargetName="Dot" Property="Height" Value="12"/>
-                            </Trigger>
-                            <Trigger Property="IsDragging" Value="True">
-                              <Setter TargetName="Dot" Property="Width" Value="8"/>
-                              <Setter TargetName="Dot" Property="Height" Value="8"/>
-                            </Trigger>
-                          </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                      </Thumb.Template>
-                    </Thumb>
-                  </Track.Thumb>
-                </Track>
-              </Grid>
-            </ControlTemplate>
-          </Slider.Template>
-        </Slider>
-      </Grid>
-      <!-- Eine Zeile: Sprungmarken an ihrer Position, die Zonen als Symbole ganz außen (flache Knöpfe, FlatMark). -->
-      <Canvas x:Name="FanMarks" Height="22" ClipToBounds="False"/>
+      </StackPanel>
+    </Border>
+
+    <!-- Komfort (Umfang „Alles“ hier, sonst unter „Mehr …“); die Knöpfe bleiben, wie sie sind, ohne eigene Karte. -->
+    <StackPanel x:Name="ComfortHost">
+      <StackPanel x:Name="ComfortPanel" Margin="0,12,0,0">
+        <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Sub}" Text="{l:T main.section.comfort}" Margin="0,0,0,6"/>
+        <UniformGrid x:Name="ComfortGrid" Rows="1" Margin="-3,0"/>
+        <!-- Weitere Funktionen: immer sichtbar wie am Mac (nichts hinter einem Klappmenü verstecken). -->
+        <StackPanel x:Name="MorePanel" Margin="0,14,0,0">
+            <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Sub}" Text="{l:T main.section.moreFeatures}" Margin="0,0,0,6"/>
+            <UniformGrid x:Name="MoreGrid" Columns="3" Margin="-3,0"/>
+            <Grid x:Name="RateRow" Margin="0,10,0,0" Background="Transparent">
+              <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <ContentControl x:Name="RateIcon" VerticalAlignment="Center" Margin="0,0,6,0" Focusable="False" IsTabStop="False"/>
+                <TextBlock FontSize="13" VerticalAlignment="Center" Text="{l:T main.comfort.limitPower}"/>
+              </StackPanel>
+              <!-- RadioButton im Knopf-Stil: Pfeiltasten, Leertaste und Sprachausgabe schicken den Befehl wie ein Klick. -->
+              <StackPanel x:Name="RatePanel" Orientation="Horizontal" HorizontalAlignment="Right"
+                          AutomationProperties.Name="{l:T main.comfort.limitPower}"/>
+            </Grid>
+        </StackPanel>
+      </StackPanel>
     </StackPanel>
 
-    <!-- Umfang „Einfach“: Komfort, weitere Funktionen und Szenen unter „Mehr …“ (Zustand für die Sitzung). -->
+    <!-- Szenen und Timer in einer Karte: eigene Bausteine (ScenesSection, TimerRow), melden sich selbst beim Kern an.
+         Beim Umfang „Einfach“ steht hier nur der Timer, die Szenen kommen unter „Mehr …“. -->
+    <Border x:Name="GroupCard" Margin="0,14,0,0" Padding="{DynamicResource CardPadding}" CornerRadius="{DynamicResource CardRadius}"
+            Background="{DynamicResource Tile}" BorderBrush="{DynamicResource Edge}" BorderThickness="1">
+      <StackPanel>
+        <StackPanel x:Name="ScenesHost">
+          <local:ScenesSection x:Name="Scenes"/>
+        </StackPanel>
+        <Border x:Name="GroupDivider" Height="1" Margin="0,8" Background="{DynamicResource Line}"/>
+        <local:TimerRow x:Name="Timers"/>
+      </StackPanel>
+    </Border>
+
+    <!-- Umfang „Einfach“: Kennzahlen, Komfort, weitere Funktionen und Szenen unter „Mehr …“ (Zustand für die Sitzung). -->
     <ToggleButton x:Name="MoreToggle" Margin="0,12,0,0" HorizontalAlignment="Stretch" Cursor="Hand" Visibility="Collapsed"
                   Checked="MoreToggle_Changed" Unchecked="MoreToggle_Changed"
                   ToolTip="{l:T main.windows.moreHelp}" AutomationProperties.Name="{l:T main.windows.moreName}">
@@ -205,31 +250,11 @@
       </ToggleButton.Template>
       <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Sub}" Text="{l:T main.windows.moreHeader}"/>
     </ToggleButton>
-
-    <!-- Komfort -->
-    <StackPanel x:Name="ComfortPanel" Margin="0,12,0,0">
-      <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Sub}" Text="{l:T main.section.comfort}" Margin="0,0,0,6"/>
-      <UniformGrid x:Name="ComfortGrid" Rows="1" Margin="-3,0"/>
-      <!-- Weitere Funktionen: immer sichtbar wie am Mac (nichts hinter einem Klappmenü verstecken). -->
-      <StackPanel x:Name="MorePanel" Margin="0,14,0,0">
-          <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Sub}" Text="{l:T main.section.moreFeatures}" Margin="0,0,0,6"/>
-          <UniformGrid x:Name="MoreGrid" Columns="3" Margin="-3,0"/>
-          <Grid x:Name="RateRow" Margin="0,10,0,0" Background="Transparent">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-              <ContentControl x:Name="RateIcon" VerticalAlignment="Center" Margin="0,0,6,0" Focusable="False" IsTabStop="False"/>
-              <TextBlock FontSize="13" VerticalAlignment="Center" Text="{l:T main.comfort.limitPower}"/>
-            </StackPanel>
-            <!-- RadioButton im Knopf-Stil: Pfeiltasten, Leertaste und Sprachausgabe schicken den Befehl wie ein Klick. -->
-            <StackPanel x:Name="RatePanel" Orientation="Horizontal" HorizontalAlignment="Right"
-                        AutomationProperties.Name="{l:T main.comfort.limitPower}"/>
-          </Grid>
-      </StackPanel>
+    <StackPanel x:Name="MoreBox" Visibility="Collapsed">
+      <StackPanel x:Name="MoreReadingsHost" Margin="0,8,0,0"/>
+      <StackPanel x:Name="MoreComfortHost"/>
+      <StackPanel x:Name="MoreScenesHost"/>
     </StackPanel>
-
-    <!-- Szenen und Timer: eigene Bausteine (ScenesSection, TimerRow), melden sich selbst beim Kern an und setzen
-         ihren Abstand nach oben selbst (je nach Compact). -->
-    <local:ScenesSection x:Name="Scenes"/>
-    <local:TimerRow x:Name="Timers"/>
 
     <!-- Meldung: Fehler orange mit Warndreieck, „Anlage ausgeschaltet“ ruhig grau. -->
     <Border x:Name="MessageBanner" Margin="0,12,0,0" Padding="10,8" CornerRadius="8" Visibility="Collapsed">

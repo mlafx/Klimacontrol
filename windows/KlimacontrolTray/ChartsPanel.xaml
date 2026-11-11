@@ -3,15 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:KlimacontrolTray"
              xmlns:l="clr-namespace:KlimacontrolTray">
-  <!-- Die Graphen teilen sich die freie Höhe (2 : 3 : 2); ohne Außenwerte bekommt OutdoorRow die Höhe 0. -->
-  <Grid>
+  <!-- Einspaltig: eine Karte mit Leistung, Temperatur und Außen untereinander (Zeitbeschriftung nur unten), darunter der
+       Verbrauch. Ab options.window.historyGridFrom stehen die Abschnitte als 2 × 2 Karten (ChartGrid); der Code hängt sie
+       dafür um. Die Höhen der Graphen setzt der Code nach ChartMath.ChartHeights. -->
+  <Grid x:Name="Root" VerticalAlignment="Top">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
-      <RowDefinition Height="2*"/>
-      <RowDefinition Height="3*"/>
-      <RowDefinition x:Name="OutdoorRow" Height="0"/>
+      <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
     <Grid>
@@ -23,65 +23,102 @@
       </Grid.ColumnDefinitions>
       <Button x:Name="CloseButton" Padding="6" Click="Close_Click" VerticalAlignment="Center"
               AutomationProperties.Name="{l:T charts.hide}"/>
-      <ContentControl x:Name="TitleIcon" Grid.Column="1" Margin="10,0,6,0" VerticalAlignment="Center"/>
-      <TextBlock Grid.Column="2" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" Text="{l:T charts.title}" TextTrimming="CharacterEllipsis"/>
+      <ContentControl x:Name="TitleIcon" Grid.Column="1" Margin="10,0,6,0" VerticalAlignment="Center" Focusable="False"/>
+      <TextBlock Grid.Column="2" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" Text="{l:T charts.title}"
+                 TextTrimming="CharacterEllipsis"/>
       <StackPanel x:Name="RangePanel" Grid.Column="3" Orientation="Horizontal" Margin="6,0,0,0"
                   AutomationProperties.Name="{l:T charts.range}"/>
     </Grid>
-    <UniformGrid x:Name="Tiles" Grid.Row="1" Rows="1" Margin="-4,12,-4,0"/>
-    <TextBlock x:Name="EmptyText" Grid.Row="2" Margin="0,40" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"
+    <TextBlock x:Name="EmptyText" Grid.Row="1" Margin="0,40" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"
                FontSize="13" Foreground="{DynamicResource Sub}"
                Text="{l:T charts.windows.tooFew}" Visibility="Collapsed"/>
-    <Border x:Name="PowerCard" Grid.Row="3" Margin="0,12,0,0" Padding="12" CornerRadius="8" Background="{DynamicResource Tile}">
-      <Grid>
-        <Grid.RowDefinitions>
-          <RowDefinition Height="Auto"/>
-          <RowDefinition/>
-        </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-          <ContentControl x:Name="PowerIcon" VerticalAlignment="Center" Margin="0,0,6,0"/>
-          <TextBlock FontSize="13" FontWeight="SemiBold" Text="{l:T charts.power}"/>
-        </StackPanel>
-        <Canvas x:Name="PowerCanvas" Grid.Row="1" MinHeight="70" Margin="0,8,0,0" ClipToBounds="True" Background="Transparent"
-                MouseMove="Canvas_MouseMove" MouseLeave="Canvas_MouseLeave"/>
-      </Grid>
+
+    <!-- Abschnitte; der Code setzt sie in MainStack (einspaltig) oder in die Karten von ChartGrid. -->
+    <Border x:Name="MainCard" Grid.Row="2" Margin="0,16,0,0" Padding="{DynamicResource CardPadding}"
+            CornerRadius="{DynamicResource CardRadius}" Background="{DynamicResource Tile}">
+      <StackPanel x:Name="MainStack">
+        <Grid x:Name="PowerSection">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+          <StackPanel Orientation="Horizontal">
+            <ContentControl x:Name="PowerIcon" VerticalAlignment="Center" Margin="0,0,6,0" Focusable="False"/>
+            <TextBlock FontSize="13" FontWeight="SemiBold" Text="{l:T charts.power}"/>
+          </StackPanel>
+          <local:ChartCanvas x:Name="PowerCanvas" Grid.Row="1" Height="120" Margin="0,6,0,0" ClipToBounds="True"
+                             Background="Transparent" AutomationProperties.Name="{l:T charts.power}"
+                             MouseMove="Canvas_MouseMove" MouseLeave="Canvas_MouseLeave"/>
+          <!-- Legende des Modus-Bands und Kennzahlen: nebeneinander, wenn Platz ist, sonst Kennzahlen oben. -->
+          <Grid x:Name="PowerFooter" Grid.Row="2" Margin="0,6,0,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition/>
+              <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto"/>
+              <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel x:Name="ModeLegend" Orientation="Horizontal" VerticalAlignment="Center" Background="Transparent"/>
+            <StackPanel x:Name="StatsLine" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center"/>
+          </Grid>
+        </Grid>
+        <Rectangle x:Name="Divider1" Height="1" Margin="0,10" Fill="{DynamicResource Line}" Opacity="0.6"/>
+        <Grid x:Name="TempSection">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+          <StackPanel Orientation="Horizontal">
+            <ContentControl x:Name="TempIcon" VerticalAlignment="Center" Margin="0,0,6,0" Focusable="False"/>
+            <TextBlock FontSize="13" FontWeight="SemiBold" Text="{l:T charts.temperature}"/>
+          </StackPanel>
+          <WrapPanel x:Name="TempLegend" Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+          <local:ChartCanvas x:Name="TempCanvas" Grid.Row="1" Grid.ColumnSpan="2" Height="150" Margin="0,6,0,0"
+                             ClipToBounds="True" Background="Transparent" AutomationProperties.Name="{l:T charts.temperature}"
+                             MouseMove="Canvas_MouseMove" MouseLeave="Canvas_MouseLeave"/>
+        </Grid>
+        <Rectangle x:Name="Divider2" Height="1" Margin="0,10" Fill="{DynamicResource Line}" Opacity="0.6"/>
+        <Grid x:Name="OutdoorSection">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+          <StackPanel Orientation="Horizontal">
+            <ContentControl x:Name="OutdoorIcon" VerticalAlignment="Center" Margin="0,0,6,0" Focusable="False"/>
+            <TextBlock FontSize="13" FontWeight="SemiBold" Text="{l:T charts.outdoor}"/>
+          </StackPanel>
+          <local:ChartCanvas x:Name="OutdoorCanvas" Grid.Row="1" Height="80" Margin="0,6,0,0" ClipToBounds="True"
+                             Background="Transparent" AutomationProperties.Name="{l:T charts.outdoor}"
+                             MouseMove="Canvas_MouseMove" MouseLeave="Canvas_MouseLeave"/>
+        </Grid>
+      </StackPanel>
     </Border>
-    <Border x:Name="TempCard" Grid.Row="4" Margin="0,12,0,0" Padding="12" CornerRadius="8" Background="{DynamicResource Tile}">
-      <Grid>
-        <Grid.RowDefinitions>
-          <RowDefinition Height="Auto"/>
-          <RowDefinition/>
-          <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-          <ContentControl x:Name="TempIcon" VerticalAlignment="Center" Margin="0,0,6,0"/>
-          <TextBlock FontSize="13" FontWeight="SemiBold" Text="{l:T charts.temperature}"/>
-        </StackPanel>
-        <Canvas x:Name="TempCanvas" Grid.Row="1" MinHeight="90" Margin="0,8,0,0" ClipToBounds="True" Background="Transparent"
-                MouseMove="Canvas_MouseMove" MouseLeave="Canvas_MouseLeave"/>
-        <WrapPanel Grid.Row="2" Margin="0,8,0,0">
-          <Ellipse x:Name="IndoorDot" Width="8" Height="8" Fill="{DynamicResource Fg}" VerticalAlignment="Center"/>
-          <TextBlock FontSize="12" Foreground="{DynamicResource Sub}" Margin="4,0,12,0" Text="{l:T charts.series.room}"/>
-          <Ellipse x:Name="TargetDot" Width="8" Height="8" Fill="#D9408C" VerticalAlignment="Center"/>
-          <TextBlock FontSize="12" Foreground="{DynamicResource Sub}" Margin="4,0,0,0" Text="{l:T charts.series.target}"/>
-        </WrapPanel>
-      </Grid>
-    </Border>
-    <Border x:Name="OutdoorCard" Grid.Row="5" Margin="0,12,0,0" Padding="12" CornerRadius="8" Background="{DynamicResource Tile}"
-            Visibility="Collapsed">
-      <Grid>
-        <Grid.RowDefinitions>
-          <RowDefinition Height="Auto"/>
-          <RowDefinition/>
-        </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-          <ContentControl x:Name="OutdoorIcon" VerticalAlignment="Center" Margin="0,0,6,0"/>
-          <TextBlock FontSize="13" FontWeight="SemiBold" Text="{l:T charts.outdoor}"/>
-        </StackPanel>
-        <Canvas x:Name="OutdoorCanvas" Grid.Row="1" MinHeight="60" Margin="0,8,0,0" ClipToBounds="True" Background="Transparent"
-                MouseMove="Canvas_MouseMove" MouseLeave="Canvas_MouseLeave"/>
-      </Grid>
-    </Border>
-    <local:EnergyCard x:Name="Energy" Grid.Row="6" Margin="0,12,0,0"/>
+
+    <!-- 2 × 2: oben Leistung | Temperatur, unten Außen | Verbrauch (ohne eigenen Außengraphen Verbrauch über beide). -->
+    <Grid x:Name="ChartGrid" Grid.Row="3" Margin="0,16,0,0" Visibility="Collapsed">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition/>
+        <ColumnDefinition Width="16"/>
+        <ColumnDefinition/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="16"/>
+        <RowDefinition Height="Auto"/>
+      </Grid.RowDefinitions>
+      <Border x:Name="PowerCard" Padding="{DynamicResource CardPadding}" CornerRadius="{DynamicResource CardRadius}"
+              Background="{DynamicResource Tile}"/>
+      <Border x:Name="TempCard" Grid.Column="2" Padding="{DynamicResource CardPadding}" CornerRadius="{DynamicResource CardRadius}"
+              Background="{DynamicResource Tile}"/>
+      <Border x:Name="OutdoorCard" Grid.Row="2" Padding="{DynamicResource CardPadding}" CornerRadius="{DynamicResource CardRadius}"
+              Background="{DynamicResource Tile}"/>
+    </Grid>
+    <local:EnergyCard x:Name="Energy" Grid.Row="4" Margin="0,16,0,0"/>
   </Grid>
 </UserControl>

@@ -128,6 +128,52 @@ public class AppearanceTextTests
         Assert.Empty(offenders);
     }
 
+    /// Abschnitt „Anzeige“: dieselben Zeilen in derselben Reihenfolge wie `Section(L.Settings.Appearance.Display.section)`
+    /// in PanelsAppearance.swift, je Zeile Titel und Hilfetext aus dem Katalog.
+    [Fact]
+    public void AbschnittAnzeigeWieAmMac()
+    {
+        var panel = ReadLf(Repo("Sources", "KlimacontrolApp", "PanelsAppearance.swift"));
+        var section = Regex.Match(panel, @"Section\(L\.Settings\.Appearance\.Display\.section\) \{(?<body>.*?)\n            \}",
+            RegexOptions.Singleline);
+        Assert.True(section.Success, "Abschnitt Anzeige am Mac nicht gefunden");
+        var macRows = Regex.Matches(section.Groups["body"].Value, @"L\.Settings\.Appearance\.(\w+)\.title, L\.Settings\.Appearance\.(?<help>\w+)\.help")
+            .Select(m =>
+            {
+                Assert.Equal(m.Groups[1].Value, m.Groups["help"].Value);
+                return "settings.appearance." + LowerFirst(m.Groups[1].Value);
+            })
+            .ToList();
+        Assert.Contains("settings.appearance.temperatureCombined", macRows);
+
+        var tab = AppearanceTab();
+        var head = tab.Descendants().Single(e => e.Name.LocalName == "TextBlock"
+            && (string?)e.Attribute("Text") == "{l:T settings.appearance.display.section}");
+        var border = head.ElementsAfterSelf().First();
+        Assert.Equal("Border", border.Name.LocalName);
+        var rows = border.Descendants().Where(e => e.Name.LocalName == "Grid"
+            && ((string?)e.Attribute("Style"))?.Contains("Row") == true).ToList();
+        Assert.Equal(macRows.Count, rows.Count);
+        for (var n = 0; n < rows.Count; n++)
+        {
+            var texts = rows[n].Descendants().Where(e => e.Name.LocalName == "TextBlock").ToList();
+            AssertShows(macRows[n] + ".title", (string?)texts.Single(t => ((string?)t.Attribute("Style"))!.Contains("RowTitle")).Attribute("Text"),
+                "Anzeige Zeile " + (n + 1));
+            AssertShows(macRows[n] + ".help", (string?)texts.Single(t => ((string?)t.Attribute("Style"))!.Contains("RowHelp")).Attribute("Text"),
+                "Anzeige Zeile " + (n + 1));
+        }
+
+        var toggle = Named(tab, "LookTemperatureCombinedBox");
+        Assert.Equal("ClickCheckBox", toggle.Name.LocalName);
+        AssertShows("settings.appearance.temperatureCombined.title", (string?)toggle.Attribute(
+            XName.Get("AutomationProperties.Name")), "Schalter Außentemperatur");
+        if (Catalog.Available)
+        {
+            Assert.False(string.IsNullOrEmpty(Catalog.Text("settings.appearance.temperatureCombined.title", "de")));
+            Assert.False(string.IsNullOrEmpty(Catalog.Text("settings.appearance.temperatureCombined.help", "en")));
+        }
+    }
+
     [Fact]
     public void ProzentReglerInSchrittenWieAmMac()
     {

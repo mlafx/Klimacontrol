@@ -5,138 +5,10 @@ using Xunit;
 
 namespace KlimacontrolTray.Tests;
 
-/// Spaltenverteilung des Hauptfensters: Steuerung 360/490/600, Verlauf 320/470/beliebig,
-/// Diagnose 300/360/460 (min/Wunsch/max).
+/// Innenabstand und Dichte der Steuerspalte, Fenster am Infobereich, gemerkte Lage und Tastenkürzel. Spaltenbreiten
+/// und Fensterrahmen prüft `WindowLayoutMathTests` gegen die gemeinsame Tabelle mit dem Kern.
 public class LayoutTests
 {
-    static readonly Func<double, bool> Fits = _ => true, NoFit = _ => false;
-
-    static string Describe(List<LayoutColumn> cols) => Layout.Key(cols);
-
-    [Fact]
-    public void SpaltenbreitenWieLeitlinie()
-    {
-        Assert.Equal(new Span(360, 490, 600), Layout.ControlsSpan);
-        Assert.Equal(new Span(320, 470, double.PositiveInfinity), Layout.ChartsSpan);
-        Assert.Equal(new Span(300, 360, 460), Layout.DiagSpan);
-    }
-
-    [Theory]
-    [InlineData(2000, "Charts|Controls|Diag")]
-    [InlineData(980, "Charts|Controls|Diag")]          // genau alle Mindestbreiten
-    [InlineData(979, "Controls|Charts,Diag")]          // zwei Spalten, untereinander (Höhe reicht)
-    [InlineData(680, "Controls|Charts,Diag")]          // Steuerung + breitere der beiden
-    [InlineData(679, "Controls,Charts,Diag/Reiter")]   // eine Spalte mit Reitern
-    [InlineData(420, "Controls,Charts,Diag/Reiter")]
-    public void VerlaufUndDiagnose(double width, string expected) =>
-        Assert.Equal(expected, Describe(Layout.Arrange(width, true, true, Fits)));
-
-    [Fact]
-    public void ZweiSpaltenAlsReiterWennHoeheNichtReicht() =>
-        Assert.Equal("Controls|Charts,Diag/Reiter", Describe(Layout.Arrange(900, true, true, NoFit)));
-
-    [Fact]
-    public void StapelpruefungBekommtBreiteDerRechtenSpalte()
-    {
-        var asked = new List<double>();
-        Layout.Arrange(900, true, true, w => { asked.Add(w); return true; });
-        Assert.Equal(new[] { 900.0 - 360 }, asked);
-        asked.Clear();
-        Layout.Arrange(1200, true, true, w => { asked.Add(w); return true; }); // drei Spalten: keine Messung
-        Assert.Empty(asked);
-    }
-
-    [Theory]
-    [InlineData(1000, "Charts|Controls")]
-    [InlineData(680, "Charts|Controls")]
-    [InlineData(679, "Controls,Charts/Reiter")]
-    public void NurVerlauf(double width, string expected) =>
-        Assert.Equal(expected, Describe(Layout.Arrange(width, true, false, NoFit)));
-
-    [Theory]
-    [InlineData(1000, "Controls|Diag")]
-    [InlineData(660, "Controls|Diag")]
-    [InlineData(659, "Controls,Diag/Reiter")]
-    public void NurDiagnose(double width, string expected) =>
-        Assert.Equal(expected, Describe(Layout.Arrange(width, false, true, NoFit)));
-
-    [Theory]
-    [InlineData(300)]
-    [InlineData(2000)]
-    public void NurSteuerungOhneReiter(double width) =>
-        Assert.Equal("Controls", Describe(Layout.Arrange(width, false, false, NoFit)));
-
-    [Fact]
-    public void GemeinsameSpalteNimmtGroessteBreiten()
-    {
-        var s = Layout.ColumnSpan(new[] { Pane.Charts, Pane.Diag });
-        Assert.Equal(new Span(320, 470, double.PositiveInfinity), s);
-        Assert.Equal(new Span(360, 490, double.PositiveInfinity), Layout.ColumnSpan(new[] { Pane.Controls, Pane.Charts, Pane.Diag }));
-    }
-
-    static double[] ThreeColumns(double total) =>
-        Layout.Distribute(new[] { Layout.ChartsSpan, Layout.ControlsSpan, Layout.DiagSpan }, total);
-
-    [Fact]
-    public void DreiSpaltenAufWunschbreite() =>
-        Assert.Equal(new double[] { 470, 490, 360 }, ThreeColumns(1320));
-
-    [Fact]
-    public void DreiSpaltenAufMindestbreite() =>
-        Assert.Equal(new double[] { 320, 360, 300 }, ThreeColumns(980));
-
-    [Fact]
-    public void ZwischenMindestUndWunschAnteilig()
-    {
-        var w = ThreeColumns(1150); // 170 von 340 bis zur Wunschbreite: jede Spalte die Hälfte ihres Spielraums
-        Assert.Equal(new double[] { 395, 425, 330 }, w);
-    }
-
-    [Fact]
-    public void UeberWunschbreiteErstBegrenzteBisMax()
-    {
-        var w = ThreeColumns(1530); // 210 übrig = genau Steuerung +110 und Diagnose +100
-        Assert.Equal(new double[] { 470, 600, 460 }, w);
-    }
-
-    [Fact]
-    public void RestGehtAnDenVerlauf()
-    {
-        var w = ThreeColumns(2000);
-        Assert.Equal(new double[] { 940, 600, 460 }, w);
-        Assert.Equal(2000, w.Sum());
-    }
-
-    [Fact]
-    public void OhneUnbegrenzteSpalteBleibtRestFrei()
-    {
-        var w = Layout.Distribute(new[] { Layout.ControlsSpan, Layout.DiagSpan }, 1500);
-        Assert.Equal(new double[] { 600, 460 }, w); // übrige 440 verteilen sich links und rechts
-    }
-
-    [Fact]
-    public void SchmalerAlsMindestbreiteGibtLetzteSpalteNach()
-    {
-        var w = Layout.Distribute(new[] { Layout.ControlsSpan }, 330);
-        Assert.Equal(new double[] { 330 }, w);
-        Assert.Equal(new double[] { 360, 0 }, Layout.Distribute(new[] { Layout.ControlsSpan, Layout.DiagSpan }, 300));
-    }
-
-    [Fact]
-    public void BreitenWerdenAbgerundet()
-    {
-        foreach (var total in new[] { 981.0, 1001.7, 1234.5, 1777.3 })
-            Assert.All(ThreeColumns(total), x => Assert.Equal(Math.Floor(x), x));
-    }
-
-    [Theory]
-    [InlineData(false, false, 490)]
-    [InlineData(true, false, 960)]
-    [InlineData(false, true, 850)]
-    [InlineData(true, true, 1320)]
-    public void Wunschbreite(bool charts, bool diag, double expected) =>
-        Assert.Equal(expected, Layout.NaturalWidth(charts, diag));
-
     [Theory]
     [InlineData(400, 16)]
     [InlineData(419.9, 16)]
@@ -144,65 +16,18 @@ public class LayoutTests
     public void SeitenabstandJeSpaltenbreite(double width, double pad) => Assert.Equal(pad, Layout.PadX(width));
 
     [Fact]
-    public void SteuerungNieBreiterAls560()
+    public void SteuerungFuelltIhreSpalteBisAufDenAbstand()
     {
-        Assert.Equal(560, Layout.ControlsWidth(1200));
-        Assert.Equal(490 - 40, Layout.ControlsWidth(490));
+        Assert.Equal(480 - 40, Layout.ControlsWidth(480));
         Assert.Equal(400 - 32, Layout.ControlsWidth(400));
+        Assert.Equal(0, Layout.ControlsWidth(10));
     }
 
     [Theory]
-    [InlineData(700, false, 740, false)] // 700 + 20 + 20 = 740 passt genau
-    [InlineData(701, false, 740, true)]
-    [InlineData(712, true, 740, false)]  // Reiter: oben nur 8
-    [InlineData(713, true, 740, true)]
-    public void KompaktErstWennNormalNichtPasst(double natural, bool tabbed, double avail, bool compact) =>
-        Assert.Equal(compact, Layout.NeedsCompact(natural, tabbed, avail));
-
-    [Fact]
-    public void StapelMitMindesthoehenAusDerMessung()
-    {
-        // Verlauf gemessen 400, + 80 Luft + 41 Trennlinie + Diagnose mind. 520 + 2 × 20 = 1081
-        Assert.True(Layout.StackFits(400, 300, 1081));
-        Assert.False(Layout.StackFits(400, 300, 1080));
-        // Höhere Diagnose zählt voll; ein zusätzlicher Graph (z. B. Außentemperatur) über die Messung ebenso.
-        Assert.False(Layout.StackFits(400, 600, 1081));
-        Assert.False(Layout.StackFits(400 + 90, 300, 1081));
-    }
-
-    // Ein-/Ausblenden: linke Kante bleibt, rechts nie über den Rand.
-
-    [Fact]
-    public void EinblendenWaechstUmDieSpalte() =>
-        Assert.Equal(490 + 470, Layout.ResizeClient(490, false, false, true, false, 5000));
-
-    [Fact]
-    public void EinblendenHoechstensBisZurWunschbreite() =>
-        Assert.Equal(1320, Layout.ResizeClient(900, false, true, true, true, 5000)); // 900 + 470 > 1320
-
-    [Fact]
-    public void EinblendenSchrumpftNie() =>
-        Assert.Equal(1500, Layout.ResizeClient(1500, false, false, true, false, 5000));
-
-    [Fact]
-    public void EinblendenNichtUeberDenRand() =>
-        Assert.Equal(700, Layout.ResizeClient(490, false, false, true, false, 700));
-
-    [Fact]
-    public void AusblendenSchrumpftUmDieSpalte() =>
-        Assert.Equal(850, Layout.ResizeClient(1320, true, true, false, true, 5000));
-
-    [Fact]
-    public void AusblendenNichtUnterWunschbreite() =>
-        Assert.Equal(850, Layout.ResizeClient(1000, true, true, false, true, 5000)); // 1000 - 470 < 850
-
-    [Fact]
-    public void AusblendenWaechstNie() =>
-        Assert.Equal(400, Layout.ResizeClient(400, true, false, false, false, 5000)); // schon schmaler als 490
-
-    [Fact]
-    public void OhneAenderungBleibtGroesse() =>
-        Assert.Null(Layout.ResizeClient(800, true, false, true, false, 5000));
+    [InlineData(700, 740, false)] // 700 + 20 + 20 = 740 passt genau
+    [InlineData(701, 740, true)]
+    public void KompaktErstWennNormalNichtPasst(double natural, double avail, bool compact) =>
+        Assert.Equal(compact, Layout.NeedsCompact(natural, avail));
 
     // Fenster am Infobereich. Bildschirm 1920×1080, Taskleiste 48 px.
 

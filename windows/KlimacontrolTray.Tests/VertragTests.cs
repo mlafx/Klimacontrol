@@ -135,6 +135,7 @@ public class VertragTests
             o.Texts.UpdatesFailed, o.Texts.UpdatesCheckButton,
         }, t => Assert.NotEmpty(t));
         Assert.Contains("{version}", o.Texts.UpdatesInstallingTemplate);
+        Assert.True(s.HistoryUnavailable);
     }
 
     /// Die Update-Suche ist nicht abschaltbar: kein Haken in den Einstellungen, in Updates.cs wird die automatische

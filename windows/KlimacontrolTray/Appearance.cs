@@ -49,6 +49,7 @@ public sealed record AppearanceSettings
     public bool TrayColored { get; init; } = true;
     public bool TrayAnimated { get; init; }
     public string TrayTooltip { get; init; } = "iconTarget";
+    public bool TemperatureCombined { get; init; }
 }
 
 static class Appearance
@@ -143,6 +144,7 @@ static class Appearance
         TrayColored = a.MenuBarColored,
         TrayAnimated = a.MenuBarAnimated,
         TrayTooltip = a.MenuBarText,
+        TemperatureCombined = a.TemperatureCombined,
     };
 
     static Dictionary<string, object?> ToCore(AppearanceSettings s) => new()
@@ -166,6 +168,7 @@ static class Appearance
         ["menuBarText"] = s.TrayTooltip,
         ["menuBarColored"] = s.TrayColored,
         ["menuBarAnimated"] = s.TrayAnimated,
+        ["temperatureCombined"] = s.TemperatureCombined,
     };
 
     static bool SameCore(Dictionary<string, object?> a, Dictionary<string, object?> b)
