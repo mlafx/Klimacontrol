@@ -70,7 +70,7 @@ struct HeroView: View {
                 // Lüften hat kein Temperaturziel: Raumtemperatur groß, kein ± und kein Regler.
                 FanModeSummary(tint: tint, look: look, glow: live)
                     .opacity(staleSince == nil ? 1 : 0.5)
-            } else if state.power {
+            } else if UIText.targetAdjustable(state) {
                 TemperatureStepper(target: state.targetTemperature, spacing: 0) {
                     VStack(spacing: 0) {
                         let big = roomBig ? (state.indoorTemperature ?? 0) : state.targetTemperature

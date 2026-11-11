@@ -2489,24 +2489,6 @@ extension StringsData {
         }
       }
     },
-    "charts.tile.avg" : {
-      "comment" : "Graphen: Kennzahl",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mittel"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Average"
-          }
-        }
-      }
-    },
     "charts.tile.avgHelp" : {
       "comment" : "Graphen: Kurzinfo Kennzahl",
       "extractionState" : "manual",
@@ -2543,24 +2525,6 @@ extension StringsData {
         }
       }
     },
-    "charts.tile.cost" : {
-      "comment" : "Graphen: Kennzahl",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kosten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cost"
-          }
-        }
-      }
-    },
     "charts.tile.costHelp" : {
       "comment" : "Graphen: Kurzinfo Kosten",
       "extractionState" : "manual",
@@ -2575,24 +2539,6 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Consumption of the period times today’s electricity price ({price} {currency} per kWh), also for earlier days."
-          }
-        }
-      }
-    },
-    "charts.tile.peak" : {
-      "comment" : "Graphen: Kennzahl",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spitze"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Peak"
           }
         }
       }
@@ -10865,6 +10811,24 @@ extension StringsData {
         }
       }
     },
+    "log.relocate.invalid" : {
+      "comment" : "Protokoll: Adresse neu suchen, gefundene Adresse ungültig",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage unter {ip} gefunden, Adresse ungültig: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner found at {ip}, address invalid: {error}"
+          }
+        }
+      }
+    },
     "log.relocate.loginFailed" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -10969,6 +10933,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Air conditioner still at {ip}"
+          }
+        }
+      }
+    },
+    "log.scene.backupUnreadable" : {
+      "comment" : "Protokoll: unlesbare Szenen in einer Sicherung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sicherung {file}: {count} Szene(n) unlesbar, nicht übernommen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup {file}: {count} scene(s) unreadable, not imported"
           }
         }
       }
@@ -11707,6 +11689,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "The air conditioner rejects this token ({order} endian) – trying the other variant"
+          }
+        }
+      }
+    },
+    "log.token.unchecked" : {
+      "comment" : "Protokoll: Token-Prüfung an der Anlage ohne Ergebnis (belegt, keine Antwort)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token nicht prüfbar ({order} endian): {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token could not be checked ({order} endian): {error}"
           }
         }
       }
@@ -14141,42 +14141,6 @@ extension StringsData {
         }
       }
     },
-    "main.windows.paneControls" : {
-      "comment" : "Windows: Reiter im schmalen Hauptfenster",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Steuerung"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Controls"
-          }
-        }
-      }
-    },
-    "main.windows.paneGroupName" : {
-      "comment" : "Windows: UIA-Gruppenname der Reiter im schmalen Hauptfenster",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bereiche"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sections"
-          }
-        }
-      }
-    },
     "main.windows.powerToggle" : {
       "comment" : "Windows: Kurzinfo des Ein/Aus-Knopfs im Fenster (Platzhalter)",
       "extractionState" : "manual",
@@ -14623,6 +14587,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "The air conditioner rejected the credentials from the backup. The current setup is kept. Choose a newer backup."
+          }
+        }
+      }
+    },
+    "message.backup.scenesUnreadable" : {
+      "comment" : "Hinweis nach dem Einlesen einer Sicherung mit unlesbaren Szenen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einige Szenen der Sicherung sind unlesbar und wurden nicht übernommen. Die übrigen Daten der Sicherung sind eingelesen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Some scenes in the backup are unreadable and were not imported. The rest of the backup was restored."
           }
         }
       }
@@ -15721,6 +15703,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "The air conditioner did not apply “Quiet outdoor unit”. This only works when cooling or heating."
+          }
+        }
+      }
+    },
+    "message.relocate.invalid" : {
+      "comment" : "Rückmeldung von Adresse neu suchen: gefundene Adresse ungültig",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Suche meldet für die Anlage eine ungültige Adresse ({ip}). Die bisherige Adresse bleibt. Versuche es in einer Minute erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The search reported an invalid address for the air conditioner ({ip}). The current address is kept. Try again in a minute."
           }
         }
       }
@@ -17597,20 +17597,20 @@ extension StringsData {
         }
       }
     },
-    "reason.applianceOff" : {
-      "comment" : "Grund: Anlage aus laut Cloud; next = z. B. „in 5 min“",
+    "reason.applianceOffAt" : {
+      "comment" : "Grund: Anlage aus laut Cloud; time = Uhrzeit der nächsten Prüfung",
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung {next}"
+            "value" : "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung um {time}"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Air conditioner off or without power (according to the Midea Cloud); next check {next}"
+            "value" : "Air conditioner off or without power (according to the Midea Cloud); next check at {time}"
           }
         }
       }
@@ -26753,12 +26753,9 @@ extension StringsData {
         "charts.summary",
         "charts.summaryNone",
         "charts.temperature",
-        "charts.tile.avg",
         "charts.tile.avgHelp",
         "charts.tile.consumptionHelp",
-        "charts.tile.cost",
         "charts.tile.costHelp",
-        "charts.tile.peak",
         "charts.tile.peakHelp",
         "charts.title",
         "charts.tooFew",
@@ -27213,12 +27210,14 @@ extension StringsData {
         "log.polling.fastProperties",
         "log.polling.started",
         "log.polling.state",
+        "log.relocate.invalid",
         "log.relocate.loginFailed",
         "log.relocate.moved",
         "log.relocate.notSaved",
         "log.relocate.searchFailed",
         "log.relocate.searching",
         "log.relocate.unchanged",
+        "log.scene.backupUnreadable",
         "log.scene.unreadable",
         "log.scenes.notSaved",
         "log.session.cloudSetup",
@@ -27260,6 +27259,7 @@ extension StringsData {
         "log.token.none",
         "log.token.received",
         "log.token.rejected",
+        "log.token.unchecked",
         "log.transport.pathDown",
         "log.transport.via",
         "log.updates.aborted",
@@ -27395,8 +27395,6 @@ extension StringsData {
         "main.windows.moreHeader",
         "main.windows.moreHelp",
         "main.windows.moreName",
-        "main.windows.paneControls",
-        "main.windows.paneGroupName",
         "main.windows.powerToggle",
         "main.windows.ratePercent",
         "main.windows.reconnectHelp",
@@ -27422,6 +27420,7 @@ extension StringsData {
         "message.backup.nothingToExport",
         "message.backup.otherDevice",
         "message.backup.rejected",
+        "message.backup.scenesUnreadable",
         "message.cloud.accountLocked.todo",
         "message.cloud.accountLocked.what",
         "message.cloud.applianceOffline.todo",
@@ -27483,6 +27482,7 @@ extension StringsData {
         "message.keychain.windows.unavailable.todo",
         "message.keychain.windows.unavailable.what",
         "message.outdoorSilent.notApplied",
+        "message.relocate.invalid",
         "message.relocate.loginFailed.todo",
         "message.relocate.loginFailed.what",
         "message.relocate.missingData",
@@ -27587,7 +27587,7 @@ extension StringsData {
         "prompt.setupDone.lanOnly",
         "prompt.setupDone.later",
         "prompt.setupDone.title",
-        "reason.applianceOff",
+        "reason.applianceOffAt",
         "reason.applianceOffline",
         "reason.busy",
         "reason.busyHint",
@@ -28227,12 +28227,9 @@ extension StringsData {
         "charts.summary": ["last", "low", "high"],
         "charts.summaryNone": [],
         "charts.temperature": [],
-        "charts.tile.avg": [],
         "charts.tile.avgHelp": [],
         "charts.tile.consumptionHelp": [],
-        "charts.tile.cost": [],
         "charts.tile.costHelp": ["price", "currency"],
-        "charts.tile.peak": [],
         "charts.tile.peakHelp": [],
         "charts.title": [],
         "charts.tooFew": [],
@@ -28687,12 +28684,14 @@ extension StringsData {
         "log.polling.fastProperties": [],
         "log.polling.started": [],
         "log.polling.state": ["line"],
+        "log.relocate.invalid": ["ip", "error"],
         "log.relocate.loginFailed": ["ip", "error"],
         "log.relocate.moved": ["ip", "old"],
         "log.relocate.notSaved": ["error"],
         "log.relocate.searchFailed": ["error"],
         "log.relocate.searching": ["id"],
         "log.relocate.unchanged": ["ip"],
+        "log.scene.backupUnreadable": ["file", "count"],
         "log.scene.unreadable": ["file", "aside", "count"],
         "log.scenes.notSaved": ["error"],
         "log.session.cloudSetup": ["name", "id"],
@@ -28734,6 +28733,7 @@ extension StringsData {
         "log.token.none": ["order", "kind"],
         "log.token.received": ["order"],
         "log.token.rejected": ["order"],
+        "log.token.unchecked": ["order", "error"],
         "log.transport.pathDown": ["path"],
         "log.transport.via": ["path"],
         "log.updates.aborted": ["error"],
@@ -28869,8 +28869,6 @@ extension StringsData {
         "main.windows.moreHeader": [],
         "main.windows.moreHelp": [],
         "main.windows.moreName": [],
-        "main.windows.paneControls": [],
-        "main.windows.paneGroupName": [],
         "main.windows.powerToggle": [],
         "main.windows.ratePercent": ["pct"],
         "main.windows.reconnectHelp": [],
@@ -28896,6 +28894,7 @@ extension StringsData {
         "message.backup.nothingToExport": [],
         "message.backup.otherDevice": ["backup", "current"],
         "message.backup.rejected": [],
+        "message.backup.scenesUnreadable": [],
         "message.cloud.accountLocked.todo": [],
         "message.cloud.accountLocked.what": [],
         "message.cloud.applianceOffline.todo": [],
@@ -28957,6 +28956,7 @@ extension StringsData {
         "message.keychain.windows.unavailable.todo": [],
         "message.keychain.windows.unavailable.what": [],
         "message.outdoorSilent.notApplied": [],
+        "message.relocate.invalid": ["ip"],
         "message.relocate.loginFailed.todo": [],
         "message.relocate.loginFailed.what": ["ip"],
         "message.relocate.missingData": [],
@@ -29061,7 +29061,7 @@ extension StringsData {
         "prompt.setupDone.lanOnly": [],
         "prompt.setupDone.later": [],
         "prompt.setupDone.title": [],
-        "reason.applianceOff": ["next"],
+        "reason.applianceOffAt": ["time"],
         "reason.applianceOffline": [],
         "reason.busy": ["hint"],
         "reason.busyHint": [],
@@ -29888,18 +29888,12 @@ public enum L {
         /// Temperature
         public static var temperature: String { Localizer.text("charts.temperature") }
         public enum Tile {
-            /// Average
-            public static var avg: String { Localizer.text("charts.tile.avg") }
             /// Average power in the selected period
             public static var avgHelp: String { Localizer.text("charts.tile.avgHelp") }
             /// Calculated from the measurements of the period. Times without measurement (app or computer off) are…
             public static var consumptionHelp: String { Localizer.text("charts.tile.consumptionHelp") }
-            /// Cost
-            public static var cost: String { Localizer.text("charts.tile.cost") }
             /// Consumption of the period times today’s electricity price ({price} {currency} per kWh), also for ea…
             public static func costHelp(price: String, currency: String) -> String { Localizer.text("charts.tile.costHelp", ["price": price, "currency": currency]) }
-            /// Peak
-            public static var peak: String { Localizer.text("charts.tile.peak") }
             /// Highest measured power in the selected period
             public static var peakHelp: String { Localizer.text("charts.tile.peakHelp") }
         }
@@ -30958,6 +30952,8 @@ public enum L {
             public static func state(line: String) -> String { Localizer.text("log.polling.state", ["line": line]) }
         }
         public enum Relocate {
+            /// Air conditioner found at {ip}, address invalid: {error}
+            public static func invalid(ip: String, error: String) -> String { Localizer.text("log.relocate.invalid", ["ip": ip, "error": error]) }
             /// Air conditioner found at {ip}, sign-in failed: {error}
             public static func loginFailed(ip: String, error: String) -> String { Localizer.text("log.relocate.loginFailed", ["ip": ip, "error": error]) }
             /// Air conditioner now at {ip} (before: {old})
@@ -30972,6 +30968,8 @@ public enum L {
             public static func unchanged(ip: String) -> String { Localizer.text("log.relocate.unchanged", ["ip": ip]) }
         }
         public enum Scene {
+            /// Backup {file}: {count} scene(s) unreadable, not imported
+            public static func backupUnreadable(file: String, count: String) -> String { Localizer.text("log.scene.backupUnreadable", ["file": file, "count": count]) }
             /// {file} unreadable – set aside as {aside}, {count} scene(s) rescued
             public static func unreadable(file: String, aside: String, count: String) -> String { Localizer.text("log.scene.unreadable", ["file": file, "aside": aside, "count": count]) }
         }
@@ -31066,6 +31064,8 @@ public enum L {
             public static func received(order: String) -> String { Localizer.text("log.token.received", ["order": order]) }
             /// The air conditioner rejects this token ({order} endian) – trying the other variant
             public static func rejected(order: String) -> String { Localizer.text("log.token.rejected", ["order": order]) }
+            /// Token could not be checked ({order} endian): {error}
+            public static func unchecked(order: String, error: String) -> String { Localizer.text("log.token.unchecked", ["order": order, "error": error]) }
         }
         public enum Transport {
             /// {path} not reachable – trying the next path
@@ -31384,10 +31384,6 @@ public enum L {
             public static var moreHelp: String { Localizer.text("main.windows.moreHelp") }
             /// More
             public static var moreName: String { Localizer.text("main.windows.moreName") }
-            /// Controls
-            public static var paneControls: String { Localizer.text("main.windows.paneControls") }
-            /// Sections
-            public static var paneGroupName: String { Localizer.text("main.windows.paneGroupName") }
             /// On/Off
             public static var powerToggle: String { Localizer.text("main.windows.powerToggle") }
             /// Power {pct} percent
@@ -31450,6 +31446,8 @@ public enum L {
             public static func otherDevice(backup: String, current: String) -> String { Localizer.text("message.backup.otherDevice", ["backup": backup, "current": current]) }
             /// The air conditioner rejected the credentials from the backup. The current setup is kept. Choose a n…
             public static var rejected: String { Localizer.text("message.backup.rejected") }
+            /// Some scenes in the backup are unreadable and were not imported. The rest of the backup was restored.
+            public static var scenesUnreadable: String { Localizer.text("message.backup.scenesUnreadable") }
         }
         public enum Cloud {
             public enum AccountLocked {
@@ -31646,6 +31644,8 @@ public enum L {
             public static var notApplied: String { Localizer.text("message.outdoorSilent.notApplied") }
         }
         public enum Relocate {
+            /// The search reported an invalid address for the air conditioner ({ip}). The current address is kept.…
+            public static func invalid(ip: String) -> String { Localizer.text("message.relocate.invalid", ["ip": ip]) }
             public enum LoginFailed {
                 /// Try again in a minute (Settings › Air conditioner › Find address again).
                 public static var todo: String { Localizer.text("message.relocate.loginFailed.todo") }
@@ -31929,8 +31929,8 @@ public enum L {
         }
     }
     public enum Reason {
-        /// Air conditioner off or without power (according to the Midea Cloud); next check {next}
-        public static func applianceOff(next: String) -> String { Localizer.text("reason.applianceOff", ["next": next]) }
+        /// Air conditioner off or without power (according to the Midea Cloud); next check at {time}
+        public static func applianceOffAt(time: String) -> String { Localizer.text("reason.applianceOffAt", ["time": time]) }
         /// Air conditioner offline according to the Cloud (3123)
         public static var applianceOffline: String { Localizer.text("reason.applianceOffline") }
         /// The air conditioner is busy right now. {hint}

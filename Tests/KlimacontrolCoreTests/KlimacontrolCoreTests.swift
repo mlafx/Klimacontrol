@@ -176,8 +176,8 @@ final class KlimacontrolCoreTests: CoreTestCase {
         let c = try await makeConnected()
         fake.refreshError = MideaError.allPathsFailed([
             PathFailure(path: .lan, reason: .unreachable, text: "nicht erreichbar"),
-            PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: "in 5 min"),
-                        text: "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung in 5 min"),
+            PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: Date(timeIntervalSince1970: 300)),
+                        text: "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung um 00:05"),
         ])
         await c.refresh()
         XCTAssertTrue(c.deviceOffNotice)

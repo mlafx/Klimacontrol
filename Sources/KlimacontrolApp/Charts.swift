@@ -225,7 +225,7 @@ struct ChartWindow: Equatable {
         target = data.filter { $0.target != nil }
         outdoor = data.filter { $0.outdoor != nil }
         let gap = UIOptions.chartGapThreshold(range: range)
-        outdoorLine = HistorySample.smoothedOutdoor(outdoor, span: HistorySample.outdoorSmoothingSpan(range: range), gapLimit: gap)
+        outdoorLine = HistorySample.smoothedOutdoor(outdoor, range: range)
         modeRuns = HistorySample.modeRuns(data, gapLimit: gap)
         if let first = data.first?.time, let last = data.last?.time, first < last { timeDomain = first...max(last, now) }
         powerAxis = ChartAxis.power(power.compactMap(\.power))
@@ -825,7 +825,7 @@ extension View {
     /// Ohne `labels` nur die Gitterlinien (Graphen über dem untersten in einer Karte).
     func timeAxis(domain: ClosedRange<Date>, range: TimeInterval, plotWidth: Double, labels: Bool) -> some View {
         let ticks = ChartAxis.timeTicks(domain: domain, range: range, plotWidth: plotWidth,
-                                        labelHalfWidth: range > 86400 ? 20 : 16)
+                                        labelHalfWidth: ChartAxis.timeLabelHalfWidth(range: range))
         return chartXAxis {
             AxisMarks(values: ticks) { value in
                 AxisGridLine()

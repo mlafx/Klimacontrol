@@ -101,14 +101,15 @@ final class TransportTests: XCTestCase {
         clock = clock.addingTimeInterval(30)
         let text = failureText(t)
         XCTAssertTrue(text.contains("ausgeschaltet oder ohne Strom"), text)
-        XCTAssertTrue(text.contains("nächste Prüfung in 5 min"), text)
+        let at = PathFailure.logClock(Date(timeIntervalSince1970: 300))
+        XCTAssertTrue(text.contains("nächste Prüfung um \(at)"), text)
         XCTAssertFalse(text.contains("WLAN"), "WLAN bleibt gesperrt und wird nicht genannt: \(text)")
         XCTAssertEqual(lan.sends.count, 1, "WLAN-Sperre bleibt – die Anlage ist wirklich aus")
         XCTAssertEqual(cloud.sends.count, 1, "Cloud im Rückzug nicht gefragt")
 
-        // Kurz vor Ablauf: Minuten aufgerundet, unter 1 min eigener Text.
+        // Kurz vor Ablauf: derselbe Zeitpunkt (die Anzeige formatiert ihn im Kern).
         clock = Date(timeIntervalSince1970: 270)
-        XCTAssertTrue(failureText(t).contains("in weniger als 1 min"))
+        XCTAssertTrue(failureText(t).contains("um \(at)"))
         XCTAssertEqual(cloud.sends.count, 1)
 
         clock = Date(timeIntervalSince1970: 300)
@@ -244,7 +245,7 @@ final class TransportTests: XCTestCase {
 
         clock = clock.addingTimeInterval(30)
         (e, f) = failures()
-        XCTAssertEqual(f.map(\.reason), [.applianceOffline(nextCheck: "in 5 min")])
+        XCTAssertEqual(f.map(\.reason), [.applianceOffline(nextCheck: Date(timeIntervalSince1970: 300))], "Zeitpunkt, kein Text")
         XCTAssertTrue(f.allSatisfy(\.isApplianceOffline))
 
         t.resetBackoff()
@@ -314,7 +315,7 @@ final class TransportTests: XCTestCase {
         XCTAssertThrowsError(try t.sendSingle(Data(), expect: nil)) { error in
             XCTAssertTrue(AutoTransport.isApplianceOffline(error))
             XCTAssertEqual((error as? MideaError)?.errorDescription,
-                           "Keine Verbindung zur Anlage: Cloud: Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung in 4 min")
+                           "Keine Verbindung zur Anlage: Cloud: Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung um \(PathFailure.logClock(Date(timeIntervalSince1970: 300)))")
         }
     }
 

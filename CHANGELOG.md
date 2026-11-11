@@ -25,13 +25,19 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 - Windows: Beim Lüften sind Solltemperatur und Skala ausgeblendet.
 
 ### Behoben
-- Verbrauch: Die Beschriftungen unter den Balken wurden abgeschnitten oder fehlten am Ende.
-- Verlauf: Die letzte Uhrzeit unter den Graphen wurde zu „…“ abgeschnitten.
+- Verlauf: Beschriftungen unter den Verbrauchsbalken und die letzte Uhrzeit unter den Graphen wurden abgeschnitten.
 - Mac: Im Vollbild blieb unter dem Graphen der Außentemperatur eine leere Fläche.
 - Lässt sich der Verlauf nicht speichern, steht ein Hinweis statt „Noch zu wenig Daten“.
 - Mac: Mit eingeschaltetem Beta-Kanal scheiterte jede Suche, solange es keine Vorabversion gab, und stabile Updates blieben aus.
 - Mac: Das Menüleisten-Fenster blieb nach dem Ausschalten der Anlage zu hoch und zeigte den Inhalt ohne runde Ecken am unteren Rand.
 - Windows: Die Versionshinweise im Update-Fenster waren im dunklen Modus kaum lesbar.
+- Englische Oberfläche: Hinweise zur ausgeschalteten Anlage, zur Freigabe „Lokales Netzwerk“ und zum Zeitlimit erschienen teils auf Deutsch oder nur als „not reachable“.
+- Einrichtung mit dem Midea-Konto: Eine belegte oder nicht antwortende Anlage wurde als Ablehnung des Tokens gemeldet.
+- Sicherung einlesen: Eine unlesbare Szene verwarf still alle Szenen der Sicherung.
+- Adresse neu suchen: Eine ungültige gefundene Adresse endete ohne Rückmeldung.
+- Mini-Fenster: Bei „Groß angezeigt: Raum“ ohne Raumtemperatur stand „–“ statt der Solltemperatur.
+- Mac: ⌘↑ und ⌘↓ verstellten beim Lüften die Solltemperatur.
+- Technischer Unterbau überarbeitet, zahlreiche kleinere Fehler behoben.
 
 ## [1.2.0.0] – 2026-11-08
 

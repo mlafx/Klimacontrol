@@ -42,7 +42,7 @@ private struct CompactContent: View {
                 CompactHeader(name: model.displayName, status: model.staleText ?? model.statusLine,
                               power: s.power, mode: s.mode, stale: staleSince != nil)
                     .equatable()
-                if s.power, s.mode != .fan {
+                if UIText.targetAdjustable(s) {
                     // Lüften hat kein Ziel: kein ±.
                     CompactTarget(target: s.targetTemperature, room: roomBig ? s.indoorTemperature : nil, mode: s.mode,
                                   live: staleSince == nil)

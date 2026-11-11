@@ -283,6 +283,21 @@ final class DisplayCatalogTests: CoreTestCase {
         cooling(c, indoor: nil)
         XCTAssertEqual(c.heroValue, "24°", "ohne Raumtemperatur bleibt das Soll groß")
         XCTAssertEqual(c.heroCaption, "Kühlt")
+        XCTAssertEqual(c.miniValue, "24°", "Mini-Fenster nach derselben Regel wie das Hauptfenster")
+        XCTAssertEqual(c.miniCaption, "Kühlen · Raum –")
+    }
+
+    /// Mini-Fenster und große Zahl im Hauptfenster folgen einer Regel.
+    func testMiniValueFollowsHeroRule() throws {
+        let c = try controller(now: local())
+        XCTAssertEqual(c.miniValue, c.heroValue)
+        for hero in Appearance.HeroValue.allCases {
+            change(c) { $0.hero = hero }
+            for indoor in [25.5, nil] as [Double?] {
+                cooling(c, indoor: indoor)
+                XCTAssertEqual(c.miniValue, c.heroValue, "\(hero) \(String(describing: indoor))")
+            }
+        }
     }
 
     func testTemperatureScale() {

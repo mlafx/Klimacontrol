@@ -61,12 +61,8 @@ extension ACController {
         return true
     }
 
-    /// Große Zahl im Mini-Fenster: Soll, außer ausgeschaltet, beim Lüften oder bei „Groß angezeigt: Raum“.
-    public var miniValue: String {
-        guard let s = state else { return "–" }
-        if !s.power || s.mode == .fan || appearance.hero == .room { return Fmt.temp(s.indoorTemperature) }
-        return Fmt.target(s.targetTemperature)
-    }
+    /// Große Zahl im Mini-Fenster: dieselbe Regel wie die große Zahl im Hauptfenster (`heroValue`).
+    public var miniValue: String { heroValue }
 
     /// Zeile darunter: „Kühlen · Raum 24,5°“, „Lüften · Raum“, „Aus · Raum“ oder „Stand 14:32“ bei alten Werten.
     public var miniCaption: String {
@@ -74,7 +70,7 @@ extension ACController {
         guard let s = state else { return L.Status.connecting }
         if let stale = uiStaleSince { return Fmt.stand(stale) }
         guard s.power else { return L.Status.miniOff }
-        if s.mode == .fan || appearance.hero == .room { return L.Status.miniRoomOnly(mode: s.mode.title) }
+        if s.mode == .fan || roomIsBig { return L.Status.miniRoomOnly(mode: s.mode.title) }
         return L.Status.miniRoom(mode: s.mode.title, temp: Fmt.temp(s.indoorTemperature))
     }
 

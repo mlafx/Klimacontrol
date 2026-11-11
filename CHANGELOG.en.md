@@ -23,13 +23,19 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 - Windows: In Fan mode, the target temperature and its scale are hidden.
 
 ### Fixed
-- Consumption: Labels under the bars were cut off or missing at the end.
-- History: The last time under the charts was cut off to “…”.
+- History: Labels under the consumption bars and the last time under the charts were cut off.
 - Mac: In full screen, an empty area remained below the outdoor temperature chart.
 - If the history cannot be saved, a notice appears instead of “Not enough data yet”.
 - Mac: With the beta channel turned on, every check failed while no pre-release existed, and stable updates were not installed.
 - Mac: The menu bar window stayed too tall after turning off the air conditioner and showed its content at the bottom without rounded corners.
 - Windows: Release notes in the update window were hard to read in dark mode.
+- English interface: Notices about a switched-off air conditioner, the Local Network permission and the time limit appeared partly in German or only as “not reachable”.
+- Setup with the Midea account: A busy or unresponsive air conditioner was reported as rejecting the token.
+- Restore backup: One unreadable scene silently discarded all scenes of the backup.
+- Find address again: An invalid address found by the search ended without any feedback.
+- Mini window: With the room temperature shown large but not reported, “–” appeared instead of the target temperature.
+- Mac: ⌘↑ and ⌘↓ changed the target temperature in Fan mode.
+- Technical foundation reworked, numerous minor bugs fixed.
 
 ## [1.2.0.0] – 2026-11-08
 

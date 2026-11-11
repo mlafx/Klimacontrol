@@ -179,7 +179,7 @@ private struct ThemeTiles: View {
         return Button { choose(theme) } label: {
             VStack(spacing: 4) {
                 Text(Fmt.target(24))
-                    .font(style.heroFont(size: 26))
+                    .font(HeroLook(style).font(26))
                     .foregroundStyle(style.tint)
                     .klimaGlow(style.tint)
                     .lineLimit(1).minimumScaleFactor(0.6)
@@ -269,7 +269,7 @@ private struct AppearancePreview: View {
             HStack(spacing: 14) {
                 VStack(spacing: 0) {
                     Text(heroIsRoom ? Fmt.temp(room) : Fmt.target(target))
-                        .font(theme.heroFont(size: 56))
+                        .font(HeroLook(theme).font(56))
                         .foregroundStyle(tint)
                         .klimaGlow(tint)
                     Text(heroIsRoom ? L.Settings.Appearance.Preview.target(value: Fmt.target(target)) : L.Settings.Appearance.Preview.room(value: Fmt.temp(room)))
@@ -278,7 +278,7 @@ private struct AppearancePreview: View {
                 .frame(maxWidth: .infinity)
                 VStack(spacing: 8) {
                     Image(systemName: "power").font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(theme.onTint(for: mode))
+                        .foregroundStyle(theme.label(on: tint))
                         .frame(width: 40, height: 40)
                         .klimaCard(tint: tint, radius: 20, interactive: true)
                     Image(systemName: mode.symbol).font(.system(size: 14, weight: .medium))
@@ -322,7 +322,7 @@ struct MiniWindowView: View {
         let shape = RoundedRectangle(cornerRadius: 36, style: .continuous)
         VStack(spacing: 4) {
             Text(model.miniValue)
-                .font(theme.heroFont(size: 40))
+                .font(HeroLook(theme).font(40))
                 .foregroundStyle(on && !stale ? tint : .secondary)
                 .klimaGlow(on && !stale ? tint : .clear)
                 .contentTransition(.numericText())
@@ -333,7 +333,7 @@ struct MiniWindowView: View {
                 model.setPower(!power)
             } label: {
                 Image(systemName: "power").font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(on ? theme.onTint(for: s?.mode) : .primary)
+                    .foregroundStyle(on ? theme.label(on: tint) : .primary)
                     .frame(width: 34, height: 34)
             }
             .buttonStyle(.plain)

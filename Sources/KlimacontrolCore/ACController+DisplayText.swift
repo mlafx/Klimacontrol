@@ -85,7 +85,7 @@ extension ACController {
     // MARK: Große Zahl
 
     /// „Groß angezeigt: Raumtemperatur“ – nur, wenn die Anlage sie gemeldet hat.
-    private var roomIsBig: Bool { appearance.hero == .room && state?.indoorTemperature != nil }
+    var roomIsBig: Bool { appearance.hero == .room && state?.indoorTemperature != nil }
 
     /// Große Zahl im Kopf: Soll, bei ausgeschalteter Anlage, Lüften oder „Groß angezeigt: Raum“ die Raumtemperatur.
     public var heroValue: String {

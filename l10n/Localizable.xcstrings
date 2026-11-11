@@ -2485,24 +2485,6 @@
         }
       }
     },
-    "charts.tile.avg" : {
-      "comment" : "Graphen: Kennzahl",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mittel"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Average"
-          }
-        }
-      }
-    },
     "charts.tile.avgHelp" : {
       "comment" : "Graphen: Kurzinfo Kennzahl",
       "extractionState" : "manual",
@@ -2539,24 +2521,6 @@
         }
       }
     },
-    "charts.tile.cost" : {
-      "comment" : "Graphen: Kennzahl",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kosten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cost"
-          }
-        }
-      }
-    },
     "charts.tile.costHelp" : {
       "comment" : "Graphen: Kurzinfo Kosten",
       "extractionState" : "manual",
@@ -2571,24 +2535,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Consumption of the period times today’s electricity price ({price} {currency} per kWh), also for earlier days."
-          }
-        }
-      }
-    },
-    "charts.tile.peak" : {
-      "comment" : "Graphen: Kennzahl",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spitze"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Peak"
           }
         }
       }
@@ -10861,6 +10807,24 @@
         }
       }
     },
+    "log.relocate.invalid" : {
+      "comment" : "Protokoll: Adresse neu suchen, gefundene Adresse ungültig",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage unter {ip} gefunden, Adresse ungültig: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner found at {ip}, address invalid: {error}"
+          }
+        }
+      }
+    },
     "log.relocate.loginFailed" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -10965,6 +10929,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Air conditioner still at {ip}"
+          }
+        }
+      }
+    },
+    "log.scene.backupUnreadable" : {
+      "comment" : "Protokoll: unlesbare Szenen in einer Sicherung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sicherung {file}: {count} Szene(n) unlesbar, nicht übernommen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup {file}: {count} scene(s) unreadable, not imported"
           }
         }
       }
@@ -11703,6 +11685,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The air conditioner rejects this token ({order} endian) – trying the other variant"
+          }
+        }
+      }
+    },
+    "log.token.unchecked" : {
+      "comment" : "Protokoll: Token-Prüfung an der Anlage ohne Ergebnis (belegt, keine Antwort)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token nicht prüfbar ({order} endian): {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token could not be checked ({order} endian): {error}"
           }
         }
       }
@@ -14137,42 +14137,6 @@
         }
       }
     },
-    "main.windows.paneControls" : {
-      "comment" : "Windows: Reiter im schmalen Hauptfenster",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Steuerung"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Controls"
-          }
-        }
-      }
-    },
-    "main.windows.paneGroupName" : {
-      "comment" : "Windows: UIA-Gruppenname der Reiter im schmalen Hauptfenster",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bereiche"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sections"
-          }
-        }
-      }
-    },
     "main.windows.powerToggle" : {
       "comment" : "Windows: Kurzinfo des Ein/Aus-Knopfs im Fenster (Platzhalter)",
       "extractionState" : "manual",
@@ -14619,6 +14583,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The air conditioner rejected the credentials from the backup. The current setup is kept. Choose a newer backup."
+          }
+        }
+      }
+    },
+    "message.backup.scenesUnreadable" : {
+      "comment" : "Hinweis nach dem Einlesen einer Sicherung mit unlesbaren Szenen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einige Szenen der Sicherung sind unlesbar und wurden nicht übernommen. Die übrigen Daten der Sicherung sind eingelesen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Some scenes in the backup are unreadable and were not imported. The rest of the backup was restored."
           }
         }
       }
@@ -15717,6 +15699,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The air conditioner did not apply “Quiet outdoor unit”. This only works when cooling or heating."
+          }
+        }
+      }
+    },
+    "message.relocate.invalid" : {
+      "comment" : "Rückmeldung von Adresse neu suchen: gefundene Adresse ungültig",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Suche meldet für die Anlage eine ungültige Adresse ({ip}). Die bisherige Adresse bleibt. Versuche es in einer Minute erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The search reported an invalid address for the air conditioner ({ip}). The current address is kept. Try again in a minute."
           }
         }
       }
@@ -17593,20 +17593,20 @@
         }
       }
     },
-    "reason.applianceOff" : {
-      "comment" : "Grund: Anlage aus laut Cloud; next = z. B. „in 5 min“",
+    "reason.applianceOffAt" : {
+      "comment" : "Grund: Anlage aus laut Cloud; time = Uhrzeit der nächsten Prüfung",
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung {next}"
+            "value" : "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung um {time}"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Air conditioner off or without power (according to the Midea Cloud); next check {next}"
+            "value" : "Air conditioner off or without power (according to the Midea Cloud); next check at {time}"
           }
         }
       }

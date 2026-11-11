@@ -127,6 +127,10 @@ final class DisplayNamesTests: XCTestCase {
         }
     }
 
+    private var nextCheck: Date {
+        Calendar.current.date(from: DateComponents(year: 2026, month: 11, day: 6, hour: 15, minute: 5))!
+    }
+
     func testReasonsGermanUnchanged() {
         let busyText = MideaError.busy(.otherApp).errorDescription!
         let cases: [(PathFailure, String)] = [
@@ -141,8 +145,9 @@ final class DisplayNamesTests: XCTestCase {
             (PathFailure(path: .cloud, reason: .cloud(.network, code: nil), text: "Cloud nicht erreichbar"), "Cloud nicht erreichbar"),
             (PathFailure(path: .cloud, reason: .cloud(.wrongCredentials, code: 3101), text: "Falsch (3101)"), "Falsch (3101)"),
             (PathFailure(path: .cloud, reason: .cloud(.tokenRejected, code: nil), text: "Text (-1002)"), "Text (-1002)"),
-            (PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: "in 5 min"), text: "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung in 5 min"),
-             "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung in 5 min"),
+            (PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: nextCheck),
+                         text: "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung um 15:05"),
+             "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung um 15:05"),
             (PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: nil), text: "Anlage offline laut Cloud (3123)"),
              "Anlage offline laut Cloud (3123)"),
         ]
@@ -187,7 +192,11 @@ final class DisplayNamesTests: XCTestCase {
             (MideaError.connectionFailed(.noCloud), noCloudDE, Localizer.text("reason.noCloud", language: .en)),
             (MideaError.connectionFailed(.noPath), "kein Weg zur Anlage verfügbar", "no way to reach the air conditioner"),
             (MideaError.connectionFailed(.other("Systemtext")), "Systemtext", "not reachable"),
-            (MideaError.connectionFailed(.budget), "Die Anlage hat nicht rechtzeitig geantwortet (Zeitlimit erreicht). Erneut versuchen.", "not reachable"),
+            (MideaError.connectionFailed(.budget), "Die Anlage hat nicht rechtzeitig geantwortet (Zeitlimit erreicht). Erneut versuchen.",
+             "The air conditioner did not respond in time (time limit reached). Try again."),
+            (MideaError.connectionFailed(.notConnected), "nicht verbunden", "not connected"),
+            (MideaError.connectionFailed(.localNetwork), Localizer.text(localNetworkKey, language: .de),
+             Localizer.text(localNetworkKey, language: .en)),
             (MideaError.refused, refusedDE, Localizer.text("reason.refused", language: .en)),
             (MideaError.unreachable("Zeitüberschreitung"), "Zeitüberschreitung", "not reachable"),
         ]
@@ -217,6 +226,31 @@ final class DisplayNamesTests: XCTestCase {
         }
     }
 
+    #if os(Windows)
+    private let localNetworkKey = "kit.lan.localNetworkWindows"
+    #else
+    private let localNetworkKey = "kit.lan.localNetworkMac"
+    #endif
+
+    /// Der Hinweis auf die Freigabe „Lokales Netzwerk“ (Windows: Firewall/Profil) und die Uhrzeit der nächsten
+    /// Cloud-Prüfung sind Typen mit Katalogtext in beiden Sprachen, kein deutscher Rohtext.
+    func testLocalNetworkAndOfflineTimeInBothLanguages() {
+        XCTAssertEqual(localNetworkText(host: .mac), Localizer.text("kit.lan.localNetworkMac", language: .de))
+        XCTAssertEqual(localNetworkText(host: .windows), Localizer.text("kit.lan.localNetworkWindows", language: .de))
+        Localizer.withLanguage(.en) {
+            XCTAssertTrue(localNetworkText(host: .mac).hasPrefix("macOS does not let the app use the local network."))
+            XCTAssertTrue(localNetworkText(host: .windows).hasPrefix("The air conditioner is not reachable on the network."))
+            let text = MideaError.connectionFailed(.localNetwork).connectionDetailText ?? ""
+            XCTAssertNotEqual(text, "not reachable")
+            assertEnglish(text)
+            FormatProfile.setCurrent(.unitedStates)
+            XCTAssertEqual(PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: nextCheck), text: "x").displayText,
+                           "Air conditioner off or without power (according to the Midea Cloud); next check at 3:05 PM")
+        }
+        XCTAssertEqual(MideaError.connectionFailed(.localNetwork), MideaError.connectionFailed(.localNetwork))
+        XCTAssertNotEqual(ConnectionReason.localNetwork, .other(ConnectionReason.localNetwork.text), "eigener Fall, kein Freitext")
+    }
+
     func testReasonsEnglish() {
         Localizer.withLanguage(.en) {
             let texts: [String?] = [
@@ -229,7 +263,7 @@ final class DisplayNamesTests: XCTestCase {
                 PathFailure(path: .lan, reason: .timeout, text: "antwortet nicht").displayText,
                 PathFailure(path: .lan, reason: .busy(.otherApp), text: MideaError.busy(.otherApp).errorDescription!).displayText,
                 PathFailure(path: .cloud, reason: .cloud(.tokenRejected, code: nil), text: "Text (-1002)").displayText,
-                PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: "in 5 min"), text: "x").displayText,
+                PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: nextCheck), text: "x").displayText,
                 MideaCloud.CloudError.tokenRejected.displayMessage,
                 MideaCloud.CloudError.network("Zeitüberschreitung").displayMessage,
                 MideaCloud.CloudError.badReply("Antwort unlesbar").displayMessage,
@@ -240,8 +274,8 @@ final class DisplayNamesTests: XCTestCase {
             XCTAssertEqual(MideaError.connectionFailed(.closed).connectionDetailText, "The air conditioner closed the connection.")
             XCTAssertEqual(MideaError.allPathsFailed([]).connectionDetailText, "no way to reach the air conditioner")
             XCTAssertEqual(PathFailure(path: .lan, reason: .timeout, text: "antwortet nicht").displayText, "not responding")
-            XCTAssertEqual(PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: "in 5 min"), text: "x").displayText,
-                           "Air conditioner off or without power (according to the Midea Cloud); next check in 5 min")
+            XCTAssertEqual(PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: nextCheck), text: "x").displayText,
+                           "Air conditioner off or without power (according to the Midea Cloud); next check at 15:05")
             let all = MideaError.allPathsFailed([
                 PathFailure(path: .lan, reason: .timeout, text: "antwortet nicht"),
                 PathFailure(path: .cloud, reason: .cloud(.network, code: nil), text: "Cloud nicht erreichbar"),

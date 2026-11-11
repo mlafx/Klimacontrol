@@ -31,10 +31,10 @@ struct AppCommands: Commands {
             Divider()
             Button(L.Commands.warmer) { model.nudgeTemperature(by: 1) }
                 .keyboardShortcut(.upArrow, modifiers: .command)
-                .disabled(model.state?.power != true || controls != true)
+                .disabled(!UIText.targetAdjustable(model.state) || controls != true)
             Button(L.Commands.cooler) { model.nudgeTemperature(by: -1) }
                 .keyboardShortcut(.downArrow, modifiers: .command)
-                .disabled(model.state?.power != true || controls != true)
+                .disabled(!UIText.targetAdjustable(model.state) || controls != true)
             Divider()
             Button(L.Commands.refreshNow) { Task { await model.refreshNow() } }
                 .keyboardShortcut("r", modifiers: .command)

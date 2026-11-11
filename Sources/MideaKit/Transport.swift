@@ -107,8 +107,9 @@ public enum ConnectionPath: String, Sendable {
 /// Ein gescheiterter Weg in „Automatisch“: typisierter Grund für die Auswertung, `text` für Fehlerzeile und Protokoll.
 public struct PathFailure: Sendable, Equatable {
     public enum Reason: Sendable, Equatable {
-        /// Anlage laut Midea-Cloud aus oder ohne Strom (3123). `nextCheck` („in 5 min“) während des Cloud-Rückzugs.
-        case applianceOffline(nextCheck: String?)
+        /// Anlage laut Midea-Cloud aus oder ohne Strom (3123). `nextCheck`: wann die Cloud während des Rückzugs wieder
+        /// gefragt wird (Text im Kern).
+        case applianceOffline(nextCheck: Date?)
         case refused
         case timeout
         case unreachable
@@ -149,10 +150,17 @@ public struct PathFailure: Sendable, Equatable {
         return String(code)
     }
 
-    static func offline(nextCheck: String?) -> PathFailure {
+    static func offline(nextCheck: Date?) -> PathFailure {
         PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: nextCheck),
-                    text: nextCheck.map { LogText.t("reason.applianceOff", "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung {next}", ["next": $0]) }
+                    text: nextCheck.map { LogText.t("reason.applianceOffAt", "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung um {time}", ["time": logClock($0)]) }
                         ?? LogText.t("reason.applianceOffline", "Anlage offline laut Cloud (3123)"))
+    }
+
+    /// Uhrzeit fürs Protokoll (24 h, Ortszeit); die Anzeige formatiert der Kern nach den Regionseinstellungen.
+    static func logClock(_ d: Date) -> String {
+        let c = Calendar.current.dateComponents([.hour, .minute], from: d)
+        func two(_ n: Int?) -> String { let n = n ?? 0; return n < 10 ? "0\(n)" : "\(n)" }
+        return "\(two(c.hour)):\(two(c.minute))"
     }
 
     /// Grund und Kurztext eines Fehlers auf Weg `path`.
@@ -367,11 +375,10 @@ final class AutoTransport: FrameTransport, @unchecked Sendable {
         }
     }
 
-    /// Wann die Cloud wieder gefragt wird („in 5 min“), solange der Rückzug läuft; sonst nil.
-    private func cloudOfflineNextCheck(at current: Date) -> String? {
+    /// Wann die Cloud wieder gefragt wird, solange der Rückzug läuft; sonst nil.
+    private func cloudOfflineNextCheck(at current: Date) -> Date? {
         guard let until = cloudOfflineUntil, current < until else { return nil }
-        let minutes = Int((until.timeIntervalSince(current) / 60).rounded(.up))
-        return until.timeIntervalSince(current) < 60 ? "in weniger als 1 min" : "in \(minutes) min"
+        return until
     }
 
     private func use(_ p: ConnectionPath, _ body: () throws -> [Data]) throws -> [Data] {

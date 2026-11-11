@@ -172,9 +172,17 @@ extension ConnectionReason {
         case .noLAN: L.Reason.noLan
         case .noCloud: L.Reason.noCloud
         case .noPath: L.Reason.noPath
-        case .notConnected, .budget, .other: ReasonText.free(text)
+        case .notConnected: L.Kit.Lan.notConnected
+        case .budget: L.Kit.Lan.budget
+        case .localNetwork: localNetworkText()
+        case .other: ReasonText.free(text)
         }
     }
+}
+
+/// Hinweis, wenn das System die App nicht ins lokale Netz lässt: Freigabe am Mac, Firewall bzw. Netzwerkprofil unter Windows.
+func localNetworkText(host: HostWords = .current) -> String {
+    host.isWindows ? L.Kit.Lan.localNetworkWindows : L.Kit.Lan.localNetworkMac
 }
 
 extension MideaError {
@@ -197,7 +205,7 @@ extension PathFailure {
     public var displayText: String {
         switch reason {
         case .applianceOffline(let next):
-            next.map { L.Reason.applianceOff(next: $0) } ?? L.Reason.applianceOffline
+            next.map { L.Reason.applianceOffAt(time: Fmt.clock($0)) } ?? L.Reason.applianceOffline
         case .refused: L.Reason.refused
         case .timeout: L.Reason.timeout
         case .unreachable: L.Reason.unreachable

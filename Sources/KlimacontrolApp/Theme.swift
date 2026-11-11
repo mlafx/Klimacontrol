@@ -59,11 +59,6 @@ struct ThemeStyle: Equatable, Sendable {
         return adjusted(base)
     }
 
-    /// Schrift auf einer Fläche in `tint(for:)`: weiß oder schwarz, je nachdem, was besser lesbar ist (WCAG-AA).
-    func onTint(for mode: OperationalMode?) -> Color {
-        Self.luminance(tint(for: mode)) > 0.18 ? .black : .white
-    }
-
     /// Farbe einer Graphen-Linie im Thema (gleiche Abwandlung wie die Modusfarben).
     func series(_ color: Color) -> Color { adjusted(color) }
 
@@ -225,11 +220,6 @@ struct ThemeStyle: Equatable, Sendable {
     static let cardRadius: CGFloat = 20
     /// Radius der Elemente in einer Karte (Modus-Knöpfe, Szenen).
     static let innerRadius: CGFloat = 12
-
-    /// Schrift der großen Zahl; `size` ist die Grundgröße (z. B. 68), Größe und Ziffernstil kommen dazu.
-    func heroFont(size: CGFloat) -> Font {
-        .system(size: (size * scale).rounded(), weight: fontWeight, design: fontDesign).monospacedDigit()
-    }
 }
 
 extension EnvironmentValues {

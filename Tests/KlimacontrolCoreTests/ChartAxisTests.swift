@@ -14,10 +14,14 @@ final class ChartAxisTests: XCTestCase {
         let step: Int
         let shown: [Int]
     }
+    private struct BelowCase: Decodable { let axis: Expected; let fraction: Double; let result: Expected }
+    private struct HeadroomCase: Decodable { let axis: Expected; let above, fraction: Double; let result: Expected }
     private struct Table: Decodable {
         let power: [AxisCase]
         let temperature: [AxisCase]
         let labels: [LabelCase]
+        let extendedBelow: [BelowCase]
+        let headroom: [HeadroomCase]
     }
 
     private func table() throws -> Table {
@@ -46,6 +50,27 @@ final class ChartAxisTests: XCTestCase {
         let t = try table()
         XCTAssertGreaterThanOrEqual(t.temperature.count, 8)
         for c in t.temperature { check(ChartAxis.temperature(c.values), c.axis, "Temperatur \(c.values)") }
+    }
+
+    private func axis(_ e: Expected) -> ChartAxis { ChartAxis(min: e.min, max: e.max, first: e.first, step: e.step) }
+
+    /// Platz für das Modus-Band unter der Nulllinie; Windows rechnet gegen dieselbe Tabelle.
+    func testExtendedBelowTable() throws {
+        let t = try table()
+        XCTAssertGreaterThanOrEqual(t.extendedBelow.count, 5)
+        for c in t.extendedBelow {
+            check(axis(c.axis).extendedBelow(fraction: c.fraction), c.result, "unten \(c.axis) \(c.fraction)")
+        }
+    }
+
+    /// Platz über den Verbrauchsbalken für die Werte; Windows rechnet gegen dieselbe Tabelle.
+    func testHeadroomTable() throws {
+        let t = try table()
+        XCTAssertGreaterThanOrEqual(t.headroom.count, 5)
+        for c in t.headroom {
+            check(axis(c.axis).withHeadroom(above: c.above, fraction: c.fraction), c.result,
+                  "oben \(c.axis) über \(c.above) \(c.fraction)")
+        }
     }
 
     func testLabelTableKeepsLastLabel() throws {

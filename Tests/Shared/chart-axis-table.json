@@ -1,5 +1,5 @@
 {
-  "comment": "Gemeinsame Achsentabelle für Swift (ChartAxisTests) und C# (ChartsPanel.PowerAxis/TempAxis, EnergyCard): Y-Achsen der Verlaufsgraphen und Beschriftungen unter den Verbrauchsbalken. axis null = keine Werte, keine Achse.",
+  "comment": "Gemeinsame Achsentabelle für Swift (ChartAxisTests) und C# (ChartsPanel.PowerAxis/TempAxis, EnergyCard): Y-Achsen der Verlaufsgraphen, Beschriftungen unter den Verbrauchsbalken, Platz unter der Nulllinie (extendedBelow) und über den Balken (headroom). axis null = keine Werte, keine Achse.",
   "power": [
     {"values": [0], "axis": {"min": 0, "max": 1, "first": 0, "step": 1}},
     {"values": [0.4], "axis": {"min": 0, "max": 1, "first": 0, "step": 1}},
@@ -41,5 +41,21 @@
     {"count": 0, "plotWidth": 346, "labelLength": 9, "note": "keine Balken", "step": 1, "shown": []},
     {"count": 14, "plotWidth": 0, "labelLength": 9, "note": "keine Breite", "step": 1, "shown": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]},
     {"count": 60, "plotWidth": 346, "labelLength": 9, "note": "sehr viele Balken", "step": 12, "shown": [11, 23, 35, 47, 59]}
+  ],
+  "extendedBelow": [
+    {"axis": {"min": 0, "max": 600, "first": 0, "step": 200}, "fraction": 0.25, "result": {"min": -200, "max": 600, "first": 0, "step": 200}},
+    {"axis": {"min": 0, "max": 1000, "first": 0, "step": 500}, "fraction": 0.2, "result": {"min": -250, "max": 1000, "first": 0, "step": 500}},
+    {"axis": {"min": 19, "max": 23, "first": 19, "step": 1}, "fraction": 0.2, "result": {"min": 18, "max": 23, "first": 19, "step": 1}},
+    {"axis": {"min": 0, "max": 600, "first": 0, "step": 200}, "fraction": 0, "result": {"min": 0, "max": 600, "first": 0, "step": 200}},
+    {"axis": {"min": 0, "max": 600, "first": 0, "step": 200}, "fraction": 1, "result": {"min": 0, "max": 600, "first": 0, "step": 200}},
+    {"axis": {"min": 0, "max": 0, "first": 0, "step": 1}, "fraction": 0.25, "result": {"min": 0, "max": 0, "first": 0, "step": 1}}
+  ],
+  "headroom": [
+    {"axis": {"min": 0, "max": 6, "first": 0, "step": 2}, "above": 6, "fraction": 0.25, "result": {"min": 0, "max": 8, "first": 0, "step": 2}},
+    {"axis": {"min": 0, "max": 6, "first": 0, "step": 2}, "above": 1, "fraction": 0.25, "result": {"min": 0, "max": 6, "first": 0, "step": 2}},
+    {"axis": {"min": 0, "max": 3000, "first": 0, "step": 1000}, "above": 3000, "fraction": 0.2, "result": {"min": 0, "max": 3750, "first": 0, "step": 1000}},
+    {"axis": {"min": 10, "max": 20, "first": 10, "step": 5}, "above": 20, "fraction": 0.5, "result": {"min": 10, "max": 30, "first": 10, "step": 5}},
+    {"axis": {"min": 0, "max": 6, "first": 0, "step": 2}, "above": 6, "fraction": 0, "result": {"min": 0, "max": 6, "first": 0, "step": 2}},
+    {"axis": {"min": 0, "max": 6, "first": 0, "step": 2}, "above": 6, "fraction": 1, "result": {"min": 0, "max": 6, "first": 0, "step": 2}}
   ]
 }

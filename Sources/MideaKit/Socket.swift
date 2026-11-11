@@ -205,7 +205,7 @@ struct NetSocket {
             let code = lastError
             if code != inProgress {
                 s.close()
-                throw MideaError.connectionFailed(.other(isUnreachable(code) ? LANClient.localNetworkHint : describe(code)))
+                throw MideaError.connectionFailed(isUnreachable(code) ? .localNetwork : .other(describe(code)))
             }
         }
         if s.wait(write: true, timeoutMs: timeoutMs) <= 0 {
@@ -218,7 +218,7 @@ struct NetSocket {
             // Abgewiesen: falsche/alte Adresse oder belegt. Neutral melden; `LANClient` macht „belegt“ daraus,
             // wenn die Anlage hier kurz vorher antwortete.
             if isRefused(err) { throw MideaError.refused }
-            throw MideaError.connectionFailed(.other(isUnreachable(err) ? LANClient.localNetworkHint : describe(err)))
+            throw MideaError.connectionFailed(isUnreachable(err) ? .localNetwork : .other(describe(err)))
         }
         s.setNonBlocking(false)
         s.setSendTimeout(ms: 4000)

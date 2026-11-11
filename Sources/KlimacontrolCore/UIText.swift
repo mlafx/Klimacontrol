@@ -280,6 +280,11 @@ public enum UIText {
                              confirm: L.Prompt.Quit.confirm, warning: false)
     }
 
+    /// Zeile unter der Uhrzeit beim Stellen des Einschalt-Timers: „Schaltet morgen um 07:00 ein“.
+    public static func onTimerPreview(_ at: Date, now: Date) -> String {
+        L.Main.Timer.switchesOn(day: dayLabel(at, now: now), time: ACController.clock(at))
+    }
+
     /// „heute“, „morgen“ oder „am Mi. 6.11.“ (Deutsch: Tag ohne, Monat mit führender Null) bzw. „on Wed 11/6“.
     static func dayLabel(_ date: Date, now: Date) -> String {
         let cal = Calendar.current
@@ -375,6 +380,12 @@ public enum UIText {
     public static var offHint: String { L.Hero.offHint }
     public static var fanModeCaption: String { L.Hero.fanModeCaption }
     public static var notConfiguredCaption: String { L.Hero.notConfiguredCaption }
+
+    /// Solltemperatur verstellbar (−/+, ⌘↑/⌘↓): nur eingeschaltet und nicht beim Lüften (Lüften hat kein Ziel).
+    public static func targetAdjustable(_ state: ACState?) -> Bool {
+        guard let state else { return false }
+        return state.power && state.mode != .fan
+    }
 
     // MARK: Skala der Solltemperatur
 
