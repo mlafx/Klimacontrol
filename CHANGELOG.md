@@ -28,6 +28,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 - Windows: Beim Lüften sind Solltemperatur und Skala ausgeblendet.
 - Ausführliches Protokoll: Der Schalter gilt nur bis zum Beenden der App, ein Hinweis zeigt, solange er an ist.
 - Schalter für Funktionen, die die Anlage laut ihren Fähigkeiten nicht hat, sind gesperrt; die Kurzinfo nennt den Grund.
+- Mac: Der Lüfterregler zeigt die Zonen Turbo und Außengerät leise nur, wenn die Anlage die Funktion laut ihren Fähigkeiten hat.
 
 ### Behoben
 - Verlauf: Beschriftungen unter den Verbrauchsbalken und die letzte Uhrzeit unter den Graphen wurden abgeschnitten.

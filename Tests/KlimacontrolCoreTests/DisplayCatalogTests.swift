@@ -284,6 +284,26 @@ final class DisplayCatalogTests: CoreTestCase {
         XCTAssertEqual(UIOptions.fanCaption(s), "Max · 100 %", "ohne Zonen kein Turbo-Zusatz")
     }
 
+    func testFanZonesAndLockByModeAndCapabilities() {
+        XCTAssertEqual(UIOptions.fanZones(.cool), UIOptions.FanZones(quiet: true, turbo: true))
+        XCTAssertEqual(UIOptions.fanZones(.heat), UIOptions.FanZones(quiet: true, turbo: true))
+        for m in [OperationalMode.fan, .dry, .auto] { XCTAssertEqual(UIOptions.fanZones(m), .none) }
+        let coolTurbo = ACCapabilities(raw: [0x021A: [0], 0x00CD: [3]])
+        XCTAssertEqual(UIOptions.fanZones(.heat, capabilities: coolTurbo), UIOptions.FanZones(quiet: true, turbo: false))
+        XCTAssertEqual(UIOptions.fanZones(.cool, capabilities: ACCapabilities(raw: [0x00CD: [0]])),
+                       UIOptions.FanZones(quiet: false, turbo: true))
+        XCTAssertTrue(UIOptions.fanLocked(.dry))
+        XCTAssertFalse(UIOptions.fanLocked(.cool))
+
+        var s = ACState()
+        s.mode = .heat
+        s.fanSpeed = 100
+        s.turbo = true
+        XCTAssertEqual(UIOptions.fanCaption(s), "Turbo · 100 %")
+        s.capabilities = coolTurbo
+        XCTAssertEqual(UIOptions.fanCaption(s), "Max · 100 %", "ohne Turbo-Fähigkeit beim Heizen keine Turbo-Zone")
+    }
+
     func testFanZoneHelp() {
         XCTAssertEqual(UIOptions.fanQuietZoneHelp(on: true), "Außengerät leise ist an – Klick: zusätzlich Lüfter auf 1 %")
         XCTAssertEqual(UIOptions.fanQuietZoneHelp(on: false),

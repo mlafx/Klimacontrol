@@ -89,17 +89,40 @@ public enum UIOptions {
     public static var fanLockedText: String { L.Options.Fan.locked }
     public static var fanAutoHelp: String { L.Options.Fan.autoHelp }
 
+    /// Beim Trocknen regelt die Anlage den Lüfter selbst; der Regler ist gesperrt.
+    public static func fanLocked(_ mode: OperationalMode) -> Bool { mode == .dry }
+
+    /// Zonen des Lüfterreglers: „Außengerät leise“ ganz links, Turbo ganz rechts. Jede nur, wo ihre Funktion im Modus
+    /// wirkt und die Anlage sie laut Fähigkeiten hat (ohne Fähigkeiten: beide beim Kühlen und Heizen).
+    public struct FanZones: Equatable, Sendable {
+        public var quiet: Bool
+        public var turbo: Bool
+        public var any: Bool { quiet || turbo }
+
+        public static let none = FanZones(quiet: false, turbo: false)
+
+        public init(quiet: Bool, turbo: Bool) {
+            self.quiet = quiet
+            self.turbo = turbo
+        }
+    }
+
+    public static func fanZones(_ mode: OperationalMode, capabilities: ACCapabilities? = nil) -> FanZones {
+        FanZones(quiet: isAvailable(.outdoorSilent, in: mode, capabilities: capabilities),
+                 turbo: isAvailable(.turbo, in: mode, capabilities: capabilities))
+    }
+
     /// Kopfzeile des Lüfters: „automatisch“, „Außengerät leise · 1 %“, „Turbo · 100 %“, „Mittel · 60 %“, „37 %“;
     /// beim Trocknen der feste Text. Eine Funktion, die an ist, ohne dass der Lüfter in ihrer Zone steht (Kachel,
     /// Fernbedienung), wird angehängt.
     public static func fanCaption(_ s: ACState) -> String {
-        if s.mode == .dry { return fanLockedText }
-        let zones = isAvailable(.turbo, in: s.mode)
+        if fanLocked(s.mode) { return fanLockedText }
+        let zones = fanZones(s.mode, capabilities: s.capabilities)
         let auto = s.fanSpeed == FanSpeed.auto.rawValue
-        let quietOn = zones && s.outSilent == true
-        let turboOn = zones && s.turbo
-        if zones, !auto, s.fanSpeed == 1, quietOn { return L.Options.Fan.quietOutdoorOne }
-        if zones, !auto, s.fanSpeed == 100, turboOn { return L.Options.Fan.turboMax }
+        let quietOn = zones.quiet && s.outSilent == true
+        let turboOn = zones.turbo && s.turbo
+        if !auto, s.fanSpeed == 1, quietOn { return L.Options.Fan.quietOutdoorOne }
+        if !auto, s.fanSpeed == 100, turboOn { return L.Options.Fan.turboMax }
         let base: String
         if auto {
             base = L.Options.Fan.autoCaption

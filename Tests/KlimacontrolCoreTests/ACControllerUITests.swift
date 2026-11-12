@@ -111,6 +111,42 @@ final class ACControllerUITests: CoreTestCase {
         c.stop()
     }
 
+    func testFanZonesFollowCapabilities() async throws {
+        fake.capabilities = ACCapabilities(raw: [0x021A: [2], 0x00CD: [1]])   // Turbo nicht gemeldet, „Leise außen“ ja
+        let c = try await makeCooling(fan: 40)
+        XCTAssertEqual(c.fanZones, UIOptions.FanZones(quiet: true, turbo: false))
+        XCTAssertTrue(c.fanZonesAvailable)
+        c.setFanTurbo()
+        c.setTurbo(true)
+        try await settle(c, commands: 0)
+        XCTAssertTrue(fake.commands.isEmpty, "ohne Turbo-Fähigkeit keine Turbo-Zone und kein Turbo")
+        c.setFanQuiet()
+        try await settle(c, commands: 2)
+        XCTAssertEqual(fake.commands.sorted(), ["fan 1", "silent an"])
+        c.stop()
+    }
+
+    func testTurboOnlyWhileCoolingByCapabilities() async throws {
+        fake.capabilities = ACCapabilities(raw: [0x021A: [0]])   // Turbo nur beim Kühlen
+        let c = try await makeCooling(fan: 100, turbo: true)
+        XCTAssertTrue(c.fanZones.turbo)
+        c.setMode(.heat)
+        try await settle(c, commands: 1)
+        XCTAssertEqual(fake.current.mode, .heat)
+        XCTAssertFalse(fake.current.turbo, "Turbo gibt es laut Fähigkeiten beim Heizen nicht")
+        XCTAssertEqual(c.fanZones, UIOptions.FanZones(quiet: true, turbo: false))
+        c.stop()
+    }
+
+    func testEcoRefusedWithoutCapability() async throws {
+        fake.capabilities = ACCapabilities(raw: [0x0212: [0]])
+        let c = try await makeCooling(fan: 40)
+        c.setEco(true)
+        try await settle(c, commands: 0)
+        XCTAssertTrue(fake.commands.isEmpty)
+        c.stop()
+    }
+
     func testQuietZoneSetsFanAndSilent() async throws {
         let c = try await makeCooling(fan: 100, turbo: true)
         c.setFanQuiet()

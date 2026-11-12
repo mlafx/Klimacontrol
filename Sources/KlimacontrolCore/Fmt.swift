@@ -44,10 +44,6 @@ public enum Fmt {
         v.map { num($0, 2, profile: profile) + " " + currency } ?? "–"
     }
 
-    public static func euro(_ v: Double?, profile: FormatProfile = .current) -> String {
-        money(v, currency: "€", profile: profile)
-    }
-
     /// Uhrzeit: 24 h "14:32"; 12 h "2:32 PM", "12:05 AM" (Stunde ohne führende Null).
     public static func clock(_ d: Date, calendar: Calendar = .current, profile: FormatProfile = .current) -> String {
         let c = calendar.dateComponents([.hour, .minute], from: d)

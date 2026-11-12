@@ -362,10 +362,6 @@ enum SideColumns {
     static func toggle(_ c: MainWindowLayout.Column) {
         set(c, !UserDefaults.standard.bool(forKey: key(c)))
     }
-
-    static func binding(_ c: MainWindowLayout.Column) -> Binding<Bool> {
-        Binding(get: { UserDefaults.standard.bool(forKey: key(c)) }, set: { set(c, $0) })
-    }
 }
 
 // MARK: - Menü-Kürzel nur im eigenen Fenster

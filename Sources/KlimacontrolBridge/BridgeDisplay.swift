@@ -362,8 +362,8 @@ extension Snapshot {
             return (f.rawValue, AvailabilityDTO(enabled: a.enabled, why: a.why))
         })
         // Lüftersperre beim Trocknen und Stellbarkeit der Solltemperatur (−/+, Regler, Tastenkürzel): Regeln des Kerns.
-        let dry = c.state?.mode == .dry
-        availability["fan"] = AvailabilityDTO(enabled: !dry, why: dry ? UIOptions.fanLockedText : nil)
+        let locked = c.state.map { UIOptions.fanLocked($0.mode) } ?? false
+        availability["fan"] = AvailabilityDTO(enabled: !locked, why: locked ? UIOptions.fanLockedText : nil)
         if let mode = c.state?.mode {
             let r = UIOptions.rateAvailability(mode: mode, capabilities: c.state?.capabilities)
             availability["rate"] = AvailabilityDTO(enabled: r.enabled, why: r.why)

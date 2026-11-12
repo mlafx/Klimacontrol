@@ -141,7 +141,9 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 | `ACDevice.swift` | Protokoll `ACDevice` (Abstraktion von `PortaSplitDevice` für Tests), `CloudAccountStore` |
 | `SetupFlow.swift`, `SetupFlow+Manual.swift` | Einrichtungsassistent: Weg wählen, Suche (WLAN, Subnetz, Cloud), Konto, Zugangsdaten prüfen; spricht den Kern nur über `SetupSink` an |
 | `History.swift` | `HistorySample`, `HistoryLog` (CSV), `HistoryStore` (Fassade für Oberflächen) |
-| `HistoryDB.swift` | `HistoryDB`: verlauf.sqlite, Einfügen, Ausdünnen, Statistik, Import/Export |
+| `HistoryDB.swift` | `HistoryDB`: verlauf.sqlite öffnen, Einfügen, Lesen, Statistik |
+| `HistoryDB+Compaction.swift` | Ausdünnen in Stufen und Scheiben, Merker „ausgedünnt bis“ |
+| `HistoryDB+CSV.swift` | CSV-Import (einmalige Übernahme) und CSV-Export |
 | `HistoryRow.swift` | `HistoryColumn` (einzige Spaltentabelle: Kopfzeilen, Schema, Export, Import), `HistoryRow`, `HistoryValue` |
 | `HistoryCSV.swift` | Kopfzeilen, Zeitformate, doppelte Stunde am Ende der Sommerzeit, `HistoryCSVReader` |
 | `HistorySQLite.swift` | `SQLiteConnection`, `SQLStatement`, `HistoryDBError`; einzige Weiche SQLite3/CSQLite |
@@ -182,11 +184,17 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 | `MenuBar.swift` | Menüleisten-Fenster und Menüleisten-Symbol |
 | `Messages.swift` | Fehler- und Hinweisbanner (Code klein am Ende), „Adresse neu suchen“-Hinweis |
 | `WindowSupport.swift` | Fensterhelfer (Sichtbarkeit, `WindowRef` mit Rahmenlogik beim Ein-/Ausblenden der Spalten, Vollbild-Zustand, Vordergrund), Fokuswert der Menü-Kürzel |
-| `Charts.swift` | Graphen (Swift Charts) für Leistung und Temperatur |
+| `Charts.swift` | Graphen-Spalte (`ChartsPanel`), Zeitfenster und Stil der Graphen (`ChartWindow`, `ChartStyle`) |
+| `ChartSections.swift` | Abschnitte Leistung, Temperatur, Außen und ihre Marks (Swift Charts) |
+| `ChartSupport.swift` | Mauszeiger-Ebene, VoiceOver-Zusammenfassung, Achsen und Karten der Graphen |
 | `EnergyChart.swift` | Abschnitt „Verbrauch“ unter den Graphen: Balken je Tag/Woche/Monat, liest im Hintergrund höchstens alle 10 min |
-| `Theme.swift` | `ThemeStyle`, `\.klimaTheme`, `.klimaCard`, `.klimaGlow`, `GlassContainer`, Farben und Symbole je Modus, `LivelyBackground`, `WeatherEffect` |
+| `Theme.swift` | `ThemeStyle`, `\.klimaTheme`, Farben und Symbole je Modus, `GlassContainer` |
+| `ThemeModifiers.swift` | `.klimaThemeRoot`, `.klimaCard`, `.klimaInner`, `.klimaGlow`, `PressDimStyle` |
+| `ThemeEffects.swift` | `LivelyBackground`, `WeatherEffect`, `EffectsBudget` |
 | `Panels.swift` | Fußzeile (Verlauf · Aktualisieren/Einstellungen · Diagnose) und gemeinsame Bausteine (Abschnittstitel, alte Werte) |
-| `PanelsSettings.swift` | Einstellungsfenster mit Reitern Allgemein · Darstellung · Verbindung · Anlage · Protokoll · Lizenzen |
+| `PanelsSettings.swift` | Einstellungsfenster mit Reitern Allgemein · Darstellung · Verbindung · Anlage · Protokoll · Lizenzen, gemeinsame Bausteine (`SettingRow`, `FeedbackLine`) |
+| `PanelsGeneral.swift` | Reiter „Allgemein“ (Sprache, Anzeige, Aktualisierung, Verlauf, Start, Updates), `LoginItem` |
+| `PanelsConnection.swift` | Reiter „Verbindung“ (Weg, Midea-Konto) |
 | `PanelsAppearance.swift` | Reiter „Darstellung“ |
 | `PanelsDevice.swift` | Reiter „Anlage“ (Sicherung, Adresse neu suchen, Neu einrichten) |
 | `PanelsDiagnostics.swift` | Diagnose-Spalte |
@@ -195,6 +203,7 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 | `Setup.swift` | Einrichtungsassistent (Oberfläche zu `SetupFlow`) |
 | `Notices.swift` | Reiter „Lizenzen“ |
 | `Updater.swift` | `AppUpdater`: Hülle um Sparkle (`SPUStandardUpdaterController`), nur im fertigen Bundle aktiv; Hinweis „Jetzt neu starten · Später“, Beta-Kanal |
+| `UpdaterSparkle.swift` | Sparkle-Anbindung: `HeldUserDriver` (Updates ohne automatische Installation), `UpdaterDelegate` (Status, Beta-Kanal, Rückfall) |
 | `AppRestart.swift` | Neustart der App (Sprachwechsel, geladenes Update) ohne Beenden-Rückfrage, Sprachwahl in `AppleLanguages` der App |
 | `WhatsNew.swift` | Fenster „Neu in dieser Version“ |
 
@@ -1495,6 +1504,9 @@ Gruppe/Byte in `Diagnostics` und `Response` lesen, in `HistorySample`/CSV-Kopf n
 - Windows zieht noch nach (Kern und Bridge sind fertig): Achsen und Verbrauchsbeschriftung nach `ChartAxis`, Hinweis
   `charts.unavailable`, Einhängen von `SettingsFileCheck` in den Start, Fensterregeln aus `options.window`, der neue
   Aufbau des Hauptfensters (9.1) samt Schalter `temperatureCombined`.
+- Lüfter-Zonen nach Fähigkeiten: Der Kern bildet sie einzeln (`UIOptions.fanZones`, `ACController.fanZones`); die
+  Bridge meldet nur `fanZonesAvailable` (mindestens eine Zone). Windows zeigt darum beide Zonen, sobald eine geht;
+  eine Zone ohne Fähigkeit bewirkt dort nichts (der Kern lehnt sie ab). Ein eigenes Feld je Zone folgt mit dem Vertrag.
 - Das Windows-Hauptfenster ist bereits in der Größe veränderbar; die Regeln des Mac-Fensters (9.1, `MainWindowLayout`)
   werden für 1.3 angeglichen.
 - Mac, nur Fassung 1.2.0.0: Der Schalter „Vorabversionen (Beta) erhalten“ meldet „Suche hat nicht geklappt“ und lässt

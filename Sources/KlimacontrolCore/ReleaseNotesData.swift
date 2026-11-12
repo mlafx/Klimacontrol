@@ -32,6 +32,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 - Windows: Beim Lüften sind Solltemperatur und Skala ausgeblendet.
 - Ausführliches Protokoll: Der Schalter gilt nur bis zum Beenden der App, ein Hinweis zeigt, solange er an ist.
 - Schalter für Funktionen, die die Anlage laut ihren Fähigkeiten nicht hat, sind gesperrt; die Kurzinfo nennt den Grund.
+- Mac: Der Lüfterregler zeigt die Zonen Turbo und Außengerät leise nur, wenn die Anlage die Funktion laut ihren Fähigkeiten hat.
 
 ### Behoben
 - Verlauf: Beschriftungen unter den Verbrauchsbalken und die letzte Uhrzeit unter den Graphen wurden abgeschnitten.
@@ -166,6 +167,7 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 - Windows: In Fan mode, the target temperature and its scale are hidden.
 - Detailed log: The switch applies only until the app quits, and a notice shows while it is on.
 - Switches for features the air conditioner does not have according to its capabilities are disabled; the tooltip names the reason.
+- Mac: The fan slider shows the Turbo and Quiet outdoor unit zones only if the air conditioner has the feature according to its capabilities.
 
 ### Fixed
 - History: Labels under the consumption bars and the last time under the charts were cut off.

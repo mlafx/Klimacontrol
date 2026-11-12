@@ -3259,24 +3259,6 @@
         }
       }
     },
-    "common.on" : {
-      "comment" : "Zustand als Beschriftung: Ein",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ein"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "On"
-          }
-        }
-      }
-    },
     "common.seconds" : {
       "comment" : "Dauer in Sekunden",
       "extractionState" : "manual",
@@ -3333,24 +3315,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "off"
-          }
-        }
-      }
-    },
-    "common.switchOn" : {
-      "comment" : "Zustand im Satz, klein: an",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "an"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "on"
           }
         }
       }

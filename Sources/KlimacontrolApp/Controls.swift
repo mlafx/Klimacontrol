@@ -69,18 +69,18 @@ struct FanControl: View, Equatable {
     /// Zonen schmal (je ~6 % der Spur): so bleibt die Mitte breit, und die Zonen-Symbole passen in die
     /// Zeile der Sprungmarken.
     private static let quietEnd = -6.0, turboEnd = 107.0
-    private var locked: Bool { state.mode == .dry }
+    private var locked: Bool { UIOptions.fanLocked(state.mode) }
     private var isAuto: Bool { state.fanSpeed == FanSpeed.auto.rawValue }
-    /// „Außengerät leise“ und Turbo wirken nur beim Kühlen und Heizen.
-    private var zones: Bool { state.mode == .cool || state.mode == .heat }
-    private var lo: Double { zones ? Self.quietEnd : 1 }
-    private var hi: Double { zones ? Self.turboEnd : 100 }
-    private var quiet: Bool { zones && !isAuto && state.fanSpeed == 1 && state.outSilent == true }
-    private var turbo: Bool { zones && !isAuto && state.fanSpeed == 100 && state.turbo }
+    /// Zonen nach Modus und Fähigkeiten der Anlage (Regel des Kerns).
+    private var zones: UIOptions.FanZones { UIOptions.fanZones(state.mode, capabilities: state.capabilities) }
+    private var lo: Double { zones.quiet ? Self.quietEnd : 1 }
+    private var hi: Double { zones.turbo ? Self.turboEnd : 100 }
+    private var quiet: Bool { zones.quiet && !isAuto && state.fanSpeed == 1 && state.outSilent == true }
+    private var turbo: Bool { zones.turbo && !isAuto && state.fanSpeed == 100 && state.turbo }
     /// Das Zonen-Symbol leuchtet, sobald die Funktion an ist – wie die
     /// Kachel im Komfort. Die Zone selbst (1 % bzw. 100 % plus Funktion) bestimmt nur die Lage des Knopfs.
-    private var quietOn: Bool { zones && state.outSilent == true }
-    private var turboOn: Bool { zones && state.turbo }
+    private var quietOn: Bool { zones.quiet && state.outSilent == true }
+    private var turboOn: Bool { zones.turbo && state.turbo }
 
     private var value: Double {
         if let dragValue { return dragValue }
@@ -135,10 +135,12 @@ struct FanControl: View, Equatable {
                         button.position(x: x(Double(mark.value), width: w), y: 7)
                     }
                 }
-                if zones {
+                if zones.quiet {
                     zoneButton("speaker.slash", L.Options.Fan.quietOutdoor, on: quietOn) { model.setFanQuiet() }
                         .help(UIOptions.fanQuietZoneHelp(on: quietOn))
                         .position(x: 12, y: 7)
+                }
+                if zones.turbo {
                     zoneButton("bolt", L.Options.Fan.turbo, on: turboOn) { model.setFanTurbo() }
                         .help(UIOptions.fanTurboZoneHelp(on: turboOn))
                         .position(x: geo.size.width - 12, y: 7)
@@ -174,9 +176,11 @@ struct FanControl: View, Equatable {
             line(from: start, to: end, y: y).stroke(rest, style: StrokeStyle(lineWidth: 4, lineCap: .round))
             line(from: start, to: min(max(knob, start), end), y: y)
                 .stroke(tint, style: StrokeStyle(lineWidth: 4, lineCap: .round))
-            if zones {
+            if zones.quiet {
                 line(from: 10, to: start - 5, y: y)
                     .stroke(inQuiet ? tint : rest, style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [3, 4]))
+            }
+            if zones.turbo {
                 line(from: end + 5, to: width - 10, y: y)
                     .stroke(inTurbo ? tint : rest, style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [3, 4]))
             }
@@ -229,13 +233,13 @@ struct FanControl: View, Equatable {
     private func drag(to raw: Double) {
         var v = raw
         // Tote Zonen: der Knopf bleibt nie in einer gestrichelten Strecke stehen.
-        if zones, v > lo, v < 1 { v = v < (lo + 1) / 2 ? lo : 1 }
-        if zones, v > 100, v < hi { v = v > (100 + hi) / 2 ? hi : 100 }
+        if zones.quiet, v > lo, v < 1 { v = v < (lo + 1) / 2 ? lo : 1 }
+        if zones.turbo, v > 100, v < hi { v = v > (100 + hi) / 2 ? hi : 100 }
         guard v != dragValue else { return }
         dragValue = v
         // Sammeln, Zonen-Abstand und „Zone verlassen“ regelt der Kern (gleich wie unter Windows).
-        if v <= lo, zones { model.setFanQuiet(now: false) }
-        else if v >= hi, zones { model.setFanTurbo(now: false) }
+        if v <= lo, zones.quiet { model.setFanQuiet(now: false) }
+        else if v >= hi, zones.turbo { model.setFanTurbo(now: false) }
         else { model.setFan(Int(v.rounded()), now: false) }
     }
 
@@ -257,15 +261,16 @@ struct FanInput: Equatable, Sendable {
     let fanSpeed: Int
     let outSilent: Bool?
     let turbo: Bool
+    let capabilities: ACCapabilities?
 
     init(_ s: ACState) {
-        mode = s.mode; fanSpeed = s.fanSpeed; outSilent = s.outSilent; turbo = s.turbo
+        mode = s.mode; fanSpeed = s.fanSpeed; outSilent = s.outSilent; turbo = s.turbo; capabilities = s.capabilities
     }
 
     /// Zustand mit den Feldern, aus denen der Kern die Kopfzeile bildet.
     var acState: ACState {
         var s = ACState()
-        s.mode = mode; s.fanSpeed = fanSpeed; s.outSilent = outSilent; s.turbo = turbo
+        s.mode = mode; s.fanSpeed = fanSpeed; s.outSilent = outSilent; s.turbo = turbo; s.capabilities = capabilities
         return s
     }
 }

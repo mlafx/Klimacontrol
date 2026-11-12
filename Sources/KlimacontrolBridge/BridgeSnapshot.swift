@@ -121,7 +121,8 @@ struct Snapshot: Encodable {
     var notice: String?
     var path: String?
     /// Zieltext („Heizt · noch 1,2° bis zum Ziel“) und Statuszeile („Kühlt · Raum 24,5° · über WLAN“) aus dem Kern;
-    /// leer ohne Zustand. `fanZonesAvailable`: „Leise außen“/Turbo am Lüfterregler (nur Kühlen/Heizen).
+    /// leer ohne Zustand. `fanZonesAvailable`: mindestens eine Zone („Leise außen“/Turbo) am Lüfterregler (Kühlen,
+    /// Heizen, Fähigkeiten der Anlage).
     var goalLine, statusLine: String
     var fanZonesAvailable: Bool
     var lastUpdate: Double?

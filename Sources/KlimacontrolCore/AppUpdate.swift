@@ -5,7 +5,6 @@ import Foundation
 /// EdDSA signiert (öffentlicher Schlüssel in `tools/UPDATE_PUBLIC_KEY`, privater nur im Schlüsselbund des Bauenden).
 public enum AppUpdate {
     public static let repository = "https://github.com/mlafx/Klimacontrol"
-    public static let releasesPage = repository + "/releases"
     public static let feedMac = repository + "/releases/latest/download/updateinfo-mac.xml"
     /// Beta-Kanal (nur Mac): feste Update-Datei am Vorabrelease „beta“, nie unter latest.
     public static let feedMacBeta = repository + "/releases/download/beta/updateinfo-mac-beta.xml"

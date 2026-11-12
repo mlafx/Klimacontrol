@@ -71,8 +71,6 @@ final class LANClient {
 
     deinit { disconnect() }
 
-    var isConnected: Bool { socket != nil }
-
     func disconnect() {
         if let socket {
             socket.close()

@@ -40,7 +40,7 @@ final class KlimacontrolCoreTests: CoreTestCase {
         XCTAssertEqual(Fmt.target(21.6), "22°")
         XCTAssertEqual(Fmt.watts(812.4), "812 W")
         XCTAssertEqual(Fmt.kwh(1.234), "1,23 kWh")
-        XCTAssertEqual(Fmt.euro(0.5), "0,50 €")
+        XCTAssertEqual(Fmt.money(0.5, currency: "€"), "0,50 €")
         XCTAssertEqual(ACController.pad(7, 2), "07")
         XCTAssertEqual(ACController.pad(2026, 4), "2026")
     }

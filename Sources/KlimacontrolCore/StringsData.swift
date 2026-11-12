@@ -3263,24 +3263,6 @@ extension StringsData {
         }
       }
     },
-    "common.on" : {
-      "comment" : "Zustand als Beschriftung: Ein",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ein"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "On"
-          }
-        }
-      }
-    },
     "common.seconds" : {
       "comment" : "Dauer in Sekunden",
       "extractionState" : "manual",
@@ -3337,24 +3319,6 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "off"
-          }
-        }
-      }
-    },
-    "common.switchOn" : {
-      "comment" : "Zustand im Satz, klein: an",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "an"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "on"
           }
         }
       }
@@ -27314,10 +27278,8 @@ extension StringsData {
         "common.minutes",
         "common.off",
         "common.ok",
-        "common.on",
         "common.seconds",
         "common.switchOff",
-        "common.switchOn",
         "common.unknown",
         "common.windows.showInExplorer",
         "connection.mode.auto",
@@ -28817,10 +28779,8 @@ extension StringsData {
         "common.minutes": ["count"],
         "common.off": [],
         "common.ok": [],
-        "common.on": [],
         "common.seconds": ["count"],
         "common.switchOff": [],
-        "common.switchOn": [],
         "common.unknown": [],
         "common.windows.showInExplorer": [],
         "connection.mode.auto": [],
@@ -30555,14 +30515,10 @@ public enum L {
         public static var off: String { Localizer.text("common.off") }
         /// OK
         public static var ok: String { Localizer.text("common.ok") }
-        /// On
-        public static var on: String { Localizer.text("common.on") }
         /// {count} seconds
         public static func seconds(count: Int) -> String { Localizer.plural("common.seconds", count: count) }
         /// off
         public static var switchOff: String { Localizer.text("common.switchOff") }
-        /// on
-        public static var switchOn: String { Localizer.text("common.switchOn") }
         /// unknown
         public static var unknown: String { Localizer.text("common.unknown") }
         public enum Windows {
