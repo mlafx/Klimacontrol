@@ -98,8 +98,9 @@
       </Grid>
     </Grid>
 
+    <StackPanel Grid.Row="1">
     <!-- Ansage, wenn eine Seitenspalte nicht mehr auf den Bildschirm passt (Text aus dem Katalog, verschwindet nach 10 s). -->
-    <Border x:Name="HiddenBanner" Grid.Row="1" Margin="12,0,12,8" Padding="10,8" CornerRadius="8"
+    <Border x:Name="HiddenBanner" Margin="12,0,12,8" Padding="10,8" CornerRadius="8"
             Background="{DynamicResource Tile}" Visibility="Collapsed">
       <Grid>
         <Grid.ColumnDefinitions>
@@ -112,6 +113,10 @@
                 Click="DismissHidden_Click" ToolTip="{l:T common.dismiss}" AutomationProperties.Name="{l:T main.windows.dismissNotice}"/>
       </Grid>
     </Border>
+    <!-- Hinweis, solange das ausführliche Protokoll in dieser Sitzung an ist (Text aus dem Kern). -->
+    <TextBlock x:Name="DebugLogNote" Margin="14,0,14,6" FontSize="11.5" Foreground="{DynamicResource Sub}"
+               TextWrapping="Wrap" Visibility="Collapsed"/>
+    </StackPanel>
 
     <!-- Fußzeile: Außenspalten gleich breit, damit die Mitte mittig bleibt; feste Beschriftungen, damit nichts springt. -->
     <Border Grid.Row="2" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="10,6">

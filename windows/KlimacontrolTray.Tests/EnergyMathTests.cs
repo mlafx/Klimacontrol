@@ -48,13 +48,13 @@ public class EnergyMathTests
     {
         var axis = new ChartMath.Axis(0, 3, 0, 1);
         // 2,5 / (1 − 0,24) = 3,289…; die runde Achse (3) reicht nicht mehr.
-        Assert.Equal(2.5 / 0.76, EnergyMath.WithHeadroom(axis, 2.5, 0.24).Max, 9);
+        Assert.Equal(2.5 / 0.76, axis.WithHeadroom(2.5, 0.24).Max, 9);
         // Reicht die Achse schon, bleibt sie.
-        Assert.Equal(3, EnergyMath.WithHeadroom(axis, 1, 0.24).Max, 9);
+        Assert.Equal(3, axis.WithHeadroom(1, 0.24).Max, 9);
         // Ungültige Anteile oder Werte ändern nichts.
-        Assert.Equal(axis, EnergyMath.WithHeadroom(axis, double.NaN, 0.24));
-        Assert.Equal(axis, EnergyMath.WithHeadroom(axis, 2.5, 0));
-        Assert.Equal(axis, EnergyMath.WithHeadroom(axis, 2.5, 1));
+        Assert.Equal(axis, axis.WithHeadroom(double.NaN, 0.24));
+        Assert.Equal(axis, axis.WithHeadroom(2.5, 0));
+        Assert.Equal(axis, axis.WithHeadroom(2.5, 1));
     }
 
     [Fact]

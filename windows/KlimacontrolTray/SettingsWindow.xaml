@@ -339,6 +339,32 @@
               </Grid>
               <TextBlock x:Name="UpdateHelpText" Style="{StaticResource RowHelp}" Margin="0,0,0,6" TextWrapping="Wrap"
                          Visibility="Collapsed"/>
+              <Grid x:Name="UpdateHeldRow" Style="{StaticResource Row}" Visibility="Collapsed">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <TextBlock x:Name="UpdateHeldText" Style="{StaticResource RowHelp}" Margin="0,0,12,0" TextWrapping="Wrap"
+                           VerticalAlignment="Center"/>
+                <Button x:Name="UpdateInstallButton" Grid.Column="1" VerticalAlignment="Center" Click="UpdateInstall_Click"/>
+              </Grid>
+              <Grid Style="{StaticResource Row}">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,12,0">
+                  <TextBlock x:Name="UpdateAutoInstallTitle" Style="{StaticResource RowTitle}"/>
+                  <TextBlock x:Name="UpdateAutoInstallHelp" Style="{StaticResource RowHelp}" TextWrapping="Wrap"/>
+                </StackPanel>
+                <local:ClickCheckBox x:Name="UpdateAutoInstallBox" Grid.Column="1" VerticalAlignment="Center" MinWidth="0"
+                          Click="UpdateAutoInstall_Click"/>
+              </Grid>
+              <Grid Style="{StaticResource Row}">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,12,0">
+                  <TextBlock x:Name="UpdateIntervalTitle" Style="{StaticResource RowTitle}"/>
+                  <TextBlock x:Name="UpdateIntervalHelp" Style="{StaticResource RowHelp}" TextWrapping="Wrap" Visibility="Collapsed"/>
+                </StackPanel>
+                <ComboBox x:Name="UpdateIntervalBox" Grid.Column="1" Width="170" VerticalAlignment="Center"
+                          SelectionChanged="UpdateInterval_Changed"/>
+              </Grid>
+              <TextBlock Style="{StaticResource RowHelp}" Margin="0,0,0,6" TextWrapping="Wrap"
+                         Text="{l:T settings.general.windows.updatesHeldLimit}"/>
               <TextBlock x:Name="UpdateSetupHint" Style="{StaticResource RowHelp}" Margin="0,0,0,6" TextWrapping="Wrap"
                          Text="{l:T settings.general.windows.updatesSetupOnly}" Visibility="Collapsed"/>
             </StackPanel>
@@ -848,7 +874,11 @@
           <TextBlock Grid.Column="2" FontSize="11.5" Foreground="{DynamicResource Sub}" TextWrapping="Wrap" TextAlignment="Right"
                      VerticalAlignment="Center" Text="{l:T settings.log.legend}"/>
         </Grid>
-        <TextBlock x:Name="DebugHint" Grid.Row="2" FontSize="11.5" Foreground="{DynamicResource Sub}" TextWrapping="Wrap" Margin="0,4,0,0"/>
+        <StackPanel Grid.Row="2" Margin="0,4,0,0">
+          <TextBlock x:Name="LogDebugNote" FontSize="11.5" FontWeight="Medium" TextWrapping="Wrap" Margin="0,0,0,2" Visibility="Collapsed"/>
+          <TextBlock x:Name="DebugHint" FontSize="11.5" Foreground="{DynamicResource Sub}" TextWrapping="Wrap"
+                     Text="{l:T settings.log.detailed.scope}"/>
+        </StackPanel>
         <WrapPanel Grid.Row="3" HorizontalAlignment="Right" Margin="0,8,0,0">
           <Button Content="{l:T settings.log.refresh}" Margin="6,0,0,0" Click="LogRefresh_Click"/>
           <Button Content="{l:T settings.log.windows.showInExplorer}" Margin="6,0,0,0" Click="LogShow_Click"/>

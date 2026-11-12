@@ -75,7 +75,8 @@ public class AppearanceTextTests
     {
         Assert.NotNull(shown);
         if (shown!.Trim() == "{l:T " + key + "}") return;
-        if (Catalog.Available) Assert.True(shown == Catalog.Text(key, "de"), $"{where}: „{shown}“ statt {{l:T {key}}}");
+        Assert.True(Catalog.Available, "Katalog l10n/Localizable.xcstrings fehlt");
+        Assert.True(shown == Catalog.Text(key, "de"), $"{where}: „{shown}“ statt {{l:T {key}}}");
     }
 
     static XElement Named(XElement root, string name) =>
@@ -167,11 +168,8 @@ public class AppearanceTextTests
         Assert.Equal("ClickCheckBox", toggle.Name.LocalName);
         AssertShows("settings.appearance.temperatureCombined.title", (string?)toggle.Attribute(
             XName.Get("AutomationProperties.Name")), "Schalter Außentemperatur");
-        if (Catalog.Available)
-        {
-            Assert.False(string.IsNullOrEmpty(Catalog.Text("settings.appearance.temperatureCombined.title", "de")));
-            Assert.False(string.IsNullOrEmpty(Catalog.Text("settings.appearance.temperatureCombined.help", "en")));
-        }
+        Assert.False(string.IsNullOrEmpty(Catalog.Text("settings.appearance.temperatureCombined.title", "de")));
+        Assert.False(string.IsNullOrEmpty(Catalog.Text("settings.appearance.temperatureCombined.help", "en")));
     }
 
     [Fact]

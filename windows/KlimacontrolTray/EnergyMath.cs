@@ -13,15 +13,6 @@ internal static class EnergyMath
     /// Mehr als dieser Anteil geht nie an die Werte über den Balken.
     internal const double HeadroomMax = 0.6;
 
-    /// Bereich nach oben so weit verlängert, dass über `highest` noch `fraction` der Höhe frei bleibt. Gitterlinien
-    /// bleiben, wo sie waren.
-    internal static ChartMath.Axis WithHeadroom(ChartMath.Axis a, double highest, double fraction)
-    {
-        if (!double.IsFinite(highest) || fraction <= 0 || fraction >= 1) return a;
-        var needed = a.Min + (highest - a.Min) / (1 - fraction);
-        return a with { Max = Math.Max(a.Max, needed) };
-    }
-
     /// Anteil für den Platz oben: wie am Mac, aber mindestens so viel, dass Zeichen und Wert (`textHeight` Pixel, mit
     /// größerer Schrift höher) über den höchsten Balken passen.
     internal static double HeadroomFraction(bool withValues, double textHeight, double plotHeight)
@@ -38,7 +29,7 @@ internal static class EnergyMath
         if (all.Count == 0) return null;
         if (average is { } avg && double.IsFinite(avg)) all.Add(avg);
         var axis = ChartMath.PowerAxis(all);
-        return axis == null ? null : WithHeadroom(axis, all.Max(), fraction);
+        return axis?.WithHeadroom(all.Max(), fraction);
     }
 
     /// Werte der Gitterlinien innerhalb des Bereichs (Toleranz ein Tausendstel Schritt wie im Kern).

@@ -110,6 +110,16 @@ internal static class ChartMath
 
     // Zeitachse
 
+    /// Die drei Graphen des Verlaufs, von oben nach unten.
+    internal enum ChartKind { Power, Temperature, Outdoor }
+
+    /// Unterster sichtbarer Graph der einspaltigen Karte: Außen, wenn er einen eigenen Graphen hat, sonst Temperatur.
+    internal static ChartKind BottomChart(bool separateOutdoor) => separateOutdoor ? ChartKind.Outdoor : ChartKind.Temperature;
+
+    /// Ob `chart` die Zeitbeschriftung trägt: im Raster jede Karte, einspaltig nur der unterste sichtbare Graph.
+    internal static bool CarriesTimeLabels(ChartKind chart, bool grid, bool separateOutdoor) =>
+        grid || chart == BottomChart(separateOutdoor);
+
     /// Zeitpunkte (Unix-Sekunden) der Beschriftungen auf runden Ortszeiten in `start…end`: Minute des Tages ein
     /// Vielfaches von `stepMinutes` (ab 1440 Mitternacht). Punkte, deren Beschriftung (halbe Breite `labelHalfWidth`)
     /// über den Rand der Zeichenfläche (`plotWidth`) ragte, entfallen; `plotWidth` 0 = ohne diese Prüfung. Gezählt wird

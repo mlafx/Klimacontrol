@@ -91,6 +91,14 @@ public partial class SettingsWindow
         LoadLog(force: true);
     }
 
+    /// Hinweis aus dem Kern, solange das ausführliche Protokoll in dieser Sitzung an ist.
+    void RenderDebugNotice(Snapshot s)
+    {
+        var note = s.DebugLogNotice;
+        LogDebugNote.Text = note ?? "";
+        LogDebugNote.Visibility = string.IsNullOrEmpty(note) ? Visibility.Collapsed : Visibility.Visible;
+    }
+
     void Debug_Click(object sender, RoutedEventArgs e) => Core.Send(Cmd.DebugLog, ("on", DebugBox.IsChecked == true));
 
     void EventsOnly_Click(object sender, RoutedEventArgs e)

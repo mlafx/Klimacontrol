@@ -408,7 +408,7 @@ public class LocalizationTests : IDisposable
     public void RundungstabelleStimmtMitDemKernUeberein()
     {
         var file = Path.GetFullPath(Path.Combine(SourceDir(), "..", "..", "Tests", "Shared", "rounding-table.json"));
-        if (!File.Exists(file)) return;
+        Assert.True(File.Exists(file), file);
         using var doc = JsonDocument.Parse(File.ReadAllText(file));
         var rows = doc.RootElement.GetProperty("rows").EnumerateArray().ToList();
         Assert.NotEmpty(rows);
@@ -502,7 +502,7 @@ public class LocalizationTests : IDisposable
 
         // Beispiel im Kommentar über kc_set_locale in Bridge.swift: gleiche Namen, gleiche Reihenfolge der Ebenen.
         var bridge = Path.GetFullPath(Path.Combine(SourceDir(), "..", "..", "Sources", "KlimacontrolBridge", "Bridge.swift"));
-        if (!File.Exists(bridge)) return;
+        Assert.True(File.Exists(bridge), bridge);
         var comment = string.Join(" ", File.ReadAllLines(bridge).Select(l => l.TrimStart()).Where(l => l.StartsWith("///")).Select(l => l[3..].Trim()));
         var m = Regex.Match(comment, @"JSON: `(\{.*?\})`");
         Assert.True(m.Success, "Beispiel für kc_set_locale nicht gefunden");
@@ -573,7 +573,7 @@ public class LocalizationTests : IDisposable
     [Fact]
     public void KatalogKenntDieSchluesselDieDieInfrastrukturBraucht()
     {
-        if (!Catalog.Available) return;
+        Assert.True(Catalog.Available, "Katalog l10n/Localizable.xcstrings fehlt");
         string[] keys =
         {
             "keys.windows.ctrl", "keys.windows.alt", "keys.windows.shift", "keys.windows.win", "keys.windows.withShortcut",

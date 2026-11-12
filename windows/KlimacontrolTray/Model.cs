@@ -60,7 +60,10 @@ public sealed class Snapshot
     /// Währung des Strompreises (1–3 Zeichen).
     public string Currency { get; set; } = "€";
     public bool Beep { get; set; }
+    /// Ausführliches Protokoll gilt nur für diese Sitzung; der Kern speichert es nie.
     public bool DebugLog { get; set; }
+    /// Dezenter Hinweis, solange das ausführliche Protokoll an ist (null = keiner).
+    public string? DebugLogNotice { get; set; }
     public bool HistoryCSV { get; set; }
     /// Zählt neue Verlaufspunkte (HistoryStore.revision) – Graphen laden daran neu.
     public int HistoryRevision { get; set; }
@@ -112,6 +115,10 @@ public sealed class Snapshot
     /// Appcast für WinSparkle und Suchintervall in Sekunden; beides gibt der Kern vor (leer/0 bei älterem Kern).
     public string UpdateFeedURL { get; set; } = "";
     public int UpdateCheckInterval { get; set; }
+    /// Updates automatisch installieren (Standard an); aus = erst nach „Jetzt installieren“.
+    public bool UpdateAutoInstall { get; set; } = true;
+    /// Suchintervall: "daily" | "weekly".
+    public string UpdateInterval { get; set; } = "daily";
 
     // Anzeigetexte, Listen und Grenzen aus dem Kern (BridgeDisplay.swift): die Oberfläche zeigt sie nur an.
     /// Statische Auswahllisten, Grenzen, Standardwerte und feste Rückfragen.
@@ -284,6 +291,31 @@ public sealed class OptionsInfo
     public CloudFolderOptions CloudFolder { get; set; } = new();
     public PromptOptions Prompts { get; set; } = new();
     public TextOptions Texts { get; set; } = new();
+    public UpdateOptions Updates { get; set; } = new();
+}
+
+/// UpdatesDTO: Texte und Erinnerungsabstand für „Updates automatisch installieren“ und das Suchintervall.
+public sealed class UpdateOptions
+{
+    public string AutoInstallTitle { get; set; } = "";
+    public string AutoInstallHelp { get; set; } = "";
+    public string IntervalTitle { get; set; } = "";
+    public List<UpdateIntervalOption> Intervals { get; set; } = new();
+    public string HeldBackTitle { get; set; } = "";
+    /// Mit Platzhalter {version}.
+    public string HeldBackMessageTemplate { get; set; } = "";
+    public string HeldBackStatusTemplate { get; set; } = "";
+    public string InstallNow { get; set; } = "";
+    public string Later { get; set; } = "";
+    /// Abstand der Erinnerung nach „Später“ in Sekunden.
+    public double ReminderSeconds { get; set; }
+}
+
+public sealed class UpdateIntervalOption
+{
+    public string Id { get; set; } = "";
+    public string Label { get; set; } = "";
+    public string Help { get; set; } = "";
 }
 
 public sealed class RangeInfo

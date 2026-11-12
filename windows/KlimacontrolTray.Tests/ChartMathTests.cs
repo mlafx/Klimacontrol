@@ -134,6 +134,42 @@ public class ChartMathTests
         Assert.Equal(a, a.WithHeadroom(double.NaN, 0.2));
     }
 
+    static ChartMath.Axis AxisOf(JsonElement e) => new(e.GetProperty("min").GetDouble(), e.GetProperty("max").GetDouble(),
+        e.GetProperty("first").GetDouble(), e.GetProperty("step").GetDouble());
+
+    static void AssertAxis(ChartMath.Axis expected, ChartMath.Axis actual, string note)
+    {
+        Assert.True(Math.Abs(expected.Min - actual.Min) < 1e-9 && Math.Abs(expected.Max - actual.Max) < 1e-9
+                    && expected.First == actual.First && expected.Step == actual.Step, $"{note}: {actual} statt {expected}");
+    }
+
+    [Fact]
+    public void VerlaengerungNachUntenWieInDerTabelle()
+    {
+        using var doc = Table();
+        var cases = doc.RootElement.GetProperty("extendedBelow").EnumerateArray().ToList();
+        Assert.NotEmpty(cases);
+        foreach (var c in cases)
+        {
+            var fraction = c.GetProperty("fraction").GetDouble();
+            AssertAxis(AxisOf(c.GetProperty("result")), AxisOf(c.GetProperty("axis")).ExtendedBelow(fraction), $"extendedBelow {fraction}");
+        }
+    }
+
+    [Fact]
+    public void PlatzNachObenWieInDerTabelle()
+    {
+        using var doc = Table();
+        var cases = doc.RootElement.GetProperty("headroom").EnumerateArray().ToList();
+        Assert.NotEmpty(cases);
+        foreach (var c in cases)
+        {
+            var above = c.GetProperty("above").GetDouble();
+            var fraction = c.GetProperty("fraction").GetDouble();
+            AssertAxis(AxisOf(c.GetProperty("result")), AxisOf(c.GetProperty("axis")).WithHeadroom(above, fraction), $"headroom {above}/{fraction}");
+        }
+    }
+
     [Fact]
     public void ZeitmarkenWieImKern()
     {
@@ -208,5 +244,26 @@ public class ChartMathTests
                 .ToList();
             Assert.True(expected.SequenceEqual(runs), $"{c.GetProperty("note").GetString()}: {string.Join(", ", runs)}");
         }
+    }
+
+    /// Einspaltig trägt nur der unterste sichtbare Graph die Zeitbeschriftung (Außen, sonst Temperatur), im Raster jede Karte.
+    [Theory]
+    [InlineData(false, true, "Outdoor")]
+    [InlineData(false, false, "Temperature")]
+    public void ZeitbeschriftungNurAmUnterstenGraphen(bool grid, bool separateOutdoor, string expected)
+    {
+        var bottom = Enum.Parse<ChartMath.ChartKind>(expected);
+        Assert.Equal(bottom, ChartMath.BottomChart(separateOutdoor));
+        foreach (var kind in Enum.GetValues<ChartMath.ChartKind>())
+            Assert.Equal(kind == bottom, ChartMath.CarriesTimeLabels(kind, grid, separateOutdoor));
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void ImRasterTraegtJedeKarteDieZeitbeschriftung(bool separateOutdoor)
+    {
+        foreach (var kind in Enum.GetValues<ChartMath.ChartKind>())
+            Assert.True(ChartMath.CarriesTimeLabels(kind, grid: true, separateOutdoor));
     }
 }

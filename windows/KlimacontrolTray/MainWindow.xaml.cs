@@ -431,6 +431,9 @@ public partial class MainWindow : Window
         ChartsToggle.Visibility = DiagToggle.Visibility = has ? Visibility.Visible : Visibility.Collapsed;
         RefreshButton.Visibility = snap.Configured ? Visibility.Visible : Visibility.Collapsed;
         UpdateBusy(snap.Busy);
+        var note = snap.DebugLogNotice;
+        if (DebugLogNote.Text != (note ?? "")) DebugLogNote.Text = note ?? "";
+        DebugLogNote.Visibility = string.IsNullOrEmpty(note) ? Visibility.Collapsed : Visibility.Visible;
         // Verlauf/Diagnose erst zeigen, wenn die Anlage Werte liefert.
         if (has != hadState)
         {

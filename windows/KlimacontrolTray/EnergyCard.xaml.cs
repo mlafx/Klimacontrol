@@ -166,7 +166,7 @@ public partial class EnergyCard : UserControl
         double labelFont = Math.Round(LabelFontSize * f * 2) / 2, valueFont = Math.Round(ValueFontSize * f * 2) / 2;
         var n = periods.Count;
         var withValues = periods.Any(p => p.ValueText != null);
-        var withMarker = periods.Any(p => p.Current || p.KWh == null || !p.Complete);
+        var withMarker = periods.Any(p => p.Current || (!p.Complete && p.KWh != null));
 
         // Unten die Beschriftungen, rechts die Achse, oben Zeichen und Wert: Höhen gemessen, damit „Groß“ mitwächst.
         var plotHeight = h - Measure(Text("Ag", labelFont, "Sub")).Height - LabelTop;
@@ -265,7 +265,7 @@ public partial class EnergyCard : UserControl
         }
     }
 
-    /// Zeichen (läuft noch, ca., Lücke) und Wert über dem Balken; null, wenn es nichts zu zeigen gibt.
+    /// Zeichen (läuft noch, Lücke) und Wert über dem Balken; null, wenn es nichts zu zeigen gibt.
     static StackPanel? Above(EnergyPeriod p, double size)
     {
         var stack = new StackPanel { IsHitTestVisible = false };
@@ -306,7 +306,7 @@ public partial class EnergyCard : UserControl
         Plot.Children.Add(e);
     }
 
-    /// Nicht nur über die Farbe erkennbar: zusätzlich ein Zeichen über dem Balken (`Marker`).
+    /// Geschätzte Balken (ohne Zählerwert) sind nur blasser; die Legende erklärt das, Kurzinfo und Sprachausgabe nennen „ca.“.
     static double BarOpacity(EnergyPeriod p) => p.Current ? 0.4 : p.KWh == null ? 0.5 : p.Complete ? 1 : 0.7;
 
     static FrameworkElement? Marker(EnergyPeriod p, double size)
@@ -318,8 +318,7 @@ public partial class EnergyCard : UserControl
             SizeScale.Own(glyph);
             return glyph;
         }
-        if (p.KWh == null) return Text(L.T("charts.approxMarker"), size, "Sub");
-        if (!p.Complete) return Text("…", size, "Sub");
+        if (!p.Complete && p.KWh != null) return Text("…", size, "Sub");
         return null;
     }
 }

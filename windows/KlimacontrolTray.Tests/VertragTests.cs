@@ -144,7 +144,7 @@ public class VertragTests
     public void UpdateSucheIstNichtAbschaltbar()
     {
         var dir = TrayDir();
-        if (!Directory.Exists(dir)) return;
+        Assert.True(Directory.Exists(dir), dir);
         var updates = File.ReadAllText(Path.Combine(dir, "Updates.cs"));
         Assert.DoesNotContain("AutomaticCheck", updates);
         var calls = Regex.Matches(updates, @"win_sparkle_set_automatic_check_for_updates""\)\(([^)]*)\)");
@@ -161,10 +161,49 @@ public class VertragTests
     }
 
     [Fact]
+    public void UpdateEinstellungenKommenAn()
+    {
+        var s = JsonSerializer.Deserialize(Sample("snapshot").GetRawText(), Strict.Snapshot)!;
+        Assert.False(s.UpdateAutoInstall);
+        Assert.Equal("weekly", s.UpdateInterval);
+        Assert.Equal(604800, s.UpdateCheckInterval);
+        Assert.Null(s.DebugLogNotice);
+        var u = s.Options.Updates;
+        Assert.Equal(new[] { "daily", "weekly" }, u.Intervals.Select(i => i.Id));
+        Assert.All(new[] { u.AutoInstallTitle, u.AutoInstallHelp, u.IntervalTitle, u.HeldBackTitle, u.InstallNow, u.Later },
+                   t => Assert.NotEmpty(t));
+        Assert.Contains("{version}", u.HeldBackMessageTemplate);
+        Assert.Contains("{version}", u.HeldBackStatusTemplate);
+        Assert.Equal(86400, u.ReminderSeconds);
+        // Ohne Feld im JSON (älterer Kern) gilt „automatisch installieren“ wie im Kern.
+        Assert.True(JsonSerializer.Deserialize("{}", Strict.Snapshot)!.UpdateAutoInstall);
+    }
+
+    /// Ein zurückgehaltenes Setup startet mit denselben Schaltern, die der Appcast WinSparkle mitgibt.
+    [Fact]
+    public void SetupSchalterWieImAppcast()
+    {
+        var script = File.ReadAllText(Path.GetFullPath(Path.Combine(SourceDir(), "..", "..", "tools", "make_release.py")));
+        var m = Regex.Match(script, @"^WINDOWS_INSTALLER_ARGS\s*=\s*""([^""]*)""", RegexOptions.Multiline);
+        Assert.True(m.Success);
+        Assert.Equal(Updates.InstallerArguments, m.Groups[1].Value);
+    }
+
+    /// Ohne automatische Installation übernimmt der Rückruf das Setup; die Suche bleibt dabei an.
+    [Fact]
+    public void RueckrufFuerZurueckgehalteneUpdates()
+    {
+        var updates = File.ReadAllText(Path.Combine(TrayDir(), "Updates.cs"));
+        Assert.Contains("win_sparkle_set_user_run_installer_callback", updates);
+        Assert.Contains("win_sparkle_set_update_check_interval", updates);
+        Assert.Contains("skipShutdown", updates);
+    }
+
+    [Fact]
     public void WinSparkleSpracheKommtAusDerOberflaeche()
     {
         var dir = TrayDir();
-        if (!Directory.Exists(dir)) return;
+        Assert.True(Directory.Exists(dir), dir);
         var updates = File.ReadAllText(Path.Combine(dir, "Updates.cs"));
         var calls = Regex.Matches(updates, @"win_sparkle_set_lang""\)\(([^;]*)\);");
         Assert.NotEmpty(calls);
@@ -229,7 +268,7 @@ public class VertragTests
     public void OberflaecheHatKeineEigenenListenGrenzenOderRueckfragen()
     {
         var dir = TrayDir();
-        if (!Directory.Exists(dir)) return;
+        Assert.True(Directory.Exists(dir), dir);
         string[] forbidden =
         {
             "\"5 Sekunden\"", "\"10 Sekunden\"", "\"5 Minuten\"", "1 bis 600", "Unter 8 s bleibt", "{ 100, 75, 50 }", "{ 30, 60, 120",
@@ -293,7 +332,7 @@ public class VertragTests
     {
         // Liegen die Quellen nicht daneben (Tests anderswo gebaut), lässt sich das nicht prüfen.
         var bridge = Path.GetFullPath(Path.Combine(SourceDir(), "..", "..", "Sources", "KlimacontrolBridge", "Bridge.swift"));
-        if (!File.Exists(bridge)) return;
+        Assert.True(File.Exists(bridge), bridge);
         var m = Regex.Match(File.ReadAllText(bridge), @"let\s+bridgeAPIVersion\s*:\s*Int32\s*=\s*(\d+)");
         Assert.True(m.Success, "bridgeAPIVersion nicht in Bridge.swift gefunden");
         Assert.Equal(Native.ExpectedApi, int.Parse(m.Groups[1].Value));
@@ -313,7 +352,7 @@ public class VertragTests
         Assert.NotEmpty(names);
         Assert.Equal(names.Count, names.Distinct(StringComparer.Ordinal).Count());
         var bridgeDir = Path.GetFullPath(Path.Combine(SourceDir(), "..", "..", "Sources", "KlimacontrolBridge"));
-        if (!Directory.Exists(bridgeDir)) return;
+        Assert.True(Directory.Exists(bridgeDir), bridgeDir);
         var entry = new Regex(@"\.(?:device|always)\(""([A-Za-z]+)""");
         var known = new HashSet<string>(StringComparer.Ordinal);
         foreach (var file in Directory.GetFiles(bridgeDir, "*.swift"))
@@ -344,7 +383,7 @@ public class VertragTests
     static IEnumerable<string> SourceFiles(params string[] extensions)
     {
         var dir = TrayDir();
-        if (!Directory.Exists(dir)) return Enumerable.Empty<string>();
+        Assert.True(Directory.Exists(dir), dir);
         return Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories)
             .Where(f => extensions.Any(e => f.EndsWith(e, StringComparison.Ordinal))
                         && !f.Contains(Path.DirectorySeparatorChar + "obj" + Path.DirectorySeparatorChar)
@@ -501,7 +540,7 @@ public class VertragTests
     [Fact]
     public void OberflaecheOhneDeutscheTexte()
     {
-        if (!Directory.Exists(TrayDir())) return;
+        Assert.True(Directory.Exists(TrayDir()), TrayDir());
         var funde = XamlTextFindings().Concat(CodeTextFindings()).ToList();
         Assert.True(funde.Count <= Erlaubt,
             $"{funde.Count} feste Texte, erlaubt {Erlaubt}. Liegt die Zahl über dem Stand, sind Texte dazugekommen; erste Funde: "
@@ -515,7 +554,7 @@ public class VertragTests
     [Fact]
     public void TextschluesselStehenImKatalog()
     {
-        if (!Catalog.Available) return;
+        Assert.True(Catalog.Available, "Katalog l10n/Localizable.xcstrings fehlt");
         var problems = new List<string>();
         void CheckKey(string where, string key)
         {
@@ -595,7 +634,7 @@ public class VertragTests
     [Fact]
     public void KeineEigenenFormate()
     {
-        if (!Directory.Exists(TrayDir())) return;
+        Assert.True(Directory.Exists(TrayDir()), TrayDir());
         var funde = OwnFormatFindings();
         Assert.True(funde.Count <= ErlaubteEigeneFormate,
             $"{funde.Count} Stellen mit eigenem Zahlen-/Zeitformat, erlaubt {ErlaubteEigeneFormate}: " + string.Join(" | ", funde));

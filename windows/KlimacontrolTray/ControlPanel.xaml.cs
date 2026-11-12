@@ -172,6 +172,7 @@ public partial class ControlPanel : UserControl
                 GroupName = "Rate",
             };
             if (toggleStyle != null) b.Style = toggleStyle;
+            ToolTipService.SetShowOnDisabled(b, true);
             AutomationProperties.SetName(b, L.F("main.windows.ratePercent", ("pct", pct.ToString(System.Globalization.CultureInfo.InvariantCulture))));
             b.Checked += (_, _) => { if (!updating && Core.Snap.State != null) Core.Send(Cmd.Rate, ("value", pct)); };
             rateButtons[pct] = b;
@@ -452,7 +453,7 @@ public partial class ControlPanel : UserControl
             if (TempSlider.Maximum != range.Max) TempSlider.Maximum = range.Max;
         }
         // Lüften hat kein Temperaturziel: Raumtemperatur groß, kein −/+ und kein Regler (wie am Mac).
-        var target = st.Mode != FanMode;
+        var target = TargetAdjustable(s);
         MinusButton.Visibility = PlusButton.Visibility = TempRow.Visibility = target ? Visibility.Visible : Visibility.Collapsed;
         MinusButton.IsEnabled = st.Target > range.Min;
         PlusButton.IsEnabled = st.Target < range.Max;
@@ -493,13 +494,24 @@ public partial class ControlPanel : UserControl
         Feature(display, s, "display", st.DisplayOn, tint);
         Feature(sound, s, "sound", st.Sound ?? s.Beep, tint);
         EnsureRateButtons(s.Options.Rate);
-        if (!Equals(RateRow.ToolTip, s.Options.Rate.Help)) RateRow.ToolTip = s.Options.Rate.Help;
+        // Gilt nur in bestimmten Modi (`availability["rate"]` des Kerns); gesperrt zeigt die Kurzinfo den Grund.
+        var rateEnabled = s.IsEnabled("rate");
+        var rateTip = rateEnabled ? s.Options.Rate.Help : s.Why("rate") ?? s.Options.Rate.Help;
+        if (!Equals(RateRow.ToolTip, rateTip)) RateRow.ToolTip = rateTip;
         var shownRate = st.RatePercent ?? s.Options.Rate.Fallback;
-        foreach (var (pct, b) in rateButtons) { b.IsChecked = shownRate == pct; Paint(b, b.IsChecked == true, true, tint); }
+        foreach (var (pct, b) in rateButtons)
+        {
+            b.IsChecked = shownRate == pct;
+            Paint(b, b.IsChecked == true, rateEnabled, tint);
+            var tip = rateEnabled ? null : rateTip;
+            if (!Equals(b.ToolTip, tip)) b.ToolTip = tip;
+            AutomationProperties.SetHelpText(b, tip ?? "");
+        }
     }
 
-    /// Modus „Lüften“ (Codes.Modes).
-    const int FanMode = 5;
+    /// Soll verstellbar (an und nicht Lüften) nach `availability["target"]` des Kerns; ohne Eintrag nicht. Gilt für
+    /// −/+, Regler und Strg+↑/↓.
+    internal static bool TargetAdjustable(Snapshot s) => s.Availability.TryGetValue("target", out var a) && a.Enabled;
 
     /// Skala unter dem Regler nur im Hauptfenster (`RoomShownElsewhere`); bei alten Werten abgeblendet wie der Kopf.
     void RenderScale(Snapshot s, bool shown, bool live)

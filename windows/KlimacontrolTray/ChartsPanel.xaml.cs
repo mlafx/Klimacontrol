@@ -83,6 +83,7 @@ public partial class ChartsPanel : UserControl
 
     // Anordnung: Raster, Außen im Temperaturgraphen, eigener Außengraph, Graphen vorhanden.
     bool grid, combined, separateOutdoor, hasCharts, placed;
+    (bool Grid, bool SeparateOutdoor) arranged;
     /// Höhe der Spalte ohne die Graphen, je Anordnung gemessen (Raster ja/nein, Außen im Temperaturgraphen ja/nein).
     readonly Dictionary<int, double> overhead = new();
     double applied;
@@ -127,6 +128,9 @@ public partial class ChartsPanel : UserControl
             hoverLines[c] = l;
             c.Children.Add(l);
             c.SizeChanged += (_, _) => CanvasSized();
+            // Ein wieder eingeblendeter Graph (eigener Außengraph, Umhängen ins Raster) behält sonst die Zeichnung von
+            // vorher, wenn sich seine Größe nicht ändert.
+            c.IsVisibleChanged += (_, e) => { if (e.NewValue is true) Dispatcher.BeginInvoke(new Action(CanvasSized), DispatcherPriority.Loaded); };
         }
         hoverDot = new Ellipse { Width = 9, Height = 9, Visibility = Visibility.Collapsed, IsHitTestVisible = false };
         Panel.SetZIndex(hoverDot, 2);
@@ -490,6 +494,12 @@ public partial class ChartsPanel : UserControl
         separateOutdoor = hasCharts && !combined && anyOutdoor;
         var showsEnergy = Energy.Visibility == Visibility.Visible;
         Place(gridNow);
+        // Andere Anordnung = andere Zeitbeschriftung; neu zeichnen, auch wenn kein Graph seine Größe ändert.
+        if ((grid, separateOutdoor) != arranged)
+        {
+            arranged = (grid, separateOutdoor);
+            if (IsVisible) Dispatcher.BeginInvoke(new Action(Draw), DispatcherPriority.Loaded);
+        }
 
         var key = (gridNow ? 1 : 0) + (combined ? 2 : 0);
         if (key != layoutKey) { layoutKey = key; measureRounds = 0; }
@@ -600,7 +610,9 @@ public partial class ChartsPanel : UserControl
     }
 
     /// Zeitbeschriftung nur am untersten Graphen einer Karte; im Raster hat jede Karte ihre eigene.
-    bool TimeLabelsOn(Canvas c) => grid || c == OutdoorCanvas || (c == TempCanvas && !separateOutdoor);
+    bool TimeLabelsOn(Canvas c) => ChartMath.CarriesTimeLabels(
+        c == PowerCanvas ? ChartMath.ChartKind.Power : c == TempCanvas ? ChartMath.ChartKind.Temperature : ChartMath.ChartKind.Outdoor,
+        grid, separateOutdoor);
 
     /// Zeichnen nur, wenn sich Größe, Daten, Thema, Farbe, Beschriftung oder Anordnung geändert haben.
     bool Changed(Canvas c, Color tint)
