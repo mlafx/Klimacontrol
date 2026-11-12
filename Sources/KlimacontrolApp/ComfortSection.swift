@@ -107,14 +107,19 @@ struct ComfortSection: View, Equatable {
                                              _ action: @escaping (Bool) -> Void,
                                              @ViewBuilder label: () -> Content) -> some View {
         let active = on == true && enabled
+        // Liquid Glass übernimmt die Deckkraft äußerer Ansichten nicht: dort die Beschriftung abblenden.
+        var glass = false
+        if #available(macOS 26, *) { glass = theme.cardFillOpacity == 0 }
+        let fade = SwitchLook.fade(on: on, enabled: enabled)
         return Button { action(on != true) } label: {
             label()
                 .foregroundStyle(active ? theme.label(on: theme.tint(for: state.mode)) : .primary)
+                .opacity(glass ? fade : 1)
                 .klimaCard(tint: active ? theme.tint(for: state.mode) : nil, radius: radius, interactive: true)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .modifier(SwitchLook(title: title, on: on, enabled: enabled, why: why))
+        .modifier(SwitchLook(title: title, on: on, enabled: enabled, why: why, fade: glass ? 1 : fade))
     }
 }
 
@@ -125,11 +130,14 @@ private struct SwitchLook: ViewModifier {
     let on: Bool?
     let enabled: Bool
     let why: String?
+    let fade: Double
+
+    static func fade(on: Bool?, enabled: Bool) -> Double { !enabled ? 0.38 : on == nil ? 0.6 : 1 }
 
     func body(content: Content) -> some View {
         content
             .disabled(!enabled)
-            .opacity(!enabled ? 0.38 : on == nil ? 0.6 : 1)
+            .opacity(fade)
             .help(on == nil && enabled ? L.Main.Comfort.unknownSuffix(text: why ?? title) : (why ?? title))
             .accessibilityAddTraits(.isToggle)
             .accessibilityValue(on == nil ? L.Common.unknown : on == true ? L.Main.State.on : L.Main.State.off)

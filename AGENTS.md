@@ -427,7 +427,7 @@ Meldung), Nutzdaten, Prüfsumme; die Nutzdaten tragen eine CRC8. Wichtige Nutzda
 | Anzeige am Gerät umschalten | `0x41 0x02\|Ton …` | nur Umschalten, kein fester Zustand |
 | Eigenschaften lesen | `0xB1 n id…` | Antwort `0xB1` |
 | Eigenschaft setzen | `0xB0 1 id len wert` | Antwort `0xB0` |
-| Zustand setzen | `0x40 …` | Ein/Aus, Modus, Soll, Lüfter, Schwenken, Eco, Turbo, Ionisierer, Frostschutz |
+| Zustand setzen | `0x40 …` | Ein/Aus, Modus, Soll, Lüfter, Schwenken, Eco, Turbo, Ionisierer, Frostschutz; Schlafmodus = Byte 10 Bit 0x01 (live 2026-11-12: wird übernommen und in 0xC0 zurückgemeldet, beim Heizen sank das Verdichter-Soll sofort von 80 auf 52 Hz; nicht eingebaut) |
 
 Eigenschaften (`PropertyId`): `0x0039` Selbstreinigung, `0x0048` Leistung begrenzen, `0x00CD` Außengerät leise
 (Wert 3 = an), `0x00E3` iECO, `0x022C` Signalton. Modi: 1 Auto, 2 Kühlen, 3 Trocknen, 4 Heizen, 5 Lüften.
@@ -1493,7 +1493,7 @@ Gruppe/Byte in `Diagnostics` und `Response` lesen, in `HistorySample`/CSV-Kopf n
   und wachem Rechner).
 - „Außengerät leise“ wirkt nur beim Kühlen/Heizen.
 - Ohne Midea-Konto kann die App Token/Schlüssel nicht selbst holen.
-- Nicht eingebaut: Schlafmodus, Kindersicherung (0x0051), „Leise“-Stufen innen/beide (0x00CD Fähigkeit 3).
+- Nicht eingebaut: Schlafmodus (funktioniert laut Live-Test, 6.4), Kindersicherung (0x0051). „Leise“-Stufen innen/beide (0x00CD Werte 1/2) lehnt die PortaSplit ab (Anhang D).
 - Windows, helles Glas im Thema Standard: graue Texte und die große Zahl haben auf dem Glas wenig Kontrast (mit
   „Matt“ deutlich mehr). Bewusst so belassen, das Aussehen des Standard-Themas bleibt; nicht als Fehler verfolgen.
 - „Leistung begrenzen“ bleibt bewusst bei beiden Stufen (75 und 50 %); maßgeblich ist der zurückgemeldete Wert (6.5).
@@ -1596,7 +1596,7 @@ Heizen), Kindersicherung, „Leise“ (Stufe 3). Keine Feuchte, keine Zusatzheiz
 | Quelle | Daten | Vermutung |
 |---|---|---|
 | Eigenschaft 0x0051 | `00 20 3c 00 00` | Kindersicherung aus, Temperaturgrenzen 16–30 °C |
-| Eigenschaft 0x00CD | Fähigkeit `03` | „Leise“ auch nur innen oder beide |
+| Eigenschaft 0x00CD | Fähigkeit `03` | Live 2026-11-12 (Heizen): Werte 1 und 2 lehnt die PortaSplit ab (Antwort-Statusbyte `0x11`, Wert bleibt), nur 0 und 3 werden übernommen. 3 senkt den Außenlüfter (1000–1200 → 848 U/min), Innenlüfter und Verdichter unverändert. „Leise“ innen/beide gibt es an dieser Anlage nicht |
 | Eigenschaft 0x0030 | `00 1e 00 00 00 07` | nicht als Fähigkeit gemeldet, ändert sich |
 | Eigenschaft 0x001E | `00 06 00 00` | unbekannt |
 | Eigenschaft 0x007E | 46 Byte | kompakte Kopie des Betriebszustands |
