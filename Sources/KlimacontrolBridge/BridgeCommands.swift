@@ -117,6 +117,7 @@ private let switchCommands: [BridgeCommand] = [
         let on = try a.bool("on")
         c.update { $0.freezeProtection = on }
     },
+    .device("sleep") { a, c in c.setSleep(try a.bool("on")) },
     .device("outdoorSilent") { a, c in c.setOutdoorSilent(try a.bool("on")) },
     .device("selfClean") { a, c in c.setSelfClean(try a.bool("on")) },
     .device("ieco") { a, c in c.setIECO(try a.bool("on")) },

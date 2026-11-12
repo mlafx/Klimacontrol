@@ -257,6 +257,14 @@ extension ACController {
         }
     }
 
+    /// Schlafmodus (nur beim Kühlen und Heizen); gemeldet wird, was die Anlage zurückgibt.
+    public func setSleep(_ on: Bool) {
+        if on {
+            guard let s = state, UIOptions.isAvailable(.sleep, in: s.mode, capabilities: s.capabilities) else { return }
+        }
+        update { $0.sleep = on }
+    }
+
     /// Solltemperatur in ganzen Grad (16–30 °C); schnelle Folgewerte werden gesammelt.
     public func setTemperature(_ celsius: Double) {
         guard celsius.isFinite else { return }

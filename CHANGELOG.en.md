@@ -6,6 +6,7 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 ## [1.3.0.0] – in progress
 
 ### Added
+- Sleep as a switch under “More features” (cooling and heating only).
 - Air conditioner error code: Every change is written to the log and to the history (new column “Error code” in the export).
 - History: Power, temperature and outdoor temperature share one card with a common time axis.
 - History: A colored band below the power shows when the air conditioner ran in which mode.

@@ -1013,6 +1013,42 @@ extension StringsData {
         }
       }
     },
+    "availability.sleepOff" : {
+      "comment" : "Kurzinfo Schlafmodus, im aktuellen Modus gesperrt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafmodus gibt es nur beim Kühlen und Heizen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep is only available when cooling or heating"
+          }
+        }
+      }
+    },
+    "availability.sleepOn" : {
+      "comment" : "Kurzinfo Schlafmodus",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafmodus: die Anlage regelt leiser und sparsamer herunter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep: the air conditioner runs quieter and more economically"
+          }
+        }
+      }
+    },
     "availability.swing" : {
       "comment" : "Kurzinfo Schwenken",
       "extractionState" : "manual",
@@ -7769,6 +7805,24 @@ extension StringsData {
         }
       }
     },
+    "kit.control.sleep" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "schlafmodus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sleep"
+          }
+        }
+      }
+    },
     "kit.control.swing" : {
       "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
       "extractionState" : "manual",
@@ -9223,6 +9277,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ionizer {state}"
+          }
+        }
+      }
+    },
+    "log.change.sleep" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafmodus {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep {state}"
           }
         }
       }
@@ -12661,6 +12733,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Self-clean"
+          }
+        }
+      }
+    },
+    "main.comfort.sleep" : {
+      "comment" : "Funktion weitere Funktionen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafmodus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep"
           }
         }
       }
@@ -27157,6 +27247,8 @@ extension StringsData {
         "availability.outdoorSilentOn",
         "availability.rate",
         "availability.selfClean",
+        "availability.sleepOff",
+        "availability.sleepOn",
         "availability.swing",
         "availability.turboOff",
         "availability.turboOn",
@@ -27527,6 +27619,7 @@ extension StringsData {
         "kit.control.mode",
         "kit.control.power",
         "kit.control.purifier",
+        "kit.control.sleep",
         "kit.control.swing",
         "kit.control.target",
         "kit.control.turbo",
@@ -27608,6 +27701,7 @@ extension StringsData {
         "log.change.off",
         "log.change.on",
         "log.change.purifier",
+        "log.change.sleep",
         "log.change.swing",
         "log.change.target",
         "log.change.turbo",
@@ -27799,6 +27893,7 @@ extension StringsData {
         "main.comfort.limitPower",
         "main.comfort.percentChoice",
         "main.comfort.selfClean",
+        "main.comfort.sleep",
         "main.comfort.sound",
         "main.comfort.swing",
         "main.comfort.unknownSuffix",
@@ -28658,6 +28753,8 @@ extension StringsData {
         "availability.outdoorSilentOn": [],
         "availability.rate": [],
         "availability.selfClean": [],
+        "availability.sleepOff": [],
+        "availability.sleepOn": [],
         "availability.swing": [],
         "availability.turboOff": [],
         "availability.turboOn": [],
@@ -29028,6 +29125,7 @@ extension StringsData {
         "kit.control.mode": [],
         "kit.control.power": [],
         "kit.control.purifier": [],
+        "kit.control.sleep": [],
         "kit.control.swing": [],
         "kit.control.target": [],
         "kit.control.turbo": [],
@@ -29109,6 +29207,7 @@ extension StringsData {
         "log.change.off": [],
         "log.change.on": [],
         "log.change.purifier": ["state"],
+        "log.change.sleep": ["state"],
         "log.change.swing": ["state"],
         "log.change.target": ["value"],
         "log.change.turbo": ["state"],
@@ -29300,6 +29399,7 @@ extension StringsData {
         "main.comfort.limitPower": [],
         "main.comfort.percentChoice": ["value"],
         "main.comfort.selfClean": [],
+        "main.comfort.sleep": [],
         "main.comfort.sound": [],
         "main.comfort.swing": [],
         "main.comfort.unknownSuffix": ["text"],
@@ -30247,6 +30347,10 @@ public enum L {
         public static var rate: String { Localizer.text("availability.rate") }
         /// Self-cleaning: dries and cleans the indoor unit (about 15 min)
         public static var selfClean: String { Localizer.text("availability.selfClean") }
+        /// Sleep is only available when cooling or heating
+        public static var sleepOff: String { Localizer.text("availability.sleepOff") }
+        /// Sleep: the air conditioner runs quieter and more economically
+        public static var sleepOn: String { Localizer.text("availability.sleepOn") }
         /// The louvers swing up and down
         public static var swing: String { Localizer.text("availability.swing") }
         /// Turbo is only available when cooling and heating
@@ -31090,6 +31194,8 @@ public enum L {
             public static var power: String { Localizer.text("kit.control.power") }
             /// ionizer
             public static var purifier: String { Localizer.text("kit.control.purifier") }
+            /// sleep
+            public static var sleep: String { Localizer.text("kit.control.sleep") }
             /// swing
             public static var swing: String { Localizer.text("kit.control.swing") }
             /// target
@@ -31282,6 +31388,8 @@ public enum L {
             public static var on: String { Localizer.text("log.change.on") }
             /// Ionizer {state}
             public static func purifier(state: String) -> String { Localizer.text("log.change.purifier", ["state": state]) }
+            /// Sleep {state}
+            public static func sleep(state: String) -> String { Localizer.text("log.change.sleep", ["state": state]) }
             /// Swing {state}
             public static func swing(state: String) -> String { Localizer.text("log.change.swing", ["state": state]) }
             /// Target {value}
@@ -31726,6 +31834,8 @@ public enum L {
             public static func percentChoice(value: String) -> String { Localizer.text("main.comfort.percentChoice", ["value": value]) }
             /// Self-clean
             public static var selfClean: String { Localizer.text("main.comfort.selfClean") }
+            /// Sleep
+            public static var sleep: String { Localizer.text("main.comfort.sleep") }
             /// Beep
             public static var sound: String { Localizer.text("main.comfort.sound") }
             /// Swing

@@ -138,6 +138,24 @@ final class ACControllerUITests: CoreTestCase {
         c.stop()
     }
 
+    func testSleepOnlyWhileCoolingOrHeating() async throws {
+        let c = try await makeCooling(fan: 40)
+        c.setSleep(true)
+        try await settle(c, commands: 1)
+        XCTAssertEqual(fake.commands.last, "fan 40 sleep an")
+        XCTAssertTrue(fake.current.sleep)
+        c.setSleep(false)
+        try await settle(c, commands: 2)
+        XCTAssertFalse(fake.current.sleep)
+        c.setMode(.dry)
+        try await settle(c, commands: 3)
+        fake.commands.removeAll()
+        c.setSleep(true)
+        try await settle(c, commands: 0)
+        XCTAssertTrue(fake.commands.isEmpty, "beim Trocknen kein Schlafmodus")
+        c.stop()
+    }
+
     func testEcoRefusedWithoutCapability() async throws {
         fake.capabilities = ACCapabilities(raw: [0x0212: [0]])
         let c = try await makeCooling(fan: 40)

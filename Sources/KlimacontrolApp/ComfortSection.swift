@@ -40,6 +40,7 @@ struct ComfortSection: View, Equatable {
             VStack(alignment: .leading, spacing: 0) {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 3), spacing: 6) {
                     row(L.Main.Comfort.ieco, "gauge.with.dots.needle.33percent", state.ieco, .ieco) { on in model.setIECO(on) }
+                    row(L.Main.Comfort.sleep, "moon", state.sleep, .sleep) { on in model.setSleep(on) }
                     row(L.Main.Comfort.ionizer, "sparkles", state.purifier, .purifier) { on in model.update { $0.purifier = on } }
                     row(L.Main.Comfort.frostProtection, "snowflake.circle", state.freezeProtection, .freezeProtection) { on in
                         model.update { $0.freezeProtection = on }
@@ -155,6 +156,7 @@ struct ComfortInput: Equatable, Sendable {
     let ieco: Bool?
     let purifier: Bool
     let freezeProtection: Bool
+    let sleep: Bool
     let selfClean: Bool?
     let displayOn: Bool
     let sound: Bool?
@@ -163,7 +165,7 @@ struct ComfortInput: Equatable, Sendable {
 
     init(_ s: ACState) {
         mode = s.mode; swing = s.swing; eco = s.eco; turbo = s.turbo; outSilent = s.outSilent; ieco = s.ieco
-        purifier = s.purifier; freezeProtection = s.freezeProtection; selfClean = s.selfClean
+        purifier = s.purifier; freezeProtection = s.freezeProtection; sleep = s.sleep; selfClean = s.selfClean
         displayOn = s.displayOn; sound = s.sound; ratePercent = s.ratePercent; capabilities = s.capabilities
     }
 }

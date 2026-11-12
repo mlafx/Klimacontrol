@@ -23,6 +23,7 @@ public static class Cmd
     public const string OutdoorSilent = "outdoorSilent";
     public const string SelfClean = "selfClean";
     public const string Ieco = "ieco";
+    public const string Sleep = "sleep";
     public const string Display = "display";
     public const string Rate = "rate";
     public const string Sound = "sound";

@@ -142,7 +142,7 @@ final class BridgeCommandTests: XCTestCase {
         let c = try makeController(configured: false)
         let expected: Set<String> = [
             "refresh", "power", "mode", "fan", "fanQuiet", "fanTurbo", "nudgeTemp", "temp", "freezeProtection", "swing",
-            "eco", "turbo", "purifier", "outdoorSilent", "selfClean", "ieco", "display", "rate", "sound", "applyScene",
+            "eco", "turbo", "purifier", "outdoorSilent", "selfClean", "ieco", "sleep", "display", "rate", "sound", "applyScene",
             "saveScene", "offTimer", "onTimer", "exportBackup", "relocate",
         ]
         XCTAssertEqual(Set(bridgeCommands.values.filter(\.needsDevice).map(\.name)), expected)

@@ -177,6 +177,7 @@ final class FakeDevice: ACDevice, Sendable {
             var parts = ["fan \(s.current.fanSpeed)"]
             if before.turbo != s.current.turbo { parts.append("turbo \(s.current.turbo ? "an" : "aus")") }
             if before.eco != s.current.eco { parts.append("eco \(s.current.eco ? "an" : "aus")") }
+            if before.sleep != s.current.sleep { parts.append("sleep \(s.current.sleep ? "an" : "aus")") }
             s.commands.append(parts.joined(separator: " "))
             return s.current
         }

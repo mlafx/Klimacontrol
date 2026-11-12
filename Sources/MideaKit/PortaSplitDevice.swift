@@ -323,7 +323,7 @@ public final class PortaSplitDevice: @unchecked Sendable {
         }
     }
 
-    /// Ändert den Grundzustand (Ein/Aus, Modus, Temperatur, Lüfter, Swing, Eco, Turbo, Ionisierer, Frostschutz).
+    /// Ändert den Grundzustand (Ein/Aus, Modus, Temperatur, Lüfter, Swing, Eco, Turbo, Ionisierer, Frostschutz, Schlafmodus).
     public func update(_ change: @escaping @Sendable (inout ACState) -> Void) async throws -> ACState {
         try await run { [self] in
             // Frisch lesen (eine andere App oder die Fernbedienung kann etwas geändert haben) – außer der letzte
@@ -377,7 +377,7 @@ public final class PortaSplitDevice: @unchecked Sendable {
 
     /// Steuerfelder eines Stellbefehls; nach dem Setzen werden nur die geänderten geprüft.
     enum ControlField: CaseIterable {
-        case power, mode, temp, fan, swing, eco, turbo, purifier, freeze
+        case power, mode, temp, fan, swing, eco, turbo, purifier, freeze, sleep
 
         /// Name im Protokoll („Stellbefehl nicht übernommen: soll“).
         var label: String {
@@ -391,6 +391,7 @@ public final class PortaSplitDevice: @unchecked Sendable {
             case .turbo: return LogText.t("kit.control.turbo", "turbo")
             case .purifier: return LogText.t("kit.control.purifier", "ionisierer")
             case .freeze: return LogText.t("kit.control.freeze", "frostschutz")
+            case .sleep: return LogText.t("kit.control.sleep", "schlafmodus")
             }
         }
 
@@ -405,6 +406,7 @@ public final class PortaSplitDevice: @unchecked Sendable {
             case .turbo: return a.turbo == b.turbo
             case .purifier: return a.purifier == b.purifier
             case .freeze: return a.freezeProtection == b.freezeProtection
+            case .sleep: return a.sleep == b.sleep
             }
         }
     }

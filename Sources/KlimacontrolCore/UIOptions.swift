@@ -189,7 +189,7 @@ public enum UIOptions {
 
     /// Schalter, die nicht in jedem Modus gelten.
     public enum ComfortFeature: String, CaseIterable, Sendable {
-        case swing, eco, turbo, outdoorSilent, ieco, purifier, freezeProtection, selfClean, display, sound
+        case swing, eco, turbo, outdoorSilent, ieco, purifier, freezeProtection, selfClean, display, sound, sleep
     }
 
     public struct Availability: Equatable, Sendable {
@@ -199,7 +199,7 @@ public enum UIOptions {
     }
 
     /// Einzige Quelle für „gilt im Modus“: Eco nur Kühlen, Turbo und Außengerät leise nur Kühlen/Heizen, Frostschutz
-    /// nur Heizen, iECO nur beim Kühlen (`iecoAvailable`). `setMode`, `setEco`, `setTurbo` und die Lüfter-Zonen
+    /// nur Heizen, Schlafmodus nur Kühlen/Heizen, iECO nur beim Kühlen (`iecoAvailable`). `setMode`, `setEco`, `setTurbo` und die Lüfter-Zonen
     /// benutzen dieselbe Regel. `capabilities`: Fähigkeiten der Anlage, nil = unbekannt; meldet die Anlage eine
     /// Funktion als nicht vorhanden, ist sie in keinem Modus frei, sonst gilt die Modusregel.
     public static func isAvailable(_ f: ComfortFeature, in mode: OperationalMode,
@@ -210,6 +210,7 @@ public enum UIOptions {
         case .turbo: return turboInMode(mode, capabilities: capabilities) ?? false
         case .outdoorSilent: return mode == .cool || mode == .heat
         case .freezeProtection: return mode == .heat
+        case .sleep: return mode == .cool || mode == .heat
         case .ieco: return iecoAvailable(in: mode, capabilities: capabilities)
         case .swing, .purifier, .selfClean, .display, .sound: return true
         }
@@ -230,6 +231,7 @@ public enum UIOptions {
         case .selfClean: return c.selfClean
         case .display: return c.displayControl
         case .sound: return c.sound
+        case .sleep: return nil
         }
     }
 
@@ -266,6 +268,7 @@ public enum UIOptions {
         case .selfClean: return L.Main.Comfort.selfClean
         case .display: return L.Main.Comfort.display
         case .sound: return L.Main.Comfort.sound
+        case .sleep: return L.Main.Comfort.sleep
         }
     }
 
@@ -299,6 +302,7 @@ public enum UIOptions {
         case .selfClean: return Availability(enabled: on, why: L.Availability.selfClean)
         case .display: return Availability(enabled: on, why: L.Availability.display)
         case .sound: return Availability(enabled: on, why: nil)
+        case .sleep: return Availability(enabled: on, why: on ? L.Availability.sleepOn : L.Availability.sleepOff)
         }
     }
 

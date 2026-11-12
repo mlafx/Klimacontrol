@@ -8,6 +8,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 ## [1.3.0.0] – in Arbeit
 
 ### Hinzugefügt
+- Schlafmodus als Schalter unter „Weitere Funktionen“ (nur beim Kühlen und Heizen).
 - Fehlercode der Anlage: Jeder Wechsel steht im Protokoll und im Verlauf (neue Spalte „Fehlercode“ im Export).
 - Verlauf: Leistung, Temperatur und Außentemperatur stehen in einer Karte mit gemeinsamer Zeitachse.
 - Verlauf: Ein farbiges Band unter der Leistung zeigt, wann die Anlage in welchem Modus lief.

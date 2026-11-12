@@ -109,6 +109,7 @@ public enum Fmt {
         if a.turbo != b.turbo { parts.append(L.Log.Change.turbo(state: onOff(b.turbo))) }
         if a.purifier != b.purifier { parts.append(L.Log.Change.purifier(state: onOff(b.purifier))) }
         if a.freezeProtection != b.freezeProtection { parts.append(L.Log.Change.freeze(state: onOff(b.freezeProtection))) }
+        if a.sleep != b.sleep { parts.append(L.Log.Change.sleep(state: onOff(b.sleep))) }
         return parts.joined(separator: ", ")
     }
 

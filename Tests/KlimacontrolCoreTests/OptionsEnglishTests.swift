@@ -73,6 +73,10 @@ final class OptionsEnglishTests: XCTestCase {
                            "This air conditioner does not support “Turbo” in this mode")
             XCTAssertEqual(UIOptions.rateAvailability(mode: .cool, capabilities: none).why,
                            "This air conditioner does not support “Limit power”")
+            XCTAssertEqual(UIOptions.availability(.sleep, mode: .cool).why,
+                           "Sleep: the air conditioner runs quieter and more economically")
+            XCTAssertEqual(UIOptions.availability(.sleep, mode: .fan).why, "Sleep is only available when cooling or heating")
+            XCTAssertEqual(L.Main.Comfort.sleep, "Sleep")
             XCTAssertEqual(Appearance.Theme.night.label, "Night")
             XCTAssertEqual(Appearance.MenuBarText.roomTarget.label, "Room + target")
             XCTAssertEqual(Appearance.Background.glassStrong.label, "Strong glass")

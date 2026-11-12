@@ -117,6 +117,7 @@ final class DisplayCatalogTests: CoreTestCase {
             XCTAssertEqual(enabled(.freezeProtection, m), m == .heat, "Frostschutz nur Heizen")
             XCTAssertEqual(enabled(.ieco, m), m == .cool, "iECO ohne Fähigkeiten nur Kühlen")
             XCTAssertEqual(UIOptions.rateAvailability(mode: m).enabled, m == .cool, "Leistung begrenzen nur Kühlen")
+            XCTAssertEqual(enabled(.sleep, m), m == .cool || m == .heat, "Schlafmodus nur Kühlen/Heizen")
             for f in [UIOptions.ComfortFeature.swing, .purifier, .selfClean, .display, .sound] { XCTAssertTrue(enabled(f, m)) }
         }
     }
@@ -233,6 +234,9 @@ final class DisplayCatalogTests: CoreTestCase {
         XCTAssertEqual(cool(.freezeProtection, .heat).why, "Hält 8 °C – nur im Heizbetrieb")
         XCTAssertEqual(cool(.selfClean, .cool).why, "Selbstreinigung: trocknet und reinigt das Innengerät (ca. 15 Min.)")
         XCTAssertEqual(cool(.display, .cool).why, "Temperaturanzeige an der Anlage")
+        XCTAssertEqual(cool(.sleep, .cool).why, "Schlafmodus: die Anlage regelt leiser und sparsamer herunter")
+        XCTAssertEqual(cool(.sleep, .dry).why, "Schlafmodus gibt es nur beim Kühlen und Heizen")
+        XCTAssertEqual(L.Main.Comfort.sleep, "Schlafmodus")
     }
 
     func testControllerUsesTheSameRules() async throws {

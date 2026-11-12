@@ -1009,6 +1009,42 @@
         }
       }
     },
+    "availability.sleepOff" : {
+      "comment" : "Kurzinfo Schlafmodus, im aktuellen Modus gesperrt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafmodus gibt es nur beim Kühlen und Heizen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep is only available when cooling or heating"
+          }
+        }
+      }
+    },
+    "availability.sleepOn" : {
+      "comment" : "Kurzinfo Schlafmodus",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafmodus: die Anlage regelt leiser und sparsamer herunter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep: the air conditioner runs quieter and more economically"
+          }
+        }
+      }
+    },
     "availability.swing" : {
       "comment" : "Kurzinfo Schwenken",
       "extractionState" : "manual",
@@ -7765,6 +7801,24 @@
         }
       }
     },
+    "kit.control.sleep" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "schlafmodus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sleep"
+          }
+        }
+      }
+    },
     "kit.control.swing" : {
       "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
       "extractionState" : "manual",
@@ -9219,6 +9273,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ionizer {state}"
+          }
+        }
+      }
+    },
+    "log.change.sleep" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafmodus {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep {state}"
           }
         }
       }
@@ -12657,6 +12729,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Self-clean"
+          }
+        }
+      }
+    },
+    "main.comfort.sleep" : {
+      "comment" : "Funktion weitere Funktionen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafmodus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep"
           }
         }
       }
