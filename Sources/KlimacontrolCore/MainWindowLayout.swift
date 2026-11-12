@@ -110,8 +110,9 @@ public enum MainWindowLayout {
     /// Oberfläche sie misst.
     public static let singleOverhead = 340.0
     public static let gridOverhead = 290.0
-    /// Höchsthöhe eines Graphen im 2 × 2-Raster.
-    public static let gridRowMax = 520.0
+    /// Höchsthöhe eines Graphen im 2 × 2-Raster; reicht für das Vollbild üblicher Bildschirme (sonst bliebe unter den
+    /// Graphen eine leere Fläche).
+    public static let gridRowMax = 800.0
     private static let gridTopMin = 180.0
     private static let gridBottomMin = 150.0
 
@@ -135,7 +136,7 @@ public enum MainWindowLayout {
     /// Zusätzliche Höhe geht anteilig (3 : 3 : 2) an Leistung, Temperatur und Außen bis zu ihrer Höchsthöhe, danach an
     /// den Verbrauch; Höhen in Stufen von 20 pt, der Rest bleibt leer. Ohne eigenen Außengraphen (`separateOutdoor`
     /// aus: Außen steht im Temperaturgraphen) teilen sich Leistung und Temperatur den Platz, `outdoor` ist dann 0.
-    /// Im 2 × 2-Raster (`grid`) teilen sich beide Zeilen die Höhe unter dem Kopf gleichmäßig (je Zeile bis 520 pt).
+    /// Im 2 × 2-Raster (`grid`) teilen sich beide Zeilen die Höhe unter dem Kopf gleichmäßig (je Zeile bis 800 pt).
     /// `overhead` ist die Höhe der Spalte ohne die Graphen (von der Oberfläche gemessen), sonst eine Schätzung.
     public static func chartHeights(columnHeight: Double, grid: Bool = false, overhead: Double? = nil,
                                     separateOutdoor: Bool = true) -> ChartHeights {

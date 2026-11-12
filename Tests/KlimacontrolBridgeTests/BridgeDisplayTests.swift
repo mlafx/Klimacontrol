@@ -97,6 +97,20 @@ final class BridgeDisplayTests: XCTestCase {
         XCTAssertEqual(a["target"]?["enabled"] as? Bool, false)
     }
 
+    func testAvailabilityFollowsCapabilities() throws {
+        var s = ACState()
+        s.power = true
+        s.mode = .cool
+        s.capabilities = ACCapabilities(raw: [0x021E: [0], 0x0048: [0]])
+        controller.state = s
+        let a = try XCTUnwrap(json()["availability"] as? [String: [String: Any]])
+        XCTAssertEqual(a["purifier"]?["enabled"] as? Bool, false)
+        XCTAssertEqual(a["purifier"]?["why"] as? String, "Diese Anlage unterstützt „Ionisierer“ nicht")
+        XCTAssertEqual(a["rate"]?["enabled"] as? Bool, false)
+        XCTAssertEqual(a["rate"]?["why"] as? String, "Diese Anlage unterstützt „Leistung begrenzen“ nicht")
+        XCTAssertEqual(a["eco"]?["enabled"] as? Bool, true, "nicht gemeldet: Modusregel")
+    }
+
     func testDisplayTexts() throws {
         var s = ACState()
         s.power = true

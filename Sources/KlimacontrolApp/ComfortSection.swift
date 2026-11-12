@@ -15,6 +15,10 @@ struct ComfortSection: View, Equatable {
     nonisolated static func == (a: ComfortSection, b: ComfortSection) -> Bool { a.state == b.state }
     @State private var confirmSelfClean = false
 
+    private var rate: UIOptions.Availability {
+        UIOptions.rateAvailability(mode: state.mode, capabilities: state.capabilities)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             SectionTitle(text: L.Main.Section.comfort)
@@ -58,9 +62,8 @@ struct ComfortSection: View, Equatable {
                     .pickerStyle(.segmented).labelsHidden().fixedSize()
                 }
                 .padding(.top, 4)
-                .disabled(!UIOptions.rateAvailability(mode: state.mode).enabled)
-                .help(UIOptions.rateAvailability(mode: state.mode).enabled ? UIOptions.rateHelp
-                      : UIOptions.rateAvailability(mode: state.mode).why ?? UIOptions.rateHelp)
+                .disabled(!rate.enabled)
+                .help(rate.enabled ? UIOptions.rateHelp : rate.why ?? UIOptions.rateHelp)
             }
         }
         .confirmationDialog(UIText.selfCleanPrompt.title, isPresented: $confirmSelfClean) {

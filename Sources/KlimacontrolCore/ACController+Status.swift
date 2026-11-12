@@ -136,3 +136,24 @@ extension ACController {
         connectPhase = phase
     }
 }
+
+extension ACController {
+    /// Schreibt einen Wechsel des Fehlercodes einmal ins Protokoll (Warnung bei einem Fehler, Info bei der Rückkehr
+    /// auf 0), mit Leistung und Verdichter zum Zeitpunkt, soweit bekannt. Ein Code, der von Anfang an 0 ist, bleibt still.
+    func noteErrorCode(_ code: Int?) {
+        guard let code else { lastErrorCode = nil; return }
+        let previous = lastErrorCode
+        guard code != previous else { return }
+        lastErrorCode = code
+        if previous == nil && code == 0 { return }
+        var parts: [String] = []
+        if let w = state?.powerWatts { parts.append(L.Log.Errorcode.power(watts: String(Int(w.rounded())))) }
+        if let hz = diagnostics?.compressorHz { parts.append(L.Log.Errorcode.compressor(hz: String(hz))) }
+        let context = parts.isEmpty ? "" : L.Log.Errorcode.context(parts: parts.joined(separator: ", "))
+        if code != 0 {
+            AppLog.write(L.Log.Errorcode.raised(code: String(code), context: context), L.Log.Level.warning)
+        } else {
+            AppLog.write(L.Log.Errorcode.cleared(code: String(previous ?? 0), context: context))
+        }
+    }
+}

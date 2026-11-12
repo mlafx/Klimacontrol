@@ -8,6 +8,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 ## [1.3.0.0] – in Arbeit
 
 ### Hinzugefügt
+- Fehlercode der Anlage: Jeder Wechsel steht im Protokoll und im Verlauf (neue Spalte „Fehlercode“ im Export).
 - Verlauf: Leistung, Temperatur und Außentemperatur stehen in einer Karte mit gemeinsamer Zeitachse.
 - Verlauf: Ein farbiges Band unter der Leistung zeigt, wann die Anlage in welchem Modus lief.
 - Verbrauch: Wert über jedem Balken und gestrichelte Linie für den Durchschnitt der abgeschlossenen Zeiträume.
@@ -15,6 +16,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 - Die Skala der Solltemperatur zeigt die Raumtemperatur als Marke.
 - Windows: Eine beschädigte Einstellungsdatei wird beim Start beiseitegelegt und gemeldet, statt still durch Standardwerte ersetzt zu werden.
 - Updates: Einstellungen „Updates automatisch installieren“ und „Nach Updates suchen“ (täglich oder wöchentlich); ohne automatische Installation wird ein geladenes Update erst nach „Jetzt installieren“ installiert.
+- Windows: Der Reiter „Darstellung“ zeigt oben eine Vorschau, die Thema, Hell/Dunkel und Größe sofort übernimmt.
 
 ### Geändert
 - Hauptfenster: Modus und Lüfter sowie Szenen und Timer stehen jeweils in einer gemeinsamen Karte.
@@ -25,10 +27,12 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 - Windows: Das Hauptfenster folgt denselben Regeln für Spalten und Größe wie am Mac; Reiter und gestapelte Spalten entfallen.
 - Windows: Beim Lüften sind Solltemperatur und Skala ausgeblendet.
 - Ausführliches Protokoll: Der Schalter gilt nur bis zum Beenden der App, ein Hinweis zeigt, solange er an ist.
+- Schalter für Funktionen, die die Anlage laut ihren Fähigkeiten nicht hat, sind gesperrt; die Kurzinfo nennt den Grund.
 
 ### Behoben
 - Verlauf: Beschriftungen unter den Verbrauchsbalken und die letzte Uhrzeit unter den Graphen wurden abgeschnitten.
 - Mac: Im Vollbild blieb unter dem Graphen der Außentemperatur eine leere Fläche.
+- Mac: Eingeschaltete Knöpfe waren im hellen Modus blass und schwer lesbar, die Karten der Steuerspalte wirkten bei durchscheinendem Fenster dunkel und fast deckend.
 - Lässt sich der Verlauf nicht speichern, steht ein Hinweis statt „Noch zu wenig Daten“.
 - Mac: Mit eingeschaltetem Beta-Kanal scheiterte jede Suche, solange es keine Vorabversion gab, und stabile Updates blieben aus.
 - Mac: Das Menüleisten-Fenster blieb nach dem Ausschalten der Anlage zu hoch und zeigte den Inhalt ohne runde Ecken am unteren Rand.

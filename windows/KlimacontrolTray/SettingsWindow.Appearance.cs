@@ -92,6 +92,7 @@ public partial class SettingsWindow
             SelectTag(LookTooltipBox, a.TrayTooltip);
             LookTrayColoredBox.IsChecked = a.TrayColored;
             LookTrayAnimatedBox.IsChecked = a.TrayAnimated;
+            LookPreview.Render();
         }
         finally { lookUpdating = false; }
     }

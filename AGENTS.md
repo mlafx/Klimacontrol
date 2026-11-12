@@ -1552,9 +1552,10 @@ Windows um – der Bestätigungsdialog sagt das offen. Darum vorher sichern.
 | `eev` | Ventilöffnung (Rohwert) |
 | `luefter_innen_upm`, `luefter_aussen_upm` | U/min |
 | `zaehler_roh` | Zählerstand als Rohwert (Schritte à 0,01 kWh) |
+| `fehlercode` | Fehlercode der Anlage, 0 = keiner (ältere Zeilen leer) |
 
 **Lesbare Form:** Die Kopfzeile folgt der Sprache der Oberfläche (deutsch: `Zeit (Ortszeit);Eingeschaltet (1/0);Modus;…`,
-englisch: `Time (local time);Power on (1/0);Mode;Target (°C);…;Meter raw`; wörtlich in `HistoryTests` bzw.
+englisch: `Time (local time);Power on (1/0);Mode;Target (°C);…;Meter raw;Error code`; wörtlich in `HistoryTests` bzw.
 `HistoryLanguageTests`). Modus-Namen und Dezimalzeichen richten sich nach Sprache bzw. Format; der Import liest beide
 Sprachen. Die technische Form und die Datenbank bleiben deutsch.
 

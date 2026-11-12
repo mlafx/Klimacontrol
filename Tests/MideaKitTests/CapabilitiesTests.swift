@@ -52,4 +52,30 @@ final class CapabilitiesTests: XCTestCase {
         XCTAssertEqual([UInt8](Frame.getCapabilities(additional: true, id: 0x10))[10..<14].map { $0 }, [0xB5, 0x01, 0x01, 0x01])
         XCTAssertEqual(Array(Frame.setProperty(.ieco, true, iecoNumber: 3, id: 1)[10..<18]), [0xB0, 1, 0xE3, 0x00, 13, 0, 3, 1])
     }
+
+    func testComfortFlagsLikeMsmart() {
+        func caps(_ id: UInt16, _ v: UInt8) -> ACCapabilities { ACCapabilities(raw: [id: [v]]) }
+        let none = ACCapabilities()
+        for flag in [none.selfClean, none.rateSelect, none.parentControl, none.outSilent, none.eco, none.freezeProtection,
+                     none.swingVertical, none.swingHorizontal, none.turboCool, none.turboHeat, none.anion,
+                     none.displayControl, none.sound, none.iecoSupported] {
+            XCTAssertNil(flag, "nicht gemeldet = unbekannt")
+        }
+        XCTAssertEqual(caps(0x0039, 1).selfClean, true)
+        XCTAssertEqual(caps(0x0039, 0).selfClean, false)
+        XCTAssertEqual([0, 1, 2, 3, 4].map { caps(0x0048, $0).rateSelectLevels }, [0, 2, 5, 5, 0])
+        XCTAssertEqual(caps(0x0048, 0).rateSelect, false)
+        XCTAssertEqual(caps(0x0051, 1).parentControl, true)
+        XCTAssertEqual([0, 1, 2, 3].map { caps(0x00CD, $0).outSilent }, [false, true, false, true])
+        XCTAssertEqual([0, 1, 2, 3].map { caps(0x0212, $0).eco }, [false, true, true, false])
+        XCTAssertEqual([0, 1, 2].map { caps(0x0213, $0).freezeProtection }, [false, true, false])
+        XCTAssertEqual([0, 1, 2, 3].map { caps(0x0215, $0).swingVertical }, [true, true, false, false])
+        XCTAssertEqual([0, 1, 2, 3].map { caps(0x0215, $0).swingHorizontal }, [false, true, false, true])
+        XCTAssertEqual([0, 1, 2, 3].map { caps(0x021A, $0).turboCool }, [true, true, false, false])
+        XCTAssertEqual([0, 1, 2, 3].map { caps(0x021A, $0).turboHeat }, [false, true, false, true])
+        XCTAssertEqual([0, 1].map { caps(0x021E, $0).anion }, [false, true])
+        XCTAssertEqual([0, 1, 2, 3, 100].map { caps(0x0224, $0).displayControl }, [false, true, true, false, true])
+        XCTAssertEqual([0, 1].map { caps(0x022C, $0).sound }, [false, true])
+        XCTAssertEqual([0, 1, 4].map { caps(0x00E3, $0).iecoSupported }, [false, true, true])
+    }
 }

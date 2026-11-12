@@ -66,6 +66,13 @@ final class OptionsEnglishTests: XCTestCase {
             XCTAssertEqual(UIOptions.availability(.ieco, mode: .fan).why, "iECO is not available in this mode")
             XCTAssertEqual(UIOptions.availability(.ieco, mode: .cool).why,
                            "iECO is the energy-saving program of the air conditioner. It limits the power draw (Eco above only applies when cooling).")
+            let none = ACCapabilities(raw: [0x0215: [2], 0x021A: [3], 0x0048: [0]])
+            XCTAssertEqual(UIOptions.availability(.swing, mode: .cool, capabilities: none).why,
+                           "This air conditioner does not support “Swing”")
+            XCTAssertEqual(UIOptions.availability(.turbo, mode: .cool, capabilities: none).why,
+                           "This air conditioner does not support “Turbo” in this mode")
+            XCTAssertEqual(UIOptions.rateAvailability(mode: .cool, capabilities: none).why,
+                           "This air conditioner does not support “Limit power”")
             XCTAssertEqual(Appearance.Theme.night.label, "Night")
             XCTAssertEqual(Appearance.MenuBarText.roomTarget.label, "Room + target")
             XCTAssertEqual(Appearance.Background.glassStrong.label, "Strong glass")

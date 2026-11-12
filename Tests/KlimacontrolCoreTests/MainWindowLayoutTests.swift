@@ -146,7 +146,10 @@ final class MainWindowLayoutTests: XCTestCase {
         XCTAssertEqual(c.outdoor, c.energy)
         XCTAssertEqual(c.outdoor, 500)
         let tall = M.chartHeights(columnHeight: 5000, grid: true, overhead: 300)
-        XCTAssertEqual([tall.power, tall.outdoor], [520, 520])
+        XCTAssertEqual([tall.power, tall.outdoor], [800, 800])
+        // Vollbild 2560 × 1440: die Zeilen füllen die Spalte (vorher bei 520 begrenzt, darunter blieb Platz leer).
+        let full = M.chartHeights(columnHeight: 1440, grid: true, overhead: 290)
+        XCTAssertEqual([full.power, full.energy], [560, 560])
         let mid = M.chartHeights(columnHeight: 1000, grid: true, overhead: 300)
         XCTAssertEqual(mid.power.truncatingRemainder(dividingBy: 20), 0)
         XCTAssertEqual(mid.power, 340)

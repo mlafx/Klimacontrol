@@ -18,8 +18,13 @@ public final class ACController {
 
     public internal(set) var config: DeviceConfig?
     public internal(set) var state: ACState? {
-        didSet { if (state != nil) != hasState { hasState = state != nil } }
+        didSet {
+            if (state != nil) != hasState { hasState = state != nil }
+            noteErrorCode(state?.errorCode)
+        }
     }
+    /// Zuletzt gemeldeter Fehlercode der Anlage (nil = noch keiner gelesen); nur für die Protokollzeile beim Wechsel.
+    @ObservationIgnored var lastErrorCode: Int?
     /// Ob es einen Zustand gibt; ändert sich nur bei Wechsel zwischen „kein Zustand“ und „Zustand“, damit Ansichten,
     /// die nur das wissen wollen, nicht bei jeder Abfrage neu rechnen.
     public internal(set) var hasState = false

@@ -177,15 +177,45 @@ public enum UIOptions {
 
     /// Einzige Quelle für „gilt im Modus“: Eco nur Kühlen, Turbo und Außengerät leise nur Kühlen/Heizen, Frostschutz
     /// nur Heizen, iECO nur beim Kühlen (`iecoAvailable`). `setMode`, `setEco`, `setTurbo` und die Lüfter-Zonen
-    /// benutzen dieselbe Regel. `capabilities`: Fähigkeiten der Anlage, nil = unbekannt.
+    /// benutzen dieselbe Regel. `capabilities`: Fähigkeiten der Anlage, nil = unbekannt; meldet die Anlage eine
+    /// Funktion als nicht vorhanden, ist sie in keinem Modus frei, sonst gilt die Modusregel.
     public static func isAvailable(_ f: ComfortFeature, in mode: OperationalMode,
                                    capabilities: ACCapabilities? = nil) -> Bool {
+        if supported(f, capabilities: capabilities) == false { return false }
         switch f {
         case .eco: return mode == .cool
-        case .turbo, .outdoorSilent: return mode == .cool || mode == .heat
+        case .turbo: return turboInMode(mode, capabilities: capabilities) ?? false
+        case .outdoorSilent: return mode == .cool || mode == .heat
         case .freezeProtection: return mode == .heat
         case .ieco: return iecoAvailable(in: mode, capabilities: capabilities)
         case .swing, .purifier, .selfClean, .display, .sound: return true
+        }
+    }
+
+    /// Meldet die Anlage die Funktion (0xB5, Lesart wie msmart-ng)? nil = nicht gemeldet oder Fähigkeiten unbekannt.
+    /// Schwenken heißt hier nur senkrecht, weil die App nur das anbietet.
+    public static func supported(_ f: ComfortFeature, capabilities: ACCapabilities?) -> Bool? {
+        guard let c = capabilities else { return nil }
+        switch f {
+        case .swing: return c.swingVertical
+        case .eco: return c.eco
+        case .turbo: return c.turboCool.map { $0 || c.turboHeat == true }
+        case .outdoorSilent: return c.outSilent
+        case .ieco: return c.iecoSupported
+        case .purifier: return c.anion
+        case .freezeProtection: return c.freezeProtection
+        case .selfClean: return c.selfClean
+        case .display: return c.displayControl
+        case .sound: return c.sound
+        }
+    }
+
+    /// Turbo im Modus: nil = gilt im Modus nicht (nur Kühlen/Heizen); false = die Anlage hat Turbo nur im anderen Modus.
+    static func turboInMode(_ mode: OperationalMode, capabilities: ACCapabilities?) -> Bool? {
+        switch mode {
+        case .cool: return capabilities?.turboCool ?? true
+        case .heat: return capabilities?.turboHeat ?? true
+        case .dry, .auto, .fan: return nil
         }
     }
 
@@ -200,18 +230,44 @@ public enum UIOptions {
         }
     }
 
-    /// „Leistung begrenzen“ nur beim Kühlen (wie die Midea-App an der PortaSplit).
-    public static func rateAvailability(mode: OperationalMode) -> Availability {
-        Availability(enabled: mode == .cool, why: L.Availability.rate)
+    /// Beschriftung des Schalters für die Kurzinfo „Diese Anlage unterstützt … nicht“.
+    static func featureTitle(_ f: ComfortFeature) -> String {
+        switch f {
+        case .swing: return L.Main.Comfort.swing
+        case .eco: return L.Main.Comfort.eco
+        case .turbo: return L.Options.Fan.turbo
+        case .outdoorSilent: return L.Options.Fan.quietOutdoor
+        case .ieco: return L.Main.Comfort.ieco
+        case .purifier: return L.Main.Comfort.ionizer
+        case .freezeProtection: return L.Main.Comfort.frostProtection
+        case .selfClean: return L.Main.Comfort.selfClean
+        case .display: return L.Main.Comfort.display
+        case .sound: return L.Main.Comfort.sound
+        }
+    }
+
+    /// „Leistung begrenzen“ nur beim Kühlen (wie die Midea-App an der PortaSplit), gesperrt, wenn die Anlage es nicht hat.
+    public static func rateAvailability(mode: OperationalMode, capabilities: ACCapabilities? = nil) -> Availability {
+        if capabilities?.rateSelect == false {
+            return Availability(enabled: false, why: L.Availability.unsupported(feature: L.Main.Comfort.limitPower))
+        }
+        return Availability(enabled: mode == .cool, why: L.Availability.rate)
     }
 
     public static func availability(_ f: ComfortFeature, mode: OperationalMode,
                                     capabilities: ACCapabilities? = nil) -> Availability {
+        if supported(f, capabilities: capabilities) == false {
+            return Availability(enabled: false, why: L.Availability.unsupported(feature: featureTitle(f)))
+        }
         let on = isAvailable(f, in: mode, capabilities: capabilities)
         switch f {
         case .swing: return Availability(enabled: on, why: L.Availability.swing)
         case .eco: return Availability(enabled: on, why: L.Availability.eco)
-        case .turbo: return Availability(enabled: on, why: on ? L.Availability.turboOn : L.Availability.turboOff)
+        case .turbo:
+            if turboInMode(mode, capabilities: capabilities) == false {
+                return Availability(enabled: false, why: L.Availability.unsupportedInMode(feature: featureTitle(f)))
+            }
+            return Availability(enabled: on, why: on ? L.Availability.turboOn : L.Availability.turboOff)
         case .outdoorSilent:
             return Availability(enabled: on, why: on ? L.Availability.outdoorSilentOn : L.Availability.outdoorSilentOff)
         case .ieco: return Availability(enabled: on, why: on ? L.Availability.iecoOn : L.Availability.iecoOff)

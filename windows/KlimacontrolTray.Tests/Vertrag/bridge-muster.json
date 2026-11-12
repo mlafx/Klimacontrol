@@ -161,7 +161,7 @@
       "window": {"controlWidth": 480, "historyMin": 460, "historyBalanced": 700, "historyGridFrom": 880,
                  "diagnosticsMin": 340, "diagnosticsMax": 400, "controlsOnlyMaxWidth": 520,
                  "minimumHeight": {"compact": 470, "normal": 520, "large": 600},
-                 "historyBaseHeight": 840, "singleOverhead": 340, "gridOverhead": 290, "gridRowMax": 520,
+                 "historyBaseHeight": 840, "singleOverhead": 340, "gridOverhead": 290, "gridRowMax": 800,
                  "chartStep": 20, "energyBarMaxWidth": 56,
                  "chartMin": {"power": 120, "temperature": 150, "outdoor": 80, "energy": 150},
                  "chartMax": {"power": 260, "temperature": 340, "outdoor": 180, "energy": 240},

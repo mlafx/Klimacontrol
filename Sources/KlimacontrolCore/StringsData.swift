@@ -1067,6 +1067,42 @@ extension StringsData {
         }
       }
     },
+    "availability.unsupported" : {
+      "comment" : "Kurzinfo an einem gesperrten Komfort-Schalter, wenn die Anlage die Funktion laut ihren Fähigkeiten nicht hat; {feature} = Beschriftung des Schalters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Anlage unterstützt „{feature}“ nicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This air conditioner does not support “{feature}”"
+          }
+        }
+      }
+    },
+    "availability.unsupportedInMode" : {
+      "comment" : "Kurzinfo an einem gesperrten Komfort-Schalter, wenn die Anlage die Funktion laut ihren Fähigkeiten nur in anderen Modi hat; {feature} = Beschriftung des Schalters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Anlage unterstützt „{feature}“ in diesem Modus nicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This air conditioner does not support “{feature}” in this mode"
+          }
+        }
+      }
+    },
     "bridge.badCommand" : {
       "comment" : "Bridge-Meldung: Befehl nicht lesbar (bad-command)",
       "extractionState" : "manual",
@@ -2161,24 +2197,6 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unknown command “{cmd}”."
-          }
-        }
-      }
-    },
-    "charts.approxMarker" : {
-      "comment" : "Verbrauch: Zeichen über einem Balken aus Messwerten",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ca."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "approx."
           }
         }
       }
@@ -6203,6 +6221,24 @@ extension StringsData {
         }
       }
     },
+    "history.column.fehlercode" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehlercode"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error code"
+          }
+        }
+      }
+    },
     "history.column.gesamtKwh" : {
       "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
       "extractionState" : "manual",
@@ -6768,13 +6804,13 @@ extension StringsData {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klimacontrol sucht täglich nach Updates und fragt vor der Installation."
+            "value" : "Klimacontrol sucht nach Updates und zeigt sie im Update-Fenster. Ist „Updates automatisch installieren“ aus, wird erst nach „Jetzt installieren“ installiert."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klimacontrol checks for updates daily and asks before installing."
+            "value" : "Klimacontrol checks for updates and shows them in the update window. With “Install updates automatically” off, updates are installed only after “Install now”."
           }
         }
       }
@@ -10141,6 +10177,96 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Meter reading jumped back ({old} → {new} kWh) – daily consumption restarts now"
+          }
+        }
+      }
+    },
+    "log.errorcode.cleared" : {
+      "comment" : "Protokollzeile, Fehlercode wechselt zurück auf 0",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehlercode {code} der Anlage nicht mehr gemeldet{context}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner error code {code} no longer reported{context}"
+          }
+        }
+      }
+    },
+    "log.errorcode.compressor" : {
+      "comment" : "Protokollzeile, Teil des Zusatzes beim Fehlercode",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdichter {hz} Hz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "compressor {hz} Hz"
+          }
+        }
+      }
+    },
+    "log.errorcode.context" : {
+      "comment" : "Protokollzeile, Zusatz mit Leistung und Verdichter beim Wechsel des Fehlercodes",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " ({parts})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " ({parts})"
+          }
+        }
+      }
+    },
+    "log.errorcode.power" : {
+      "comment" : "Protokollzeile, Teil des Zusatzes beim Fehlercode",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistung {watts} W"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "power {watts} W"
+          }
+        }
+      }
+    },
+    "log.errorcode.raised" : {
+      "comment" : "Protokollzeile (Warnung), Fehlercode wechselt auf einen Wert ungleich 0",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehlercode der Anlage: {code}{context}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner error code: {code}{context}"
           }
         }
       }
@@ -22523,42 +22649,6 @@ extension StringsData {
         }
       }
     },
-    "settings.log.detailed.off" : {
-      "comment" : "Protokoll: Erklärung bei ausgeschaltetem ausführlichem Protokoll",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aus (Standard): Start, Verbindungsweg, Befehle, Fehler und Timer stehen trotzdem im Protokoll."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Off (default): start, connection path, commands, errors, and timers are still in the log."
-          }
-        }
-      }
-    },
-    "settings.log.detailed.on" : {
-      "comment" : "Protokoll: Erklärung bei eingeschaltetem ausführlichem Protokoll",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "An: zusätzlich jede Nachricht an die Anlage und an Midea – groß, die Datei wird alle paar Stunden neu begonnen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "On: also records every message to the air conditioner and to Midea. Large; the file starts over every few hours."
-          }
-        }
-      }
-    },
     "settings.log.detailed.scope" : {
       "comment" : "Einstellungen, Reiter Protokoll: Satz unter dem Schalter Ausführliches Protokoll (Umfang und Dauer).",
       "extractionState" : "manual",
@@ -27106,6 +27196,8 @@ extension StringsData {
         "availability.swing",
         "availability.turboOff",
         "availability.turboOn",
+        "availability.unsupported",
+        "availability.unsupportedInMode",
         "bridge.badCommand",
         "bridge.coreNotReady",
         "bridge.deviceUnknown",
@@ -27167,7 +27259,6 @@ extension StringsData {
         "bridge.unexpected",
         "bridge.unexpectedTodo",
         "bridge.unknownCommand",
-        "charts.approxMarker",
         "charts.axis.segment",
         "charts.axis.series",
         "charts.axis.time",
@@ -27386,6 +27477,7 @@ extension StringsData {
         "history.column.eco",
         "history.column.eev",
         "history.column.ein",
+        "history.column.fehlercode",
         "history.column.gesamtKwh",
         "history.column.innenC",
         "history.column.kondensatpumpe",
@@ -27605,6 +27697,11 @@ extension StringsData {
         "log.discovery.scanResult",
         "log.discovery.unreadable",
         "log.energy.meterJump",
+        "log.errorcode.cleared",
+        "log.errorcode.compressor",
+        "log.errorcode.context",
+        "log.errorcode.power",
+        "log.errorcode.raised",
         "log.frame.capabilities",
         "log.frame.fault",
         "log.frame.group",
@@ -28290,8 +28387,6 @@ extension StringsData {
         "settings.log.clear.confirm",
         "settings.log.clear.message",
         "settings.log.clear.title",
-        "settings.log.detailed.off",
-        "settings.log.detailed.on",
         "settings.log.detailed.scope",
         "settings.log.detailed.title",
         "settings.log.empty",
@@ -28604,6 +28699,8 @@ extension StringsData {
         "availability.swing": [],
         "availability.turboOff": [],
         "availability.turboOn": [],
+        "availability.unsupported": ["feature"],
+        "availability.unsupportedInMode": ["feature"],
         "bridge.badCommand": [],
         "bridge.coreNotReady": [],
         "bridge.deviceUnknown": [],
@@ -28665,7 +28762,6 @@ extension StringsData {
         "bridge.unexpected": [],
         "bridge.unexpectedTodo": [],
         "bridge.unknownCommand": ["cmd"],
-        "charts.approxMarker": [],
         "charts.axis.segment": [],
         "charts.axis.series": [],
         "charts.axis.time": [],
@@ -28884,6 +28980,7 @@ extension StringsData {
         "history.column.eco": [],
         "history.column.eev": [],
         "history.column.ein": [],
+        "history.column.fehlercode": [],
         "history.column.gesamtKwh": [],
         "history.column.innenC": [],
         "history.column.kondensatpumpe": [],
@@ -29103,6 +29200,11 @@ extension StringsData {
         "log.discovery.scanResult": ["count", "result"],
         "log.discovery.unreadable": ["label", "ip", "error"],
         "log.energy.meterJump": ["old", "new"],
+        "log.errorcode.cleared": ["code", "context"],
+        "log.errorcode.compressor": ["hz"],
+        "log.errorcode.context": ["parts"],
+        "log.errorcode.power": ["watts"],
+        "log.errorcode.raised": ["code", "context"],
         "log.frame.capabilities": [],
         "log.frame.fault": [],
         "log.frame.group": ["number"],
@@ -29788,8 +29890,6 @@ extension StringsData {
         "settings.log.clear.confirm": [],
         "settings.log.clear.message": [],
         "settings.log.clear.title": [],
-        "settings.log.detailed.off": [],
-        "settings.log.detailed.on": [],
         "settings.log.detailed.scope": [],
         "settings.log.detailed.title": [],
         "settings.log.empty": [],
@@ -30193,6 +30293,10 @@ public enum L {
         public static var turboOff: String { Localizer.text("availability.turboOff") }
         /// Turbo on/off; the fan level stays. Far right on the fan control: Turbo and 100 % together.
         public static var turboOn: String { Localizer.text("availability.turboOn") }
+        /// This air conditioner does not support “{feature}”
+        public static func unsupported(feature: String) -> String { Localizer.text("availability.unsupported", ["feature": feature]) }
+        /// This air conditioner does not support “{feature}” in this mode
+        public static func unsupportedInMode(feature: String) -> String { Localizer.text("availability.unsupportedInMode", ["feature": feature]) }
     }
     public enum Bridge {
         /// Command not readable.
@@ -30325,8 +30429,6 @@ public enum L {
         public static func unknownCommand(cmd: String) -> String { Localizer.text("bridge.unknownCommand", ["cmd": cmd]) }
     }
     public enum Charts {
-        /// approx.
-        public static var approxMarker: String { Localizer.text("charts.approxMarker") }
         public enum Axis {
             /// Segment
             public static var segment: String { Localizer.text("charts.axis.segment") }
@@ -30834,6 +30936,8 @@ public enum L {
             public static var eev: String { Localizer.text("history.column.eev") }
             /// Power on (1/0)
             public static var ein: String { Localizer.text("history.column.ein") }
+            /// Error code
+            public static var fehlercode: String { Localizer.text("history.column.fehlercode") }
             /// Meter total (kWh)
             public static var gesamtKwh: String { Localizer.text("history.column.gesamtKwh") }
             /// Indoor (°C)
@@ -30902,7 +31006,7 @@ public enum L {
             public static var passwordStorage: String { Localizer.text("host.windows.passwordStorage") }
             /// The setup file is not deleted but set aside unchanged in the data folder. The token and key stay in…
             public static var setAsideDevice: String { Localizer.text("host.windows.setAsideDevice") }
-            /// Klimacontrol checks for updates daily and asks before installing.
+            /// Klimacontrol checks for updates and shows them in the update window. With “Install updates automati…
             public static var updatesHelp: String { Localizer.text("host.windows.updatesHelp") }
         }
     }
@@ -31338,6 +31442,18 @@ public enum L {
         public enum Energy {
             /// Meter reading jumped back ({old} → {new} kWh) – daily consumption restarts now
             public static func meterJump(old: String, new: String) -> String { Localizer.text("log.energy.meterJump", ["old": old, "new": new]) }
+        }
+        public enum Errorcode {
+            /// Air conditioner error code {code} no longer reported{context}
+            public static func cleared(code: String, context: String) -> String { Localizer.text("log.errorcode.cleared", ["code": code, "context": context]) }
+            /// compressor {hz} Hz
+            public static func compressor(hz: String) -> String { Localizer.text("log.errorcode.compressor", ["hz": hz]) }
+            /// ({parts})
+            public static func context(parts: String) -> String { Localizer.text("log.errorcode.context", ["parts": parts]) }
+            /// power {watts} W
+            public static func power(watts: String) -> String { Localizer.text("log.errorcode.power", ["watts": watts]) }
+            /// Air conditioner error code: {code}{context}
+            public static func raised(code: String, context: String) -> String { Localizer.text("log.errorcode.raised", ["code": code, "context": context]) }
         }
         public enum Frame {
             /// capabilities
@@ -33073,10 +33189,6 @@ public enum L {
                 public static var title: String { Localizer.text("settings.log.clear.title") }
             }
             public enum Detailed {
-                /// Off (default): start, connection path, commands, errors, and timers are still in the log.
-                public static var off: String { Localizer.text("settings.log.detailed.off") }
-                /// On: also records every message to the air conditioner and to Midea. Large; the file starts over eve…
-                public static var on: String { Localizer.text("settings.log.detailed.on") }
                 /// Also writes frames in hex, search and cloud requests; passwords, tokens and keys are redacted. Appl…
                 public static var scope: String { Localizer.text("settings.log.detailed.scope") }
                 /// Detailed log

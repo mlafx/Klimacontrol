@@ -22,20 +22,20 @@ final class HistoryTests: XCTestCase {
 
     static let technicalHeader = "zeit;ein;modus;soll_c;innen_c;aussen_c;luefter;eco;turbo;aussen_leise;leistung_w;"
         + "gesamt_kwh;verdichter_hz;verdichter_soll_hz;strom_a;spannung_v;verdichter_w;t1;t2;t3;t4;tp;eev;"
-        + "luefter_innen_upm;luefter_aussen_upm;kondensatpumpe;abtauen;zaehler_roh\n"
+        + "luefter_innen_upm;luefter_aussen_upm;kondensatpumpe;abtauen;zaehler_roh;fehlercode\n"
 
     static let readableHeader = "Zeit (Ortszeit);Eingeschaltet (1/0);Modus;Soll (°C);Innen (°C);Außen (°C);Lüfter (%);"
         + "Eco (1/0);Turbo (1/0);Außen leise (1/0);Leistung (W);Zähler gesamt (kWh);Verdichter (Hz);"
         + "Verdichter Soll (Hz);Strom (A);Spannung (V);Verdichter (W);T1 Innenluft (°C);T2 Wärmetauscher innen (°C);"
         + "T3 Wärmetauscher außen (°C);T4 Außenluft (°C);Tp Heißgas (°C);Expansionsventil (Schritte);"
-        + "Lüfter innen (U/min);Lüfter außen (U/min);Kondensatpumpe (1/0);Abtauen (1/0);Zähler roh\n"
+        + "Lüfter innen (U/min);Lüfter außen (U/min);Kondensatpumpe (1/0);Abtauen (1/0);Zähler roh;Fehlercode\n"
 
     /// Spalten aus AGENTS.md Anhang B in der Reihenfolge der Datei.
     static let columnsAppendixB = ["zeit", "ein", "modus", "soll_c", "innen_c", "aussen_c", "luefter", "eco", "turbo",
                                    "aussen_leise", "leistung_w", "gesamt_kwh", "verdichter_hz", "verdichter_soll_hz",
                                    "strom_a", "spannung_v", "verdichter_w", "t1", "t2", "t3", "t4", "tp", "eev",
                                    "luefter_innen_upm", "luefter_aussen_upm", "kondensatpumpe", "abtauen",
-                                   "zaehler_roh"]
+                                   "zaehler_roh", "fehlercode"]
 
     /// Zustand und Diagnose mit einem Wert in fast jeder Spalte (Außen leise und Abtauen bleiben unbekannt).
     static func fullRow() -> (ACState, Diagnostics) {
@@ -68,20 +68,21 @@ final class HistoryTests: XCTestCase {
         d.condensatePump = false
         d.defrost = nil
         d.raw[4] = [0, 0, 0, 0, 0x00, 0x01, 0xE2, 0x40] // 123456 Schritte
+        s.errorCode = 25
         return (s, d)
     }
 
     /// Felder hinter der Zeit, wie `verlauf.csv` sie schreibt (Swift-Zahlen, „21.5“, „19.0“).
     static let fullFields = "1;Heizen;21.5;19.0;-3.5;60;0;1;;640.0;1234.56;45;50;3;230;600;21.5;30.25;-1.0;-3.5;70;300;"
-        + "900;800;0;;123456"
+        + "900;800;0;;123456;25"
     /// Dieselbe Zeile im technischen Export (Zahlen, wie SQLite sie ausgibt: ganze Werte ohne „.0“).
     static let fullTechnical = "1;Heizen;21.5;19;-3.5;60;0;1;;640;1234.56;45;50;3;230;600;21.5;30.25;-1;-3.5;70;300;"
-        + "900;800;0;;123456"
+        + "900;800;0;;123456;25"
     /// Und im lesbaren Export (Dezimalkomma).
     static let fullReadable = "1;Heizen;21,5;19;-3,5;60;0;1;;640;1234,56;45;50;3;230;600;21,5;30,25;-1;-3,5;70;300;"
-        + "900;800;0;;123456"
+        + "900;800;0;;123456;25"
     /// Leerer Zustand: nur, was `ACState` immer kennt; alles andere bleibt leer.
-    static let emptyTechnical = "0;Kühlen;22;;;102;0;0;;;;;;;;;;;;;;;;;;;"
+    static let emptyTechnical = "0;Kühlen;22;;;102;0;0;;;;;;;;;;;;;;;;;;;;0"
 
     private func makeDB(_ name: String = "verlauf.sqlite") -> HistoryDB { HistoryDB(url: dir.appendingPathComponent(name)) }
 
@@ -186,7 +187,7 @@ final class HistoryTests: XCTestCase {
         let copy = makeDB("kopie.sqlite")
         copy.importCSVOnce(from: [file])
         XCTAssertEqual(try export(copy, readable: false, name: "leer.csv"),
-                       Self.technicalHeader + HistoryLog.isoString(t) + ";" + String(repeating: ";", count: 26) + "\n")
+                       Self.technicalHeader + HistoryLog.isoString(t) + ";" + String(repeating: ";", count: 27) + "\n")
     }
 
     // MARK: Spaltentabelle und Datenbank
@@ -222,7 +223,7 @@ final class HistoryTests: XCTestCase {
         db.insert(time: t2, fields: HistoryLog.fields(state: s, diagnostics: d, time: t2))
         let text = try export(db, readable: false, name: "export.csv")
         XCTAssertEqual(text, Self.technicalHeader
-                       + HistoryLog.isoString(t) + ";1;;;;;;;;;500;;;;;;;;;;;;;;;;;\n"
+                       + HistoryLog.isoString(t) + ";1;;;;;;;;;500;;;;;;;;;;;;;;;;;;\n"
                        + HistoryLog.isoString(t2) + ";" + Self.fullTechnical + "\n")
     }
 

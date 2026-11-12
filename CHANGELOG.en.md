@@ -6,6 +6,7 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 ## [1.3.0.0] – in progress
 
 ### Added
+- Air conditioner error code: Every change is written to the log and to the history (new column “Error code” in the export).
 - History: Power, temperature and outdoor temperature share one card with a common time axis.
 - History: A colored band below the power shows when the air conditioner ran in which mode.
 - Consumption: Value above each bar and a dashed line for the average of completed periods.
@@ -13,6 +14,7 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 - The target temperature scale shows the room temperature as a marker.
 - Windows: A damaged settings file is set aside and reported at startup instead of being silently replaced with default values.
 - Updates: Settings “Install updates automatically” and “Check for updates” (daily or weekly); without automatic installation, a downloaded update is installed only after “Install now”.
+- Windows: The Appearance tab shows a preview at the top that follows theme, light/dark and size immediately.
 
 ### Changed
 - Main window: Mode and fan, as well as scenes and timers, each share one card.
@@ -23,10 +25,12 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 - Windows: The main window follows the same rules for columns and size as on the Mac; tabs and stacked columns are gone.
 - Windows: In Fan mode, the target temperature and its scale are hidden.
 - Detailed log: The switch applies only until the app quits, and a notice shows while it is on.
+- Switches for features the air conditioner does not have according to its capabilities are disabled; the tooltip names the reason.
 
 ### Fixed
 - History: Labels under the consumption bars and the last time under the charts were cut off.
 - Mac: In full screen, an empty area remained below the outdoor temperature chart.
+- Mac: Switched-on buttons were pale and hard to read in light mode, and the cards of the control column looked dark and nearly opaque in a see-through window.
 - If the history cannot be saved, a notice appears instead of “Not enough data yet”.
 - Mac: With the beta channel turned on, every check failed while no pre-release existed, and stable updates were not installed.
 - Mac: The menu bar window stayed too tall after turning off the air conditioner and showed its content at the bottom without rounded corners.

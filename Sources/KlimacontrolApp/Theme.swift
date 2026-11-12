@@ -370,15 +370,23 @@ struct KlimaCard: ViewModifier {
             )
         } else if #available(macOS 26, *) {
             let strong = theme.appearance.background == .glassStrong
-            let amount = min(1, 0.45 * f * (strong ? 1.5 : 1))
+            // Eingeschaltete Knöpfe tragen weiße Schrift: Im hellen Modus hellt das Glas die Tönung so stark auf,
+            // dass Schrift und Zustand kaum zu sehen sind – dort kräftiger tönen.
+            let base = interactive && tint != nil && !theme.isDark ? 0.9 : 0.45
+            let amount = min(1, base * f * (strong ? 1.5 : 1))
             let tinted: Glass = tint.map { Glass.regular.tint($0.opacity(amount)) } ?? .regular
-            // Wenig Unschärfe → klares Glas; mehr als Standard bzw. „Glas kräftig“ → Material in der Karte.
-            let base: Glass = theme.blurFactor < 0.5 ? (tint.map { Glass.clear.tint($0.opacity(amount)) } ?? .clear) : tinted
-            let glass = interactive ? base.interactive() : base
+            // Wenig Unschärfe und große Flächen (nicht interaktiv) → klares Glas: Das normale Glas legt im dunklen Modus
+            // eine fast deckende dunkle Schicht auf, die bei durchscheinendem Fenster vor hellem Hintergrund schwer
+            // gegen die gläsernen Seitenspalten wirkt. Eine leichte Abdunklung hält weiße Schrift dort lesbar.
+            // Mehr Unschärfe bzw. „Glas kräftig“ → Material in der Karte.
+            let clear = theme.blurFactor < 0.5 || !interactive
+            let plain: Glass = clear ? (tint.map { Glass.clear.tint($0.opacity(amount)) } ?? .clear) : tinted
+            let glass = interactive ? plain.interactive() : plain
+            let dim = Color.black.opacity(clear && theme.isDark ? 0.18 : 0)
             if strong || theme.blurFactor > 1.5, let m = theme.material {
                 content.background(shape.fill(m).opacity(strong ? 0.8 : 0.5)).glassEffect(glass, in: shape)
             } else {
-                content.glassEffect(glass, in: shape)
+                content.background(shape.fill(dim)).glassEffect(glass, in: shape)
             }
         } else {
             // macOS 15 wie `.glass`: getönte Knöpfe kräftig, Flächen zart.

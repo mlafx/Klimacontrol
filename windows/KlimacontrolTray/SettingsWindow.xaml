@@ -380,6 +380,9 @@
       <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="12,4,12,12">
 
+          <!-- Reihenfolge wie am Mac: Vorschau · Thema · Anzeige · Fenster und Infobereich · Anpassen · Zurücksetzen. -->
+          <local:AppearancePreview x:Name="LookPreview"/>
+
           <TextBlock Style="{StaticResource SectionHead}" Text="{l:T settings.appearance.theme.title}"/>
           <Border Style="{StaticResource Section}">
             <StackPanel>

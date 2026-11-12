@@ -365,7 +365,7 @@ extension Snapshot {
         let dry = c.state?.mode == .dry
         availability["fan"] = AvailabilityDTO(enabled: !dry, why: dry ? UIOptions.fanLockedText : nil)
         if let mode = c.state?.mode {
-            let r = UIOptions.rateAvailability(mode: mode)
+            let r = UIOptions.rateAvailability(mode: mode, capabilities: c.state?.capabilities)
             availability["rate"] = AvailabilityDTO(enabled: r.enabled, why: r.why)
         }
         availability["target"] = AvailabilityDTO(enabled: UIText.targetAdjustable(c.state), why: nil)

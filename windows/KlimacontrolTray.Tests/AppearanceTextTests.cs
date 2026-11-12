@@ -129,6 +129,43 @@ public class AppearanceTextTests
         Assert.Empty(offenders);
     }
 
+    /// Reihenfolge des Reiters wie am Mac (AGENTS.md 9.1): Vorschau · Thema · Anzeige · Fenster und Infobereich · Anpassen ·
+    /// Zurücksetzen. Die Texte der Vorschau stehen im Katalog in beiden Sprachen.
+    [Fact]
+    public void AbschnitteInReihenfolgeWieAmMac()
+    {
+        var root = AppearanceTab().Descendants().First(e => e.Name.LocalName == "StackPanel");
+        var order = root.Elements().Select(e =>
+        {
+            var name = (string?)e.Attribute(X + "Name");
+            if (e.Name.LocalName == "AppearancePreview") return "preview";
+            if (name == "LookCustomize") return "customize";
+            if (name == "LookResetButton") return "reset";
+            var text = (string?)e.Attribute("Text");
+            return ((string?)e.Attribute("Style"))?.Contains("SectionHead") == true ? text : null;
+        }).Where(s => s != null).ToList();
+        Assert.Equal(new[]
+        {
+            "preview",
+            "{l:T settings.appearance.theme.title}",
+            "{l:T settings.appearance.display.section}",
+            "{l:T settings.appearance.windowNotify.section}",
+            "customize",
+            "reset",
+        }, order);
+
+        var panel = ReadLf(Repo("Sources", "KlimacontrolApp", "PanelsAppearance.swift"));
+        Assert.Matches(@"Form \{\s*Section \{ AppearancePreview\(\) \}", panel);
+
+        Assert.True(Catalog.Available, "Katalog l10n/Localizable.xcstrings fehlt");
+        foreach (var key in new[] { "title", "modePicker", "room", "target", "accessibility" })
+            foreach (var lang in new[] { "de", "en" })
+                Assert.False(string.IsNullOrEmpty(Catalog.Text("settings.appearance.preview." + key, lang)), key + " " + lang);
+        var source = ReadLf(Repo("windows", "KlimacontrolTray", "AppearancePreview.cs"));
+        Assert.Contains("{value}", Catalog.Text("settings.appearance.preview.room", "en"));
+        Assert.Contains("(\"value\", ", source);
+    }
+
     /// Abschnitt „Anzeige“: dieselben Zeilen in derselben Reihenfolge wie `Section(L.Settings.Appearance.Display.section)`
     /// in PanelsAppearance.swift, je Zeile Titel und Hilfetext aus dem Katalog.
     [Fact]

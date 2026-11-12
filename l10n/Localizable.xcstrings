@@ -1063,6 +1063,42 @@
         }
       }
     },
+    "availability.unsupported" : {
+      "comment" : "Kurzinfo an einem gesperrten Komfort-Schalter, wenn die Anlage die Funktion laut ihren Fähigkeiten nicht hat; {feature} = Beschriftung des Schalters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Anlage unterstützt „{feature}“ nicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This air conditioner does not support “{feature}”"
+          }
+        }
+      }
+    },
+    "availability.unsupportedInMode" : {
+      "comment" : "Kurzinfo an einem gesperrten Komfort-Schalter, wenn die Anlage die Funktion laut ihren Fähigkeiten nur in anderen Modi hat; {feature} = Beschriftung des Schalters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Anlage unterstützt „{feature}“ in diesem Modus nicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This air conditioner does not support “{feature}” in this mode"
+          }
+        }
+      }
+    },
     "bridge.badCommand" : {
       "comment" : "Bridge-Meldung: Befehl nicht lesbar (bad-command)",
       "extractionState" : "manual",
@@ -2157,24 +2193,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unknown command “{cmd}”."
-          }
-        }
-      }
-    },
-    "charts.approxMarker" : {
-      "comment" : "Verbrauch: Zeichen über einem Balken aus Messwerten",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ca."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "approx."
           }
         }
       }
@@ -6199,6 +6217,24 @@
         }
       }
     },
+    "history.column.fehlercode" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehlercode"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error code"
+          }
+        }
+      }
+    },
     "history.column.gesamtKwh" : {
       "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
       "extractionState" : "manual",
@@ -6764,13 +6800,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klimacontrol sucht täglich nach Updates und fragt vor der Installation."
+            "value" : "Klimacontrol sucht nach Updates und zeigt sie im Update-Fenster. Ist „Updates automatisch installieren“ aus, wird erst nach „Jetzt installieren“ installiert."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klimacontrol checks for updates daily and asks before installing."
+            "value" : "Klimacontrol checks for updates and shows them in the update window. With “Install updates automatically” off, updates are installed only after “Install now”."
           }
         }
       }
@@ -10137,6 +10173,96 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Meter reading jumped back ({old} → {new} kWh) – daily consumption restarts now"
+          }
+        }
+      }
+    },
+    "log.errorcode.cleared" : {
+      "comment" : "Protokollzeile, Fehlercode wechselt zurück auf 0",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehlercode {code} der Anlage nicht mehr gemeldet{context}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner error code {code} no longer reported{context}"
+          }
+        }
+      }
+    },
+    "log.errorcode.compressor" : {
+      "comment" : "Protokollzeile, Teil des Zusatzes beim Fehlercode",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdichter {hz} Hz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "compressor {hz} Hz"
+          }
+        }
+      }
+    },
+    "log.errorcode.context" : {
+      "comment" : "Protokollzeile, Zusatz mit Leistung und Verdichter beim Wechsel des Fehlercodes",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " ({parts})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " ({parts})"
+          }
+        }
+      }
+    },
+    "log.errorcode.power" : {
+      "comment" : "Protokollzeile, Teil des Zusatzes beim Fehlercode",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistung {watts} W"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "power {watts} W"
+          }
+        }
+      }
+    },
+    "log.errorcode.raised" : {
+      "comment" : "Protokollzeile (Warnung), Fehlercode wechselt auf einen Wert ungleich 0",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehlercode der Anlage: {code}{context}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner error code: {code}{context}"
           }
         }
       }
@@ -22515,42 +22641,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clear the log?"
-          }
-        }
-      }
-    },
-    "settings.log.detailed.off" : {
-      "comment" : "Protokoll: Erklärung bei ausgeschaltetem ausführlichem Protokoll",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aus (Standard): Start, Verbindungsweg, Befehle, Fehler und Timer stehen trotzdem im Protokoll."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Off (default): start, connection path, commands, errors, and timers are still in the log."
-          }
-        }
-      }
-    },
-    "settings.log.detailed.on" : {
-      "comment" : "Protokoll: Erklärung bei eingeschaltetem ausführlichem Protokoll",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "An: zusätzlich jede Nachricht an die Anlage und an Midea – groß, die Datei wird alle paar Stunden neu begonnen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "On: also records every message to the air conditioner and to Midea. Large; the file starts over every few hours."
           }
         }
       }
