@@ -953,8 +953,8 @@ MideaKit-Tests als am Mac (zuletzt 130 statt 137), weil einige nur auf Darwin ü
 | `KlimacontrolBridgeTests` | `BridgeDisplayTests` (Katalog-Felder), `BridgeContractTests`: jedes Feld des echten Schnappschusses steht in `bridge-muster.json` (Gegenrichtung zu `VertragTests`); `BridgeCommandTests`: Parametertypen, Meldungen, Befehlsnamen gegen `Cmd` in C#; `BridgeEnergyTests` (`kc_energy_json`), `BridgeLocaleTests` (`kc_set_locale`, `kc_strings_json`, Befehle `language`/`currency`), `BridgeEnglishTests`, `BridgeWhatsNewTests` |
 | Windows (C#) | `CoreTests`, `LayoutTests`, `ThemeTests`, `AppearanceTextTests` (Darstellung wie am Mac), `LocalizationTests` (Textschlüssel und Katalog), `VertragTests` (Schnappschuss, Befehlsnamen, Anzeige-Katalog, keine eigenen Listen/Grenzen in der Oberfläche) |
 
-Stand zuletzt (11.11.2026, nach Release 1.2.0.0): Mac 657 Tests (MideaKit 137, Kern 468, Bridge 52; 2 übersprungen, beide bewusst: Live-Scan, echter
-Schlüsselbund). Windows zuletzt 577 Swift + 278 C# (MideaKit 130, Kern 404, Bridge 43). Zeitzonen-Tests nehmen eine feste Zone (`TimeZone(identifier:)`) oder die Ortszeit über
+Stand zuletzt (12.11.2026, nach Release 1.3.0.0): Mac 700 Tests (MideaKit 151, Kern 498, Bridge 55; 2 übersprungen, beide bewusst: Live-Scan, echter
+Schlüsselbund). Windows zuletzt MideaKit 144, Kern 496, Bridge 61 und 350 C#-Tests. Zeitzonen-Tests nehmen eine feste Zone (`TimeZone(identifier:)`) oder die Ortszeit über
 `Calendar.current.timeZone`. Die Tabellen `Tests/Shared/rounding-table.json` und `chart-axis-table.json` liest Swift (`#filePath`, keine
 Ressource) und C# gemeinsam.
 
@@ -1240,11 +1240,10 @@ Muster: „What happened. What to do. (code)“. „Klimacontrol“ und „Porta
   es an und ersetzt dort `updateinfo-mac-beta.xml` (neueste stabile + neueste Beta). Ein stabiles Release legt „beta“ nicht
   an, erzeugt und lädt keine Beta-Datei; `--check-published` prüft die Beta-Adresse nur, wenn „beta“ existiert, sonst
   Hinweis „noch kein Beta-Kanal“. Die öffentliche `updateinfo-mac.xml` wird für eine Beta nie angefasst.
-- Veröffentlicht ist 1.2.0.0 (08.11.2026): `latest` trägt genau fünf Dateien (Mac-DMG, Windows-Setup, `updateinfo-mac.xml`,
-  `updateinfo-win.xml`, `SHA256SUMS.txt`); v1.1.0.0 bleibt bestehen. Das frühere Vorabrelease „beta“ samt Tag wurde
-  gelöscht, weil es noch keine Beta gab. Die Kopien mit festem Namen kommen ab dem nächsten stabilen Release dazu (dann
-  sieben Dateien); erst damit funktionieren die Download-Knöpfe des geänderten README. Darum gelangt das README mit den
-  `latest/download`-Links erst mit diesem Release auf `main`.
+- Veröffentlicht ist 1.3.0.0 (12.11.2026): `latest` trägt genau sieben Dateien (Mac-DMG, Windows-Setup, beide noch einmal mit
+  festem Namen, `updateinfo-mac.xml`, `updateinfo-win.xml`, `SHA256SUMS.txt`); v1.1.0.0 und v1.2.0.0 bleiben bestehen. Die
+  Download-Knöpfe im README (`latest/download/Klimacontrol-mac.dmg` bzw. `…/Klimacontrol-Windows-Setup.exe`) funktionieren.
+  Ein Vorabrelease „beta“ gibt es noch nicht.
 - **Signatur der Update-Dateien:** `make_release.py` signiert DMG, Setup und zuletzt die `updateinfo-*.xml`, prüft
   jede Signatur (`sign_update --verify`) und verändert die Dateien danach nicht mehr. Zum Schluss prüft
   `verify_release_dir()` den Ordner vollständig (D3/7, läuft automatisch). Bestehende Release-Ordner werden nie
@@ -1351,8 +1350,8 @@ zeigt die beiden Befehle, mit `--execute` führt es sie nacheinander aus.
 - Diese Regeln gelten verbindlich als Absprache. Eine technische Erzwingung durch GitHub-Regelsätze („main nur per
   Release-Merge“, „Release-Tags unveränderlich“) ist derzeit nicht eingerichtet (Stand 08.11.2026) und bleibt dem Autor
   überlassen; bis dahin schützt nur die Disziplin. Nichts „schnell“ umgehen.
-- Nächste Entwicklung: neuer Zweig `entwicklung-1.3` erst auf Auftrag. `tools/VERSION` bleibt bis zur Freigabe des Autors
-  1.2.0.0; ein neuer CHANGELOG-Abschnitt entsteht erst, wenn der Autor die nächste Version festlegt.
+- Nächste Entwicklung: neuer Zweig `entwicklung-1.4` erst auf Auftrag. `tools/VERSION` bleibt bis zur Freigabe des Autors
+  1.3.0.0; ein neuer CHANGELOG-Abschnitt entsteht erst, wenn der Autor die nächste Version festlegt.
 - Notfall nach einem fehlerhaften Release: das Release auf „Vorabrelease“ stellen und das vorige mit
   `gh release edit v<vorige Version> --latest` wieder zum neuesten machen; die Korrektur kommt als neue Version.
 
@@ -1501,16 +1500,11 @@ Gruppe/Byte in `Diagnostics` und `Response` lesen, in `HistorySample`/CSV-Kopf n
   gemessen. Heute wird 0xF als Protokollfehler gewertet, nicht als Ablehnung; ändern erst nach einem Mitschnitt.
 - Unbekannte Werte der Anlage: Anhang D.
 
-- Windows zieht noch nach (Kern und Bridge sind fertig): Achsen und Verbrauchsbeschriftung nach `ChartAxis`, Hinweis
-  `charts.unavailable`, Einhängen von `SettingsFileCheck` in den Start, Fensterregeln aus `options.window`, der neue
-  Aufbau des Hauptfensters (9.1) samt Schalter `temperatureCombined`.
 - Lüfter-Zonen nach Fähigkeiten: Der Kern bildet sie einzeln (`UIOptions.fanZones`, `ACController.fanZones`); die
   Bridge meldet nur `fanZonesAvailable` (mindestens eine Zone). Windows zeigt darum beide Zonen, sobald eine geht;
   eine Zone ohne Fähigkeit bewirkt dort nichts (der Kern lehnt sie ab). Ein eigenes Feld je Zone folgt mit dem Vertrag.
-- Das Windows-Hauptfenster ist bereits in der Größe veränderbar; die Regeln des Mac-Fensters (9.1, `MainWindowLayout`)
-  werden für 1.3 angeglichen.
-- Mac, nur Fassung 1.2.0.0: Der Schalter „Vorabversionen (Beta) erhalten“ meldet „Suche hat nicht geklappt“ und lässt
-  auch stabile Updates aus, solange es die Beta-Datei nicht gibt. Im Code behoben (9.5), wirkt ab der nächsten Fassung.
+- WinSparkle: Das Update-Fenster erscheint erst nach dem ersten Klick; bei ausgeschalteter automatischer Installation kommt es
+  bei jeder Suche (gewollt).
 - Windows: Die Einstellungen in `%LOCALAPPDATA%\Klimacontrol.exe.plist` liest swift-corelibs-foundation; ist die Datei
   kaputt oder von einem anderen Werkzeug umgeschrieben, gelten still alle Standardwerte (seit 1.0 so). Die Datei nur als
   Text ändern, nie mit einer XML-Bibliothek neu schreiben. Robusteres Lesen ist für später vorgemerkt.
