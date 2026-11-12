@@ -44,10 +44,6 @@ public enum Fmt {
         v.map { num($0, 2, profile: profile) + " " + currency } ?? "–"
     }
 
-    public static func euro(_ v: Double?, profile: FormatProfile = .current) -> String {
-        money(v, currency: "€", profile: profile)
-    }
-
     /// Uhrzeit: 24 h "14:32"; 12 h "2:32 PM", "12:05 AM" (Stunde ohne führende Null).
     public static func clock(_ d: Date, calendar: Calendar = .current, profile: FormatProfile = .current) -> String {
         let c = calendar.dateComponents([.hour, .minute], from: d)
@@ -113,6 +109,7 @@ public enum Fmt {
         if a.turbo != b.turbo { parts.append(L.Log.Change.turbo(state: onOff(b.turbo))) }
         if a.purifier != b.purifier { parts.append(L.Log.Change.purifier(state: onOff(b.purifier))) }
         if a.freezeProtection != b.freezeProtection { parts.append(L.Log.Change.freeze(state: onOff(b.freezeProtection))) }
+        if a.sleep != b.sleep { parts.append(L.Log.Change.sleep(state: onOff(b.sleep))) }
         return parts.joined(separator: ", ")
     }
 
@@ -173,6 +170,12 @@ public struct UserMessage: Equatable, Sendable {
         if let e = error as? ConfigError { return from(e) }
         if let e = error as? KeychainError { return from(e) }
         return UserMessage(what: error.localizedDescription, todo: "")
+    }
+
+    /// Ein Schalter wurde im aktuellen Modus nicht übernommen (die Anlage meldet ihn unverändert zurück).
+    static func switchNotApplied(_ feature: String, mode: OperationalMode) -> UserMessage {
+        UserMessage(what: L.Message.Device.SwitchNotApplied.what(feature: feature, mode: mode.title),
+                    todo: L.Message.Device.SwitchNotApplied.todo, code: "not-in-mode")
     }
 
     static func deviceOff(detail: String?) -> UserMessage {

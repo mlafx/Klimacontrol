@@ -141,7 +141,9 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 | `ACDevice.swift` | Protokoll `ACDevice` (Abstraktion von `PortaSplitDevice` für Tests), `CloudAccountStore` |
 | `SetupFlow.swift`, `SetupFlow+Manual.swift` | Einrichtungsassistent: Weg wählen, Suche (WLAN, Subnetz, Cloud), Konto, Zugangsdaten prüfen; spricht den Kern nur über `SetupSink` an |
 | `History.swift` | `HistorySample`, `HistoryLog` (CSV), `HistoryStore` (Fassade für Oberflächen) |
-| `HistoryDB.swift` | `HistoryDB`: verlauf.sqlite, Einfügen, Ausdünnen, Statistik, Import/Export |
+| `HistoryDB.swift` | `HistoryDB`: verlauf.sqlite öffnen, Einfügen, Lesen, Statistik |
+| `HistoryDB+Compaction.swift` | Ausdünnen in Stufen und Scheiben, Merker „ausgedünnt bis“ |
+| `HistoryDB+CSV.swift` | CSV-Import (einmalige Übernahme) und CSV-Export |
 | `HistoryRow.swift` | `HistoryColumn` (einzige Spaltentabelle: Kopfzeilen, Schema, Export, Import), `HistoryRow`, `HistoryValue` |
 | `HistoryCSV.swift` | Kopfzeilen, Zeitformate, doppelte Stunde am Ende der Sommerzeit, `HistoryCSVReader` |
 | `HistorySQLite.swift` | `SQLiteConnection`, `SQLStatement`, `HistoryDBError`; einzige Weiche SQLite3/CSQLite |
@@ -163,6 +165,8 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 | `StringsData.swift` | erzeugt von `tools/sync_strings.py`: eingebetteter Katalog und typisierte Schlüssel `L.…` – nicht von Hand ändern |
 | `FormatProfile.swift` | Zahlen- und Zeitformate (Dezimal-/Tausenderzeichen, 12/24 h, Tag/Monat) aus den Regionseinstellungen; Standard de-DE |
 | `AppVersion.swift` | Versionsnummer mit Beta-Kennung (`1.2.0.0b1`), Vergleich für „Neu in …“ und Tests |
+| `ChartAxis.swift` | Y-Achsen der Graphen (Bereich, Gitterlinien) für Leistung und Temperatur sowie die Schrittweite der Beschriftung unter den Verbrauchsbalken; Mac zeichnet danach, Windows rechnet in C# gleich (`Tests/Shared/chart-axis-table.json`) |
+| `SettingsFileCheck.swift` | Prüfung der Einstellungsdatei vor dem ersten Zugriff (Windows): eine beschädigte Datei wird beiseitegelegt und gemeldet (`ACController.reportSettingsFileCheck`) |
 
 ### 2.3 `Sources/KlimacontrolApp/` (nur macOS)
 
@@ -180,11 +184,17 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 | `MenuBar.swift` | Menüleisten-Fenster und Menüleisten-Symbol |
 | `Messages.swift` | Fehler- und Hinweisbanner (Code klein am Ende), „Adresse neu suchen“-Hinweis |
 | `WindowSupport.swift` | Fensterhelfer (Sichtbarkeit, `WindowRef` mit Rahmenlogik beim Ein-/Ausblenden der Spalten, Vollbild-Zustand, Vordergrund), Fokuswert der Menü-Kürzel |
-| `Charts.swift` | Graphen (Swift Charts) für Leistung und Temperatur |
+| `Charts.swift` | Graphen-Spalte (`ChartsPanel`), Zeitfenster und Stil der Graphen (`ChartWindow`, `ChartStyle`) |
+| `ChartSections.swift` | Abschnitte Leistung, Temperatur, Außen und ihre Marks (Swift Charts) |
+| `ChartSupport.swift` | Mauszeiger-Ebene, VoiceOver-Zusammenfassung, Achsen und Karten der Graphen |
 | `EnergyChart.swift` | Abschnitt „Verbrauch“ unter den Graphen: Balken je Tag/Woche/Monat, liest im Hintergrund höchstens alle 10 min |
-| `Theme.swift` | `ThemeStyle`, `\.klimaTheme`, `.klimaCard`, `.klimaGlow`, `GlassContainer`, Farben und Symbole je Modus, `LivelyBackground`, `WeatherEffect` |
+| `Theme.swift` | `ThemeStyle`, `\.klimaTheme`, Farben und Symbole je Modus, `GlassContainer` |
+| `ThemeModifiers.swift` | `.klimaThemeRoot`, `.klimaCard`, `.klimaInner`, `.klimaGlow`, `PressDimStyle` |
+| `ThemeEffects.swift` | `LivelyBackground`, `WeatherEffect`, `EffectsBudget` |
 | `Panels.swift` | Fußzeile (Verlauf · Aktualisieren/Einstellungen · Diagnose) und gemeinsame Bausteine (Abschnittstitel, alte Werte) |
-| `PanelsSettings.swift` | Einstellungsfenster mit Reitern Allgemein · Darstellung · Verbindung · Anlage · Protokoll · Lizenzen |
+| `PanelsSettings.swift` | Einstellungsfenster mit Reitern Allgemein · Darstellung · Verbindung · Anlage · Protokoll · Lizenzen, gemeinsame Bausteine (`SettingRow`, `FeedbackLine`) |
+| `PanelsGeneral.swift` | Reiter „Allgemein“ (Sprache, Anzeige, Aktualisierung, Verlauf, Start, Updates), `LoginItem` |
+| `PanelsConnection.swift` | Reiter „Verbindung“ (Weg, Midea-Konto) |
 | `PanelsAppearance.swift` | Reiter „Darstellung“ |
 | `PanelsDevice.swift` | Reiter „Anlage“ (Sicherung, Adresse neu suchen, Neu einrichten) |
 | `PanelsDiagnostics.swift` | Diagnose-Spalte |
@@ -193,6 +203,7 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 | `Setup.swift` | Einrichtungsassistent (Oberfläche zu `SetupFlow`) |
 | `Notices.swift` | Reiter „Lizenzen“ |
 | `Updater.swift` | `AppUpdater`: Hülle um Sparkle (`SPUStandardUpdaterController`), nur im fertigen Bundle aktiv; Hinweis „Jetzt neu starten · Später“, Beta-Kanal |
+| `UpdaterSparkle.swift` | Sparkle-Anbindung: `HeldUserDriver` (Updates ohne automatische Installation), `UpdaterDelegate` (Status, Beta-Kanal, Rückfall) |
 | `AppRestart.swift` | Neustart der App (Sprachwechsel, geladenes Update) ohne Beenden-Rückfrage, Sprachwahl in `AppleLanguages` der App |
 | `WhatsNew.swift` | Fenster „Neu in dieser Version“ |
 
@@ -242,7 +253,7 @@ Vertrag in Abschnitt 8.
 | `VERSION` | einzige Quelle der Versionsnummer (auch für Windows: `KlimacontrolTray.csproj` liest sie) |
 | `test.sh` | Swift-Tests am Mac (Scratch-Pfad außerhalb des Projekts, Protokoll in Temp-Ordner) |
 | `build_app.sh` | Mac-App universal bauen, Sparkle einbetten, signieren, optional notarisieren, DMG + ZIP; `--no-test`, `--beta <n>` (Version `<VERSION>b<n>`), `--out <Ordner>` (Probebau statt `dist/mac`); schreibt die zweisprachigen `InfoPlist.strings` (`de.lproj`/`en.lproj`) und `CFBundleLocalizations` |
-| `make_release.py` | Release-Ordner `releases/v<Version>/` bzw. Beta `releases/v<Version>b<n>/` (`--beta <n>`): Pakete, Update-Dateien (`updateinfo-mac.xml`, `-win.xml`, `-mac-beta.xml`, als letzter Schritt mit dem Update-Schlüssel signiert und geprüft; dazu die byte-gleichen Kopien `appcast-mac.xml`, `appcast-windows.xml`, `appcast-win.xml` für Fassungen 1.0.x, nie in der Beta), Prüfsummen, Release-Text (deutsch und englisch); `--publish` legt das GitHub-Release an, `--check-published` prüft die veröffentlichten Adressen (liest nur), `--rollback <kaputt> <vorige> [--execute]` ist die Notbremse |
+| `make_release.py` | Release-Ordner `releases/v<Version>/` bzw. Beta `releases/v<Version>b<n>/` (`--beta <n>`): Pakete, Update-Dateien (`updateinfo-mac.xml`, `-win.xml`, `-mac-beta.xml` nur bei `--beta`, als letzter Schritt mit dem Update-Schlüssel signiert und geprüft), Prüfsummen, Release-Text (deutsch und englisch); `--publish` legt das GitHub-Release an, `--check-published` prüft die veröffentlichten Adressen (liest nur), `--rollback <kaputt> <vorige> [--execute]` ist die Notbremse |
 | `test_make_release.py` | Selbsttest für `make_release.py` mit Probedateien und nachgebildetem `sign_update` (`python3 -I tools/test_make_release.py`; läuft auch in `ReleaseScriptTests`) |
 | `update_test_feed.py` | lokale, signierte Update-Datei zum Prüfen der Updates vor dem Release (Abschnitt 14.1); `--serve-only <Ordner>` liefert einen vorhandenen Ordner nur aus |
 | `UPDATE_PUBLIC_KEY` | öffentlicher EdDSA-Schlüssel der Updates (Mac: Info.plist, Windows: WinSparkle) |
@@ -416,7 +427,7 @@ Meldung), Nutzdaten, Prüfsumme; die Nutzdaten tragen eine CRC8. Wichtige Nutzda
 | Anzeige am Gerät umschalten | `0x41 0x02\|Ton …` | nur Umschalten, kein fester Zustand |
 | Eigenschaften lesen | `0xB1 n id…` | Antwort `0xB1` |
 | Eigenschaft setzen | `0xB0 1 id len wert` | Antwort `0xB0` |
-| Zustand setzen | `0x40 …` | Ein/Aus, Modus, Soll, Lüfter, Schwenken, Eco, Turbo, Ionisierer, Frostschutz |
+| Zustand setzen | `0x40 …` | Ein/Aus, Modus, Soll, Lüfter, Schwenken, Eco, Turbo, Ionisierer, Frostschutz; Schlafmodus = Byte 10 Bit 0x01 (live 2026-11-12: wird übernommen und in 0xC0 zurückgemeldet, beim Heizen sank das Verdichter-Soll sofort von 80 auf 52 Hz; nicht eingebaut) |
 
 Eigenschaften (`PropertyId`): `0x0039` Selbstreinigung, `0x0048` Leistung begrenzen, `0x00CD` Außengerät leise
 (Wert 3 = an), `0x00E3` iECO, `0x022C` Signalton. Modi: 1 Auto, 2 Kühlen, 3 Trocknen, 4 Heizen, 5 Lüften.
@@ -570,7 +581,7 @@ sobald sie im selben Netz antwortet.
 
 ### 7.7 Einstellungen (`SettingsKey`)
 
-`displayName`, `refreshSeconds`, `pricePerKWh` (0–1000), `currency`, `language` (Windows; Mac: Systemsprache), `updateBetaChannel` (Mac), `connectionMode`, `beep`, `timerOffAt`, `timerOnAt`,
+`displayName`, `refreshSeconds`, `pricePerKWh` (0–1000), `currency`, `language` (Windows; Mac: Systemsprache), `updateBetaChannel` (Mac), `updateAutoInstall`, `updateInterval`, `connectionMode`, `beep`, `timerOffAt`, `timerOnAt`,
 `energyDayStart`, `showDiagnosticsPanel`, `historyCSV`, `credentialsBackedUp`, `appearance` (JSON),
 `loginItemDefaultOn` (Mac: „Beim Anmelden starten“ schon einmal eingetragen), `lastOpenedColumn` und `columnsBeforeFullScreen` (Mac: zuletzt geöffnete Seitenspalte; Spalten vor dem Vollbild). Mac: in
 `UserDefaults` (Domäne `de.mlafx.klimacontrol`), Windows: über die Bridge im Kern gespeichert (`UserDefaults.standard` von swift-corelibs-foundation, Datei `%LOCALAPPDATA%\Klimacontrol.exe.plist` – der Name folgt dem Prozessnamen; seit 1.0 so, darum nicht verlegen, das Setup legt den Namen der exe fest). Neue Schlüssel immer
@@ -596,10 +607,14 @@ in `SettingsKey` anlegen, nie als String-Literal in einer Oberfläche.
 | `menuBarText` | iconOnly, iconTarget, iconRoom, roomTarget | iconTarget |
 | `menuBarColored` | an/aus | Mac aus, Windows an (`platformColoredIcon`) |
 | `menuBarAnimated` | an/aus | aus |
+| `temperatureCombined` | an/aus (Außentemperatur im Temperaturgraphen statt im eigenen Graphen) | aus |
 
-- `Appearance.standard` muss **exakt** dem Aussehen vor Einführung des Reiters „Darstellung“ entsprechen.
+- Die Werte in `Appearance.standard` (Transparenz, Unschärfe, Akzent …) bleiben, wie sie vor Einführung des Reiters
+  „Darstellung“ waren. Der Aufbau des Hauptfensters ist seit dem Umbau nach 1.2.0.0 für alle Themen neu (9.1); die Knöpfe
+  unter „Komfort“ und „Weitere Funktionen“ und der Lüfterregler mit gestrichelten Endzonen bleiben auf Wunsch des Autors
+  unverändert.
 - Ein Thema (`preset`/`applying`) setzt nur Aussehens-Werte; Größe, „Groß angezeigt“, Umfang, „Animationen
-  reduzieren“, Vordergrund, Menüleisten-Text und animiertes Symbol bleiben erhalten.
+  reduzieren“, Vordergrund, Menüleisten-Text, animiertes Symbol und `temperatureCombined` bleiben erhalten.
 - `Appearance.isCustomized` (`ACController.appearanceIsCustomized`, Schnappschuss-Feld `appearanceCustomized`): ein Aussehens-Wert
   weicht von `applying(theme)` ab (Regler mit Toleranz); Größe, Groß angezeigt, Umfang, Animationen reduzieren, Vordergrund,
   Menüleisten-Text und animiertes Symbol zählen nicht. Die Themenkachel trägt dann „angepasst“, „Thema wiederherstellen“
@@ -678,7 +693,7 @@ gleichen beide ab.
 | Schalter | `swing(on)`, `eco(on)`, `turbo(on)`, `purifier(on)`, `freezeProtection(on)`, `outdoorSilent(on)`, `selfClean(on)`, `ieco(on)`, `display`, `rate(value)`, `sound(on)` |
 | Szenen | `applyScene(id)`, `deleteScene(id)`, `saveScene(name)` |
 | Timer | `offTimer(minutes?)`, `onTimer(hour, minute)` bzw. `onTimer(at?)` |
-| Einstellungen | `connectionMode(value)`, `displayName(value)`, `refreshSeconds(value)`, `price(value)`, `language(value)`, `currency(value)`, `debugLog(on)`, `historyCSV(on)`, `diagnosticsVisible(on)`, `uiVisible(id, visible)` |
+| Einstellungen | `connectionMode(value)`, `displayName(value)`, `refreshSeconds(value)`, `price(value)`, `language(value)`, `currency(value)`, `debugLog(on)`, `historyCSV(on)`, `updateAutoInstall(on)`, `updateInterval(value)`, `diagnosticsVisible(on)`, `uiVisible(id, visible)` |
 | Darstellung | `appearance(value: Objekt)`, `appearanceTheme(theme)`, `appearanceReset` |
 | Daten | `exportHistory(path, from?, until?, readable?)`, `exportHistoryStart(path, from?, until?, readable?)` (im Hintergrund, `readable` Standard an; Ergebnis `exportSeq`/`exportError`), `clearLog`, `importBackup(path, replaceScenes?, allowOtherDevice?)`, `exportBackup(path)` |
 | Konto | `cloudLogin(account, password)`, `cloudLogout` |
@@ -692,7 +707,14 @@ Bedienregeln (Modus, Eco, Turbo, Ein/Aus, Lüfter-Zonen) setzt die Bridge über 
 `staleText`, `noticeDetail` …). Der Schnappschuss trägt außerdem `appearanceCustomized`, `options` (Listen, Grenzen, feste Rückfragen) und
 `availability` (je Schalter `enabled`/`why`); Rückfragen zu Befehlen kommen über `importResult.text`/`prompt`,
 `setup.completion.prompt`, `quitPrompt`, `whatsNew` (nach einem Update; bestätigen mit Befehl `dismissWhatsNew`) und `options.prompts.forget`/`forgetNeedsBackup` (Auswahl über `forgetNeedsBackup`);
-`options.prompts.cloudNeedsAccount` erklärt, warum „Nur Cloud“ ohne Midea-Konto nicht geht. `options.energy` trägt Arten,
+`options.prompts.cloudNeedsAccount` erklärt, warum „Nur Cloud“ ohne Midea-Konto nicht geht. `options.window` trägt die Regeln des Hauptfensters aus
+`MainWindowLayout` (Spaltenbreiten, Mindesthöhen je Größe, Graphenhöhen), damit Windows keine eigenen Zahlen hält.
+`historyUnavailable` ist wahr, wenn sich die Verlaufsdatenbank nicht öffnen ließ; die Graphen zeigen dann
+`charts.unavailable` statt „zu wenig Daten“. `kc_history_json` trägt je Punkt `mode` (Modus, nur wenn die Anlage lief),
+`kc_energy_json` zusätzlich `average`, `averageText` und je Zeitraum `valueText`. Für die Windows-Graphen und die Skala
+kommen dazu `outdoorSmooth` je Verlaufspunkt, `line` in `kc_history_stats_json` (Kennzahlenzeile), `options.temperatureScale`,
+`scaleRoom`, `options.chart.ranges[].tickMinutes`/`tickLabelHalfWidth` und `options.window.chartWeights`. Regeln, die C# nachbildet,
+sind über gemeinsame Tabellen unter `Tests/Shared/` abgesichert (Achsen, Zeitmarken, Graphenhöhen, Modus-Läufe, Fensterlayout). `options.energy` trägt Arten,
 Überschrift, Hilfe und Legende des Verbrauchs. Zeitabhängige Texte (`connectionLine`, `offTimerChip`,
 `nextRefreshLine`) stehen nur in `kc_live_json`, weil der Schnappschuss nur bei Änderungen neu gelesen wird.
 
@@ -725,6 +747,15 @@ Aktualisieren/Einstellungen · Diagnose), Menüleiste (`MenuBarExtra` mit Schnel
 Protokoll · Lizenzen** (Fensterhöhe 600). Rückmeldungen der Einstellungen stehen am Ort der Aktion, nicht im Banner
 des Hauptfensters. Oben im Reiter Allgemein steht die Sprachwahl (Systemsprache · Deutsch · English) mit dem Knopf
 „Jetzt neu starten“; die Wahl wirkt erst nach dem Neustart (Details 9.4, 13.2).
+
+**Aufbau des Hauptfensters (Mac, nach 1.2.0.0).** Wenige große Glasflächen: Kopfkarte (Name, Zustand, beschrifteter
+Ein/Aus-Knopf, große Zahl, Regler mit Skala und Raum-Marke, Kennzahlen ohne Symbole), eine Karte für Modus und Lüfter,
+die Knöpfe „Komfort“ und „Weitere Funktionen“ (unverändert), eine Karte für Szenen und Timer, Fußzeile. Radien:
+`ThemeStyle.cardRadius` 20 für Karten, `innerRadius` 12 für Elemente darin (`klimaInner`, kein Glas auf Glas).
+Verlauf einspaltig: eine Karte mit Leistung, Temperatur und Außen als getrennte `Chart`-Ansichten mit gemeinsamer
+Zeitachse (Zeitbeschriftung nur unten, Y-Achse in fester Breite), Kennzahlen als Zeile unter der Leistung, Modus-Band
+unter der Leistung, Soll in der Modusfarbe, Außen grau gepunktet und geglättet; im 2 × 2-Raster vier Karten im selben
+Stil. Verbrauch mit Wert über den Balken (bis 14) und Durchschnittslinie. Farbe steht nur für den Modus.
 
 **Größe und Vollbild des Hauptfensters.** Das Fenster ist in der Größe veränderbar (`contentMinSize`) und kann ins
 Vollbild. Nichts wird skaliert: Die Steuerspalte bleibt 480 pt breit, zusätzlicher Platz gehört dem Verlauf, dann der
@@ -762,6 +793,11 @@ der Tastaturnavigation); unter Windows gilt Strg+↑/↓.
 - Farben/Schriften kommen aus `ThemeStyle` (Umgebung `\.klimaTheme`), Karten über `.klimaCard`, Leuchten über
   `.klimaGlow`. Keine fest verdrahteten Farben in Ansichten.
 - Liquid Glass (`.glassEffect`) nur hinter `#available(macOS 26, *)`, darunter `.ultraThinMaterial`.
+- **Glas-Container:** `GlassContainer` (GlassEffectContainer) liegt INNERHALB der Scroll-Ansicht der Steuerspalte und
+  getrennt um die Fußzeile. Außen gezeichnet ragt Liquid Glass ohne Zuschnitt über die Fußzeile (`.clipped()`/`.mask`
+  helfen nicht).
+- macOS 26 lässt die Liquid-Glass-Tönung in nicht aktiven Fenstern verschwinden (Kacheln wirken blass): Systemverhalten,
+  kein Fehler. Screenshots für die Prüfung immer mit aktivem Fenster machen.
 - **Größe ändern:** Während das Fenster seine Größe ändert, bleibt die Fläche der Graphen eingefroren (`WindowRef.isResizing`), Graphenhöhen wachsen nur in 20-pt-Stufen, „Lebendig“ wird auf ein Drittel der Auflösung gezeichnet, Wetter-Teilchen skalieren mit der Fläche, über ~2 MP gelten 20 statt 30 Bilder je Sekunde.
 - **Grafikspeicher:** Jeder Neuaufbau der Swift-Charts-Graphen und jede Animation über den ganzen Zustand kostet kurz
   ~190 MB Grafikspeicher (Metal). Darum: Graphen selten neu aufbauen (Marks in Equatable-Ansichten, eigene
@@ -796,14 +832,37 @@ nach einem neuen Build nicht erneut nach Freigaben (Netzwerk, Schlüsselbund); a
 - Info.plist: `SUFeedURL` (= `AppUpdate.feedMac`), `SUPublicEDKey` (aus `tools/UPDATE_PUBLIC_KEY`),
   `SUEnableAutomaticChecks`, `SUAutomaticallyUpdate` und `SUAllowsAutomaticUpdates` = an, `SUScheduledCheckInterval` =
   86400 (täglich). `AppUpdateTests` prüft, dass Kern, Skript und Schlüsseldatei zusammenpassen.
-- **Immer automatisch, nie überspringen, Suche nicht abschaltbar** (Entscheidung des Autors): `AppUpdater` setzt beim
-  Start `automaticallyChecksForUpdates` und `automaticallyDownloadsUpdates` auf an (eine frühere Abwahl zählt nicht).
+- **Suche und Laden immer automatisch, nie überspringen, Suche nicht abschaltbar** (Entscheidung des Autors). Zwei
+  Einstellungen in Einstellungen → Allgemein → Updates (Kern, beide Plattformen gleich): „Updates automatisch
+  installieren“ (`SettingsKey.updateAutoInstall`, Standard an) und „Nach Updates suchen“ täglich/wöchentlich
+  (`SettingsKey.updateInterval`, `UpdateInterval.seconds`, Standard täglich = `SUScheduledCheckInterval` der Info.plist).
+  Erinnerungsregel als reine Funktionen in `AppUpdate` (`reminderInterval` 24 h, `nextReminder`, `reminderDue`,
+  `offersUpdate`). Bridge: Befehle `updateAutoInstall(on)`, `updateInterval(value)`, Schnappschuss `updateAutoInstall`,
+  `updateInterval`, `updateCheckInterval` (folgt der Einstellung), Texte in `options.updates`.
+  `AppUpdater` erzeugt `SPUUpdater` selbst (statt `SPUStandardUpdaterController`) mit dem eigenen `HeldUserDriver`, der
+  alles an `SPUStandardUserDriver` weiterreicht, außer im Modus „aus“. Beim Start und nach jeder Änderung setzt er
+  `automaticallyChecksForUpdates` = an, `automaticallyDownloadsUpdates` = Einstellung, `updateCheckInterval` = Einstellung
+  (eine frühere Abwahl in Sparkles UserDefaults zählt nicht).
   „Jetzt suchen …“ und das Menü nutzen `checkForUpdatesInBackground` (kein Sparkle-Dialog mit „Überspringen“);
   Status-Texte aus dem Katalog. Fassungen unter `AppUpdate.firstAutoInstallVersion` bekommen das Update im Appcast als
   `criticalUpdate` (ohne „Überspringen“).
-- **Installation ab 1.2.0.0:** Das Update wird still geladen; danach erscheint ein Hinweis „Jetzt neu starten ·
-  Später“. „Später“ fragt nach 24 h erneut, installiert wird spätestens beim Beenden. Kein Überspringen. Bis 1.1.0.0
-  installierte der Delegate sofort und startete neu (`willInstallUpdateOnQuit` → `immediateInstallationBlock`).
+- **Installation, automatisch an (Standard, ab 1.2.0.0):** Sparkles stiller Weg (`SPUAutomaticUpdateDriver`). Das Update
+  wird still geladen; danach erscheint ein Hinweis „Jetzt neu starten · Später“ (Delegate
+  `willInstallUpdateOnQuit` → true, der Block installiert sofort). „Später“ fragt nach 24 h erneut, installiert wird
+  spätestens beim Beenden. Kein Überspringen. Bis 1.1.0.0 installierte der Delegate sofort und startete neu.
+- **Installation, automatisch aus (ab 1.3.0.0):** Sparkle installiert ein über den stillen Weg geladenes Update beim
+  Beenden immer („In either case Sparkle will always attempt to install the update when the app terminates“,
+  `SPUUpdaterDelegate.h`); der Delegate kann das nicht verhindern. Darum lädt „aus“ über Sparkles Weg mit Nutzer
+  (`automaticallyDownloadsUpdates` = aus, `SPUUIBasedUpdateDriver`): `HeldUserDriver.showUpdateFound` antwortet ohne
+  Fenster `.install` (still laden), wenn die Suche von Hand kam oder die Erinnerung fällig ist, sonst `.dismiss`
+  (nichts geladen). Download- und Entpack-Fortschritt bleiben unsichtbar. `showReadyToInstallAndRelaunch` geht an
+  `AppUpdater`: Hinweis „Update bereit · Jetzt installieren · Später“. „Jetzt installieren“ = `.install` (installiert und
+  startet neu). „Später“ = `.skip`: an dieser Stelle bricht Sparkle nur die vorbereitete Installation ab
+  (`SPUInstallerDriver cancelUpdate`) und merkt die Version **nicht** als übersprungen (`SPUUserDriver.h`); nach 24 h lädt
+  `AppUpdater` neu und fragt wieder. Steht der Hinweis noch aus (z. B. anderes modales Fenster), nimmt
+  `applicationShouldTerminate` die Installation mit `.skip` zurück und beendet erst 1 s später (`.terminateLater`), damit
+  die Absage den Installer erreicht. `.skip` in `showUpdateFound` wäre echtes Überspringen und wird nie benutzt. Grenze:
+  Ein Update, das noch im Modus „an“ vorbereitet wurde, bleibt nach dem Umschalten bei „beim Beenden installieren“.
 - **Neustart ohne Beenden-Rückfrage:** Beim Neustart für ein Update oder einen Sprachwechsel entfällt die Rückfrage
   „Timer laufen – beenden?“ (`quitPrompt`), denn Timer sind gespeichert und laufen danach weiter. Liegt beim
   Sprachwechsel ein Update bereit, läuft der Neustart über Sparkles Weg „installieren und neu starten“.
@@ -814,14 +873,19 @@ nach einem neuen Build nicht erneut nach Freigaben (Netzwerk, Schlüsselbund); a
 - **Beta-Kanal (nur Mac, ab 1.2.0.0):** Einstellungen → Allgemein → Updates: „Vorabversionen (Beta) erhalten“,
   Standard aus (`SettingsKey.updateBetaChannel`). Nur mit Schalter liefert `feedURLStringForUpdater:` die Beta-Datei
   `…/releases/download/beta/updateinfo-mac-beta.xml` (`AppUpdate.feedMacBeta`); ohne Schalter bleibt `SUFeedURL`.
-  Die Beta-Datei enthält immer die neueste stabile Fassung und die neueste Beta. Schalter aus → die App bleibt auf der
+  Die Beta-Datei enthält die neueste stabile Fassung und die neueste Beta. Solange es keine Beta gibt, existiert sie nicht.
+  Scheitert eine Suche im Beta-Kanal, bevor ein Update gefunden wurde, wiederholt die App sie einmal im stabilen Kanal
+  (`AppUpdate.fallsBackToStable`), damit der Beta-Kanal nie ohne stabile Updates bleibt. Schalter aus → die App bleibt auf der
   Beta bis zur nächsten stabilen Fassung.
 - Windows (WinSparkle): automatische Suche bei jedem Start erzwungen, zusätzlich Suche beim Start; jedes Update ist im
   Appcast `criticalUpdate` – WinSparkle blendet dann „Überspringen“ und „Später erinnern“ aus, nur Schließen
   (= vorerst nicht) bleibt. Ein früher gespeichertes `SkipThisVersion` wird beim Start gelöscht. Ab 1.2.0.0 erscheint der
   WinSparkle-Dialog in der Sprache der App (`win_sparkle_set_lang`).
-- Bedienung: Einstellungen → Allgemein → „Updates“ (Version, „Jetzt suchen …“, Status) und Menü Klimacontrol → „Nach
-  Updates suchen …“. Kein Schalter. Ohne Bundle (`swift run`) ist Sparkle aus.
+- Bedienung: Einstellungen → Allgemein → „Updates“ (Version, „Jetzt suchen …“, Status mit „Jetzt neu starten“ bzw.
+  „Jetzt installieren“, „Updates automatisch installieren“, „Nach Updates suchen“, Beta) und Menü Klimacontrol → „Nach
+  Updates suchen …“. Kein Schalter, der die Suche abschaltet. Ohne Bundle (`swift run`) ist Sparkle aus.
+- Windows: Die beiden Einstellungen kommen über die Bridge (`updateAutoInstall`, `updateInterval`, `options.updates`);
+  die Umsetzung mit WinSparkle (`win_sparkle_set_user_run_installer_callback`) ist noch offen.
 - **Rückmeldung nach manueller Suche:** Mac zeigt einen `NSAlert` („aktuell“ bzw. „hat nicht geklappt“) nur bei einer vom
   Nutzer ausgelösten Suche (`userInitiated`); Hintergrundsuchen bleiben still. Windows zeigt das über die
   WinSparkle-Oberfläche (`win_sparkle_check_update_with_ui`).
@@ -885,13 +949,13 @@ MideaKit-Tests als am Mac (zuletzt 130 statt 137), weil einige nur auf Darwin ü
 | Ziel | Dateien (Auswahl) |
 |---|---|
 | `MideaKitTests` | `TestSupport` (Vektoren, `Locked`, `TestClock`, `TestFrames`, `FakeTransport`), `MideaKitTests` (Rahmen, Antworten), `TransportTests` (Wegwahl, Sperren), `PortaSplitDeviceTests` (Gerät mit Fake-Transport), `CloudTests`, `RobustnessTests` (kaputte Rahmen), `PlatformTests` (Krypto-Vektoren, Schlüsselbund), `ConcurrencyTests`, `LANLoopbackTests` (echter TCP-Weg gegen 127.0.0.1, nur Darwin), `TestIsolationTests`, `vectors.json` |
-| `KlimacontrolCoreTests` | `TestSupport` (`CoreTestCase`, `FakeDevice`, `SpyPlatform`, `MemorySettings`, `waitUntil`, `AsyncGate`), `KlimacontrolCoreTests`, `ControllerTests`, `HistoryTests` (Spalten, Kopfzeilen wörtlich, Rundläufe), `LogTextTests` (Schlüssel und deutscher Text in MideaKit gegen den Katalog, Übersetzer), `DisplayCatalogTests` (Anzeige-Katalog wörtlich), `ACControllerUITests`, `SetupTests`, `SetupFlowTests`, `TimerEnergyTests`, `EnergyPeriodTests` (Verbrauch je Zeitraum, Sommerzeit, Zählerwechsel), `AppearanceTests`, `VersionTests` (CHANGELOG-Kopf = `tools/VERSION`), `ThirdPartyNoticesTests` (Swift-Texte = `docs/THIRD_PARTY_NOTICES.md`), `AppUpdateTests` (Feed, Intervall und Schlüssel passen zu `build_app.sh`), `ReleaseProtectionTests` (D1-Werte wörtlich, Abschnitt 14.1), `ReleaseScriptTests` (startet `tools/test_make_release.py`, nur Mac), `LocalizerTests`, `StringsCatalogTests`, `FormatProfileTests` (liest `Tests/Shared/rounding-table.json`), `AppVersionTests`, `ChangelogParityTests`, `SettingsLocaleTests`, `DisplayNamesTests`, `AppLanguageTests`, `HistoryLanguageTests`, englische Teststände je Bereich (`MessageEnglishTests`, `PromptEnglishTests`, `OptionsEnglishTests`, `StatusEnglishTests`, `SetupEnglishTests`), `EnglishLeakTests` (kein Deutsch im englischen Katalog und in allen gesammelten Anzeigetexten, Pseudo-Sprache findet Texte am Katalog vorbei, Protokollzeilen folgen der Sprache der Oberfläche), `AppSourceTextsTests` (kein deutscher Text in `Sources/KlimacontrolApp`) |
+| `KlimacontrolCoreTests` | `TestSupport` (`CoreTestCase`, `FakeDevice`, `SpyPlatform`, `MemorySettings`, `waitUntil`, `AsyncGate`), `KlimacontrolCoreTests`, `ControllerTests`, `HistoryTests` (Spalten, Kopfzeilen wörtlich, Rundläufe), `LogTextTests` (Schlüssel und deutscher Text in MideaKit gegen den Katalog, Übersetzer), `DisplayCatalogTests` (Anzeige-Katalog wörtlich), `ACControllerUITests`, `SetupTests`, `SetupFlowTests`, `TimerEnergyTests`, `EnergyPeriodTests` (Verbrauch je Zeitraum, Sommerzeit, Zählerwechsel), `AppearanceTests`, `VersionTests` (CHANGELOG-Kopf = `tools/VERSION`), `ThirdPartyNoticesTests` (Swift-Texte = `docs/THIRD_PARTY_NOTICES.md`), `AppUpdateTests` (Feed, Intervall und Schlüssel passen zu `build_app.sh`), `ReleaseProtectionTests` (D1-Werte wörtlich, Abschnitt 14.1), `ReleaseScriptTests` (startet `tools/test_make_release.py`, nur Mac), `LocalizerTests`, `StringsCatalogTests`, `FormatProfileTests` (liest `Tests/Shared/rounding-table.json`), `ChartAxisTests` (liest `Tests/Shared/chart-axis-table.json`), `SettingsFileCheckTests`, `AppVersionTests`, `ChangelogParityTests`, `SettingsLocaleTests`, `DisplayNamesTests`, `AppLanguageTests`, `HistoryLanguageTests`, englische Teststände je Bereich (`MessageEnglishTests`, `PromptEnglishTests`, `OptionsEnglishTests`, `StatusEnglishTests`, `SetupEnglishTests`), `EnglishLeakTests` (kein Deutsch im englischen Katalog und in allen gesammelten Anzeigetexten, Pseudo-Sprache findet Texte am Katalog vorbei, Protokollzeilen folgen der Sprache der Oberfläche), `AppSourceTextsTests` (kein deutscher Text in `Sources/KlimacontrolApp`) |
 | `KlimacontrolBridgeTests` | `BridgeDisplayTests` (Katalog-Felder), `BridgeContractTests`: jedes Feld des echten Schnappschusses steht in `bridge-muster.json` (Gegenrichtung zu `VertragTests`); `BridgeCommandTests`: Parametertypen, Meldungen, Befehlsnamen gegen `Cmd` in C#; `BridgeEnergyTests` (`kc_energy_json`), `BridgeLocaleTests` (`kc_set_locale`, `kc_strings_json`, Befehle `language`/`currency`), `BridgeEnglishTests`, `BridgeWhatsNewTests` |
 | Windows (C#) | `CoreTests`, `LayoutTests`, `ThemeTests`, `AppearanceTextTests` (Darstellung wie am Mac), `LocalizationTests` (Textschlüssel und Katalog), `VertragTests` (Schnappschuss, Befehlsnamen, Anzeige-Katalog, keine eigenen Listen/Grenzen in der Oberfläche) |
 
-Stand zuletzt: Mac 560 Tests (MideaKit 137, Kern 382, Bridge 41; 2 übersprungen, beide bewusst: Live-Scan, echter
-Schlüsselbund). Windows zuletzt 553 Swift + 278 C# (MideaKit 130, Kern 380, Bridge 43). Zeitzonen-Tests nehmen eine feste Zone (`TimeZone(identifier:)`) oder die Ortszeit über
-`Calendar.current.timeZone`. Die Rundungstabelle `Tests/Shared/rounding-table.json` liest Swift (`#filePath`, keine
+Stand zuletzt (11.11.2026, nach Release 1.2.0.0): Mac 657 Tests (MideaKit 137, Kern 468, Bridge 52; 2 übersprungen, beide bewusst: Live-Scan, echter
+Schlüsselbund). Windows zuletzt 577 Swift + 278 C# (MideaKit 130, Kern 404, Bridge 43). Zeitzonen-Tests nehmen eine feste Zone (`TimeZone(identifier:)`) oder die Ortszeit über
+`Calendar.current.timeZone`. Die Tabellen `Tests/Shared/rounding-table.json` und `chart-axis-table.json` liest Swift (`#filePath`, keine
 Ressource) und C# gemeinsam.
 
 ### 11.2 Isolation – Tests fassen nichts Echtes an
@@ -1157,17 +1221,30 @@ Muster: „What happened. What to do. (code)“. „Klimacontrol“ und „Porta
 - Ablauf Beta (nur Mac): `tools/build_app.sh --beta <n>` · Notarisierung · `python3 tools/make_release.py --beta <n>` ·
   D3 · `--publish`. Die stabile Fassung für die Beta-Update-Datei kommt aus `--stable-feed <Datei>`, sonst aus dem
   höchsten lokalen `releases/v<a.b.c.d>/`, sonst nur mit `--fetch-stable` aus dem Netz.
-- Am Release hängen **nur das Mac-DMG und das Windows-Setup** (dazu die beiden `updateinfo-*.xml` und Prüfsummen); die ZIPs aus den
-  Bauskripten sind für Tests und Handbetrieb. `make_release.py` prüft zuerst, dass DMG und App darin notarisiert und
+- Am stabilen Release hängen **sieben Dateien:** Mac-DMG und Windows-Setup mit Version im Namen, dieselben beiden noch einmal
+  als byte-gleiche Kopien mit festem Namen (`Klimacontrol-mac.dmg`, `Klimacontrol-Windows-Setup.exe`, Konstanten
+  `LATEST_MAC_DMG`/`LATEST_WINDOWS_SETUP` in `make_release.py`), die beiden `updateinfo-*.xml` und `SHA256SUMS.txt`. Die
+  Kopien gibt es nur bei stabilen Releases, nie bei Betas; sie dienen nur den Download-Knöpfen im README
+  (`…/releases/latest/download/Klimacontrol-mac.dmg` bzw. `…/Klimacontrol-Windows-Setup.exe`, `VersionTests` prüft das
+  README gegen die Konstanten). Die Update-Dateien und ihre Signaturen nennen weiter nur die versionierten Pakete (D1).
+  Die ZIPs aus den Bauskripten sind für Tests und Handbetrieb. `make_release.py` prüft zuerst, dass DMG und App darin notarisiert und
   geheftet sind (`stapler validate`, `spctl` „Notarized Developer ID“), und bricht sonst ab, ebenso ohne Setup.
-- `make_release.py` kopiert DMG und Setup nach `releases/v<Version>/`, signiert beide, schreibt `updateinfo-mac.xml` und `updateinfo-win.xml` (Versionshinweise aus dem CHANGELOG ohne die Zeilen der anderen Plattform), danach als byte-gleiche Kopien der fertigen, signierten Dateien `appcast-mac.xml`, `appcast-windows.xml` und `appcast-win.xml` (alte Adressen der Fassungen 1.0.x; nur stabil, nie in der Beta; `--check-published` prüft sie mit),
-  `SHA256SUMS.txt` und `RELEASE_NOTES.md` (Beschreibungstext mit Download-Tabelle, wird nicht angehängt).
+- `make_release.py` kopiert DMG und Setup nach `releases/v<Version>/`, legt daneben die Kopien mit festem Namen an, signiert
+  DMG und Setup, schreibt `updateinfo-mac.xml` und `updateinfo-win.xml` (Versionshinweise aus dem CHANGELOG ohne die Zeilen der anderen Plattform),
+  `SHA256SUMS.txt` (je Datei eine Zeile, die Kopien mit derselben Prüfsumme wie ihr Original) und `RELEASE_NOTES.md`
+  (Beschreibungstext mit Download-Tabelle der versionierten Namen, wird nicht angehängt).
 - GitHub erkennt Releases nicht von selbst: den Ordnerinhalt im Release-Formular hochladen (Tag `v<Version>` auf
   `main`, „latest“, kein Vorabrelease) oder `--publish` (GitHub CLI `gh`, angemeldet) – nur auf ausdrücklichen Auftrag.
 - **Beta-Releases (nur Mac):** jede Beta ist ein eigenes Vorabrelease `v<Version>b<n>` auf einem Commit des
-  Entwicklungszweigs. Das feste Vorabrelease „beta“ (Tag `beta`, wird nie verschoben) trägt nur
-  `updateinfo-mac-beta.xml`; `make_release.py` schreibt diese Datei bei jedem Release und jeder Beta neu (neueste
-  stabile + neueste Beta). Die öffentliche `updateinfo-mac.xml` wird für eine Beta nie angefasst.
+  Entwicklungszweigs. Das feste Vorabrelease „beta“ (Tag `beta`) gibt es erst mit der ersten Beta: `--publish --beta <n>` legt
+  es an und ersetzt dort `updateinfo-mac-beta.xml` (neueste stabile + neueste Beta). Ein stabiles Release legt „beta“ nicht
+  an, erzeugt und lädt keine Beta-Datei; `--check-published` prüft die Beta-Adresse nur, wenn „beta“ existiert, sonst
+  Hinweis „noch kein Beta-Kanal“. Die öffentliche `updateinfo-mac.xml` wird für eine Beta nie angefasst.
+- Veröffentlicht ist 1.2.0.0 (08.11.2026): `latest` trägt genau fünf Dateien (Mac-DMG, Windows-Setup, `updateinfo-mac.xml`,
+  `updateinfo-win.xml`, `SHA256SUMS.txt`); v1.1.0.0 bleibt bestehen. Das frühere Vorabrelease „beta“ samt Tag wurde
+  gelöscht, weil es noch keine Beta gab. Die Kopien mit festem Namen kommen ab dem nächsten stabilen Release dazu (dann
+  sieben Dateien); erst damit funktionieren die Download-Knöpfe des geänderten README. Darum gelangt das README mit den
+  `latest/download`-Links erst mit diesem Release auf `main`.
 - **Signatur der Update-Dateien:** `make_release.py` signiert DMG, Setup und zuletzt die `updateinfo-*.xml`, prüft
   jede Signatur (`sign_update --verify`) und verändert die Dateien danach nicht mehr. Zum Schluss prüft
   `verify_release_dir()` den Ordner vollständig (D3/7, läuft automatisch). Bestehende Release-Ordner werden nie
@@ -1187,7 +1264,7 @@ Installierte Fassungen ab 1.1.0.0 aktualisieren sich nur, solange diese Punkte s
 
 | Punkt | Mac | Windows |
 |---|---|---|
-| Update-Adresse | `…/releases/latest/download/updateinfo-mac.xml`; 1.0.x: `…/appcast-mac.xml` – als byte-gleiche Kopie an jedem Release, nie entfernen | `…/releases/latest/download/updateinfo-win.xml`; 1.0.x: `…/appcast-windows.xml` (ebenso `appcast-win.xml` vorsorglich) – als Kopie an jedem Release, nie entfernen |
+| Update-Adresse | `…/releases/latest/download/updateinfo-mac.xml` | `…/releases/latest/download/updateinfo-win.xml` |
 | „latest“ | immer ein stabiles Release mit beiden Dateien | ebenso |
 | Schlüssel, Signatur | derselbe EdDSA-Schlüssel (`tools/UPDATE_PUBLIC_KEY`); dieselbe Developer-ID (Team wie in der Signatur von 1.1.0.0) | derselbe EdDSA-Schlüssel |
 | Kennungen | `de.mlafx.klimacontrol`, `Klimacontrol.app` | `AppId {1EAA2BD1-F86E-420F-A62C-4057C87B34F8}`, `{localappdata}\Programs\Klimacontrol`, Registry-Pfad von WinSparkle |
@@ -1214,13 +1291,13 @@ Region, Mac „Jetzt neu starten · Später“.
 6. Automatische Tests grün: D1-Werte (`ReleaseProtectionTests`), Signatur, stabiler Eintrag in der Beta-Datei,
    Versionsvergleich (`ReleaseScriptTests` bzw. `tools/test_make_release.py`), CHANGELOG deutsch/englisch gleich aufgebaut.
 7. `make_release.py` vor dem Veröffentlichen: „latest“, kein Vorabrelease, beide Update-Dateien, Dateinamen exakt,
-   Signaturen gültig (läuft automatisch in `verify_release_dir()` und vor `--publish` als Plan-Prüfung).
-8. Nach dem Veröffentlichen: beide `latest/download`-Adressen liefern HTTP 200, die neue Version und eine gültige
-   Signatur: `python3 tools/make_release.py --check-published [<Version>]` (liest nur, braucht den Schlüssel).
+   Kopien mit festem Namen vorhanden und byte-gleich (bei einer Beta keine), Signaturen gültig (läuft automatisch in
+   `verify_release_dir()` und vor `--publish` als Plan-Prüfung).
+8. Nach dem Veröffentlichen: beide `latest/download`-Adressen der Update-Dateien liefern HTTP 200, die neue Version und
+   eine gültige Signatur; die beiden `latest/download`-Adressen der Download-Knöpfe liefern HTTP 200 (nur HEAD, ohne das
+   Paket zu laden): `python3 tools/make_release.py --check-published [<Version>]` (liest nur, braucht den Schlüssel).
 
-**Befund 1.0.x:** Mac 1.0.x liest `appcast-mac.xml`, Windows 1.0.x `appcast-windows.xml`. Fehlten diese Dateien am
-„latest“-Release, bekamen 1.0.x-Installationen kein Update (404). Darum legt `make_release.py` die byte-gleichen Kopien an
-(D1), und `--check-published` prüft sie.
+Öffentlich gibt es Fassungen ab 1.1.0.0; Update-Adressen sind nur `updateinfo-mac.xml`/`updateinfo-win.xml` (und die Beta-Datei).
 
 **Mac-Update-Prüfung Schritt für Schritt** (D3/1 und D3/3):
 
@@ -1269,11 +1346,13 @@ zeigt die beiden Befehle, mit `--execute` führt es sie nacheinander aus.
 - **Die Historie ist öffentlich und wird nicht umgeschrieben:** kein Force-Push, kein Zusammenfassen, kein
   `reset` auf veröffentlichte Commits.
 - **Tags sind unveränderlich:** `v<Version>` (Release) und `v<Version>b<n>` (Beta) werden einmal gesetzt und nie
-  verschoben oder gelöscht; ebenso der Tag `beta`, der nur die Update-Datei des Beta-Kanals trägt. Veröffentlichte
+  verschoben oder gelöscht. Veröffentlichte
   Releases und ihre Dateien werden nicht gelöscht oder umbenannt (installierte Fassungen laden von dort).
-- GitHub erzwingt das mit zwei Regelsätzen: „main nur per Release-Merge“ (kein Löschen, kein Force-Push, Änderungen
-  nur per Pull Request mit Merge-Commit) und „Release-Tags unveränderlich“ (`v*` und `beta`: kein Löschen, kein
-  Verschieben). Regeln nicht abschalten, um etwas „schnell“ zu erledigen.
+- Diese Regeln gelten verbindlich als Absprache. Eine technische Erzwingung durch GitHub-Regelsätze („main nur per
+  Release-Merge“, „Release-Tags unveränderlich“) ist derzeit nicht eingerichtet (Stand 08.11.2026) und bleibt dem Autor
+  überlassen; bis dahin schützt nur die Disziplin. Nichts „schnell“ umgehen.
+- Nächste Entwicklung: neuer Zweig `entwicklung-1.3` erst auf Auftrag. `tools/VERSION` bleibt bis zur Freigabe des Autors
+  1.2.0.0; ein neuer CHANGELOG-Abschnitt entsteht erst, wenn der Autor die nächste Version festlegt.
 - Notfall nach einem fehlerhaften Release: das Release auf „Vorabrelease“ stellen und das vorige mit
   `gh release edit v<vorige Version> --latest` wieder zum neuesten machen; die Korrektur kommt als neue Version.
 
@@ -1338,7 +1417,8 @@ Voraussetzungen: Tests beider Plattformen grün, D3-Prüfungen abgehakt (Ergebni
 6. Windows, nach dem OneDrive-Abgleich und Bescheid über den Briefkasten: `powershell -ExecutionPolicy Bypass -File tools\build_windows.ps1 -Zip`
    erzeugt `dist\windows\Klimacontrol-Windows-<Version>-Setup.exe`; Windows meldet die SHA-256.
 7. Mac: `shasum -a 256 dist/windows/Klimacontrol-Windows-<Version>-Setup.exe` gegen die Meldung prüfen; `git status` sauber.
-8. `python3 tools/make_release.py` erzeugt `releases/v<Version>/`; `RELEASE_NOTES.md`, `updateinfo-*.xml` und die gleichen Kopien `appcast-*.xml` ansehen.
+8. `python3 tools/make_release.py` erzeugt `releases/v<Version>/` (sieben Dateien zum Anhängen und `RELEASE_NOTES.md`);
+   `RELEASE_NOTES.md` und `updateinfo-*.xml` ansehen.
 
 Ab hier nur auf ausdrückliches Kommando des Autors (veröffentlicht):
 
@@ -1348,15 +1428,20 @@ Ab hier nur auf ausdrückliches Kommando des Autors (veröffentlicht):
 11. `git fetch origin && git tag -a v<Version> -m "Klimacontrol <Version>" origin/main && git push origin v<Version>`
     (Tag auf den Merge-Commit; `gh release create` nimmt den vorhandenen Tag).
 12. `python3 tools/make_release.py --publish` baut den Ordner neu (der alte wird zu `…alt-<Zeit>`), legt das Release als „latest“
-    an und hängt die Beta-Datei an das Vorabrelease „beta“.
+    an (ohne Vorabrelease „beta“ und ohne Beta-Datei). `make_release.py` fragt den Schlüsselbund je Lauf, und `--publish`
+    baut den Ordner neu: Der Schlüsselbund-Dialog erscheint erneut (der Autor bestätigt ihn).
 13. `python3 tools/make_release.py --check-published` (D3/8).
-14. Installierte Vorversionen auf Mac und Windows beobachten (Update kommt an); Mac-Sperre frei, `erledigt` in den Briefkasten.
+14. Abschlusstest mit installierten Vorversionen auf Mac und Windows: das echte Update über `latest` kommt an (D3/1, D3/2);
+    Mac-Sperre frei, `erledigt` in den Briefkasten.
+
+Das Windows-Setup baut der Windows-Agent auf Anfrage über den Briefkasten (Schritt 6); die SHA-256 der Datei auf dem Mac
+immer gegen seine Meldung vergleichen (Schritt 7), bevor `make_release.py` läuft.
 
 Notbremse: `python3 tools/make_release.py --rollback v<Version> v<vorige>` zeigt die zwei `gh release edit`-Befehle, mit
 `--execute` werden sie ausgeführt (D4). Die Korrektur kommt als nächste Fehlerbehebungs-Version; nichts löschen, keine Tags verschieben.
 
 Beta (nur Mac): wie oben mit `tools/build_app.sh --beta <n>` und `make_release.py --beta <n>`; Tag `v<Version>b<n>`, kein Pull Request
-nach `main`, das Vorabrelease zeigt auf den Entwicklungszweig.
+nach `main`, das Vorabrelease zeigt auf den Entwicklungszweig; die erste Beta legt das Release „beta“ an (siehe 14.1).
 
 ---
 
@@ -1408,7 +1493,7 @@ Gruppe/Byte in `Diagnostics` und `Response` lesen, in `HistorySample`/CSV-Kopf n
   und wachem Rechner).
 - „Außengerät leise“ wirkt nur beim Kühlen/Heizen.
 - Ohne Midea-Konto kann die App Token/Schlüssel nicht selbst holen.
-- Nicht eingebaut: Schlafmodus, Kindersicherung (0x0051), „Leise“-Stufen innen/beide (0x00CD Fähigkeit 3).
+- Nicht eingebaut: Schlafmodus (funktioniert laut Live-Test, 6.4), Kindersicherung (0x0051). „Leise“-Stufen innen/beide (0x00CD Werte 1/2) lehnt die PortaSplit ab (Anhang D).
 - Windows, helles Glas im Thema Standard: graue Texte und die große Zahl haben auf dem Glas wenig Kontrast (mit
   „Matt“ deutlich mehr). Bewusst so belassen, das Aussehen des Standard-Themas bleibt; nicht als Fehler verfolgen.
 - „Leistung begrenzen“ bleibt bewusst bei beiden Stufen (75 und 50 %); maßgeblich ist der zurückgemeldete Wert (6.5).
@@ -1416,8 +1501,16 @@ Gruppe/Byte in `Diagnostics` und `Response` lesen, in `HistorySample`/CSV-Kopf n
   gemessen. Heute wird 0xF als Protokollfehler gewertet, nicht als Ablehnung; ändern erst nach einem Mitschnitt.
 - Unbekannte Werte der Anlage: Anhang D.
 
+- Windows zieht noch nach (Kern und Bridge sind fertig): Achsen und Verbrauchsbeschriftung nach `ChartAxis`, Hinweis
+  `charts.unavailable`, Einhängen von `SettingsFileCheck` in den Start, Fensterregeln aus `options.window`, der neue
+  Aufbau des Hauptfensters (9.1) samt Schalter `temperatureCombined`.
+- Lüfter-Zonen nach Fähigkeiten: Der Kern bildet sie einzeln (`UIOptions.fanZones`, `ACController.fanZones`); die
+  Bridge meldet nur `fanZonesAvailable` (mindestens eine Zone). Windows zeigt darum beide Zonen, sobald eine geht;
+  eine Zone ohne Fähigkeit bewirkt dort nichts (der Kern lehnt sie ab). Ein eigenes Feld je Zone folgt mit dem Vertrag.
 - Das Windows-Hauptfenster ist bereits in der Größe veränderbar; die Regeln des Mac-Fensters (9.1, `MainWindowLayout`)
   werden für 1.3 angeglichen.
+- Mac, nur Fassung 1.2.0.0: Der Schalter „Vorabversionen (Beta) erhalten“ meldet „Suche hat nicht geklappt“ und lässt
+  auch stabile Updates aus, solange es die Beta-Datei nicht gibt. Im Code behoben (9.5), wirkt ab der nächsten Fassung.
 - Windows: Die Einstellungen in `%LOCALAPPDATA%\Klimacontrol.exe.plist` liest swift-corelibs-foundation; ist die Datei
   kaputt oder von einem anderen Werkzeug umgeschrieben, gelten still alle Standardwerte (seit 1.0 so). Die Datei nur als
   Text ändern, nie mit einer XML-Bibliothek neu schreiben. Robusteres Lesen ist für später vorgemerkt.
@@ -1471,9 +1564,10 @@ Windows um – der Bestätigungsdialog sagt das offen. Darum vorher sichern.
 | `eev` | Ventilöffnung (Rohwert) |
 | `luefter_innen_upm`, `luefter_aussen_upm` | U/min |
 | `zaehler_roh` | Zählerstand als Rohwert (Schritte à 0,01 kWh) |
+| `fehlercode` | Fehlercode der Anlage, 0 = keiner (ältere Zeilen leer) |
 
 **Lesbare Form:** Die Kopfzeile folgt der Sprache der Oberfläche (deutsch: `Zeit (Ortszeit);Eingeschaltet (1/0);Modus;…`,
-englisch: `Time (local time);Power on (1/0);Mode;Target (°C);…;Meter raw`; wörtlich in `HistoryTests` bzw.
+englisch: `Time (local time);Power on (1/0);Mode;Target (°C);…;Meter raw;Error code`; wörtlich in `HistoryTests` bzw.
 `HistoryLanguageTests`). Modus-Namen und Dezimalzeichen richten sich nach Sprache bzw. Format; der Import liest beide
 Sprachen. Die technische Form und die Datenbank bleiben deutsch.
 
@@ -1502,7 +1596,7 @@ Heizen), Kindersicherung, „Leise“ (Stufe 3). Keine Feuchte, keine Zusatzheiz
 | Quelle | Daten | Vermutung |
 |---|---|---|
 | Eigenschaft 0x0051 | `00 20 3c 00 00` | Kindersicherung aus, Temperaturgrenzen 16–30 °C |
-| Eigenschaft 0x00CD | Fähigkeit `03` | „Leise“ auch nur innen oder beide |
+| Eigenschaft 0x00CD | Fähigkeit `03` | Live 2026-11-12 (Heizen): Werte 1 und 2 lehnt die PortaSplit ab (Antwort-Statusbyte `0x11`, Wert bleibt), nur 0 und 3 werden übernommen. 3 senkt den Außenlüfter (1000–1200 → 848 U/min), Innenlüfter und Verdichter unverändert. „Leise“ innen/beide gibt es an dieser Anlage nicht |
 | Eigenschaft 0x0030 | `00 1e 00 00 00 07` | nicht als Fähigkeit gemeldet, ändert sich |
 | Eigenschaft 0x001E | `00 06 00 00` | unbekannt |
 | Eigenschaft 0x007E | 46 Byte | kompakte Kopie des Betriebszustands |

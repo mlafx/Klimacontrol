@@ -61,10 +61,9 @@ final class ReleaseProtectionTests: XCTestCase {
         let script = try text("tools/make_release.py")
         expect(script, contains: "\"updateinfo-mac.xml\"", "Name der Mac-Update-Datei")
         expect(script, contains: "\"updateinfo-win.xml\"", "Name der Windows-Update-Datei")
-        expect(script, contains: "\"appcast-mac.xml\": \"updateinfo-mac.xml\"", "alter Name der Mac-Update-Datei (Fassungen 1.0.x)")
-        expect(script, contains: "\"appcast-windows.xml\": \"updateinfo-win.xml\"", "alter Name der Windows-Update-Datei (Fassungen 1.0.x)")
         expect(script, contains: "BETA_FEED = \"updateinfo-mac-beta.xml\"", "Name der Beta-Update-Datei")
         expect(script, contains: "\"--latest\"", "stabiles Release als latest")
+        expect(script, contains: "    if beta:\n        if not beta_release_exists:", "Release beta und Beta-Datei nur bei --beta")
         // Im stabilen Zweig von publish_plan darf kein --prerelease stehen.
         let start = try XCTUnwrap(script.range(of: "plan = [base + [\"create\", f\"v{tag}\", \"--repo\", GH_REPO, \"--target\", \"main\""), "D1 verletzt: stabiler Zweig von publish_plan fehlt")
         let line = script[start.lowerBound...].components(separatedBy: "\n").prefix(2).joined()

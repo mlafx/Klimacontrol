@@ -182,6 +182,21 @@ final class MideaKitTests: XCTestCase {
                        ["modus", "swing", "eco"])
     }
 
+    func testSleepIsVerifiedAndSentInByte10() {
+        var before = ACState()
+        before.power = true; before.mode = .cool; before.targetTemperature = 22; before.fanSpeed = 40
+        var target = before; target.sleep = true
+        let changed = PortaSplitDevice.changedControls(before, target)
+        XCTAssertEqual(changed, [.sleep])
+        XCTAssertEqual(PortaSplitDevice.mismatch(before, target, changed), ["schlafmodus"], "nicht übernommen")
+        XCTAssertTrue(PortaSplitDevice.controlsMatch(target, target, changed))
+        let on = Frame.setState(target, beep: false, id: 0x10)
+        let off = Frame.setState(before, beep: false, id: 0x10)
+        XCTAssertNotEqual(on, off)
+        let diff = zip(on, off).enumerated().filter { $0.element.0 != $0.element.1 }.map(\.offset)
+        XCTAssertTrue(diff.contains(10 + 10), "Byte 10 der Nutzdaten (Rahmenkopf 10 Byte): \(diff)")
+    }
+
     func testNearestRate() {
         XCTAssertEqual([0, 50, 62, 63, 75, 87, 88, 100, 150].map(PortaSplitDevice.nearestRate),
                        [50, 50, 50, 75, 75, 75, 100, 100, 100])
@@ -372,6 +387,20 @@ final class MideaKitTests: XCTestCase {
         }
         XCTAssertFalse(text.contains("abc") || text.contains("geheim"), text)
         XCTAssertEqual(text.components(separatedBy: "***").count - 1, 2, text)
+    }
+
+    func testDetailedLogIsSessionOnlyAndLegacyValueIsRemoved() throws {
+        let suite = "klimacontrol-test-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        defaults.set(true, forKey: "debugLog")
+        AppLog.removeLegacyDebugSetting(from: defaults)
+        XCTAssertNil(defaults.object(forKey: "debugLog"))
+
+        let before = AppLog.debugEnabled
+        defer { AppLog.debugEnabled = before }
+        AppLog.debugEnabled = true
+        XCTAssertTrue(AppLog.debugEnabled)
     }
 
     func testNormalLogLinesStayUnchanged() throws {

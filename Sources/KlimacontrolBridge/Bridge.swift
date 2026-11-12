@@ -102,12 +102,14 @@ public func kc_init(_ version: UnsafePointer<CChar>?) {
     MainActor.assumeIsolated {
         guard controller == nil else { return }
         #if os(Windows)
+        WindowsSettingsCheck.runOnce()
         applyWindowsTimeZone()
-        controller = ACController(appVersion: appVersion, settings: SyncedDefaults())
+        let created = ACController(appVersion: appVersion, settings: SyncedDefaults())
+        controller = created
+        WindowsSettingsCheck.report(to: created)
         #else
         controller = ACController(appVersion: appVersion)
         #endif
-        results.debugLog = AppLog.debugEnabled
         stateRev += 1
         track()
     }
@@ -181,6 +183,22 @@ struct SampleDTO: Encodable {
     var t: Double
     var power, indoor, outdoor, target: Double?
     var on: Bool
+    /// Betriebsart (Zahl wie bei den Szenen), nur solange die Anlage lief; bei gemittelten Punkten die überwiegende.
+    var mode: Int?
+    /// Geglättete Außentemperatur für die Linie im Graphen (`HistorySample.smoothedOutdoor(_:range:)`); nur an
+    /// Punkten mit Außenwert.
+    var outdoorSmooth: Double?
+}
+
+/// Verlaufspunkte eines Zeitraums mit der geglätteten Außentemperatur desselben Zeitraums.
+func historyDTOs(_ samples: [HistorySample], range: TimeInterval) -> [SampleDTO] {
+    let smooth = Dictionary(HistorySample.smoothedOutdoor(samples, range: range).map { ($0.time, $0.outdoor) },
+                            uniquingKeysWith: { first, _ in first })
+    return samples.map {
+        SampleDTO(t: $0.time.timeIntervalSince1970, power: $0.power, indoor: $0.indoor, outdoor: $0.outdoor,
+                  target: $0.target, on: $0.on, mode: $0.mode?.rawValue,
+                  outdoorSmooth: smooth[$0.time] ?? nil)
+    }
 }
 
 /// Verlauf der letzten `seconds` Sekunden als JSON-Liste.
@@ -188,15 +206,25 @@ struct SampleDTO: Encodable {
 public func kc_history_json(_ seconds: Double) -> UnsafeMutablePointer<CChar> {
     mainCString {
         guard let c = controller, let seconds = historySeconds(seconds) else { return "[]" }
-        return encode(c.history.window(seconds).map {
-            SampleDTO(t: $0.time.timeIntervalSince1970, power: $0.power, indoor: $0.indoor, outdoor: $0.outdoor,
-                      target: $0.target, on: $0.on)
-        }, fallback: "[]")
+        return encode(historyDTOs(c.history.window(seconds), range: seconds), fallback: "[]")
     }
+}
+
+struct ChartStatDTO: Encodable {
+    var text, help: String
 }
 
 struct StatsDTO: Encodable {
     var avgWatts, peakWatts, kWh: Double?
+    /// Kennzahlenzeile unter dem Leistungsgraphen (Mittel · Spitze · kWh · Kosten) mit Kurzinfos, aus dem Kern.
+    var line: [ChartStatDTO]
+
+    init(_ s: HistoryStats, price: Double, currency: String) {
+        avgWatts = s.avgWatts
+        peakWatts = s.peakWatts
+        kWh = s.kWh
+        line = UIText.chartStats(s, price: price, currency: currency).map { ChartStatDTO(text: $0.text, help: $0.help) }
+    }
 }
 
 /// Kennzahlen des Verlaufs (Ø/Spitze/kWh) aus allen gespeicherten Punkten – genauer als aus den gemittelten
@@ -205,8 +233,7 @@ struct StatsDTO: Encodable {
 public func kc_history_stats_json(_ seconds: Double) -> UnsafeMutablePointer<CChar> {
     mainCString {
         guard let c = controller, let seconds = historySeconds(seconds) else { return "{}" }
-        let s = c.history.stats(seconds)
-        return encode(StatsDTO(avgWatts: s.avgWatts, peakWatts: s.peakWatts, kWh: s.kWh), fallback: "{}")
+        return encode(StatsDTO(c.history.stats(seconds), price: c.pricePerKWh, currency: c.currency), fallback: "{}")
     }
 }
 
@@ -293,7 +320,12 @@ private struct StringsDTO: Encodable {
 @_cdecl("kc_set_locale")
 public func kc_set_locale(_ json: UnsafePointer<CChar>?) -> UnsafeMutablePointer<CChar>? {
     let text = json.map { String(cString: $0) }
-    let message: String? = MainActor.assumeIsolated { applyLocale(text, settings: UserDefaults.standard) }
+    let message: String? = MainActor.assumeIsolated {
+        #if os(Windows)
+        WindowsSettingsCheck.runOnce()
+        #endif
+        return applyLocale(text, settings: UserDefaults.standard)
+    }
     return message.map(cString)
 }
 

@@ -40,6 +40,65 @@ final class AppUpdateTests: XCTestCase {
         XCTAssertEqual(AppUpdate.feedMac, "https://github.com/mlafx/Klimacontrol/releases/latest/download/updateinfo-mac.xml")
     }
 
+    func testMacFeedOverride() {
+        let test = "http://127.0.0.1:8765/updateinfo-mac.xml"
+        XCTAssertNil(AppUpdate.macFeedOverride(beta: false, testFeed: nil, stableFallback: false), "stabil: Info.plist")
+        XCTAssertEqual(AppUpdate.macFeedOverride(beta: true, testFeed: nil, stableFallback: false), AppUpdate.feedMacBeta)
+        XCTAssertNil(AppUpdate.macFeedOverride(beta: true, testFeed: nil, stableFallback: true), "Rückfall: Info.plist")
+        for beta in [false, true] {
+            for fallback in [false, true] {
+                XCTAssertEqual(AppUpdate.macFeedOverride(beta: beta, testFeed: test, stableFallback: fallback), test)
+            }
+        }
+        XCTAssertEqual(AppUpdate.macFeedOverride(beta: true, testFeed: "http://localhost:8765/x.xml", stableFallback: false),
+                       AppUpdate.feedMacBeta)
+    }
+
+    func testUpdateIntervals() {
+        XCTAssertEqual(UpdateInterval.allCases, [.daily, .weekly])
+        XCTAssertEqual(UpdateInterval.daily.seconds, 86_400)
+        XCTAssertEqual(UpdateInterval.weekly.seconds, 604_800)
+        XCTAssertEqual(AppUpdate.checkInterval, UpdateInterval.daily.seconds, "Info.plist-Standard = täglich")
+        XCTAssertEqual(UpdateInterval(stored: "weekly"), .weekly)
+        for bad: Any? in [nil, "monthly", "", 7, true] {
+            XCTAssertEqual(UpdateInterval(stored: bad), .daily, String(describing: bad))
+        }
+        XCTAssertEqual(UpdateInterval.daily.rawValue, "daily")
+        XCTAssertEqual(UpdateInterval.weekly.rawValue, "weekly")
+    }
+
+    func testAutoInstallDefault() {
+        XCTAssertTrue(AppUpdate.autoInstall(stored: nil))
+        XCTAssertTrue(AppUpdate.autoInstall(stored: "nein"), "falscher Typ: Standard")
+        XCTAssertFalse(AppUpdate.autoInstall(stored: false))
+        XCTAssertTrue(AppUpdate.autoInstall(stored: true))
+    }
+
+    /// „Später“ erinnert nach 24 h; ohne automatische Installation lädt eine Suche von Hand sofort.
+    func testReminderRule() {
+        let t = Date(timeIntervalSince1970: 1_800_000_000)
+        XCTAssertEqual(AppUpdate.reminderInterval, 86_400)
+        let next = AppUpdate.nextReminder(after: t)
+        XCTAssertEqual(next, t.addingTimeInterval(86_400))
+        XCTAssertTrue(AppUpdate.reminderDue(now: t, remindAt: nil), "noch nie gefragt")
+        XCTAssertFalse(AppUpdate.reminderDue(now: t.addingTimeInterval(86_399), remindAt: next))
+        XCTAssertTrue(AppUpdate.reminderDue(now: t.addingTimeInterval(86_400), remindAt: next))
+        XCTAssertFalse(AppUpdate.offersUpdate(userInitiated: false, now: t.addingTimeInterval(3600), remindAt: next))
+        XCTAssertTrue(AppUpdate.offersUpdate(userInitiated: true, now: t.addingTimeInterval(3600), remindAt: next))
+        XCTAssertTrue(AppUpdate.offersUpdate(userInitiated: false, now: t.addingTimeInterval(90_000), remindAt: next))
+        XCTAssertTrue(AppUpdate.offersUpdate(userInitiated: false, now: t, remindAt: nil))
+    }
+
+    func testBetaFallbackRule() {
+        XCTAssertTrue(AppUpdate.fallsBackToStable(betaFeedUsed: true, updateFound: false, noUpdate: false))
+        XCTAssertFalse(AppUpdate.fallsBackToStable(betaFeedUsed: false, updateFound: false, noUpdate: false),
+                       "stabiler Kanal, Testumleitung oder schon im Rückfall")
+        XCTAssertFalse(AppUpdate.fallsBackToStable(betaFeedUsed: true, updateFound: true, noUpdate: false),
+                       "Fehler beim Laden oder Installieren")
+        XCTAssertFalse(AppUpdate.fallsBackToStable(betaFeedUsed: true, updateFound: false, noUpdate: true),
+                       "Beta-Datei gelesen, kein Update")
+    }
+
     func testMacBuildScriptUsesTheSameFeedIntervalAndKey() throws {
         let script = try String(contentsOf: root.appendingPathComponent("tools/build_app.sh"), encoding: .utf8)
         XCTAssertTrue(script.contains("<key>SUFeedURL</key><string>\(AppUpdate.feedMac)</string>"))
@@ -52,7 +111,7 @@ final class AppUpdateTests: XCTestCase {
     }
 
     func testReleaseScriptMarksUpdatesCritical() throws {
-        XCTAssertTrue(AppUpdate.installsAutomatically)
+        XCTAssertTrue(AppUpdate.autoInstallDefault)
         let script = try String(contentsOf: root.appendingPathComponent("tools/make_release.py"), encoding: .utf8)
         XCTAssertTrue(script.contains("FIRST_AUTO_INSTALL_VERSION = \"\(AppUpdate.firstAutoInstallVersion)\""))
         let macStart = try XCTUnwrap(script.range(of: "updateinfo-mac.xml\").write_text"))
@@ -73,12 +132,9 @@ final class AppUpdateTests: XCTestCase {
         XCTAssertEqual(AppUpdate.firstAutoInstallVersion, "1.1.0.0")
     }
 
-    func testReleaseScriptWritesUpdateinfoFilesAndLegacyCopies() throws {
+    func testReleaseScriptWritesUpdateinfoFiles() throws {
         let script = try String(contentsOf: root.appendingPathComponent("tools/make_release.py"), encoding: .utf8)
         XCTAssertTrue(script.contains("\"updateinfo-mac.xml\"") && script.contains("\"updateinfo-win.xml\""))
-        for legacy in ["appcast-mac.xml", "appcast-windows.xml", "appcast-win.xml"] {
-            XCTAssertTrue(script.contains("\"\(legacy)\""), "Alter Name \(legacy) fehlt in make_release.py (Fassungen 1.0.x)")
-        }
     }
 
     /// Öffentlicher Ed25519-Schlüssel: 32 Byte, Base64 in einer Zeile (so erwarten ihn Sparkle und WinSparkle).

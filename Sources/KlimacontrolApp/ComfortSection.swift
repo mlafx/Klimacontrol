@@ -15,6 +15,10 @@ struct ComfortSection: View, Equatable {
     nonisolated static func == (a: ComfortSection, b: ComfortSection) -> Bool { a.state == b.state }
     @State private var confirmSelfClean = false
 
+    private var rate: UIOptions.Availability {
+        UIOptions.rateAvailability(mode: state.mode, capabilities: state.capabilities)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             SectionTitle(text: L.Main.Section.comfort)
@@ -36,6 +40,7 @@ struct ComfortSection: View, Equatable {
             VStack(alignment: .leading, spacing: 0) {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 3), spacing: 6) {
                     row(L.Main.Comfort.ieco, "gauge.with.dots.needle.33percent", state.ieco, .ieco) { on in model.setIECO(on) }
+                    row(L.Main.Comfort.sleep, "moon", state.sleep, .sleep) { on in model.setSleep(on) }
                     row(L.Main.Comfort.ionizer, "sparkles", state.purifier, .purifier) { on in model.update { $0.purifier = on } }
                     row(L.Main.Comfort.frostProtection, "snowflake.circle", state.freezeProtection, .freezeProtection) { on in
                         model.update { $0.freezeProtection = on }
@@ -58,7 +63,8 @@ struct ComfortSection: View, Equatable {
                     .pickerStyle(.segmented).labelsHidden().fixedSize()
                 }
                 .padding(.top, 4)
-                .help(UIOptions.rateHelp)
+                .disabled(!rate.enabled)
+                .help(rate.enabled ? UIOptions.rateHelp : rate.why ?? UIOptions.rateHelp)
             }
         }
         .confirmationDialog(UIText.selfCleanPrompt.title, isPresented: $confirmSelfClean) {
@@ -72,7 +78,7 @@ struct ComfortSection: View, Equatable {
     /// Große Kachel (Symbol über Text).
     private func tile(_ title: String, _ icon: String, _ on: Bool?, _ feature: UIOptions.ComfortFeature,
                       _ action: @escaping (Bool) -> Void) -> some View {
-        let a = UIOptions.availability(feature, mode: state.mode)
+        let a = UIOptions.availability(feature, mode: state.mode, capabilities: state.capabilities)
         return switchButton(title, on, enabled: a.enabled, why: a.why, radius: 12, action) {
             VStack(spacing: 4) {
                 Image(systemName: icon).font(.system(size: 15, weight: .medium))
@@ -85,7 +91,7 @@ struct ComfortSection: View, Equatable {
     /// Flache Zeile (Symbol neben Text).
     private func row(_ title: String, _ icon: String, _ on: Bool?, _ feature: UIOptions.ComfortFeature,
                      _ action: @escaping (Bool) -> Void) -> some View {
-        let a = UIOptions.availability(feature, mode: state.mode)
+        let a = UIOptions.availability(feature, mode: state.mode, capabilities: state.capabilities)
         return switchButton(title, on, enabled: a.enabled, why: a.why, radius: 10, action) {
             HStack(spacing: 6) {
                 Image(systemName: icon).font(.system(size: 13, weight: .medium)).frame(width: 16)
@@ -102,14 +108,19 @@ struct ComfortSection: View, Equatable {
                                              _ action: @escaping (Bool) -> Void,
                                              @ViewBuilder label: () -> Content) -> some View {
         let active = on == true && enabled
+        // Liquid Glass übernimmt die Deckkraft äußerer Ansichten nicht: dort die Beschriftung abblenden.
+        var glass = false
+        if #available(macOS 26, *) { glass = theme.cardFillOpacity == 0 }
+        let fade = SwitchLook.fade(on: on, enabled: enabled)
         return Button { action(on != true) } label: {
             label()
                 .foregroundStyle(active ? theme.label(on: theme.tint(for: state.mode)) : .primary)
+                .opacity(glass ? fade : 1)
                 .klimaCard(tint: active ? theme.tint(for: state.mode) : nil, radius: radius, interactive: true)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .modifier(SwitchLook(title: title, on: on, enabled: enabled, why: why))
+        .modifier(SwitchLook(title: title, on: on, enabled: enabled, why: why, fade: glass ? 1 : fade))
     }
 }
 
@@ -120,11 +131,14 @@ private struct SwitchLook: ViewModifier {
     let on: Bool?
     let enabled: Bool
     let why: String?
+    let fade: Double
+
+    static func fade(on: Bool?, enabled: Bool) -> Double { !enabled ? 0.38 : on == nil ? 0.6 : 1 }
 
     func body(content: Content) -> some View {
         content
             .disabled(!enabled)
-            .opacity(!enabled ? 0.38 : on == nil ? 0.6 : 1)
+            .opacity(fade)
             .help(on == nil && enabled ? L.Main.Comfort.unknownSuffix(text: why ?? title) : (why ?? title))
             .accessibilityAddTraits(.isToggle)
             .accessibilityValue(on == nil ? L.Common.unknown : on == true ? L.Main.State.on : L.Main.State.off)
@@ -142,14 +156,16 @@ struct ComfortInput: Equatable, Sendable {
     let ieco: Bool?
     let purifier: Bool
     let freezeProtection: Bool
+    let sleep: Bool
     let selfClean: Bool?
     let displayOn: Bool
     let sound: Bool?
     let ratePercent: Int?
+    let capabilities: ACCapabilities?
 
     init(_ s: ACState) {
         mode = s.mode; swing = s.swing; eco = s.eco; turbo = s.turbo; outSilent = s.outSilent; ieco = s.ieco
-        purifier = s.purifier; freezeProtection = s.freezeProtection; selfClean = s.selfClean
-        displayOn = s.displayOn; sound = s.sound; ratePercent = s.ratePercent
+        purifier = s.purifier; freezeProtection = s.freezeProtection; sleep = s.sleep; selfClean = s.selfClean
+        displayOn = s.displayOn; sound = s.sound; ratePercent = s.ratePercent; capabilities = s.capabilities
     }
 }

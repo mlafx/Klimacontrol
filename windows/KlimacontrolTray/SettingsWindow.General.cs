@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
@@ -219,7 +220,62 @@ public partial class SettingsWindow
         if (texts.UpdatesCheckButton.Length > 0) UpdateCheckButton.Content = texts.UpdatesCheckButton;
         UpdateCheckButton.IsEnabled = on;
         UpdateSetupHint.Visibility = on ? Visibility.Collapsed : Visibility.Visible;
+        // Einstellungen „automatisch installieren“ und Suchintervall: Texte und Liste aus dem Kern (`options.updates`).
+        var u = Core.Snap.Options.Updates;
+        UpdateAutoInstallTitle.Text = u.AutoInstallTitle;
+        UpdateAutoInstallHelp.Text = u.AutoInstallHelp;
+        AutomationProperties.SetName(UpdateAutoInstallBox, u.AutoInstallTitle);
+        UpdateIntervalTitle.Text = u.IntervalTitle;
+        AutomationProperties.SetName(UpdateIntervalBox, u.IntervalTitle);
+        UpdateInstallButton.Content = u.InstallNow;
+        AutomationProperties.SetName(UpdateInstallButton, u.InstallNow);
+        updateUpdating = true;
+        try { UpdateIntervalBox.ItemsSource = u.Intervals.Select(i => new ComboBoxItem { Content = i.Label, Tag = i.Id }).ToList(); }
+        finally { updateUpdating = false; }
+        UpdateAutoInstallBox.IsEnabled = UpdateIntervalBox.IsEnabled = on;
+        RenderUpdateSettings();
+        Core.Changed += RenderUpdateSettings;
+        Updates.HeldChanged += RenderUpdateSettings;
+        Closed += (_, _) =>
+        {
+            Core.Changed -= RenderUpdateSettings;
+            Updates.HeldChanged -= RenderUpdateSettings;
+        };
     }
+
+    bool updateUpdating;
+
+    void RenderUpdateSettings()
+    {
+        var s = Core.Snap;
+        updateUpdating = true;
+        try
+        {
+            UpdateAutoInstallBox.IsChecked = s.UpdateAutoInstall;
+            SelectTag(UpdateIntervalBox, s.UpdateInterval);
+        }
+        finally { updateUpdating = false; }
+        var help = s.Options.Updates.Intervals.FirstOrDefault(i => i.Id == s.UpdateInterval)?.Help ?? "";
+        UpdateIntervalHelp.Text = help;
+        UpdateIntervalHelp.Visibility = help.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+        var held = Updates.HeldVersion;
+        UpdateHeldRow.Visibility = held != null ? Visibility.Visible : Visibility.Collapsed;
+        UpdateHeldText.Text = held == null ? "" : s.Options.Updates.HeldBackStatusTemplate.Replace("{version}", held);
+    }
+
+    void UpdateAutoInstall_Click(object sender, RoutedEventArgs e)
+    {
+        if (updateUpdating) return;
+        WarnIfFailed(Core.Send(Cmd.UpdateAutoInstall, ("on", UpdateAutoInstallBox.IsChecked == true)));
+    }
+
+    void UpdateInterval_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (updateUpdating || UpdateIntervalBox.SelectedItem is not ComboBoxItem { Tag: string id } || id == Core.Snap.UpdateInterval) return;
+        WarnIfFailed(Core.Send(Cmd.UpdateInterval, ("value", id)));
+    }
+
+    void UpdateInstall_Click(object sender, RoutedEventArgs e) => Updates.InstallHeld();
 
     void UpdateCheck_Click(object sender, RoutedEventArgs e) => Updates.CheckNow();
 

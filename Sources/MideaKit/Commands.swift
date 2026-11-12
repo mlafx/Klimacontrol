@@ -102,8 +102,9 @@ enum Frame {
                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x03], id: id)
     }
 
-    static func getCapabilities(id: UInt8? = nil) -> Data {
-        build(.query, [0xB5, 0x01, 0x00], id: id)
+    /// Fähigkeiten abfragen; `additional` = zweite Seite (msmart-ng `GetCapabilitiesCommand(additional=True)`).
+    static func getCapabilities(additional: Bool = false, id: UInt8? = nil) -> Data {
+        build(.query, additional ? [0xB5, 0x01, 0x01, 0x01] : [0xB5, 0x01, 0x00], id: id)
     }
 
     static func getGroupData(_ group: UInt8, id: UInt8? = nil) -> Data {
@@ -123,8 +124,9 @@ enum Frame {
         return build(.query, p, id: id)
     }
 
-    static func setProperty(_ prop: PropertyId, _ on: Bool, id: UInt8? = nil) -> Data {
-        let value = prop.encode(on)
+    /// `iecoNumber` nur für iECO: erstes Datenbyte nach den Fähigkeiten (`ACCapabilities.iecoNumber`).
+    static func setProperty(_ prop: PropertyId, _ on: Bool, iecoNumber: UInt8 = 1, id: UInt8? = nil) -> Data {
+        let value = prop.encode(on, iecoNumber: iecoNumber)
         let id16 = prop.rawValue
         return build(.control, [0xB0, 1, UInt8(id16 & 0xFF), UInt8(id16 >> 8), UInt8(value.count)] + value, id: id)
     }

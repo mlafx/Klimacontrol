@@ -59,8 +59,8 @@ public enum Discovery {
         }
         AppLog.debug(LogText.t("log.discovery.broadcast", "Suche: Broadcast an {target} Port 6445 und 20086 (je 3×), warte {seconds} s", ["target": target, "seconds": String(Int(timeout))]))
         guard sentAny else {
-            throw MideaError.connectionFailed(.other(NetSocket.isUnreachable(lastError)
-                ? LANClient.localNetworkHint : LogText.t("kit.discovery.searchFailed", "Suche nicht möglich: {error}", ["error": NetSocket.describe(lastError)])))
+            throw MideaError.connectionFailed(NetSocket.isUnreachable(lastError)
+                ? .localNetwork : .other(LogText.t("kit.discovery.searchFailed", "Suche nicht möglich: {error}", ["error": NetSocket.describe(lastError)])))
         }
 
         var found: [String: DiscoveredDevice] = [:]
@@ -268,11 +268,18 @@ public enum Discovery {
 }
 
 extension PortaSplitDevice {
-    /// Prüft Token und Schlüssel per Handshake, ohne etwas zu verändern.
-    public static func verify(_ config: DeviceConfig, quiet: Bool = false) async -> Bool {
-        guard let dev = try? PortaSplitDevice(config: config) else { return false }
+    /// Prüft Token und Schlüssel per Handshake, ohne etwas zu verändern. nil = angenommen, sonst der Fehler, damit
+    /// Ablehnung, „belegt“ und „antwortet nicht“ unterscheidbar bleiben.
+    public static func check(_ config: DeviceConfig, quiet: Bool = false) async -> (any Error)? {
+        let dev: PortaSplitDevice
+        do { dev = try PortaSplitDevice(config: config) } catch { return error }
         dev.quietErrors = quiet
         defer { dev.disconnect() }
-        return (try? await dev.refresh()) != nil
+        do {
+            _ = try await dev.refresh()
+            return nil
+        } catch {
+            return error
+        }
     }
 }

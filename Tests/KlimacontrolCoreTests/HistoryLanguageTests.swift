@@ -23,7 +23,7 @@ final class HistoryLanguageTests: XCTestCase {
         + "Eco (1/0);Turbo (1/0);Quiet outdoor (1/0);Power (W);Meter total (kWh);Compressor (Hz);"
         + "Compressor target (Hz);Current (A);Voltage (V);Compressor (W);T1 indoor air (°C);T2 indoor coil (°C);"
         + "T3 outdoor coil (°C);T4 outdoor air (°C);Tp discharge (°C);Expansion valve (steps);"
-        + "Indoor fan (rpm);Outdoor fan (rpm);Condensate pump (1/0);Defrost (1/0);Meter raw\n"
+        + "Indoor fan (rpm);Outdoor fan (rpm);Condensate pump (1/0);Defrost (1/0);Meter raw;Error code\n"
 
     private func makeDB(_ name: String = "verlauf.sqlite") -> HistoryDB { HistoryDB(url: dir.appendingPathComponent(name)) }
 
@@ -65,7 +65,7 @@ final class HistoryLanguageTests: XCTestCase {
         let text = try Localizer.withLanguage(.en) {
             try FormatProfile.withProfile(.unitedStates) { try export(db, readable: true, name: "en-us.csv") }
         }
-        let expected = "1;Heat;21.5;19;-3.5;60;0;1;;640;1234.56;45;50;3;230;600;21.5;30.25;-1;-3.5;70;300;900;800;0;;123456"
+        let expected = "1;Heat;21.5;19;-3.5;60;0;1;;640;1234.56;45;50;3;230;600;21.5;30.25;-1;-3.5;70;300;900;800;0;;123456;25"
         XCTAssertEqual(text, Self.englishHeader + HistoryLog.readableTime(t) + ";" + expected + "\n")
     }
 

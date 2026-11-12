@@ -277,8 +277,6 @@ public enum CloudKeychain {
         SecretStore.delete(service: service)
         MideaCloudSession.forgetAll()
     }
-
-    public static var hasCredentials: Bool { load() != nil }
 }
 
 /// Welche der beiden Midea-Clouds eine Sitzung nutzt (Rohwert = bisheriger Text in gespeicherten Sitzungen).

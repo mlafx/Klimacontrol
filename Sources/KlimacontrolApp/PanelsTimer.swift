@@ -44,7 +44,7 @@ struct TimerRow: View, Equatable {
             Spacer()
             if model.onAt != nil {
                 // Der Tag („heute“/„morgen“) wechselt um Mitternacht – nur dann neu zeichnen.
-                TimelineView(.explicit([Date(), Calendar.current.startOfDay(for: Date()).addingTimeInterval(86_400 + 1)])) { _ in
+                TimelineView(.explicit([Date(), ACController.nextDayStart(after: Date())])) { _ in
                     chip(model.onTimerChip ?? "", "sunrise") { model.setOnTimer(at: nil) }
                 }
             } else {
@@ -56,8 +56,7 @@ struct TimerRow: View, Equatable {
             }
         }
         .font(.callout)
-        .padding(.horizontal, 12).padding(.vertical, 8)
-        .klimaCard(radius: 12)
+        // Karte und Innenabstand setzt der Aufrufer (gemeinsame Karte mit den Szenen).
     }
 
     private func chip(_ text: String, _ icon: String, cancel: @escaping () -> Void) -> some View {
@@ -78,7 +77,7 @@ private struct OnTimerPopover: View {
     @Environment(ACController.self) var model
     let close: () -> Void
     /// Nur Stunde und Minute zählen; das Datum dieses Werts wird nie benutzt.
-    @State private var time = TimerDay.defaultTime()
+    @State private var time = ACController.defaultOnTime(now: Date())
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -86,9 +85,8 @@ private struct OnTimerPopover: View {
                 .datePickerStyle(.field)
             // Der Tag steht immer dabei, damit niemand rätselt, ob heute oder morgen gemeint ist.
             TimelineView(.everyMinute) { ctx in
-                let at = TimerDay.next(time, after: ctx.date)
-                Label(L.Main.Timer.switchesOn(day: TimerDay.label(at, now: ctx.date), time: Fmt.clock(at)),
-                      systemImage: "calendar")
+                let at = ACController.nextOccurrence(of: time, after: ctx.date)
+                Label(UIText.onTimerPreview(at, now: ctx.date), systemImage: "calendar")
                     .font(.callout.weight(.medium))
             }
             Text(L.Main.Timer.onNote(requirement: ACController.timerRequirement))
@@ -98,7 +96,7 @@ private struct OnTimerPopover: View {
                 Button(L.Common.cancel, action: close)
                     .keyboardShortcut(.cancelAction)
                 Button(L.Main.Timer.set) {
-                    model.setOnTimer(at: TimerDay.next(time, after: Date()))
+                    model.setOnTimer(at: time)
                     TimerNotifier.shared.prepare()
                     close()
                 }
@@ -106,31 +104,6 @@ private struct OnTimerPopover: View {
             }
         }
         .padding(14).frame(width: 280)
-    }
-}
-
-/// Tag und Uhrzeit für den Einschalt-Timer.
-enum TimerDay {
-    /// 7:00 als Vorschlag (nur Stunde/Minute zählen).
-    static func defaultTime(_ now: Date = Date()) -> Date {
-        Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: now) ?? now
-    }
-
-    /// Nächster Zeitpunkt nach `now` mit Stunde und Minute aus `time` (heute, sonst morgen).
-    static func next(_ time: Date, after now: Date, calendar: Calendar = .current) -> Date {
-        let c = calendar.dateComponents([.hour, .minute], from: time)
-        let match = DateComponents(hour: c.hour ?? 7, minute: c.minute ?? 0, second: 0)
-        return calendar.nextDate(after: now, matching: match, matchingPolicy: .nextTime) ?? now.addingTimeInterval(86_400)
-    }
-
-    /// „heute“, „morgen“ oder Wochentag mit Datum.
-    static func label(_ date: Date, now: Date = Date(), calendar: Calendar = .current) -> String {
-        if calendar.isDate(date, inSameDayAs: now) { return DateWords.today }
-        if let tomorrow = calendar.date(byAdding: .day, value: 1, to: now), calendar.isDate(date, inSameDayAs: tomorrow) {
-            return DateWords.tomorrow
-        }
-        return L.Timer.dayOn(weekday: DateWords.weekdayShort(calendar.component(.weekday, from: date)),
-                             date: Fmt.dayMonth(date, calendar: calendar))
     }
 }
 

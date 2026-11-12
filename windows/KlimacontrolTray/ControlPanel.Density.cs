@@ -81,17 +81,29 @@ public partial class ControlPanel
         TargetText.FontSize = D(64, 46);
         RoomBig.FontSize = D(54, 42);
         TempRow.Margin = new Thickness(0, D(8, 2), 0, 0);
-        Readings.Margin = new Thickness(0, D(14, 8), 0, 0);
-        ModeGrid.Margin = new Thickness(-3, D(14, 8), -3, 0);
+        TempScale.Margin = new Thickness(0, D(2, 0), 0, 0);
+        HeroDivider.Margin = new Thickness(0, D(14, 8), 0, 0);
+        // Unter „Mehr …“ ohne Trennlinie davor.
+        Readings.Margin = new Thickness(0, arrangedSimple == true ? 0 : D(12, 8), 0, 0);
+        MoreReadingsHost.Margin = new Thickness(0, D(8, 4), 0, 0);
+        // Karten: Abstand untereinander und Innenabstand (Theme.CardPadding, kompakt kleiner).
+        var gap = new Thickness(0, D(14, 8), 0, 0);
+        var inset = new Thickness(D(Theme.CardPadding, 12));
+        ControlsCard.Margin = GroupCard.Margin = gap;
+        ControlsCard.Padding = GroupCard.Padding = inset;
+        FanDivider.Margin = new Thickness(0, D(14, 8), 0, 0);
+        FanPanel.Margin = new Thickness(0, D(14, 8), 0, 0);
+        GroupDivider.Margin = new Thickness(0, D(8, 6), 0, D(8, 6));
+        Scenes.Margin = new Thickness(0, arrangedSimple == true ? D(12, 8) : 0, 0, 0);
+        Timers.Margin = new Thickness(0);
         foreach (var t in modeTiles.Values.Concat(new[] { swingTile, ecoTile, turboTile, silentTile }))
         {
             t.MinHeight = D(54, 44);
             t.Padding = new Thickness(4, D(6, 3), 4, D(6, 3));
         }
-        FanPanel.Margin = new Thickness(0, D(16, 10), 0, 0);
         ComfortPanel.Margin = new Thickness(0, D(12, 6), 0, 0);
         MorePanel.Margin = new Thickness(0, D(14, 8), 0, 0);
-        foreach (var r in new[] { ieco, purifier, freeze, clean, display, sound }) r.Height = D(34, 30);
+        foreach (var r in new[] { ieco, sleep, purifier, freeze, clean, display, sound }) r.Height = D(34, 30);
         RateRow.Margin = new Thickness(0, D(10, 6), 0, 0);
         Scenes.Compact = compact;
         Timers.Compact = compact;

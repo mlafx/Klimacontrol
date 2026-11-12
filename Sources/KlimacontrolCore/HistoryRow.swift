@@ -145,6 +145,7 @@ extension HistoryColumn {
         flag("kondensatpumpe") { _, d in d.condensatePump },
         flag("abtauen") { _, d in d.defrost },
         int("zaehler_roh") { _, d in d.energyCounterRaw },
+        int("fehlercode") { s, _ in s.errorCode },
     ]
 
     /// Alle Spalten, Zeit zuerst.

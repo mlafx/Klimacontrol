@@ -66,6 +66,10 @@ final class BridgeEnergyTests: XCTestCase {
         XCTAssertGreaterThan(try XCTUnwrap(last["measuredKWh"] as? Double), 0)
         XCTAssertTrue((o["summary"] as? String)?.hasPrefix("Summe ") ?? false)
         XCTAssertLessThanOrEqual(periods.count, 3)
+        // Wert über dem Balken auch für den laufenden Zeitraum; Durchschnitt nur aus abgeschlossenen (hier keiner).
+        XCTAssertNotNil(last["valueText"] as? String, "\(last)")
+        XCTAssertNil(o["average"])
+        XCTAssertNil(o["averageText"])
     }
 
     func testEmptyHistoryGivesEmptyList() throws {

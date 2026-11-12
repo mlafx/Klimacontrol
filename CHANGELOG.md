@@ -5,6 +5,40 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 `1.0.0.1`, Fehlerbehebung → `1.0.1.0`, Neues → `1.1.0.0`, Änderungen, die Einrichtung oder Daten unbrauchbar machen →
 `2.0.0.0`.
 
+## [1.3.0.0] – 2026-11-12
+
+### Hinzugefügt
+- Schlafmodus als Schalter unter „Weitere Funktionen“ (nur beim Kühlen und Heizen).
+- Fehlercode der Anlage: Jeder Wechsel steht im Protokoll und im Verlauf (neue Spalte „Fehlercode“ im Export).
+- Verbrauch: Wert über jedem Balken und gestrichelte Linie für den Durchschnitt der abgeschlossenen Zeiträume.
+- Darstellung: Einstellung „Außentemperatur im Temperaturgraphen zeigen“; die Skala der Solltemperatur zeigt die Raumtemperatur als Marke.
+- Updates: Einstellungen „Updates automatisch installieren“ und „Nach Updates suchen“ (täglich oder wöchentlich); ohne automatische Installation wird ein geladenes Update erst nach „Jetzt installieren“ installiert.
+- Windows: Eine beschädigte Einstellungsdatei wird beim Start beiseitegelegt und gemeldet, statt still durch Standardwerte ersetzt zu werden.
+- Windows: Der Reiter „Darstellung“ zeigt oben eine Vorschau, die Thema, Hell/Dunkel und Größe sofort übernimmt.
+
+### Geändert
+- Hauptfenster: Modus und Lüfter sowie Szenen und Timer stehen jeweils in einer gemeinsamen Karte, der Ein/Aus-Knopf ist beschriftet.
+- Verlauf: Leistung, Temperatur und Außentemperatur stehen in einer Karte mit gemeinsamer Zeitachse und gleichen Achsen auf Mac und Windows; ein Band unter der Leistung zeigt den Modus, Kennzahlen stehen als Zeile statt in vier Kacheln, Soll ist gestrichelt in der Farbe des Modus, Außentemperatur grau gepunktet und geglättet.
+- Windows: Das Hauptfenster folgt denselben Regeln für Spalten und Größe wie am Mac; Reiter und gestapelte Spalten entfallen.
+- Windows: Beim Lüften sind Solltemperatur und Skala ausgeblendet.
+- Ausführliches Protokoll: Der Schalter gilt nur bis zum Beenden der App, ein Hinweis zeigt, solange er an ist.
+- Schalter für Funktionen, die die Anlage laut ihren Fähigkeiten nicht hat, sind gesperrt (Kurzinfo nennt den Grund); am Mac zeigt der Lüfterregler Turbo und Außengerät leise nur bei vorhandener Funktion.
+
+### Behoben
+- Verlauf: Beschriftungen unter den Verbrauchsbalken und die letzte Uhrzeit unter den Graphen wurden abgeschnitten; lässt sich der Verlauf nicht speichern, steht ein Hinweis statt „Noch zu wenig Daten“.
+- Mac: Im Vollbild blieb unter dem Graphen der Außentemperatur eine leere Fläche; eingeschaltete Knöpfe waren im hellen Modus blass, die Karten der Steuerspalte wirkten bei durchscheinendem Fenster dunkel und fast deckend, im hellen Modus fast weiß statt wie die Karten von Verlauf und Diagnose.
+- Mac: Mit eingeschaltetem Beta-Kanal scheiterte jede Suche, solange es keine Vorabversion gab, und stabile Updates blieben aus.
+- Mac: Das Menüleisten-Fenster blieb nach dem Ausschalten der Anlage zu hoch und zeigte den Inhalt ohne runde Ecken am unteren Rand.
+- Windows: Die Versionshinweise im Update-Fenster waren im dunklen Modus kaum lesbar.
+- Englische Oberfläche: Hinweise zur ausgeschalteten Anlage, zur Freigabe „Lokales Netzwerk“ und zum Zeitlimit erschienen teils auf Deutsch oder nur als „not reachable“.
+- Einrichtung mit dem Midea-Konto: Eine belegte oder nicht antwortende Anlage wurde als Ablehnung des Tokens gemeldet.
+- Sicherung einlesen: Eine unlesbare Szene verwarf still alle Szenen der Sicherung.
+- Adresse neu suchen: Eine ungültige gefundene Adresse endete ohne Rückmeldung.
+- Mini-Fenster: Bei „Groß angezeigt: Raum“ ohne Raumtemperatur stand „–“ statt der Solltemperatur.
+- ⌘↑/⌘↓ (Mac) bzw. Strg+↑/↓ (Windows) verstellten beim Lüften die Solltemperatur; Windows zeigte im Infobereich beim Lüften ein Soll und rundete Raumtemperaturen bei x,5 ab.
+- iECO und „Leistung begrenzen“ lassen sich wie in der Midea-App nur beim Kühlen einschalten, iECO beim Heizen nur, wenn die Anlage es unterstützt; nimmt die Anlage iECO im aktuellen Modus nicht an, nennt der Hinweis den Modus.
+- Technischer Unterbau überarbeitet, zahlreiche kleinere Fehler behoben.
+
 ## [1.2.0.0] – 2026-11-08
 
 ### Hinzugefügt

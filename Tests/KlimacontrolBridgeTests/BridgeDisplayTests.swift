@@ -74,7 +74,10 @@ final class BridgeDisplayTests: XCTestCase {
         s.mode = .heat
         controller.state = s
         var a = try XCTUnwrap(json()["availability"] as? [String: [String: Any]])
-        XCTAssertEqual(Set(a.keys), Set(UIOptions.ComfortFeature.allCases.map(\.rawValue)))
+        XCTAssertEqual(Set(a.keys), Set(UIOptions.ComfortFeature.allCases.map(\.rawValue) + ["fan", "target", "rate"]))
+        XCTAssertEqual(a["rate"]?["enabled"] as? Bool, false)
+        XCTAssertEqual(a["fan"]?["enabled"] as? Bool, true)
+        XCTAssertEqual(a["target"]?["enabled"] as? Bool, true)
         XCTAssertEqual(a["eco"]?["enabled"] as? Bool, false)
         XCTAssertEqual(a["eco"]?["why"] as? String, "Eco gibt es nur beim Kühlen")
         XCTAssertEqual(a["freezeProtection"]?["enabled"] as? Bool, true)
@@ -83,6 +86,29 @@ final class BridgeDisplayTests: XCTestCase {
         a = try XCTUnwrap(json()["availability"] as? [String: [String: Any]])
         XCTAssertEqual(a["eco"]?["enabled"] as? Bool, true)
         XCTAssertEqual(a["freezeProtection"]?["enabled"] as? Bool, false)
+        s.mode = .dry
+        controller.state = s
+        a = try XCTUnwrap(json()["availability"] as? [String: [String: Any]])
+        XCTAssertEqual(a["fan"]?["enabled"] as? Bool, false)
+        XCTAssertEqual(a["fan"]?["why"] as? String, UIOptions.fanLockedText)
+        s.mode = .fan
+        controller.state = s
+        a = try XCTUnwrap(json()["availability"] as? [String: [String: Any]])
+        XCTAssertEqual(a["target"]?["enabled"] as? Bool, false)
+    }
+
+    func testAvailabilityFollowsCapabilities() throws {
+        var s = ACState()
+        s.power = true
+        s.mode = .cool
+        s.capabilities = ACCapabilities(raw: [0x021E: [0], 0x0048: [0]])
+        controller.state = s
+        let a = try XCTUnwrap(json()["availability"] as? [String: [String: Any]])
+        XCTAssertEqual(a["purifier"]?["enabled"] as? Bool, false)
+        XCTAssertEqual(a["purifier"]?["why"] as? String, "Diese Anlage unterstützt „Ionisierer“ nicht")
+        XCTAssertEqual(a["rate"]?["enabled"] as? Bool, false)
+        XCTAssertEqual(a["rate"]?["why"] as? String, "Diese Anlage unterstützt „Leistung begrenzen“ nicht")
+        XCTAssertEqual(a["eco"]?["enabled"] as? Bool, true, "nicht gemeldet: Modusregel")
     }
 
     func testDisplayTexts() throws {
@@ -112,6 +138,76 @@ final class BridgeDisplayTests: XCTestCase {
         XCTAssertNil(j["quitPrompt"], "ohne Timer keine Rückfrage")
         controller.offAt = Date().addingTimeInterval(3600)
         XCTAssertEqual((try json()["quitPrompt"] as? [String: Any])?["title"] as? String, "Klimacontrol beenden?")
+    }
+
+    func testWindowRulesComeFromMainWindowLayout() throws {
+        let o = try XCTUnwrap(json()["options"] as? [String: Any])
+        let w = try XCTUnwrap(o["window"] as? [String: Any])
+        let widths: [String: Double] = [
+            "controlWidth": MainWindowLayout.controlWidth, "historyMin": MainWindowLayout.historyMin,
+            "historyBalanced": MainWindowLayout.historyBalanced, "historyGridFrom": MainWindowLayout.historyGridFrom,
+            "diagnosticsMin": MainWindowLayout.diagnosticsMin, "diagnosticsMax": MainWindowLayout.diagnosticsMax,
+            "controlsOnlyMaxWidth": MainWindowLayout.controlsOnlyMaxWidth,
+            "historyBaseHeight": MainWindowLayout.historyBaseHeight, "singleOverhead": MainWindowLayout.singleOverhead,
+            "gridOverhead": MainWindowLayout.gridOverhead, "gridRowMax": MainWindowLayout.gridRowMax,
+            "chartStep": MainWindowLayout.chartStep, "energyBarMaxWidth": MainWindowLayout.energyBarMaxWidth,
+        ]
+        for (key, value) in widths {
+            XCTAssertEqual((w[key] as? NSNumber)?.doubleValue, value, key)
+        }
+        let heights = try XCTUnwrap(w["minimumHeight"] as? [String: Double])
+        XCTAssertEqual(heights, ["compact": 470, "normal": 520, "large": 600])
+        XCTAssertEqual(w["chartMin"] as? [String: Double], ["power": 120, "temperature": 150, "outdoor": 80, "energy": 150])
+        XCTAssertEqual(w["chartMax"] as? [String: Double], ["power": 260, "temperature": 340, "outdoor": 180, "energy": 240])
+        XCTAssertEqual(w["gridChartMin"] as? [String: Double], ["power": 180, "temperature": 180, "outdoor": 150, "energy": 150])
+        // Gegenprobe: Mehr Platz als die Höchsthöhen ändert nichts mehr.
+        let huge = MainWindowLayout.chartHeights(columnHeight: 10_000)
+        XCTAssertEqual(w["chartMax"] as? [String: Double],
+                       ["power": huge.power, "temperature": huge.temperature, "outdoor": huge.outdoor, "energy": huge.energy])
+    }
+
+    /// Die Bridge nennt die Lückenregel als Faktor und Mindestwert; beides muss `UIOptions.chartGapThreshold` ergeben.
+    func testChartGapRuleMatchesTheCore() throws {
+        let chart = try XCTUnwrap((json()["options"] as? [String: Any])?["chart"] as? [String: Any])
+        let factor = try XCTUnwrap((chart["gapFactor"] as? NSNumber)?.doubleValue)
+        let minimum = try XCTUnwrap((chart["gapMinSeconds"] as? NSNumber)?.doubleValue)
+        let windows = try XCTUnwrap((chart["windowCount"] as? NSNumber)?.doubleValue)
+        let ranges: [Double] = UIOptions.chartRanges.map(\.seconds) + [0, 60, 30 * 86400, 365 * 86400]
+        for range in ranges {
+            XCTAssertEqual(max(minimum, factor * max(1, range / windows)), UIOptions.chartGapThreshold(range: range),
+                           accuracy: 1e-9, "Zeitraum \(range) s")
+        }
+    }
+
+    func testDetailedLogFieldsFollowTheCore() throws {
+        let before = AppLog.debugEnabled
+        defer { AppLog.debugEnabled = before }
+        controller.setDetailedLog(false)
+        var j = try json()
+        XCTAssertEqual(j["debugLog"] as? Bool, false)
+        XCTAssertTrue(j["debugLogNotice"] == nil || j["debugLogNotice"] is NSNull)
+        try runCommand(try XCTUnwrap(CommandArgs(json: #"{"cmd":"debugLog","on":true}"#)), controller)
+        j = try json()
+        XCTAssertEqual(j["debugLog"] as? Bool, true)
+        XCTAssertEqual(j["debugLogNotice"] as? String, "Ausführliches Protokoll aktiv")
+    }
+
+    func testHistoryUnavailableFollowsTheDatabase() throws {
+        XCTAssertEqual(try json()["historyUnavailable"] as? Bool, false)
+
+        let blocked = FileManager.default.temporaryDirectory.appendingPathComponent("klimacontrol-bridge-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: blocked) }
+        // Ein Ordner an der Stelle der Datenbank lässt sich nicht öffnen (und wird nicht als kaputte Datei beiseitegelegt).
+        try FileManager.default.createDirectory(at: blocked.appendingPathComponent("verlauf.sqlite"),
+                                                withIntermediateDirectories: true)
+        let accounts = CloudAccountStore(load: { nil }, save: { _ in }, clear: {}, verify: { _, _ in })
+        let c = ACController(appVersion: "test", settings: NoSettings(), paths: CorePaths(directory: blocked),
+                             platform: NoPlatform(), accounts: accounts,
+                             makeDevice: { _, _, _ in throw MideaError.connectionFailed("Test") }, autostart: false)
+        defer { c.stop() }
+        XCTAssertFalse(c.history.db.isOpen)
+        let j = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(snapshotJSON(c).utf8)) as? [String: Any])
+        XCTAssertEqual(j["historyUnavailable"] as? Bool, true)
     }
 
     func testSnapshotStaysStable() throws {

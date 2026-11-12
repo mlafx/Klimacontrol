@@ -209,7 +209,7 @@ public enum ConfigError: Error, LocalizedError {
 
 /// Steuerung einer Midea-Anlage (Klimacontrol) im lokalen WLAN oder über die Cloud (`connectionMode`).
 /// `@unchecked Sendable`: `beep`, `onPhase`, `commandBudget` und `idleDisconnect` liegen im `Mutex` `shared`; `last`,
-/// `lastAt`, `idleWork` und der Transport werden nur auf der seriellen `queue` benutzt.
+/// `lastAt`, `capabilities`, `idleWork` und der Transport werden nur auf der seriellen `queue` benutzt.
 public final class PortaSplitDevice: @unchecked Sendable {
     public let config: DeviceConfig
     /// Signalton bei Befehlen (die PortaSplit piept ohnehin nur bei Ein/Aus). Die App setzt ihn vom Hauptthread,
@@ -239,6 +239,8 @@ public final class PortaSplitDevice: @unchecked Sendable {
     private var last: ACState?
     /// Zeitpunkt von `last` (nur auf der Queue).
     private var lastAt: Date?
+    /// Gelesene Fähigkeiten (nur auf der Queue).
+    private var capabilities: ACCapabilities?
 
     /// Verbindungsschritt (Anlage suchen · Anmelden · Werte lesen) für die Startanzeige. Wird auf der Geräte-Queue
     /// aufgerufen; die App springt selbst auf den Hauptthread.
@@ -293,6 +295,7 @@ public final class PortaSplitDevice: @unchecked Sendable {
     public func refresh() async throws -> ACState {
         try await run { [self] in
             var state = try queryState()
+            state.capabilities = capabilities
             applyProperties(try? queryProperties(optional: true), to: &state)
             if let (watts, kwh) = try? queryEnergy() {
                 state.powerWatts = watts
@@ -320,7 +323,7 @@ public final class PortaSplitDevice: @unchecked Sendable {
         }
     }
 
-    /// Ändert den Grundzustand (Ein/Aus, Modus, Temperatur, Lüfter, Swing, Eco, Turbo, Ionisierer, Frostschutz).
+    /// Ändert den Grundzustand (Ein/Aus, Modus, Temperatur, Lüfter, Swing, Eco, Turbo, Ionisierer, Frostschutz, Schlafmodus).
     public func update(_ change: @escaping @Sendable (inout ACState) -> Void) async throws -> ACState {
         try await run { [self] in
             // Frisch lesen (eine andere App oder die Fernbedienung kann etwas geändert haben) – außer der letzte
@@ -374,7 +377,7 @@ public final class PortaSplitDevice: @unchecked Sendable {
 
     /// Steuerfelder eines Stellbefehls; nach dem Setzen werden nur die geänderten geprüft.
     enum ControlField: CaseIterable {
-        case power, mode, temp, fan, swing, eco, turbo, purifier, freeze
+        case power, mode, temp, fan, swing, eco, turbo, purifier, freeze, sleep
 
         /// Name im Protokoll („Stellbefehl nicht übernommen: soll“).
         var label: String {
@@ -388,6 +391,7 @@ public final class PortaSplitDevice: @unchecked Sendable {
             case .turbo: return LogText.t("kit.control.turbo", "turbo")
             case .purifier: return LogText.t("kit.control.purifier", "ionisierer")
             case .freeze: return LogText.t("kit.control.freeze", "frostschutz")
+            case .sleep: return LogText.t("kit.control.sleep", "schlafmodus")
             }
         }
 
@@ -402,6 +406,7 @@ public final class PortaSplitDevice: @unchecked Sendable {
             case .turbo: return a.turbo == b.turbo
             case .purifier: return a.purifier == b.purifier
             case .freeze: return a.freezeProtection == b.freezeProtection
+            case .sleep: return a.sleep == b.sleep
             }
         }
     }
@@ -488,7 +493,7 @@ public final class PortaSplitDevice: @unchecked Sendable {
             for attempt in 0..<2 {
                 if attempt > 0 { Thread.sleep(forTimeInterval: 1.5) }
                 do {
-                    _ = try client.send(Frame.setProperty(prop, on))
+                    _ = try client.send(Frame.setProperty(prop, on, iecoNumber: capabilities?.iecoNumber ?? 1))
                     state = carry(try queryState())
                 } catch {
                     throw Self.unclearOutcome(error)
@@ -506,6 +511,37 @@ public final class PortaSplitDevice: @unchecked Sendable {
             remember(state)
             if !applied { throw MideaError.commandNotApplied(state) }
             return state
+        }
+    }
+
+    /// Fähigkeiten (0xB5, bis zu zwei Seiten) nur lesen und merken; spätere Zustände tragen sie mit.
+    /// nil = keine Antwort. Ein Fehler sperrt das WLAN nicht (eine Abfrage je Seite, ohne Wiederholung).
+    public func readCapabilities() async throws -> ACCapabilities? {
+        try await run { [self] in
+            var caps: ACCapabilities?
+            var more = false
+            for page in 0..<2 where page == 0 || more {
+                more = false
+                let frames = (try? client.sendSingle(Frame.getCapabilities(additional: page > 0), expect: 0xB5)) ?? []
+                for frame in frames {
+                    if case .capabilities(let c, let m)? = try? Response.parse(frame) {
+                        caps = caps ?? ACCapabilities()
+                        caps?.merge(c)
+                        more = more || m
+                    }
+                }
+            }
+            guard let caps else {
+                AppLog.write(LogText.t("log.device.capabilitiesNone", "Fähigkeiten der Anlage: keine Antwort"))
+                return nil
+            }
+            capabilities = caps
+            last?.capabilities = caps
+            AppLog.write(LogText.t("log.device.capabilities",
+                                   "Fähigkeiten der Anlage (iECO {ieco}/{end}, Nummer {number}): {list}",
+                                   ["ieco": caps.ieco.map { String($0) } ?? "–", "end": caps.iecoEnd.map { String($0) } ?? "–",
+                                    "number": String(caps.iecoNumber), "list": caps.summary]))
+            return caps
         }
     }
 
@@ -561,6 +597,7 @@ public final class PortaSplitDevice: @unchecked Sendable {
     /// Werte, die nicht in der Zustandsmeldung stehen, vom letzten Stand übernehmen.
     private func carry(_ new: ACState) -> ACState {
         var s = new
+        s.capabilities = capabilities
         guard let last else { return s }
         s.outSilent = last.outSilent
         s.selfClean = last.selfClean

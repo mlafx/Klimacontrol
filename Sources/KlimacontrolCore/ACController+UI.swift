@@ -61,12 +61,8 @@ extension ACController {
         return true
     }
 
-    /// Große Zahl im Mini-Fenster: Soll, außer ausgeschaltet, beim Lüften oder bei „Groß angezeigt: Raum“.
-    public var miniValue: String {
-        guard let s = state else { return "–" }
-        if !s.power || s.mode == .fan || appearance.hero == .room { return Fmt.temp(s.indoorTemperature) }
-        return Fmt.target(s.targetTemperature)
-    }
+    /// Große Zahl im Mini-Fenster: dieselbe Regel wie die große Zahl im Hauptfenster (`heroValue`).
+    public var miniValue: String { heroValue }
 
     /// Zeile darunter: „Kühlen · Raum 24,5°“, „Lüften · Raum“, „Aus · Raum“ oder „Stand 14:32“ bei alten Werten.
     public var miniCaption: String {
@@ -74,17 +70,20 @@ extension ACController {
         guard let s = state else { return L.Status.connecting }
         if let stale = uiStaleSince { return Fmt.stand(stale) }
         guard s.power else { return L.Status.miniOff }
-        if s.mode == .fan || appearance.hero == .room { return L.Status.miniRoomOnly(mode: s.mode.title) }
+        if s.mode == .fan || roomIsBig { return L.Status.miniRoomOnly(mode: s.mode.title) }
         return L.Status.miniRoom(mode: s.mode.title, temp: Fmt.temp(s.indoorTemperature))
     }
 
     // MARK: Lüfter-Zonen
 
-    /// „Außengerät leise“ und Turbo wirken nur beim Kühlen und Heizen.
-    public var fanZonesAvailable: Bool {
-        guard let m = state?.mode else { return false }
-        return UIOptions.isAvailable(.outdoorSilent, in: m)
+    /// Zonen des Lüfterreglers nach Modus und Fähigkeiten der Anlage (ohne Zustand keine).
+    public var fanZones: UIOptions.FanZones {
+        guard let s = state else { return .none }
+        return UIOptions.fanZones(s.mode, capabilities: s.capabilities)
     }
+
+    /// Mindestens eine Zone („Außengerät leise“ oder Turbo) ist am Regler.
+    public var fanZonesAvailable: Bool { fanZones.any }
 
     nonisolated static func inQuietZone(_ s: ACState) -> Bool { s.fanSpeed == 1 && s.outSilent == true }
     nonisolated static func inTurboZone(_ s: ACState) -> Bool { s.fanSpeed == 100 && s.turbo }
@@ -124,17 +123,17 @@ extension ACController {
 
     /// Plan für ein Ziel. Wer eine Zone verlässt, schaltet ihre Funktion ab – im selben Lüfterbefehl (Turbo) bzw.
     /// einmal („Außengerät leise“). Eine per Kachel gesetzte Funktion bleibt, solange der Lüfter nicht in ihrer Zone war.
-    nonisolated static func fanPlan(_ target: FanTarget, origin o: ACState, zones: Bool) -> FanPlan? {
+    nonisolated static func fanPlan(_ target: FanTarget, origin o: ACState, zones: UIOptions.FanZones) -> FanPlan? {
         switch target {
         case .quiet:
-            guard zones else { return nil }
+            guard zones.quiet else { return nil }
             return FanPlan(fanSpeed: 1, turbo: false, outSilent: true)
         case .turbo:
-            guard zones else { return nil }
+            guard zones.turbo else { return nil }
             return FanPlan(fanSpeed: 100, turbo: true, ecoOff: true, outSilent: o.outSilent == true ? false : nil)
         case .speed(let v):
-            let leftTurbo = zones && inTurboZone(o)
-            let leftQuiet = zones && inQuietZone(o)
+            let leftTurbo = zones.turbo && inTurboZone(o)
+            let leftQuiet = zones.quiet && inQuietZone(o)
             return FanPlan(fanSpeed: v, turbo: leftTurbo ? false : o.turbo, outSilent: leftQuiet ? false : nil)
         }
     }
@@ -158,7 +157,7 @@ extension ACController {
         guard device != nil, let current = state else { return }
         let pending = debounce[.fan] != nil
         let origin = pending ? (debounceOrigin[.fan] ?? current) : current
-        guard let plan = Self.fanPlan(target, origin: origin, zones: fanZonesAvailable) else { return }
+        guard let plan = Self.fanPlan(target, origin: origin, zones: fanZones) else { return }
         if !pending, !plan.changesState(origin), !plan.changesSilent(origin) { return }
         generation += 1
         debounceOrigin[.fan] = origin
@@ -211,17 +210,19 @@ extension ACController {
     }
 
     /// Modus wählen: schaltet ein; Eco gibt es nur beim Kühlen, Turbo und „Außengerät leise“ nur beim Kühlen
-    /// und Heizen – was im neuen Modus nicht geht, geht aus.
+    /// und Heizen (jeweils nur mit der Fähigkeit) – was im neuen Modus nicht geht, geht aus.
     public func setMode(_ mode: OperationalMode) {
         guard device != nil, let origin = state else { return }
-        let coolOrHeat = UIOptions.isAvailable(.turbo, in: mode)
+        let caps = origin.capabilities
+        let keepEco = UIOptions.isAvailable(.eco, in: mode, capabilities: caps)
+        let keepTurbo = UIOptions.isAvailable(.turbo, in: mode, capabilities: caps)
         let change: @Sendable (inout ACState) -> Void = { s in
             s.power = true
             s.mode = mode
-            if !UIOptions.isAvailable(.eco, in: mode) { s.eco = false }
-            if !coolOrHeat { s.turbo = false }
+            if !keepEco { s.eco = false }
+            if !keepTurbo { s.turbo = false }
         }
-        let dropSilent = !coolOrHeat && origin.outSilent == true
+        let dropSilent = !UIOptions.isAvailable(.outdoorSilent, in: mode, capabilities: caps) && origin.outSilent == true
         generation += 1
         var shown = origin
         change(&shown)
@@ -237,9 +238,9 @@ extension ACController {
         }
     }
 
-    /// Eco (nur beim Kühlen); schaltet Turbo ab.
+    /// Eco (nur beim Kühlen, nur mit der Fähigkeit); schaltet Turbo ab.
     public func setEco(_ on: Bool) {
-        if on, let m = state?.mode, !UIOptions.isAvailable(.eco, in: m) { return }
+        if on, let s = state, !UIOptions.isAvailable(.eco, in: s.mode, capabilities: s.capabilities) { return }
         if on, state == nil { return }
         update { s in
             s.eco = on
@@ -247,13 +248,21 @@ extension ACController {
         }
     }
 
-    /// Turbo (nur beim Kühlen und Heizen); schaltet Eco ab.
+    /// Turbo (nur beim Kühlen und Heizen, nur mit der Fähigkeit); schaltet Eco ab.
     public func setTurbo(_ on: Bool) {
-        if on, !fanZonesAvailable { return }
+        if on, !fanZones.turbo { return }
         update { s in
             s.turbo = on
             if on { s.eco = false }
         }
+    }
+
+    /// Schlafmodus (nur beim Kühlen und Heizen); gemeldet wird, was die Anlage zurückgibt.
+    public func setSleep(_ on: Bool) {
+        if on {
+            guard let s = state, UIOptions.isAvailable(.sleep, in: s.mode, capabilities: s.capabilities) else { return }
+        }
+        update { $0.sleep = on }
     }
 
     /// Solltemperatur in ganzen Grad (16–30 °C); schnelle Folgewerte werden gesammelt.

@@ -117,6 +117,7 @@ private let switchCommands: [BridgeCommand] = [
         let on = try a.bool("on")
         c.update { $0.freezeProtection = on }
     },
+    .device("sleep") { a, c in c.setSleep(try a.bool("on")) },
     .device("outdoorSilent") { a, c in c.setOutdoorSilent(try a.bool("on")) },
     .device("selfClean") { a, c in c.setSelfClean(try a.bool("on")) },
     .device("ieco") { a, c in c.setIECO(try a.bool("on")) },
@@ -194,14 +195,16 @@ private let settingsCommands: [BridgeCommand] = [
         guard ACController.validCurrency(v) != nil else { throw CommandError(ACController.currencyHint) }
         c.currency = v
     },
-    // Wie am Mac (LogSettings): Umschalten selbst ins Protokoll schreiben.
-    .always("debugLog") { a, _ in
-        let on = try a.bool("on")
-        AppLog.debugEnabled = on
-        results.debugLog = on
-        AppLog.write(L.Log.Settings.detailedLog(state: on ? L.Log.Common.on : L.Log.Common.off))
-    },
+    // Gilt nur für die laufende Sitzung; das Umschalten schreibt der Kern ins Protokoll.
+    .always("debugLog") { a, c in c.setDetailedLog(try a.bool("on")) },
     .always("historyCSV") { a, c in c.historyCSV = try a.bool("on") },
+    // Updates: geladene Updates ohne Rückfrage installieren; Suchintervall "daily" | "weekly".
+    .always("updateAutoInstall") { a, c in c.updateAutoInstall = try a.bool("on") },
+    .always("updateInterval") { a, c in
+        let v = try a.string("value")
+        guard let interval = UpdateInterval(rawValue: v) else { throw a.invalid("value", L.Bridge.Expect.updateInterval) }
+        c.updateInterval = interval
+    },
     .always("diagnosticsVisible") { a, c in c.diagnosticsVisible = try a.bool("on") },
     // Sichtbare Oberflächen ("main", "flyout", "settings"); ohne sichtbare fragt der Kern höchstens alle 30 s ab.
     .always("uiVisible") { a, c in

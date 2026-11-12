@@ -49,6 +49,81 @@ struct VisibilityProbe: NSViewRepresentable {
     }
 }
 
+/// Hält das Fenster des `MenuBarExtra` genau so groß wie seinen Inhalt, mit der Oberkante dort, wo das System es beim
+/// Öffnen unter die Menüleiste gesetzt hat. Das Fenster folgt dem Inhalt selbst nur beim Wachsen; wird der Inhalt
+/// kürzer (Anlage aus, Szenen zu, Umfang „Einfach“), bleibt es zu hoch, der Inhalt rutscht an den unteren Rand und
+/// die Glasfläche des Fensters steht leer darüber. `size` ist die gemessene Inhaltsgröße; das Fenster folgt ihr nur,
+/// die Messung hängt nicht von der Fenstergröße ab.
+struct MenuBarWindowFitter: NSViewRepresentable {
+    let size: CGSize
+
+    func makeNSView(context: Context) -> Fitter { Fitter() }
+
+    func updateNSView(_ nsView: Fitter, context: Context) {
+        guard nsView.size != size else { return }
+        nsView.size = size
+        nsView.scheduleFit()
+    }
+
+    final class Fitter: NSView {
+        var size: CGSize = .zero
+        /// Oberkante beim Öffnen; eigene Größenänderungen verschieben sie nicht.
+        private var top: CGFloat?
+        private var pending = false
+        private var observers: [any NSObjectProtocol] = []
+
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            observers.forEach(NotificationCenter.default.removeObserver)
+            observers = []
+            top = nil
+            guard let window else { return }
+            observers = [
+                // Das Menüleisten-Fenster wird beim Schließen nur ausgeblendet; beim nächsten Öffnen setzt das System
+                // es neu unter das Symbol. Darum die Oberkante je Öffnen neu merken.
+                NotificationCenter.default.addObserver(forName: NSWindow.didChangeOcclusionStateNotification, object: window, queue: .main) { [weak self, weak window] _ in
+                    MainActor.assumeIsolated {
+                        guard let self, let window else { return }
+                        if window.occlusionState.contains(.visible) {
+                            if self.top == nil { self.top = window.frame.maxY }
+                            self.scheduleFit()
+                        } else if !window.isVisible {
+                            self.top = nil
+                        }
+                    }
+                },
+            ]
+            if window.isVisible { top = window.frame.maxY }
+            scheduleFit()
+        }
+
+        /// Nicht während der Aktualisierung der Ansicht: `setFrame` löst sofort ein neues Layout aus.
+        func scheduleFit() {
+            guard !pending else { return }
+            pending = true
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                self.pending = false
+                self.fit()
+            }
+        }
+
+        private func fit() {
+            guard let window, window.isVisible, size.width > 0, size.height > 0 else { return }
+            let current = window.frame
+            let anchor = top ?? current.maxY
+            var target = window.frameRect(forContentRect: NSRect(origin: current.origin, size: size))
+            target.origin.x = current.minX
+            target.origin.y = anchor - target.height
+            guard abs(target.height - current.height) > 0.5 || abs(target.width - current.width) > 0.5
+                || abs(target.maxY - current.maxY) > 0.5 else { return }
+            window.setFrame(target, display: true, animate: false)
+            // Randloses Fenster: ohne neu berechneten Schatten bliebe der Umriss der alten Größe stehen.
+            window.invalidateShadow()
+        }
+    }
+}
+
 /// Zustand und Rahmenlogik des Hauptfensters. Alle Rahmenänderungen beim Ein- und Ausblenden der Seitenspalten laufen
 /// hier; die Rechnung selbst steht im Kern (`MainWindowFrame`).
 @MainActor
@@ -286,10 +361,6 @@ enum SideColumns {
 
     static func toggle(_ c: MainWindowLayout.Column) {
         set(c, !UserDefaults.standard.bool(forKey: key(c)))
-    }
-
-    static func binding(_ c: MainWindowLayout.Column) -> Binding<Bool> {
-        Binding(get: { UserDefaults.standard.bool(forKey: key(c)) }, set: { set(c, $0) })
     }
 }
 

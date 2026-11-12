@@ -21,11 +21,10 @@ final class ReleaseScriptTests: XCTestCase {
         let pipe = Pipe()
         process.standardOutput = pipe
         process.standardError = pipe
-        var output = Data()
-        let reader = DispatchQueue(label: "release-script-test.read")
+        let output = Locked(Data())
         pipe.fileHandleForReading.readabilityHandler = { handle in
             let chunk = handle.availableData
-            reader.sync { output.append(chunk) }
+            output.mutate { $0.append(chunk) }
         }
         try process.run()
         let finished = DispatchSemaphore(value: 0)
@@ -37,7 +36,7 @@ final class ReleaseScriptTests: XCTestCase {
         }
         pipe.fileHandleForReading.readabilityHandler = nil
         let rest = pipe.fileHandleForReading.readDataToEndOfFile()
-        let text = reader.sync { String(decoding: output + rest, as: UTF8.self) }
+        let text = String(decoding: output.value + rest, as: UTF8.self)
         XCTAssertEqual(process.terminationStatus, 0, "tools/test_make_release.py fehlgeschlagen:\n\(text)")
         #else
         throw XCTSkip("Python-Selbsttest läuft nur am Mac")

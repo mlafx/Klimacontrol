@@ -89,17 +89,40 @@ public enum UIOptions {
     public static var fanLockedText: String { L.Options.Fan.locked }
     public static var fanAutoHelp: String { L.Options.Fan.autoHelp }
 
+    /// Beim Trocknen regelt die Anlage den Lüfter selbst; der Regler ist gesperrt.
+    public static func fanLocked(_ mode: OperationalMode) -> Bool { mode == .dry }
+
+    /// Zonen des Lüfterreglers: „Außengerät leise“ ganz links, Turbo ganz rechts. Jede nur, wo ihre Funktion im Modus
+    /// wirkt und die Anlage sie laut Fähigkeiten hat (ohne Fähigkeiten: beide beim Kühlen und Heizen).
+    public struct FanZones: Equatable, Sendable {
+        public var quiet: Bool
+        public var turbo: Bool
+        public var any: Bool { quiet || turbo }
+
+        public static let none = FanZones(quiet: false, turbo: false)
+
+        public init(quiet: Bool, turbo: Bool) {
+            self.quiet = quiet
+            self.turbo = turbo
+        }
+    }
+
+    public static func fanZones(_ mode: OperationalMode, capabilities: ACCapabilities? = nil) -> FanZones {
+        FanZones(quiet: isAvailable(.outdoorSilent, in: mode, capabilities: capabilities),
+                 turbo: isAvailable(.turbo, in: mode, capabilities: capabilities))
+    }
+
     /// Kopfzeile des Lüfters: „automatisch“, „Außengerät leise · 1 %“, „Turbo · 100 %“, „Mittel · 60 %“, „37 %“;
     /// beim Trocknen der feste Text. Eine Funktion, die an ist, ohne dass der Lüfter in ihrer Zone steht (Kachel,
     /// Fernbedienung), wird angehängt.
     public static func fanCaption(_ s: ACState) -> String {
-        if s.mode == .dry { return fanLockedText }
-        let zones = isAvailable(.turbo, in: s.mode)
+        if fanLocked(s.mode) { return fanLockedText }
+        let zones = fanZones(s.mode, capabilities: s.capabilities)
         let auto = s.fanSpeed == FanSpeed.auto.rawValue
-        let quietOn = zones && s.outSilent == true
-        let turboOn = zones && s.turbo
-        if zones, !auto, s.fanSpeed == 1, quietOn { return L.Options.Fan.quietOutdoorOne }
-        if zones, !auto, s.fanSpeed == 100, turboOn { return L.Options.Fan.turboMax }
+        let quietOn = zones.quiet && s.outSilent == true
+        let turboOn = zones.turbo && s.turbo
+        if !auto, s.fanSpeed == 1, quietOn { return L.Options.Fan.quietOutdoorOne }
+        if !auto, s.fanSpeed == 100, turboOn { return L.Options.Fan.turboMax }
         let base: String
         if auto {
             base = L.Options.Fan.autoCaption
@@ -157,14 +180,16 @@ public enum UIOptions {
 
     /// Ab dieser Lücke zwischen zwei Punkten bricht die Linie ab: das Dreifache des Punktabstands, mindestens 3 min.
     public static func chartGapThreshold(range: TimeInterval) -> TimeInterval {
-        max(180, 3 * max(1, range / Double(chartWindowCount)))
+        max(chartGapMinSeconds, chartGapFactor * max(1, range / Double(chartWindowCount)))
     }
+    public static let chartGapFactor = 3.0
+    public static let chartGapMinSeconds = 180.0
 
     // MARK: Gültigkeit je Modus
 
     /// Schalter, die nicht in jedem Modus gelten.
     public enum ComfortFeature: String, CaseIterable, Sendable {
-        case swing, eco, turbo, outdoorSilent, ieco, purifier, freezeProtection, selfClean, display, sound
+        case swing, eco, turbo, outdoorSilent, ieco, purifier, freezeProtection, selfClean, display, sound, sleep
     }
 
     public struct Availability: Equatable, Sendable {
@@ -174,30 +199,110 @@ public enum UIOptions {
     }
 
     /// Einzige Quelle für „gilt im Modus“: Eco nur Kühlen, Turbo und Außengerät leise nur Kühlen/Heizen, Frostschutz
-    /// nur Heizen. `setMode`, `setEco`, `setTurbo` und die Lüfter-Zonen benutzen dieselbe Regel.
-    public static func isAvailable(_ f: ComfortFeature, in mode: OperationalMode) -> Bool {
+    /// nur Heizen, Schlafmodus nur Kühlen/Heizen, iECO nur beim Kühlen (`iecoAvailable`). `setMode`, `setEco`, `setTurbo` und die Lüfter-Zonen
+    /// benutzen dieselbe Regel. `capabilities`: Fähigkeiten der Anlage, nil = unbekannt; meldet die Anlage eine
+    /// Funktion als nicht vorhanden, ist sie in keinem Modus frei, sonst gilt die Modusregel.
+    public static func isAvailable(_ f: ComfortFeature, in mode: OperationalMode,
+                                   capabilities: ACCapabilities? = nil) -> Bool {
+        if supported(f, capabilities: capabilities) == false { return false }
         switch f {
         case .eco: return mode == .cool
-        case .turbo, .outdoorSilent: return mode == .cool || mode == .heat
+        case .turbo: return turboInMode(mode, capabilities: capabilities) ?? false
+        case .outdoorSilent: return mode == .cool || mode == .heat
         case .freezeProtection: return mode == .heat
-        case .swing, .ieco, .purifier, .selfClean, .display, .sound: return true
+        case .sleep: return mode == .cool || mode == .heat
+        case .ieco: return iecoAvailable(in: mode, capabilities: capabilities)
+        case .swing, .purifier, .selfClean, .display, .sound: return true
         }
     }
 
-    public static func availability(_ f: ComfortFeature, mode: OperationalMode) -> Availability {
-        let on = isAvailable(f, in: mode)
+    /// Meldet die Anlage die Funktion (0xB5, Lesart wie msmart-ng)? nil = nicht gemeldet oder Fähigkeiten unbekannt.
+    /// Schwenken heißt hier nur senkrecht, weil die App nur das anbietet.
+    public static func supported(_ f: ComfortFeature, capabilities: ACCapabilities?) -> Bool? {
+        guard let c = capabilities else { return nil }
+        switch f {
+        case .swing: return c.swingVertical
+        case .eco: return c.eco
+        case .turbo: return c.turboCool.map { $0 || c.turboHeat == true }
+        case .outdoorSilent: return c.outSilent
+        case .ieco: return c.iecoSupported
+        case .purifier: return c.anion
+        case .freezeProtection: return c.freezeProtection
+        case .selfClean: return c.selfClean
+        case .display: return c.displayControl
+        case .sound: return c.sound
+        case .sleep: return nil
+        }
+    }
+
+    /// Turbo im Modus: nil = gilt im Modus nicht (nur Kühlen/Heizen); false = die Anlage hat Turbo nur im anderen Modus.
+    static func turboInMode(_ mode: OperationalMode, capabilities: ACCapabilities?) -> Bool? {
+        switch mode {
+        case .cool: return capabilities?.turboCool ?? true
+        case .heat: return capabilities?.turboHeat ?? true
+        case .dry, .auto, .fan: return nil
+        }
+    }
+
+    /// iECO nur beim Kühlen (wie die Midea-App an der PortaSplit: „Nur im Kühlmodus verfügbar“), beim Heizen nur, wenn
+    /// die Anlage „ieco_heat“ meldet (msmart-ng). Ohne gemeldete iECO-Fähigkeit gilt es beim Kühlen.
+    static func iecoAvailable(in mode: OperationalMode, capabilities: ACCapabilities?) -> Bool {
+        let c = capabilities.flatMap { $0.reportsIECO ? $0 : nil }
+        switch mode {
+        case .cool: return c?.iecoCool ?? true
+        case .heat: return c?.iecoHeat ?? false
+        case .dry, .auto, .fan: return false
+        }
+    }
+
+    /// Beschriftung des Schalters für die Kurzinfo „Diese Anlage unterstützt … nicht“.
+    static func featureTitle(_ f: ComfortFeature) -> String {
+        switch f {
+        case .swing: return L.Main.Comfort.swing
+        case .eco: return L.Main.Comfort.eco
+        case .turbo: return L.Options.Fan.turbo
+        case .outdoorSilent: return L.Options.Fan.quietOutdoor
+        case .ieco: return L.Main.Comfort.ieco
+        case .purifier: return L.Main.Comfort.ionizer
+        case .freezeProtection: return L.Main.Comfort.frostProtection
+        case .selfClean: return L.Main.Comfort.selfClean
+        case .display: return L.Main.Comfort.display
+        case .sound: return L.Main.Comfort.sound
+        case .sleep: return L.Main.Comfort.sleep
+        }
+    }
+
+    /// „Leistung begrenzen“ nur beim Kühlen (wie die Midea-App an der PortaSplit), gesperrt, wenn die Anlage es nicht hat.
+    public static func rateAvailability(mode: OperationalMode, capabilities: ACCapabilities? = nil) -> Availability {
+        if capabilities?.rateSelect == false {
+            return Availability(enabled: false, why: L.Availability.unsupported(feature: L.Main.Comfort.limitPower))
+        }
+        return Availability(enabled: mode == .cool, why: L.Availability.rate)
+    }
+
+    public static func availability(_ f: ComfortFeature, mode: OperationalMode,
+                                    capabilities: ACCapabilities? = nil) -> Availability {
+        if supported(f, capabilities: capabilities) == false {
+            return Availability(enabled: false, why: L.Availability.unsupported(feature: featureTitle(f)))
+        }
+        let on = isAvailable(f, in: mode, capabilities: capabilities)
         switch f {
         case .swing: return Availability(enabled: on, why: L.Availability.swing)
         case .eco: return Availability(enabled: on, why: L.Availability.eco)
-        case .turbo: return Availability(enabled: on, why: on ? L.Availability.turboOn : L.Availability.turboOff)
+        case .turbo:
+            if turboInMode(mode, capabilities: capabilities) == false {
+                return Availability(enabled: false, why: L.Availability.unsupportedInMode(feature: featureTitle(f)))
+            }
+            return Availability(enabled: on, why: on ? L.Availability.turboOn : L.Availability.turboOff)
         case .outdoorSilent:
             return Availability(enabled: on, why: on ? L.Availability.outdoorSilentOn : L.Availability.outdoorSilentOff)
-        case .ieco: return Availability(enabled: on, why: L.Availability.ieco)
+        case .ieco: return Availability(enabled: on, why: on ? L.Availability.iecoOn : L.Availability.iecoOff)
         case .purifier: return Availability(enabled: on, why: nil)
         case .freezeProtection: return Availability(enabled: on, why: L.Availability.freezeProtection)
         case .selfClean: return Availability(enabled: on, why: L.Availability.selfClean)
         case .display: return Availability(enabled: on, why: L.Availability.display)
         case .sound: return Availability(enabled: on, why: nil)
+        case .sleep: return Availability(enabled: on, why: on ? L.Availability.sleepOn : L.Availability.sleepOff)
         }
     }
 

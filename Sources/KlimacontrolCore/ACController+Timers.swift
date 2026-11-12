@@ -130,13 +130,24 @@ extension ACController {
     }
 
     /// Nächstes Vorkommen der Uhrzeit (Stunde:Minute) von `date` nach `now`.
-    static func nextOccurrence(of date: Date, after now: Date) -> Date {
+    public nonisolated static func nextOccurrence(of date: Date, after now: Date) -> Date {
         if date > now, date.timeIntervalSince(now) <= 86400 { return date }
         let cal = Calendar.current
         let c = cal.dateComponents([.hour, .minute], from: date)
         return cal.nextDate(after: now, matching: DateComponents(hour: c.hour, minute: c.minute, second: 0),
                             matchingPolicy: .nextTime, direction: .forward)
             ?? now.addingTimeInterval(86400)
+    }
+
+    /// Vorschlag für den Einschalt-Timer: 7:00 (nur Stunde und Minute zählen).
+    public nonisolated static func defaultOnTime(now: Date) -> Date {
+        Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: now) ?? now
+    }
+
+    /// Beginn des nächsten Tages in Ortszeit: Dann wechselt „heute“/„morgen“ (auch an Tagen mit 23 oder 25 Stunden).
+    public nonisolated static func nextDayStart(after now: Date) -> Date {
+        let cal = Calendar.current
+        return cal.date(byAdding: .day, value: 1, to: cal.startOfDay(for: now)) ?? now.addingTimeInterval(86400)
     }
 
     /// „heute 07:00“, „morgen 07:00“ bzw. „Mi 07:00“ – der Tag ist immer sichtbar.

@@ -121,11 +121,14 @@ public partial class ControlPanel
         FanMarks.Children.Add(b);
     }
 
+    /// Lüfter gesperrt (beim Trocknen regelt die Anlage ihn selbst) nach `availability["fan"]` des Kerns.
+    internal static bool FanLocked(Snapshot s) => !s.IsEnabled("fan");
+
     void RenderFan(Snapshot s, AcState st, Color tint)
     {
         var tintBrush = Paints.Of(tint);
         EnsureFanMarks(s.Options.Fan);
-        var locked = st.Mode == 3;
+        var locked = FanLocked(s);
         zones = s.FanZonesAvailable;
         fanAuto = st.Fan == Codes.FanAuto;
         fanSpeed = st.Fan;

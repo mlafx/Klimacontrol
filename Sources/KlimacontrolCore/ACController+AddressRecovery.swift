@@ -67,7 +67,12 @@ extension ACController {
         var candidate = cfg
         candidate.ip = found.ip
         if found.port != 0 { candidate.port = found.port }
-        guard let checked = try? candidate.validated() else { return false }
+        let checked: DeviceConfig
+        do { checked = try candidate.validated() } catch {
+            AppLog.error(L.Log.Relocate.invalid(ip: found.ip, error: error.localizedDescription))
+            relocateDone(L.Message.Relocate.invalid(ip: found.ip))
+            return false
+        }
         let check = await checkExclusively(checked)
         if let error = check.error {
             AppLog.error(L.Log.Relocate.loginFailed(ip: found.ip, error: error.localizedDescription))

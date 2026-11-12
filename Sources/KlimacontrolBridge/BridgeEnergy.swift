@@ -9,12 +9,17 @@ struct EnergyPeriodDTO: Encodable {
     var kWh, measuredKWh: Double?
     var complete, current: Bool
     var label, name, tooltip, costText: String
+    /// Wert über dem Balken („4,2“); fehlt ohne Wert oder bei mehr als `UIOptions.energyValuesMaxBars` Zeiträumen.
+    var valueText: String?
 }
 
 struct EnergyDTO: Encodable {
     var kind: String
     var periods: [EnergyPeriodDTO]
     var summary: String
+    /// Durchschnitt der abgeschlossenen Zeiträume (gestrichelte Linie) und sein Text für die Legende.
+    var average: Double?
+    var averageText: String?
 }
 
 struct EnergyErrorDTO: Encodable {
@@ -44,8 +49,11 @@ let energyMaxCount = 60
                             measuredKWh: $0.measuredKWh, complete: $0.complete, current: $0.current,
                             label: UIText.energyPeriodLabel($0, kind: kind), name: UIText.energyPeriodName($0, kind: kind),
                             tooltip: UIText.energyTooltip($0, kind: kind, price: price, currency: currency),
-                            costText: UIText.energyCost($0, price: price, currency: currency))
+                            costText: UIText.energyCost($0, price: price, currency: currency),
+                            valueText: UIText.energyBarValue($0, barCount: periods.count))
         },
-        summary: UIText.energySummary(periods, price: price, currency: currency))
+        summary: UIText.energySummary(periods, price: price, currency: currency),
+        average: UIText.energyAverage(periods),
+        averageText: UIText.energyAverageText(periods))
     return encode(dto, fallback: errorFallback)
 }

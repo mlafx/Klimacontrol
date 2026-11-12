@@ -76,6 +76,21 @@ final class ControllerTests: CoreTestCase {
         XCTAssertTrue(c.relocateMessage?.contains("nicht an") ?? false, c.relocateMessage ?? "")
     }
 
+    /// Eine ungültige Adresse aus der Suche endet nicht stumm: Rückmeldung am Ort der Aktion und als Hinweis.
+    func testRelocateReportsInvalidAddress() async throws {
+        let c = try await makeConnected()
+        c.locate = { _ in (ip: "999.1.1.1", port: 6444) }
+        var probed = false
+        c.probe = CredentialProbe { _ in probed = true; return nil }
+        let ok = await c.relocate()
+        XCTAssertFalse(ok)
+        XCTAssertFalse(probed)
+        XCTAssertEqual(c.relocateMessage, L.Message.Relocate.invalid(ip: "999.1.1.1"))
+        XCTAssertNotNil(c.notice)
+        XCTAssertEqual(c.config?.ip, Self.config.ip)
+        c.stop()
+    }
+
     /// Belegt oder keine Antwort unter der neuen Adresse ist keine Ablehnung: Rat „erneut versuchen“, nicht
     /// „neu einrichten“.
     func testRelocateBusyIsNotTreatedAsRejection() async throws {
@@ -229,6 +244,27 @@ final class ControllerTests: CoreTestCase {
         c.stop()
     }
 
+    /// Unlesbare Szenen in einer Sicherung verschwinden nicht still: lesbare werden übernommen, der Rest gemeldet.
+    func testImportReportsUnreadableScenes() async throws {
+        let c = try await makeConnected()
+        let url = dir.appendingPathComponent("szenen-kaputt.json")
+        let good = ACScene(id: "g", name: "Gut", powerOn: true, mode: 2, tempC: 22, fan: 50, swing: false, eco: false,
+                           anion: false, outdoorSilent: false, selfClean: false)
+        try Self.config.exportBackup(to: url, scenes: [good])
+        var json = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+        var scenes = try XCTUnwrap(json["scenes"] as? [Any])
+        scenes.append(["id": "k", "name": "Kaputt"])
+        json["scenes"] = scenes
+        try JSONSerialization.data(withJSONObject: json).write(to: url)
+        c.probe = CredentialProbe { _ in nil }
+        let r = try await c.importBackupChecked(from: url)
+        XCTAssertEqual(r.scenesImported, 1)
+        XCTAssertEqual(r.scenesUnreadable, 1)
+        XCTAssertEqual(c.scenes.map(\.name), ["Gut"])
+        XCTAssertEqual(c.notice, L.Message.Backup.scenesUnreadable)
+        c.stop()
+    }
+
     func testImportRejectedByDeviceKeepsSetup() async throws {
         let c = try await makeConnected()
         var newer = Self.config
@@ -339,7 +375,7 @@ final class ControllerTests: CoreTestCase {
         XCTAssertFalse(m.text.contains("WLAN:"), "Rohtext nur im Detail")
         XCTAssertEqual(m.detail, "Keine Verbindung zur Anlage: WLAN: antwortet nicht · Cloud: token expired (3004)")
         XCTAssertNil(UserMessage.from(MideaError.allPathsFailed([lanDown])).code)
-        let off = PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: "in 5 min"), text: "Anlage ausgeschaltet")
+        let off = PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: Date()), text: "Anlage ausgeschaltet")
         XCTAssertTrue(UserMessage.isDeviceOff(MideaError.allPathsFailed([lanDown, off])))
         XCTAssertFalse(UserMessage.isDeviceOff(MideaError.allPathsFailed([lanDown, cloudCode])))
         XCTAssertFalse(UserMessage.isDeviceOff(MideaError.connectionFailed("Anlage ausgeschaltet (3123)")), "kein Textvergleich")
@@ -436,5 +472,21 @@ final class ControllerTests: CoreTestCase {
         c.checkTimers(now: now.addingTimeInterval(1))
         try await waitUntil("Timer ausgeführt") { c.offAt == nil }
         XCTAssertFalse(fake.current.power)
+    }
+
+    func testDetailedLogIsSessionOnlyWithNotice() throws {
+        let before = AppLog.debugEnabled
+        defer { AppLog.debugEnabled = before }
+        AppLog.debugEnabled = false
+        let c = makeController()
+        XCTAssertFalse(c.detailedLog)
+        XCTAssertNil(c.detailedLogNotice)
+        c.setDetailedLog(true)
+        XCTAssertTrue(AppLog.debugEnabled)
+        XCTAssertEqual(c.detailedLogNotice, "Ausführliches Protokoll aktiv")
+        XCTAssertNil(settings.object(forKey: "debugLog"))
+        c.setDetailedLog(false)
+        XCTAssertFalse(AppLog.debugEnabled)
+        XCTAssertNil(c.detailedLogNotice)
     }
 }

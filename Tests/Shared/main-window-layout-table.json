@@ -1,0 +1,78 @@
+{
+  "comment": "Spalten und Rahmen des Hauptfensters (MainWindowLayout, MainWindowFrame) für Swift (MainWindowLayoutTableTests) und C#. Breiten der Seitenspalten schließen ihre Trennlinie ein. widths: MainWindowLayout.minimumWidth, widths(total:visible:) und historyUsesGrid(width:) mit der Verlaufsbreite; Regel: Steuerung fest 480, erst Mindestbreiten (Verlauf 460, Diagnose 340), Überschuss zuerst an den Verlauf bis 700, dann an die Diagnose bis 400, danach wieder an den Verlauf, ohne Verlauf als Rand rechts; unter der Mindestbreite wird nicht gequetscht; Raster ab Verlauf 880. resolve: resolve(wanted:available:lastOpened:); passt es nicht, bleibt nur die zuletzt geöffnete Spalte (null = Verlauf), passt auch die nicht, nur die Steuerung; hidden in der Reihenfolge der Rechnung. grow/shrink/limitWidth/growHeight/isConstrained: MainWindowFrame; Rahmen {x, y, width, height} in Bildschirmkoordinaten wie AppKit (y nach oben, y = untere Kante). grow, shrink, limitWidth und isConstrained ändern bzw. prüfen nur x und width und gelten unter WPF (y nach unten) unverändert für Left/Width; growHeight hält die obere Kante (AppKit: y + height), unter WPF also Top. grow: null, wenn minimum breiter als der Bildschirm ist.",
+  "widths": [
+    {"note": "nur Steuerung, genau Mindestbreite", "total": 480, "history": false, "diagnostics": false, "minimum": 480, "expected": {"history": 0, "control": 480, "diagnostics": 0, "margin": 0}, "historyGrid": false},
+    {"note": "nur Steuerung, Rest ist Rand", "total": 520, "history": false, "diagnostics": false, "minimum": 480, "expected": {"history": 0, "control": 480, "diagnostics": 0, "margin": 40}, "historyGrid": false},
+    {"note": "nur Steuerung, zu schmal: nicht quetschen", "total": 400, "history": false, "diagnostics": false, "minimum": 480, "expected": {"history": 0, "control": 480, "diagnostics": 0, "margin": 0}, "historyGrid": false},
+    {"note": "Verlauf, Mindestbreite", "total": 940, "history": true, "diagnostics": false, "minimum": 940, "expected": {"history": 460, "control": 480, "diagnostics": 0, "margin": 0}, "historyGrid": false},
+    {"note": "Verlauf, zu schmal", "total": 900, "history": true, "diagnostics": false, "minimum": 940, "expected": {"history": 460, "control": 480, "diagnostics": 0, "margin": 0}, "historyGrid": false},
+    {"note": "Verlauf bis 700", "total": 1180, "history": true, "diagnostics": false, "minimum": 940, "expected": {"history": 700, "control": 480, "diagnostics": 0, "margin": 0}, "historyGrid": false},
+    {"note": "Verlauf, knapp unter dem Raster", "total": 1359, "history": true, "diagnostics": false, "minimum": 940, "expected": {"history": 879, "control": 480, "diagnostics": 0, "margin": 0}, "historyGrid": false},
+    {"note": "Verlauf, Raster ab 880", "total": 1360, "history": true, "diagnostics": false, "minimum": 940, "expected": {"history": 880, "control": 480, "diagnostics": 0, "margin": 0}, "historyGrid": true},
+    {"note": "Verlauf, breit", "total": 1500, "history": true, "diagnostics": false, "minimum": 940, "expected": {"history": 1020, "control": 480, "diagnostics": 0, "margin": 0}, "historyGrid": true},
+    {"note": "Diagnose, Mindestbreite", "total": 820, "history": false, "diagnostics": true, "minimum": 820, "expected": {"history": 0, "control": 480, "diagnostics": 340, "margin": 0}, "historyGrid": false},
+    {"note": "Diagnose bis 400, Rest Rand", "total": 900, "history": false, "diagnostics": true, "minimum": 820, "expected": {"history": 0, "control": 480, "diagnostics": 400, "margin": 20}, "historyGrid": false},
+    {"note": "Diagnose, breit: Rand wächst", "total": 1000, "history": false, "diagnostics": true, "minimum": 820, "expected": {"history": 0, "control": 480, "diagnostics": 400, "margin": 120}, "historyGrid": false},
+    {"note": "alle drei, zu schmal", "total": 1000, "history": true, "diagnostics": true, "minimum": 1280, "expected": {"history": 460, "control": 480, "diagnostics": 340, "margin": 0}, "historyGrid": false},
+    {"note": "alle drei, Mindestbreite", "total": 1280, "history": true, "diagnostics": true, "minimum": 1280, "expected": {"history": 460, "control": 480, "diagnostics": 340, "margin": 0}, "historyGrid": false},
+    {"note": "alle drei, Überschuss zuerst an den Verlauf", "total": 1400, "history": true, "diagnostics": true, "minimum": 1280, "expected": {"history": 580, "control": 480, "diagnostics": 340, "margin": 0}, "historyGrid": false},
+    {"note": "alle drei, Verlauf 700", "total": 1520, "history": true, "diagnostics": true, "minimum": 1280, "expected": {"history": 700, "control": 480, "diagnostics": 340, "margin": 0}, "historyGrid": false},
+    {"note": "alle drei, dann Diagnose bis 400", "total": 1560, "history": true, "diagnostics": true, "minimum": 1280, "expected": {"history": 700, "control": 480, "diagnostics": 380, "margin": 0}, "historyGrid": false},
+    {"note": "alle drei, danach wieder der Verlauf", "total": 1800, "history": true, "diagnostics": true, "minimum": 1280, "expected": {"history": 920, "control": 480, "diagnostics": 400, "margin": 0}, "historyGrid": true}
+  ],
+  "resolve": [
+    {"note": "alles passt", "history": true, "diagnostics": true, "available": 1280, "lastOpened": null, "shown": {"history": true, "diagnostics": true}, "hidden": []},
+    {"note": "zu schmal, ohne Angabe bleibt der Verlauf", "history": true, "diagnostics": true, "available": 1279, "lastOpened": null, "shown": {"history": true, "diagnostics": false}, "hidden": ["diagnostics"]},
+    {"note": "zu schmal, zuletzt Verlauf", "history": true, "diagnostics": true, "available": 1279, "lastOpened": "history", "shown": {"history": true, "diagnostics": false}, "hidden": ["diagnostics"]},
+    {"note": "zu schmal, zuletzt Diagnose", "history": true, "diagnostics": true, "available": 1279, "lastOpened": "diagnostics", "shown": {"history": false, "diagnostics": true}, "hidden": ["history"]},
+    {"note": "zuletzt Diagnose bleibt, obwohl der Verlauf allein auch passte", "history": true, "diagnostics": true, "available": 940, "lastOpened": "diagnostics", "shown": {"history": false, "diagnostics": true}, "hidden": ["history"]},
+    {"note": "auch der Verlauf allein passt nicht: nur Steuerung", "history": true, "diagnostics": true, "available": 900, "lastOpened": "history", "shown": {"history": false, "diagnostics": false}, "hidden": ["diagnostics", "history"]},
+    {"note": "Diagnose allein passt noch", "history": true, "diagnostics": true, "available": 900, "lastOpened": "diagnostics", "shown": {"history": false, "diagnostics": true}, "hidden": ["history"]},
+    {"note": "auch die Diagnose allein passt nicht", "history": true, "diagnostics": true, "available": 800, "lastOpened": "diagnostics", "shown": {"history": false, "diagnostics": false}, "hidden": ["history", "diagnostics"]},
+    {"note": "nur Verlauf gewünscht, genau passend", "history": true, "diagnostics": false, "available": 940, "lastOpened": null, "shown": {"history": true, "diagnostics": false}, "hidden": []},
+    {"note": "nur Verlauf gewünscht, zu schmal", "history": true, "diagnostics": false, "available": 939, "lastOpened": null, "shown": {"history": false, "diagnostics": false}, "hidden": ["history"]},
+    {"note": "nur Diagnose gewünscht, zu schmal", "history": false, "diagnostics": true, "available": 819, "lastOpened": "diagnostics", "shown": {"history": false, "diagnostics": false}, "hidden": ["diagnostics"]},
+    {"note": "nur Verlauf gewünscht, zuletzt Diagnose spielt keine Rolle", "history": true, "diagnostics": false, "available": 2000, "lastOpened": "diagnostics", "shown": {"history": true, "diagnostics": false}, "hidden": []},
+    {"note": "keine Seitenspalte, sehr schmal: nichts zu verbergen", "history": false, "diagnostics": false, "available": 100, "lastOpened": null, "shown": {"history": false, "diagnostics": false}, "hidden": []}
+  ],
+  "grow": [
+    {"note": "rechts anbauen", "frame": {"x": 100, "y": 100, "width": 480, "height": 700}, "minimum": 940, "side": "right", "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": {"frame": {"x": 100, "y": 100, "width": 940, "height": 700}, "added": 460}},
+    {"note": "links anbauen, am linken Rand eingerückt", "frame": {"x": 100, "y": 100, "width": 480, "height": 700}, "minimum": 940, "side": "left", "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": {"frame": {"x": 0, "y": 100, "width": 940, "height": 700}, "added": 460}},
+    {"note": "links anbauen", "frame": {"x": 1000, "y": 100, "width": 480, "height": 700}, "minimum": 940, "side": "left", "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": {"frame": {"x": 540, "y": 100, "width": 940, "height": 700}, "added": 460}},
+    {"note": "rechts anbauen, am rechten Rand eingerückt", "frame": {"x": 1200, "y": 100, "width": 480, "height": 700}, "minimum": 940, "side": "right", "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": {"frame": {"x": 980, "y": 100, "width": 940, "height": 700}, "added": 460}},
+    {"note": "schon breit genug: nichts angebaut", "frame": {"x": 100, "y": 100, "width": 1000, "height": 700}, "minimum": 940, "side": "right", "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": {"frame": {"x": 100, "y": 100, "width": 1000, "height": 700}, "added": 0}},
+    {"note": "Mindestbreite gleich Bildschirmbreite", "frame": {"x": 300, "y": 100, "width": 480, "height": 700}, "minimum": 1920, "side": "right", "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": {"frame": {"x": 0, "y": 100, "width": 1920, "height": 700}, "added": 1440}},
+    {"note": "Mindestbreite breiter als der Bildschirm", "frame": {"x": 100, "y": 100, "width": 480, "height": 700}, "minimum": 1921, "side": "right", "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": null},
+    {"note": "höher als der Bildschirm: Höhe gekürzt", "frame": {"x": 100, "y": 0, "width": 480, "height": 1200}, "minimum": 940, "side": "right", "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": {"frame": {"x": 100, "y": 0, "width": 940, "height": 1080}, "added": 460}},
+    {"note": "zweiter Bildschirm rechts daneben", "frame": {"x": 2000, "y": 100, "width": 480, "height": 600}, "minimum": 1280, "side": "left", "screen": {"x": 1920, "y": 0, "width": 1440, "height": 900}, "expected": {"frame": {"x": 1920, "y": 100, "width": 1280, "height": 600}, "added": 800}}
+  ],
+  "shrink": [
+    {"note": "rechts zurücknehmen", "frame": {"x": 100, "y": 100, "width": 940, "height": 700}, "amount": 460, "side": "right", "minimumWidth": 480, "expected": {"x": 100, "y": 100, "width": 480, "height": 700}},
+    {"note": "links zurücknehmen", "frame": {"x": 100, "y": 100, "width": 940, "height": 700}, "amount": 460, "side": "left", "minimumWidth": 480, "expected": {"x": 560, "y": 100, "width": 480, "height": 700}},
+    {"note": "inzwischen schmaler gezogen: nur bis zur Mindestbreite", "frame": {"x": 100, "y": 100, "width": 900, "height": 700}, "amount": 460, "side": "right", "minimumWidth": 480, "expected": {"x": 100, "y": 100, "width": 480, "height": 700}},
+    {"note": "nur wenig über der Mindestbreite", "frame": {"x": 100, "y": 100, "width": 600, "height": 700}, "amount": 460, "side": "left", "minimumWidth": 480, "expected": {"x": 220, "y": 100, "width": 480, "height": 700}},
+    {"note": "schon unter der Mindestbreite: unverändert", "frame": {"x": 100, "y": 100, "width": 400, "height": 700}, "amount": 460, "side": "right", "minimumWidth": 480, "expected": {"x": 100, "y": 100, "width": 400, "height": 700}},
+    {"note": "nichts angebaut", "frame": {"x": 100, "y": 100, "width": 940, "height": 700}, "amount": 0, "side": "right", "minimumWidth": 480, "expected": {"x": 100, "y": 100, "width": 940, "height": 700}},
+    {"note": "negative Menge zählt als 0", "frame": {"x": 100, "y": 100, "width": 940, "height": 700}, "amount": -50, "side": "left", "minimumWidth": 480, "expected": {"x": 100, "y": 100, "width": 940, "height": 700}}
+  ],
+  "limitWidth": [
+    {"note": "auf 520 kürzen, linke Kante bleibt", "frame": {"x": 100, "y": 100, "width": 700, "height": 600}, "maximum": 520, "keeping": "left", "expected": {"x": 100, "y": 100, "width": 520, "height": 600}},
+    {"note": "auf 520 kürzen, rechte Kante bleibt", "frame": {"x": 100, "y": 100, "width": 700, "height": 600}, "maximum": 520, "keeping": "right", "expected": {"x": 280, "y": 100, "width": 520, "height": 600}},
+    {"note": "schon schmal genug", "frame": {"x": 100, "y": 100, "width": 500, "height": 600}, "maximum": 520, "keeping": "right", "expected": {"x": 100, "y": 100, "width": 500, "height": 600}}
+  ],
+  "growHeight": [
+    {"note": "nach unten wachsen, obere Kante bleibt", "frame": {"x": 100, "y": 500, "width": 480, "height": 300}, "minimum": 520, "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": {"x": 100, "y": 280, "width": 480, "height": 520}},
+    {"note": "unten kein Platz: nach oben eingerückt", "frame": {"x": 100, "y": 100, "width": 480, "height": 300}, "minimum": 520, "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": {"x": 100, "y": 0, "width": 480, "height": 520}},
+    {"note": "Mindesthöhe höher als der Bildschirm", "frame": {"x": 0, "y": 0, "width": 480, "height": 300}, "minimum": 520, "screen": {"x": 0, "y": 0, "width": 1920, "height": 400}, "expected": {"x": 0, "y": 0, "width": 480, "height": 400}},
+    {"note": "schon hoch genug", "frame": {"x": 100, "y": 100, "width": 480, "height": 600}, "minimum": 520, "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": {"x": 100, "y": 100, "width": 480, "height": 600}}
+  ],
+  "isConstrained": [
+    {"note": "links angeheftet, bildschirmhoch", "frame": {"x": 0, "y": 0, "width": 960, "height": 1080}, "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": true},
+    {"note": "rechts angeheftet", "frame": {"x": 960, "y": 0, "width": 960, "height": 1080}, "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": true},
+    {"note": "Toleranz 2 in der Höhe", "frame": {"x": 0, "y": 0, "width": 960, "height": 1078}, "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": true},
+    {"note": "3 zu niedrig", "frame": {"x": 0, "y": 0, "width": 960, "height": 1077}, "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": false},
+    {"note": "Toleranz 2 am Rand", "frame": {"x": 2, "y": 0, "width": 960, "height": 1080}, "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": true},
+    {"note": "bildschirmhoch, aber in der Mitte", "frame": {"x": 500, "y": 0, "width": 960, "height": 1080}, "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": false},
+    {"note": "maximiert", "frame": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "screen": {"x": 0, "y": 0, "width": 1920, "height": 1080}, "expected": true}
+  ]
+}

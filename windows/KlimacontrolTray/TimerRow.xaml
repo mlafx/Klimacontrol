@@ -1,11 +1,10 @@
 <UserControl x:Class="KlimacontrolTray.TimerRow"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:l="clr-namespace:KlimacontrolTray"
-             Margin="0,14,0,0">
+             xmlns:l="clr-namespace:KlimacontrolTray">
   <!-- Links „Ausschalten in …“ bzw. die Restzeit, rechts „Einschalten um …“ bzw. die Uhrzeit; gesetzte Timer als Chip
-       mit ✕. -->
-  <Border x:Name="TimerCard" Padding="12,8" CornerRadius="8" Background="{DynamicResource Tile}">
+       mit ✕. Keine eigene Fläche: Die Zeile liegt in der Karte mit den Szenen (ControlPanel). -->
+  <Border>
     <StackPanel>
       <Grid>
         <Grid.ColumnDefinitions>

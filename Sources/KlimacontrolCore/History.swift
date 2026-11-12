@@ -11,14 +11,23 @@ public struct HistorySample: Identifiable, Equatable, Sendable {
     public let outdoor: Double?
     public let target: Double?
     public let on: Bool
+    /// Betriebsart, solange die Anlage lief (bei gemittelten Fenstern die überwiegende); aus = nil.
+    public let mode: OperationalMode?
 
-    public init(time: Date, power: Double?, indoor: Double?, outdoor: Double?, target: Double?, on: Bool) {
+    public init(time: Date, power: Double?, indoor: Double?, outdoor: Double?, target: Double?, on: Bool,
+                mode: OperationalMode? = nil) {
         self.time = time
         self.power = power
         self.indoor = indoor
         self.outdoor = outdoor
         self.target = target
         self.on = on
+        self.mode = on ? mode : nil
+    }
+
+    /// Derselbe Punkt mit anderer Außentemperatur (geglättete Linie).
+    public func with(outdoor value: Double?) -> HistorySample {
+        HistorySample(time: time, power: power, indoor: indoor, outdoor: value, target: target, on: on, mode: mode)
     }
 
     /// Punkt, der `time` am nächsten liegt (für die Anzeige unter dem Mauszeiger). `data` muss nach Zeit sortiert sein.
@@ -36,7 +45,93 @@ public struct HistorySample: Identifiable, Equatable, Sendable {
 
     init(_ s: ACState, at time: Date) {
         self.init(time: time, power: s.powerWatts, indoor: s.indoorTemperature, outdoor: s.outdoorTemperature,
-                  target: s.power ? s.targetTemperature : nil, on: s.power)
+                  target: s.power ? s.targetTemperature : nil, on: s.power, mode: s.mode)
+    }
+
+    /// Betriebsart aus der Spalte `modus` der Datenbank (deutsche Namen wie `OperationalMode.label`).
+    static func mode(stored text: String?) -> OperationalMode? {
+        guard let text, !text.isEmpty else { return nil }
+        return OperationalMode.allCases.first { $0.label == text }
+    }
+
+    // MARK: Graphen
+
+    /// Zeitspanne des gleitenden Mittels der Außentemperatur: wenige Minuten, mindestens vier Zeitfenster des
+    /// Zeitraums. Der Fühler springt zwischen zwei benachbarten Werten; ungeglättet wird die Linie zum Block.
+    public static func outdoorSmoothingSpan(range: TimeInterval) -> TimeInterval {
+        max(600, 4 * Double(UIOptions.chartBucketSeconds(range: range)))
+    }
+
+    /// Außentemperatur als gleitender Mittelwert über `span` Sekunden (mittig um jeden Punkt). Punkte ohne
+    /// Außenwert fallen weg; über eine Lücke länger als `gapLimit` wird nicht gemittelt, die Ränder mitteln nur über
+    /// die vorhandenen Nachbarn. Zeiten und alle übrigen Werte bleiben.
+    public static func smoothedOutdoor(_ data: [HistorySample], span: TimeInterval,
+                                       gapLimit: TimeInterval) -> [HistorySample] {
+        let points = data.filter { $0.outdoor != nil }
+        guard points.count > 1, span > 0 else { return points }
+        // Abschnitte ohne Lücke: Index des ersten Punkts je Abschnitt.
+        var segment = [Int](repeating: 0, count: points.count)
+        for i in 1..<points.count {
+            let gap = points[i].time.timeIntervalSince(points[i - 1].time) > gapLimit
+            segment[i] = gap ? i : segment[i - 1]
+        }
+        let half = span / 2
+        var out: [HistorySample] = []
+        out.reserveCapacity(points.count)
+        var lo = 0, hi = 0
+        var sum = 0.0
+        for i in points.indices {
+            let t = points[i].time
+            while hi < points.count, segment[hi] == segment[i], points[hi].time.timeIntervalSince(t) <= half {
+                sum += points[hi].outdoor ?? 0
+                hi += 1
+            }
+            while lo < i, segment[lo] != segment[i] || t.timeIntervalSince(points[lo].time) > half {
+                sum -= points[lo].outdoor ?? 0
+                lo += 1
+            }
+            out.append(points[i].with(outdoor: sum / Double(hi - lo)))
+        }
+        return out
+    }
+
+    /// Geglättete Außentemperatur, wie sie der Graph eines Zeitraums zeigt (Spanne und Lückengrenze des Zeitraums).
+    public static func smoothedOutdoor(_ data: [HistorySample], range: TimeInterval) -> [HistorySample] {
+        smoothedOutdoor(data, span: outdoorSmoothingSpan(range: range), gapLimit: UIOptions.chartGapThreshold(range: range))
+    }
+
+    /// Zeit, in der die Anlage in einer Betriebsart lief (Modus-Band unter der Leistung).
+    public struct ModeRun: Equatable, Sendable {
+        public let mode: OperationalMode
+        public let start: Date
+        public let end: Date
+    }
+
+    /// Läufe gleicher Betriebsart. Ein Lauf reicht bis zum nächsten Punkt mit anderem Zustand, außer dazwischen liegt
+    /// eine Lücke länger als `gapLimit` (dann endet er beim letzten eigenen Punkt).
+    public static func modeRuns(_ data: [HistorySample], gapLimit: TimeInterval) -> [ModeRun] {
+        var out: [ModeRun] = []
+        var current: (mode: OperationalMode, start: Date, last: Date)?
+        func close(at end: Date) {
+            if let c = current, end > c.start { out.append(ModeRun(mode: c.mode, start: c.start, end: end)) }
+            current = nil
+        }
+        for p in data {
+            if let c = current {
+                let gap = p.time.timeIntervalSince(c.last) > gapLimit
+                if gap {
+                    close(at: c.last)
+                } else if p.mode != c.mode {
+                    close(at: p.time)
+                } else {
+                    current?.last = p.time
+                    continue
+                }
+            }
+            if let m = p.mode { current = (m, p.time, p.time) }
+        }
+        if let c = current { close(at: c.last) }
+        return out
     }
 }
 
@@ -166,7 +261,8 @@ public final class HistoryStore {
         guard let r = db.lastRow() else { return nil }
         let on = r.on ?? false
         return HistorySample(time: r.time, power: r.watts, indoor: r.indoor,
-                             outdoor: on || r.outdoor != 10.0 ? r.outdoor : nil, target: on ? r.target : nil, on: on)
+                             outdoor: on || r.outdoor != 10.0 ? r.outdoor : nil, target: on ? r.target : nil, on: on,
+                             mode: HistorySample.mode(stored: r.mode))
     }
 
     /// Letzter bekannter Zustand mit Zeit, aus dem Verlauf (für die abgeblendete Anzeige beim Verbinden).
@@ -176,7 +272,7 @@ public final class HistoryStore {
         guard let r = db.lastRow() else { return nil }
         var s = ACState()
         s.power = r.on ?? false
-        if let m = r.mode, let mode = OperationalMode.allCases.first(where: { $0.label == m }) { s.mode = mode }
+        if let mode = HistorySample.mode(stored: r.mode) { s.mode = mode }
         if let t = r.target { s.targetTemperature = t }
         s.indoorTemperature = r.indoor
         s.outdoorTemperature = s.power || r.outdoor != 10.0 ? r.outdoor : nil

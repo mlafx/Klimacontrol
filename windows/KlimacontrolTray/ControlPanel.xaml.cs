@@ -23,7 +23,7 @@ public partial class ControlPanel : UserControl
     readonly Dictionary<int, Button> modeTiles = new();
     readonly Dictionary<int, string> modeLabels = new();
     readonly Button swingTile, ecoTile, turboTile, silentTile;
-    readonly Button ieco, purifier, freeze, clean, display, sound;
+    readonly Button ieco, sleep, purifier, freeze, clean, display, sound;
     readonly Dictionary<int, RadioButton> rateButtons = new();
     bool updating;
     DateTime lastTempDrag;
@@ -34,6 +34,7 @@ public partial class ControlPanel : UserControl
     const string Sparkles = "M7,2 L8.2,5.8 L12,7 L8.2,8.2 L7,12 L5.8,8.2 L2,7 L5.8,5.8 Z M12.5,10.5 L13,12 L14.5,12.5 L13,13 L12.5,14.5 L12,13 L10.5,12.5 L12,12 Z";
     const string SnowflakeCircle = "M8,1.5 A6.5,6.5 0 1 1 7.99,1.5 Z M8,4.5 V11.5 M5,6.25 L11,9.75 M11,6.25 L5,9.75";
     const string Bubbles = "M5.5,6 A3,3 0 1 1 5.49,6 Z M11.5,8.8 A2.2,2.2 0 1 1 11.49,8.8 Z M11,2.5 A1.5,1.5 0 1 1 10.99,2.5 Z";
+    const string Moon = "M10.5,2 A6,6 0 1 0 14,10.5 A4.8,4.8 0 0 1 10.5,2 Z";
     const string Speaker = "M2,6 H4.5 L8,3 V13 L4.5,10 H2 Z M10.5,5.5 Q12.5,8 10.5,10.5";
     const string DisplayDashed = "M2,4 H5 M7,4 H9 M11,4 H14 V6.5 M14,9.5 V12 H11 M9,12 H7 M5,12 H2 V9.5 M2,6.5 V4";
 
@@ -42,6 +43,13 @@ public partial class ControlPanel : UserControl
 
     /// Einrichtung hier zeigen (Hauptfenster) oder nur den Weg dorthin (Fenster am Infobereich).
     public bool InlineSetup { get; set; } = true;
+
+    /// Raumtemperatur steht an der Skala unter dem Regler bzw. groß (Hauptfenster). Aus (Fenster am Infobereich, wie
+    /// die Menüleiste am Mac): keine Skala, dafür „Raum“ in den Kennzahlen.
+    public bool RoomShownElsewhere { get; set; } = true;
+
+    /// Beschriftung im Ein/Aus-Knopf („Ein“/„Aus“).
+    readonly TextBlock powerLabel = new() { FontSize = 13, FontWeight = FontWeights.SemiBold, VerticalAlignment = VerticalAlignment.Center };
 
     void OpenMain_Click(object sender, RoutedEventArgs e)
     {
@@ -52,13 +60,17 @@ public partial class ControlPanel : UserControl
     public ControlPanel()
     {
         InitializeComponent();
-        PowerButton.Content = Icons.Make(Icons.Power, 18, null, 2);
+        var powerIcon = Icons.Make(Icons.Power, 16, null, 2);
+        powerIcon.Margin = new Thickness(0, 0, 6, 0);
+        powerIcon.VerticalAlignment = VerticalAlignment.Center;
+        PowerButton.Content = new StackPanel { Orientation = Orientation.Horizontal, Children = { powerIcon, powerLabel } };
         MinusButton.Content = Icons.Make(Icons.Minus, 16, null, 1.8);
         PlusButton.Content = Icons.Make(Icons.Plus, 16, null, 1.8);
 
         foreach (var (value, label, icon) in Codes.Modes)
         {
             var tile = Tile(label, icon, () => Core.Send(Cmd.Mode, ("value", value)));
+            RoundInner(tile);
             modeTiles[value] = tile;
             modeLabels[value] = label;
             ModeGrid.Children.Add(tile);
@@ -71,22 +83,27 @@ public partial class ControlPanel : UserControl
         foreach (var t in new[] { swingTile, ecoTile, turboTile, silentTile }) ComfortGrid.Children.Add(t);
 
         ieco = Row(L.T("main.comfort.ieco"), GaugeLow, () => Toggle(Cmd.Ieco, s => s.Ieco == true));
+        sleep = Row(L.T("main.comfort.sleep"), Moon, () => Toggle(Cmd.Sleep, s => s.Sleep));
         purifier = Row(L.T("main.comfort.ionizer"), Sparkles, () => Toggle(Cmd.Purifier, s => s.Purifier));
         freeze = Row(L.T("main.comfort.frostProtection"), SnowflakeCircle, () => Toggle(Cmd.FreezeProtection, s => s.FreezeProtection));
         clean = Row(L.T("main.comfort.selfClean"), Bubbles, () => _ = SelfClean());
         display = Row(L.T("main.comfort.display"), DisplayDashed, () => Core.Send(Cmd.Display));
         sound = Row(L.T("main.comfort.sound"), Speaker, () => Toggle(Cmd.Sound, s => s.Sound ?? Core.Snap.Beep));
-        foreach (var r in new[] { ieco, purifier, freeze, clean, display, sound }) MoreGrid.Children.Add(r);
+        foreach (var r in new[] { ieco, sleep, purifier, freeze, clean, display, sound }) MoreGrid.Children.Add(r);
         RateIcon.Content = Icons.Make(GaugeHigh, 14, null, 1.4);
 
         BuildFan();
         TempSlider.PreviewMouseDown += (_, _) => lastTempDrag = DateTime.Now;
+        // Die Skala folgt dem Knopf des Reglers: bei neuer Größe oder Vorlage neu anordnen.
+        TempScale.Source = TempSlider;
+        TempSlider.SizeChanged += (_, _) => TempScale.InvalidateArrange();
+        TempSlider.Loaded += (_, _) => TempScale.InvalidateArrange();
 
-        // Kennzahlen einmal anlegen; beim Zeichnen ändern sich nur Texte, Tooltips und ob „Außen“ zu sehen ist.
-        roomValue = Reading(Icons.Thermometer, L.T("main.reading.room"), out _, out _);
-        outdoorValue = Reading(Icons.Sun, L.T("main.reading.outdoor"), out outdoorItem, out _);
-        powerValue = Reading(Icons.Bolt, L.T("main.reading.power"), out powerItem, out _);
-        todayValue = Reading(Icons.Calendar, L.T("cost.title"), out todayItem, out todayCaption);
+        // Kennzahlen einmal anlegen; beim Zeichnen ändern sich nur Texte, Tooltips und welche zu sehen sind.
+        roomValue = Reading(L.T("main.reading.room"), out roomItem, out _);
+        outdoorValue = Reading(L.T("main.reading.outdoor"), out outdoorItem, out _);
+        powerValue = Reading(L.T("main.reading.power"), out powerItem, out _);
+        todayValue = Reading(L.T("cost.title"), out todayItem, out todayCaption);
 
         // Symbole der Meldungen einmal anlegen; beim Zeichnen wechselt nur, welches zu sehen ist, und die Farbe.
         warnIcon = Icons.Make(Icons.Warning, 14, null, 1.5);
@@ -157,6 +174,7 @@ public partial class ControlPanel : UserControl
                 GroupName = "Rate",
             };
             if (toggleStyle != null) b.Style = toggleStyle;
+            ToolTipService.SetShowOnDisabled(b, true);
             AutomationProperties.SetName(b, L.F("main.windows.ratePercent", ("pct", pct.ToString(System.Globalization.CultureInfo.InvariantCulture))));
             b.Checked += (_, _) => { if (!updating && Core.Snap.State != null) Core.Send(Cmd.Rate, ("value", pct)); };
             rateButtons[pct] = b;
@@ -225,6 +243,14 @@ public partial class ControlPanel : UserControl
 
     /// Jemand tippt gerade (Szenenname, Uhrzeit, Einrichtung) – das Fenster am Infobereich bleibt dann offen.
     public bool IsTyping => Scenes.IsTyping || Timers.IsTyping || (Setup.IsVisible && Setup.IsKeyboardFocusWithin);
+
+    /// Element in einer Karte mit dem inneren Radius (wie `klimaInner` am Mac). Das Fluent-Design holt den Radius der
+    /// Knöpfe aus `Border.CornerRadius` bzw. der Ressource `ControlCornerRadius` – beides nur für diesen Knopf.
+    internal static void RoundInner(Control c)
+    {
+        c.SetResourceReference(Border.CornerRadiusProperty, "InnerRadius");
+        c.Resources["ControlCornerRadius"] = Theme.InnerCorner;
+    }
 
     /// Kachel (Modus, Komfort): Symbol und Name; zu lange Namen werden kleiner statt abgeschnitten.
     static Button Tile(string label, string icon, Action click)
@@ -361,18 +387,23 @@ public partial class ControlPanel : UserControl
         Connecting.Visibility = connecting ? Visibility.Visible : Visibility.Collapsed;
         if (connecting) Connecting.Render(s, keys);
         var show = configured && st != null ? Visibility.Visible : Visibility.Collapsed;
-        HeroBox.Visibility = ModeGrid.Visibility = Timers.Visibility = show;
-        // Umfang „Einfach“: Komfort, weitere Funktionen und Szenen nur nach „Mehr …“.
+        HeroBox.Visibility = ControlsCard.Visibility = GroupCard.Visibility = Timers.Visibility = show;
+        // Umfang „Einfach“: Kennzahlen, Komfort, weitere Funktionen und Szenen nur nach „Mehr …“; in der Karte mit den
+        // Szenen bleibt dann nur der Timer.
         var look = Appearance.Current;
         var simple = look.Scope == "simple";
         var extras = !simple || moreOpen;
+        ArrangeScope(simple);
         MoreToggle.Visibility = simple && show == Visibility.Visible ? Visibility.Visible : Visibility.Collapsed;
         if (MoreToggle.IsChecked != moreOpen) MoreToggle.IsChecked = moreOpen;
+        MoreBox.Visibility = simple && moreOpen ? show : Visibility.Collapsed;
+        HeroReadingsHost.Visibility = simple ? Visibility.Collapsed : Visibility.Visible;
+        ScenesHost.Visibility = GroupDivider.Visibility = simple ? Visibility.Collapsed : Visibility.Visible;
         Scenes.Visibility = extras ? show : Visibility.Collapsed;
         RenderMessages(s, keys);
         if (st == null)
         {
-            FanPanel.Visibility = ComfortPanel.Visibility = Visibility.Collapsed;
+            FanPanel.Visibility = FanDivider.Visibility = ComfortPanel.Visibility = Visibility.Collapsed;
             LivelyLayer.Halt();
             WeatherLayer.Halt();
             return;
@@ -393,9 +424,12 @@ public partial class ControlPanel : UserControl
         Hero.Background = on && live && !Theme.HighContrast ? Paints.Of(Color.FromArgb(0x40, tint.R, tint.G, tint.B)) : (Brush)FindResource("Tile");
         PowerButton.Background = on ? Theme.ActiveFillBrush(live ? tint : DotGray.Color) : (Brush)FindResource("Card");
         PowerButton.Foreground = on ? Theme.ActiveText : (Brush)FindResource("Fg");
+        powerLabel.Text = L.T(on ? "main.power.stateOn" : "main.power.stateOff");
         var powerKey = on ? "main.power.turnOff" : "main.power.turnOn";
         PowerButton.ToolTip = L.Tip(powerKey, keys ? Hotkeys.Ctrl("P") : "");
+        // Name = Aktion, Zustand extra (wie am Mac: Beschriftung „Ausschalten“, Wert „ein“).
         AutomationProperties.SetName(PowerButton, L.T(powerKey));
+        AutomationProperties.SetItemStatus(PowerButton, L.T(on ? "main.state.on" : "main.state.off"));
         AutomationProperties.SetAcceleratorKey(PowerButton, keys ? Hotkeys.Ctrl("P") : "");
         MinusButton.ToolTip = L.Tip("main.step.cooler", keys ? "↓" : "");
         PlusButton.ToolTip = L.Tip("main.step.warmer", keys ? "↑" : "");
@@ -419,13 +453,14 @@ public partial class ControlPanel : UserControl
         {
             if (TempSlider.Minimum != range.Min) TempSlider.Minimum = range.Min;
             if (TempSlider.Maximum != range.Max) TempSlider.Maximum = range.Max;
-            Min16.Text = Fmt.Target(range.Min);
-            Max30.Text = Fmt.Target(range.Max);
         }
+        // Lüften hat kein Temperaturziel: Raumtemperatur groß, kein −/+ und kein Regler (wie am Mac).
+        var target = TargetAdjustable(s);
+        MinusButton.Visibility = PlusButton.Visibility = TempRow.Visibility = target ? Visibility.Visible : Visibility.Collapsed;
         MinusButton.IsEnabled = st.Target > range.Min;
         PlusButton.IsEnabled = st.Target < range.Max;
         TintSlider(TempSlider, headBrush);
-        Min16.Foreground = Max30.Foreground = live ? Paints.Of(Theme.TextTint(tint, 4.5)) : headBrush;
+        RenderScale(s, target && on, live);
         if ((DateTime.Now - lastTempDrag).TotalSeconds > 1.5 && !TempSlider.IsMouseCaptureWithin) TempSlider.Value = Math.Round(st.Target);
         else ResyncSoon();
         RoomBig.Text = s.HeroValue;
@@ -445,7 +480,7 @@ public partial class ControlPanel : UserControl
         }
 
         // Lüfter
-        FanPanel.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
+        FanPanel.Visibility = FanDivider.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
         ComfortPanel.Visibility = on && extras ? Visibility.Visible : Visibility.Collapsed;
         RenderFan(s, st, tint);
 
@@ -455,15 +490,62 @@ public partial class ControlPanel : UserControl
         Feature(turboTile, s, "turbo", st.Turbo, tint);
         Feature(silentTile, s, "outdoorSilent", st.OutSilent == true, tint);
         Feature(ieco, s, "ieco", st.Ieco == true, tint);
+        Feature(sleep, s, "sleep", st.Sleep, tint);
         Feature(purifier, s, "purifier", st.Purifier, tint);
         Feature(freeze, s, "freezeProtection", st.FreezeProtection, tint);
         Feature(clean, s, "selfClean", st.SelfClean == true, tint);
         Feature(display, s, "display", st.DisplayOn, tint);
         Feature(sound, s, "sound", st.Sound ?? s.Beep, tint);
         EnsureRateButtons(s.Options.Rate);
-        if (!Equals(RateRow.ToolTip, s.Options.Rate.Help)) RateRow.ToolTip = s.Options.Rate.Help;
+        // Gilt nur in bestimmten Modi (`availability["rate"]` des Kerns); gesperrt zeigt die Kurzinfo den Grund.
+        var rateEnabled = s.IsEnabled("rate");
+        var rateTip = rateEnabled ? s.Options.Rate.Help : s.Why("rate") ?? s.Options.Rate.Help;
+        if (!Equals(RateRow.ToolTip, rateTip)) RateRow.ToolTip = rateTip;
         var shownRate = st.RatePercent ?? s.Options.Rate.Fallback;
-        foreach (var (pct, b) in rateButtons) { b.IsChecked = shownRate == pct; Paint(b, b.IsChecked == true, true, tint); }
+        foreach (var (pct, b) in rateButtons)
+        {
+            b.IsChecked = shownRate == pct;
+            Paint(b, b.IsChecked == true, rateEnabled, tint);
+            var tip = rateEnabled ? null : rateTip;
+            if (!Equals(b.ToolTip, tip)) b.ToolTip = tip;
+            AutomationProperties.SetHelpText(b, tip ?? "");
+        }
+    }
+
+    /// Soll verstellbar (an und nicht Lüften) nach `availability["target"]` des Kerns; ohne Eintrag nicht. Gilt für
+    /// −/+, Regler und Strg+↑/↓.
+    internal static bool TargetAdjustable(Snapshot s) => s.Availability.TryGetValue("target", out var a) && a.Enabled;
+
+    /// Skala unter dem Regler nur im Hauptfenster (`RoomShownElsewhere`); bei alten Werten abgeblendet wie der Kopf.
+    void RenderScale(Snapshot s, bool shown, bool live)
+    {
+        shown &= RoomShownElsewhere && s.Options.TemperatureScale.Labels.Count > 0;
+        TempScale.Visibility = shown ? Visibility.Visible : Visibility.Collapsed;
+        if (!shown) return;
+        TempScale.Update(s.Options.TemperatureScale, s.ScaleRoom, Theme.SizeFactor);
+        TempScale.Opacity = live ? 1 : 0.5;
+    }
+
+    /// Umfang zuletzt angeordnet (null = noch nie).
+    bool? arrangedSimple;
+
+    /// Umfang „Einfach“: Kennzahlen, Komfort und Szenen unter „Mehr …“ umhängen; „Alles“: zurück in Kopf, Steuerung
+    /// und Karte mit dem Timer. Nur bei Wechsel – Umhängen lädt die Bausteine neu.
+    void ArrangeScope(bool simple)
+    {
+        if (arrangedSimple == simple) return;
+        arrangedSimple = simple;
+        MoveTo(Readings, simple ? MoreReadingsHost : HeroReadingsHost);
+        MoveTo(ComfortPanel, simple ? MoreComfortHost : ComfortHost);
+        MoveTo(Scenes, simple ? MoreScenesHost : ScenesHost);
+        ApplyDensity();
+    }
+
+    static void MoveTo(FrameworkElement e, Panel host)
+    {
+        if (ReferenceEquals(e.Parent, host)) return;
+        (e.Parent as Panel)?.Children.Remove(e);
+        host.Children.Add(e);
     }
 
     /// Schalter nach Gültigkeit und Kurzinfo des Kerns zeichnen.

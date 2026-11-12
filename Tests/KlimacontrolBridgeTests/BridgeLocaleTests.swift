@@ -147,6 +147,30 @@ final class BridgeLocaleTests: XCTestCase {
         XCTAssertTrue(handleCommand(#"{"cmd":"currency","value":true}"#, on: c)?.hasSuffix("(param-value)") == true)
     }
 
+    func testUpdateCommandsAndSnapshot() {
+        let c = makeController()
+        var json = snapshotJSON(c)
+        XCTAssertTrue(json.contains(#""updateAutoInstall":true"#))
+        XCTAssertTrue(json.contains(#""updateInterval":"daily""#))
+        XCTAssertTrue(json.contains(#""updateCheckInterval":86400"#))
+        XCTAssertNil(handleCommand(#"{"cmd":"updateAutoInstall","on":false}"#, on: c))
+        XCTAssertFalse(c.updateAutoInstall)
+        XCTAssertNil(handleCommand(#"{"cmd":"updateInterval","value":"weekly"}"#, on: c))
+        XCTAssertEqual(c.updateInterval, .weekly)
+        XCTAssertTrue(handleCommand(#"{"cmd":"updateAutoInstall","on":1}"#, on: c)?.hasSuffix("(param-on)") == true)
+        XCTAssertTrue(handleCommand(#"{"cmd":"updateAutoInstall"}"#, on: c)?.hasSuffix("(param-on)") == true)
+        XCTAssertTrue(handleCommand(#"{"cmd":"updateInterval","value":"monthly"}"#, on: c)?.hasSuffix("(param-value)") == true)
+        XCTAssertTrue(handleCommand(#"{"cmd":"updateInterval","value":7}"#, on: c)?.hasSuffix("(param-value)") == true)
+        XCTAssertEqual(c.updateInterval, .weekly)
+        XCTAssertFalse(c.updateAutoInstall)
+        json = snapshotJSON(c)
+        XCTAssertTrue(json.contains(#""updateAutoInstall":false"#))
+        XCTAssertTrue(json.contains(#""updateInterval":"weekly""#))
+        XCTAssertTrue(json.contains(#""updateCheckInterval":604800"#))
+        XCTAssertTrue(json.contains(#""installNow":"Jetzt installieren""#))
+        XCTAssertTrue(json.contains(#""reminderSeconds":86400"#))
+    }
+
     func testSnapshotCarriesLanguageAndCurrency() {
         let c = makeController()
         c.languageChoice = .en

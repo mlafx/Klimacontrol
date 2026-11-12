@@ -1,9 +1,9 @@
 <UserControl x:Class="KlimacontrolTray.ScenesSection"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:l="clr-namespace:KlimacontrolTray"
-             Margin="0,12,0,0">
-  <!-- Standardmäßig eingeklappt; die Knöpfe baut ScenesSection.xaml.cs. -->
+             xmlns:l="clr-namespace:KlimacontrolTray">
+  <!-- Standardmäßig eingeklappt; die Knöpfe baut ScenesSection.xaml.cs. Keine eigene Fläche: Der Baustein liegt in der
+       Karte mit dem Timer bzw. unter „Mehr …“ (ControlPanel). -->
   <Expander x:Name="ScenesExpander" Expanded="Scenes_Changed" Collapsed="Scenes_Changed">
     <!-- Eigene, ruhige Vorlage statt der Fluent-Karte: Titel links, Pfeil rechts, kein Rahmen. -->
     <Expander.Template>

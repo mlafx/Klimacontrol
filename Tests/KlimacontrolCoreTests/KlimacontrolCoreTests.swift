@@ -40,7 +40,7 @@ final class KlimacontrolCoreTests: CoreTestCase {
         XCTAssertEqual(Fmt.target(21.6), "22°")
         XCTAssertEqual(Fmt.watts(812.4), "812 W")
         XCTAssertEqual(Fmt.kwh(1.234), "1,23 kWh")
-        XCTAssertEqual(Fmt.euro(0.5), "0,50 €")
+        XCTAssertEqual(Fmt.money(0.5, currency: "€"), "0,50 €")
         XCTAssertEqual(ACController.pad(7, 2), "07")
         XCTAssertEqual(ACController.pad(2026, 4), "2026")
     }
@@ -176,8 +176,8 @@ final class KlimacontrolCoreTests: CoreTestCase {
         let c = try await makeConnected()
         fake.refreshError = MideaError.allPathsFailed([
             PathFailure(path: .lan, reason: .unreachable, text: "nicht erreichbar"),
-            PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: "in 5 min"),
-                        text: "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung in 5 min"),
+            PathFailure(path: .cloud, reason: .applianceOffline(nextCheck: Date(timeIntervalSince1970: 300)),
+                        text: "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung um 00:05"),
         ])
         await c.refresh()
         XCTAssertTrue(c.deviceOffNotice)
@@ -198,6 +198,38 @@ final class KlimacontrolCoreTests: CoreTestCase {
         XCTAssertEqual(c.notice?.contains("Außengerät leise"), true)
         XCTAssertNil(c.message)
         XCTAssertFalse(c.lastRefreshFailed)
+    }
+
+    func testIECONotAppliedNamesTheMode() async throws {
+        fake.current.power = true
+        fake.current.mode = .heat
+        fake.current.ieco = false
+        fake.acceptIECO = false
+        let c = try await makeConnected()
+        c.setIECO(true)
+        try await waitUntil("Hinweis zu iECO") { c.notice != nil }
+        XCTAssertEqual(c.notice, "Die Anlage hat „iECO“ im Modus „Heizen“ nicht übernommen. In diesem Modus nimmt die "
+                       + "Anlage den Schalter nicht an. Wähle einen anderen Modus und versuche es erneut. (not-in-mode)")
+        XCTAssertEqual(c.state?.ieco, false, "zeigt den echten Stand")
+        XCTAssertEqual(fake.commands, ["ieco an"])
+        XCTAssertNil(c.message)
+    }
+
+    func testCapabilitiesAreReadOnceAndGateIECO() async throws {
+        fake.current.power = true
+        fake.current.mode = .heat
+        fake.capabilities = ACCapabilities(raw: [0x00E3: [1]])   // iECO nur beim Kühlen
+        let c = try await makeConnected()
+        XCTAssertEqual(fake.capabilityReads, 1)
+        XCTAssertEqual(c.state?.capabilities?.iecoCool, true)
+        XCTAssertFalse(c.availability(.ieco).enabled, "Heizen ohne ieco_heat")
+        await c.refresh()
+        XCTAssertEqual(fake.capabilityReads, 1, "nur einmal je Anlage")
+        var s = try XCTUnwrap(c.state)
+        s.mode = .cool
+        c.state = s
+        XCTAssertTrue(c.availability(.ieco).enabled)
+        XCTAssertTrue(fake.commands.isEmpty, "nur gelesen, nichts gestellt")
     }
 
     func testNoticeDisappearsByItselfOrWithTheNextCommand() async throws {

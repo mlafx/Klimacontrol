@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
+using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Media.Imaging;
 using ImageSource = System.Windows.Media.ImageSource;
 using Media = System.Windows.Media;
@@ -126,12 +128,29 @@ static class TrayIcon
         if (s.Message != null) return st.Power ? Mk(Red, target, Symbol.None, outline: true) : Mk(Red, "", Symbol.PowerOff);
         if (!st.Power) return Mk(OffGrey, "", Symbol.PowerOff);
         var fill = ModeFill(st.Mode);
-        return a.TrayTooltip switch
+        // Ob und welche Zahl im Symbol steht, entscheidet der Kern (`menuTitle`); ohne Zahl das Zeichen des Modus.
+        return IconNumber(s.MenuTitle, Fmt.Profile.DecimalSeparator) is { } number
+            ? Mk(fill, number, Symbol.None, running: true)
+            : Mk(fill, "", Symbol.Mode, glyph: ModeGlyph(st.Mode), running: true);
+    }
+
+    /// Zahl fürs Symbol aus dem Text des Kerns („24°“, „25,5°“, „25,5° → 24°“): der letzte Wert in ganzen Grad,
+    /// x,5 vom Nullpunkt weg gerundet; null ohne Wert.
+    internal static string? IconNumber(string? title, string decimalSeparator)
+    {
+        if (string.IsNullOrWhiteSpace(title)) return null;
+        var last = title.Split('→')[^1];
+        if (decimalSeparator.Length > 0) last = last.Replace(decimalSeparator, ".");
+        var sb = new StringBuilder();
+        foreach (var ch in last)
         {
-            "iconOnly" => Mk(fill, "", Symbol.Mode, glyph: ModeGlyph(st.Mode), running: true),
-            "iconRoom" => Mk(fill, st.Indoor is { } room ? Math.Round(room).ToString("0") : "–", Symbol.None, running: true),
-            _ => Mk(fill, target, Symbol.None, running: true),
-        };
+            if (char.IsAsciiDigit(ch) || ch == '.') sb.Append(ch);
+            else if ((ch == '-' || ch == '−') && sb.Length == 0) sb.Append('-');
+        }
+        if (!double.TryParse(sb.ToString(), NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var v))
+            return null;
+        var rounded = Math.Round(v, MidpointRounding.AwayFromZero);
+        return (rounded == 0 ? 0 : rounded).ToString("0", CultureInfo.InvariantCulture);
     }
 
     /// Gezeichnet im 32er-Raster und auf `Size` skaliert; Striche bei kleinen Größen etwas kräftiger.

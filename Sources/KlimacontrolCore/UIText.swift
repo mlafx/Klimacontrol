@@ -91,6 +91,15 @@ public enum UIText {
     public static var updatesManualFailedTitle: String { L.Updates.Manual.Failed.title }
     public static var updatesManualFailedMessage: String { L.Updates.Manual.Failed.message }
     public static var updatesCheckButton: String { L.Updates.checkButton }
+    public static var updatesAutoInstallTitle: String { L.Settings.Updates.autoInstall }
+    public static var updatesAutoInstallHelp: String { L.Settings.Updates.autoInstallHelp }
+    public static var updatesIntervalTitle: String { L.Settings.Updates.interval }
+    /// Hinweis, wenn ein geladenes Update auf „Jetzt installieren“ wartet (Updates nicht automatisch installieren).
+    public static var updatesHeldBackTitle: String { L.Updates.Mac.promptTitle }
+    public static func updatesHeldBackMessage(version: String) -> String { L.Updates.HeldBack.message(version: version) }
+    public static func updatesHeldBackStatus(version: String) -> String { L.Updates.HeldBack.status(version: version) }
+    public static var updatesInstallNow: String { L.Updates.installNow }
+    public static var updatesLater: String { L.Updates.Restart.later }
 
     // MARK: Hauptfenster (Spalten)
 
@@ -280,6 +289,11 @@ public enum UIText {
                              confirm: L.Prompt.Quit.confirm, warning: false)
     }
 
+    /// Zeile unter der Uhrzeit beim Stellen des Einschalt-Timers: „Schaltet morgen um 07:00 ein“.
+    public static func onTimerPreview(_ at: Date, now: Date) -> String {
+        L.Main.Timer.switchesOn(day: dayLabel(at, now: now), time: ACController.clock(at))
+    }
+
     /// „heute“, „morgen“ oder „am Mi. 6.11.“ (Deutsch: Tag ohne, Monat mit führender Null) bzw. „on Wed 11/6“.
     static func dayLabel(_ date: Date, now: Date) -> String {
         let cal = Calendar.current
@@ -376,11 +390,42 @@ public enum UIText {
     public static var fanModeCaption: String { L.Hero.fanModeCaption }
     public static var notConfiguredCaption: String { L.Hero.notConfiguredCaption }
 
+    /// Solltemperatur verstellbar (−/+, ⌘↑/⌘↓): nur eingeschaltet und nicht beim Lüften (Lüften hat kein Ziel).
+    public static func targetAdjustable(_ state: ACState?) -> Bool {
+        guard let state else { return false }
+        return state.power && state.mode != .fan
+    }
+
+    // MARK: Skala der Solltemperatur
+
+    /// Beschriftete Werte unter dem Regler der Solltemperatur (Enden und eine Mitte).
+    public static let temperatureScaleLabels: [Double] = [16, 25, 30]
+    /// Betonte Striche an der Skala.
+    public static let temperatureScaleEmphasized: [Double] = [20, 25]
+
+    /// Lage eines Werts auf der Skala (0 = 16°, 1 = 30°); Werte außerhalb stehen am Rand.
+    public static func temperatureScaleFraction(_ value: Double) -> Double {
+        let span = UIOptions.temperatureMax - UIOptions.temperatureMin
+        return min(1, max(0, (value - UIOptions.temperatureMin) / span))
+    }
+
+    /// Beschriftung der Raum-Marke an der Skala: „Raum 19,0°“.
+    public static func temperatureScaleRoom(_ room: Double) -> String { L.Main.Hero.scaleRoom(value: Fmt.temp(room)) }
+
     // MARK: Hilfsfunktionen
 
     /// Teilt einen fertigen Satz „Was ist passiert. Was tun.“ nach dem ersten Satzende in `what` und `todo`.
     static func split(_ text: String) -> ResultMessage {
         guard let r = text.range(of: ". ") else { return .failed(what: text) }
         return .failed(what: String(text[..<r.lowerBound]) + ".", todo: String(text[r.upperBound...]))
+    }
+}
+
+extension UpdateInterval {
+    public var title: String {
+        switch self {
+        case .daily: L.Settings.Updates.daily
+        case .weekly: L.Settings.Updates.weekly
+        }
     }
 }

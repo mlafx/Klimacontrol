@@ -4,8 +4,8 @@
 V3, Cloud-Zugriff optional.**
 
 <p align="center">
-  <a href="https://github.com/mlafx/Klimacontrol/releases/download/v1.2.0.0/Klimacontrol-1.2.0.0-mac.dmg"><img src="https://img.shields.io/badge/Download-2ea44f?style=for-the-badge&logo=apple&logoColor=white" alt="Herunterladen für macOS (DMG)" width="260"></a><br>
-  <a href="https://github.com/mlafx/Klimacontrol/releases/download/v1.2.0.0/Klimacontrol-Windows-1.2.0.0-Setup.exe"><img src="https://img.shields.io/badge/Download-2ea44f?style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgMGgxMS40djExLjRIMHpNMTIuNiAwSDI0djExLjRIMTIuNnpNMCAxMi42aDExLjRWMjRIMHpNMTIuNiAxMi42SDI0VjI0SDEyLjZ6Ii8+PC9zdmc+" alt="Herunterladen für Windows (Setup)" width="260"></a>
+  <a href="https://github.com/mlafx/Klimacontrol/releases/latest/download/Klimacontrol-mac.dmg"><img src="https://img.shields.io/badge/Download-2ea44f?style=for-the-badge&logo=apple&logoColor=white" alt="Herunterladen für macOS (DMG)" width="260"></a><br>
+  <a href="https://github.com/mlafx/Klimacontrol/releases/latest/download/Klimacontrol-Windows-Setup.exe"><img src="https://img.shields.io/badge/Download-2ea44f?style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgMGgxMS40djExLjRIMHpNMTIuNiAwSDI0djExLjRIMTIuNnpNMCAxMi42aDExLjRWMjRIMHpNMTIuNiAxMi42SDI0VjI0SDEyLjZ6Ii8+PC9zdmc+" alt="Herunterladen für Windows (Setup)" width="260"></a>
 </p>
 
 <p align="center">
@@ -67,12 +67,13 @@ Windows).
 
 ## Installation
 
-Die Installationspakete stehen unter [Releases](https://github.com/mlafx/Klimacontrol/releases/latest) bereit.
+Die Knöpfe oben laden immer die neueste Fassung. Alle Pakete, auch mit Versionsnummer im Namen, stehen unter
+[Releases](https://github.com/mlafx/Klimacontrol/releases/latest) bereit.
 
 | Plattform | Paket | Hinweise |
 |---|---|---|
-| macOS | `Klimacontrol-<Version>-mac.dmg` | Klimacontrol in „Programme“ ziehen; den Zugriff auf das lokale Netzwerk erlauben, andernfalls wird die Anlage nicht gefunden. |
-| Windows | `Klimacontrol-Windows-<Version>-Setup.exe` | Installation ohne Administratorrechte. Den Netzwerkzugriff für **private** Netzwerke in der Firewall freigeben. |
+| macOS | `Klimacontrol-mac.dmg` bzw. `Klimacontrol-<Version>-mac.dmg` | Klimacontrol in „Programme“ ziehen; den Zugriff auf das lokale Netzwerk erlauben, andernfalls wird die Anlage nicht gefunden. |
+| Windows | `Klimacontrol-Windows-Setup.exe` bzw. `Klimacontrol-Windows-<Version>-Setup.exe` | Installation ohne Administratorrechte. Den Netzwerkzugriff für **private** Netzwerke in der Firewall freigeben. |
 
 > [!NOTE]
 > Beim ersten Start des aus dem Browser geladenen Windows-Setups zeigt Windows einen Sicherheitshinweis (SmartScreen

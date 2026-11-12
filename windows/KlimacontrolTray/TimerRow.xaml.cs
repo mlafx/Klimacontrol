@@ -59,6 +59,8 @@ public partial class TimerRow : UserControl
             Children = { new TextBlock { Text = L.T("main.timer.offMenu"), VerticalAlignment = VerticalAlignment.Center }, chevron },
         };
         TimerHint.Text = hint;
+        // Elemente in der Karte: innerer Radius wie die Modus-Knöpfe.
+        foreach (var b in new[] { OffTimerButton, OnTimerButton }) ControlPanel.RoundInner(b);
 
         minute.Tick += (_, _) =>
         {
@@ -89,8 +91,7 @@ public partial class TimerRow : UserControl
         };
     }
 
-    /// Kompakte Dichte für knappe Fensterhöhe. Den Abstand nach oben setzt der Baustein selbst (Margin), damit er nicht
-    /// doppelt zählt.
+    /// Kompakte Dichte für knappe Fensterhöhe. Abstand und Innenabstand der Karte setzt das ControlPanel.
     public bool Compact
     {
         get => compact;
@@ -107,8 +108,7 @@ public partial class TimerRow : UserControl
     {
         var f = Theme.SizeFactor;
         double D(double normal, double small) => Math.Round((compact ? small : normal) * f);
-        Margin = new Thickness(0, D(14, 8), 0, 0);
-        TimerCard.Padding = new Thickness(D(12, 12), D(8, 4), D(12, 12), D(8, 4));
+        OnTimePicker.Margin = new Thickness(0, D(8, 4), 0, 0);
     }
 
     /// Das Uhrzeitfeld hat den Tastaturfokus (das Fenster am Infobereich soll dann z. B. nicht schließen).

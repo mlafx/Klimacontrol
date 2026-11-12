@@ -25,6 +25,8 @@ public protocol ACDevice: AnyObject, Sendable {
     func setRate(_ percent: Int) async throws -> ACState
     func toggleDisplay() async throws -> ACState
     func apply(_ scene: ACScene) async throws -> ACState
+    /// Fähigkeiten (0xB5) nur lesen; spätere Zustände tragen sie mit. nil = keine Antwort.
+    func readCapabilities() async throws -> ACCapabilities?
     func disconnect()
     /// Meldet die Schritte beim Verbinden (Anlage suchen · Anmelden · Werte lesen) für die Startanzeige.
     /// Geräte ohne eigene Meldung erben die leere Umsetzung unten; der Kern zeigt dann nur „Anlage suchen“.
@@ -32,6 +34,8 @@ public protocol ACDevice: AnyObject, Sendable {
 }
 
 extension ACDevice {
+    public func readCapabilities() async throws -> ACCapabilities? { nil }
+
     public var onPhase: (@Sendable (ConnectPhase) -> Void)? {
         get { nil }
         set {}

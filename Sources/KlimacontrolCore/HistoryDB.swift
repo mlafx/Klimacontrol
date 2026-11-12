@@ -64,15 +64,15 @@ public final class HistoryDB: @unchecked Sendable {
 
     private static let insertSQL = "INSERT OR REPLACE INTO verlauf (\(columns.joined(separator: ","))) VALUES ("
         + Array(repeating: "?", count: columns.count).joined(separator: ",") + ")"
-    private static let importSQL = insertSQL.replacingOccurrences(of: "OR REPLACE", with: "OR IGNORE")
-    private static let exportSQL = "SELECT \(columns.joined(separator: ",")) FROM verlauf WHERE zeit >= ? AND zeit <= ? ORDER BY zeit"
+    static let importSQL = insertSQL.replacingOccurrences(of: "OR REPLACE", with: "OR IGNORE")
+    static let exportSQL = "SELECT \(columns.joined(separator: ",")) FROM verlauf WHERE zeit >= ? AND zeit <= ? ORDER BY zeit"
 
     private var connection: SQLiteConnection?
-    private let lock = NSLock()
+    let lock = NSLock()
     private var lastCompaction = Date.distantPast
     /// Bis hierhin (Unix-Sekunden) ist je Rasterweite schon ausgedünnt (Merker auch in `meta`, damit nicht jeder
     /// Start den ganzen Bestand durchgeht).
-    private var compactedUntil: [Int: Int] = [:]
+    var compactedUntil: [Int: Int] = [:]
     /// Stündliches Ausdünnen läuft hier statt im Aufrufer von `insert` (dem MainActor).
     private let maintenance = DispatchQueue(label: "klimacontrol.history.compact", qos: .utility)
     /// Neue Zeilen, die nicht sofort geschrieben werden konnten (Sperre belegt), in Ankunftsreihenfolge.
@@ -163,7 +163,7 @@ public final class HistoryDB: @unchecked Sendable {
 
     /// `work` mit der Verbindung; ohne Verbindung nil. SQLite-Fehler werden protokolliert und ergeben nil.
     @discardableResult
-    private func withConnectionLocked<T>(_ work: (SQLiteConnection) throws -> T) -> T? {
+    func withConnectionLocked<T>(_ work: (SQLiteConnection) throws -> T) -> T? {
         guard let connection else { return nil }
         do {
             return try work(connection)
@@ -173,7 +173,7 @@ public final class HistoryDB: @unchecked Sendable {
         }
     }
 
-    private func metaLocked(_ name: String) -> String? {
+    func metaLocked(_ name: String) -> String? {
         withConnectionLocked { c in
             var value: String?
             try c.query("SELECT wert FROM meta WHERE name = ?", [.text(name)]) { value = $0.text(0) }
@@ -181,11 +181,11 @@ public final class HistoryDB: @unchecked Sendable {
         } ?? nil
     }
 
-    private func setMetaLocked(_ name: String, _ value: String) {
+    func setMetaLocked(_ name: String, _ value: String) {
         withConnectionLocked { try $0.query("INSERT OR REPLACE INTO meta (name, wert) VALUES (?, ?)", [.text(name), .text(value)]) }
     }
 
-    private func hasMeta(_ name: String) -> Bool {
+    func hasMeta(_ name: String) -> Bool {
         lock.lock(); defer { lock.unlock() }
         return withConnectionLocked { c in
             var found = false
@@ -254,175 +254,6 @@ public final class HistoryDB: @unchecked Sendable {
         withConnectionLocked { try $0.exec("PRAGMA wal_checkpoint(TRUNCATE)") }
     }
 
-    // MARK: Ausdünnen
-
-    /// Zeilen zwischen `start` und `limit` auf eine je `step` Sekunden ausdünnen; die behaltene Zeile bekommt die
-    /// mittlere Leistung des Fensters. Ohne `start`: ab dem Merker der letzten Ausdünnung, sonst die letzten drei Tage
-    /// (älteres erledigt `compactAll` beim Start). Läuft in Scheiben von `compactSlice`; die Sperre gilt je Scheibe.
-    func compact(before limit: Date, from start: Date? = nil, step: Int = sparseStep) {
-        let to = Self.unix(limit)
-        guard let plan = compactionPlan(to: to, start: start, step: step),
-              let reached = compactSlices(from: plan.from, to: to, step: step) else { return }
-        if plan.contiguous { advanceMarker(step: step, to: reached) }
-        // Nach dem Löschen steht viel in der WAL-Datei – jetzt in die Datenbank übernehmen.
-        checkpoint()
-    }
-
-    /// Bestand ausdünnen (einmal je Start, im Hintergrund) – ab dem gespeicherten Merker, ohne Merker ab der ältesten
-    /// Zeile. So geht nicht jeder Start den ganzen Bestand durch, und nach Pausen von Tagen wird trotzdem nachgeholt.
-    public func compactAll() {
-        let now = Date()
-        for tier in Self.tiers {
-            lock.lock()
-            let marker = markerLocked(tier.step)
-            lock.unlock()
-            compact(before: now.addingTimeInterval(-tier.age),
-                    from: marker.map { Date(timeIntervalSince1970: Double($0)) } ?? .distantPast, step: tier.step)
-        }
-    }
-
-    /// Wo das Ausdünnen beginnt und ob es lückenlos an Bestand bzw. Merker anschließt; nil = leere Tabelle.
-    private struct CompactionPlan {
-        let from: Int
-        /// Den Merker „ausgedünnt bis“ nur fortschreiben, wenn lückenlos ab der ältesten Zeile bzw. ab dem bisherigen
-        /// Merker ausgedünnt wird – das stündliche Fenster (letzte 3 Tage) darf ältere Zeilen nicht als erledigt melden.
-        let contiguous: Bool
-    }
-
-    private func compactionPlan(to: Int, start: Date?, step: Int) -> CompactionPlan? {
-        lock.lock(); defer { lock.unlock() }
-        let marker = markerLocked(step)
-        let requested = Self.align(start.map(Self.unix) ?? min(marker ?? to - 3 * 86400, to), step)
-        // Nicht ab „distantPast“ in Scheiben zählen: erst ab der ältesten vorhandenen Zeile.
-        guard let first = firstTimeLocked() else { return nil }
-        let oldest = Self.align(first, step)
-        return CompactionPlan(from: max(requested, oldest),
-                              contiguous: requested <= oldest || marker.map { requested <= $0 } ?? false)
-    }
-
-    /// Scheibe für Scheibe bis `to`; die Sperre ist zwischen den Scheiben frei. Gibt das erreichte Ende zurück
-    /// (nil = keine Scheibe geschafft).
-    private func compactSlices(from start: Int, to: Int, step: Int) -> Int? {
-        var from = start
-        var reached: Int?
-        while from < to {
-            let end = min(to, from + Self.compactSlice)
-            lock.lock()
-            let ok = compactSliceLocked(from: from, to: end, step: step)
-            lock.unlock()
-            guard ok else { break }
-            reached = end
-            from = end
-        }
-        return reached
-    }
-
-    /// Eine Scheibe [from, to) ausdünnen (`from` auf vollem Raster, darum schneidet kein Fenster zwei Scheiben).
-    private func compactSliceLocked(from: Int, to: Int, step: Int) -> Bool {
-        guard from < to else { return true }
-        let keep = "SELECT MIN(zeit) FROM verlauf WHERE zeit >= ?1 AND zeit < ?2 GROUP BY zeit / ?3"
-        let args: [HistoryValue?] = [.integer(from), .integer(to), .integer(step)]
-        let done: Void? = withConnectionLocked { c in
-            try c.transaction { () throws -> Void in
-                try c.query("UPDATE verlauf SET leistung_w = (SELECT AVG(v.leistung_w) FROM verlauf v WHERE v.zeit >= ?1 "
-                            + "AND v.zeit < ?2 AND v.zeit / ?3 = verlauf.zeit / ?3) WHERE zeit IN (\(keep) HAVING COUNT(*) > 1)",
-                            args)
-                try c.query("DELETE FROM verlauf WHERE zeit >= ?1 AND zeit < ?2 AND zeit NOT IN (\(keep))", args)
-            }
-        }
-        return done != nil
-    }
-
-    private func advanceMarker(step: Int, to reached: Int) {
-        lock.lock(); defer { lock.unlock() }
-        let until = max(compactedUntil[step] ?? reached, reached)
-        compactedUntil[step] = until
-        setMetaLocked("ausgeduennt_bis_\(step)", String(until))
-    }
-
-    /// Beginn auf volle Rasterweite: das beim letzten Lauf angeschnittene Fenster wird ganz erfasst (eine Zeile bleibt).
-    private static func align(_ t: Int, _ step: Int) -> Int { t - ((t % step) + step) % step }
-
-    private func firstTimeLocked() -> Int? {
-        withConnectionLocked { c in
-            var first: Int?
-            try c.query("SELECT MIN(zeit) FROM verlauf") { s in if !s.isNull(0) { first = Int(s.int(0)) } }
-            return first
-        } ?? nil
-    }
-
-    /// Merker „ausgedünnt bis“ je Rasterweite (Speicher, sonst `meta`).
-    private func markerLocked(_ step: Int) -> Int? {
-        if let m = compactedUntil[step] { return m }
-        let m = metaLocked("ausgeduennt_bis_\(step)").flatMap(Int.init)
-        if let m { compactedUntil[step] = m }
-        return m
-    }
-
-    // MARK: CSV-Import
-
-    /// Alte CSV-Dateien einmalig übernehmen (vorhandene Zeitpunkte bleiben). Die Dateien bleiben liegen. Erledigt
-    /// gilt der Import erst, wenn alle Dateien lesbar waren (OneDrive-Platzhalter werden beim nächsten Start erneut
-    /// versucht). Läuft im Hintergrund; die Sperre wird nur je Stapel gehalten.
-    public func importCSVOnce(from files: [URL]) {
-        guard isOpen, !hasMeta("csv_import") else { return }
-        var rows = 0, unreadable = 0
-        for file in files {
-            if let n = importFile(file) { rows += n } else { unreadable += 1 }
-        }
-        finishImport(addedRows: rows, complete: unreadable == 0)
-        AppLog.write(L.Log.History.imported(
-            rows: String(rows), files: String(files.count - unreadable),
-            unreadable: unreadable > 0 ? L.Log.History.importUnreadable(count: String(unreadable)) : ""))
-    }
-
-    /// Eine CSV-Datei in Stapeln übernehmen. Gibt die Zahl neuer Zeilen zurück; nil = Datei nicht lesbar.
-    private func importFile(_ file: URL) -> Int? {
-        guard let text = try? String(contentsOf: file, encoding: .utf8) else { return nil }
-        guard var reader = HistoryCSVReader(text: text) else { return 0 }
-        var added = 0
-        var batch: [HistoryRow] = []
-        batch.reserveCapacity(Self.importBatch)
-        while let row = reader.next() {
-            batch.append(row)
-            if batch.count >= Self.importBatch {
-                added += insertBatch(batch)
-                batch.removeAll(keepingCapacity: true)
-            }
-        }
-        return added + insertBatch(batch)
-    }
-
-    /// Ein Stapel in einer Transaktion, eine vorbereitete Anweisung für alle Zeilen. Eine Zeile, die SQLite ablehnt,
-    /// wird protokolliert und übersprungen.
-    private func insertBatch(_ batch: [HistoryRow]) -> Int {
-        guard !batch.isEmpty else { return 0 }
-        lock.lock(); defer { lock.unlock() }
-        return withConnectionLocked { c in
-            try c.transaction {
-                let before = c.totalChanges
-                try c.withStatement(Self.importSQL) { stmt in
-                    for row in batch {
-                        stmt.reset()
-                        stmt.bind(row.bindings)
-                        do { try stmt.forEachRow { _ in } } catch { AppLog.error(L.Log.History.sqlite(error: "\(error)")) }
-                    }
-                }
-                return c.totalChanges - before
-            }
-        } ?? 0
-    }
-
-    /// Import als erledigt merken (nur wenn alle Dateien lesbar waren). Sind ältere Zeilen dazugekommen, die Merker
-    /// des Ausdünnens zurücksetzen, damit `compactAll` sie mit ausdünnt.
-    private func finishImport(addedRows: Int, complete: Bool) {
-        lock.lock(); defer { lock.unlock() }
-        if complete { setMetaLocked("csv_import", HistoryLog.isoString(Date())) }
-        guard addedRows > 0 else { return }
-        withConnectionLocked { try $0.exec("DELETE FROM meta WHERE name LIKE 'ausgeduennt_bis_%'") }
-        compactedUntil = [:]
-    }
-
     // MARK: Lesen
 
     /// Punkte ab `start`, für die Graphen auf höchstens ~`maxPoints` Zeitfenster gemittelt. Die Fenster hängen an der
@@ -433,18 +264,27 @@ public final class HistoryDB: @unchecked Sendable {
         let from = Self.unix(start)
         let bucket = max(1, max(1, Self.unix(now) - from) / points)
         // Alte Zeilen haben im Aus-Zustand 10,0 °C außen als Platzhalter – kein Messwert.
+        // Modus je Fenster: der häufigste unter den Zeilen mit laufender Anlage (SQLite liefert zur Spalte neben
+        // MAX(n) die Zeile mit dem Höchstwert).
         let sql = """
-            SELECT MIN(zeit), AVG(leistung_w), AVG(innen_c),
-                   AVG(CASE WHEN ein = 1 OR aussen_c <> 10.0 THEN aussen_c END),
-                   MAX(CASE WHEN ein = 1 THEN soll_c END), MAX(ein)
-            FROM verlauf WHERE zeit >= ? GROUP BY zeit / ? ORDER BY 1
+            WITH haeufig AS (
+                SELECT k, modus, MAX(n) FROM (
+                    SELECT zeit / ?2 AS k, modus, COUNT(*) AS n FROM verlauf
+                    WHERE zeit >= ?1 AND ein = 1 AND modus IS NOT NULL AND modus <> '' GROUP BY k, modus)
+                GROUP BY k)
+            SELECT MIN(v.zeit), AVG(v.leistung_w), AVG(v.innen_c),
+                   AVG(CASE WHEN v.ein = 1 OR v.aussen_c <> 10.0 THEN v.aussen_c END),
+                   MAX(CASE WHEN v.ein = 1 THEN v.soll_c END), MAX(v.ein), MAX(h.modus)
+            FROM verlauf v LEFT JOIN haeufig h ON h.k = v.zeit / ?2
+            WHERE v.zeit >= ?1 GROUP BY v.zeit / ?2 ORDER BY 1
             """
         var out: [HistorySample] = []
         out.reserveCapacity(min(points, 10_000) + 2)
         withConnectionLocked { c in
             try c.query(sql, [.integer(from), .integer(bucket)]) { s in
                 out.append(HistorySample(time: s.date(0), power: s.double(1), indoor: s.double(2), outdoor: s.double(3),
-                                         target: s.double(4), on: s.int(5) == 1))
+                                         target: s.double(4), on: s.int(5) == 1,
+                                         mode: HistorySample.mode(stored: s.text(6))))
             }
         }
         return out
@@ -550,92 +390,5 @@ public final class HistoryDB: @unchecked Sendable {
             }
             return out
         } ?? nil
-    }
-
-    // MARK: CSV-Export
-
-    /// Ganzen Verlauf als CSV schreiben (Kopfzeile wie `HistoryLog.header`, Zeit als ISO 8601 in Ortszeit mit Abstand
-    /// zu UTC, z. B. „2026-11-05T07:00:00+01:00“).
-    public func exportCSV(to target: URL) throws {
-        try exportCSV(to: target, from: nil, until: nil, readable: false)
-    }
-
-    /// CSV-Export eines Zeitraums. `readable`: Spaltennamen mit Einheit und Modus in der Sprache der Oberfläche, Zeit
-    /// „JJJJ-MM-TT HH:MM:SS“ (Ortszeit) und Dezimalzeichen „,“ oder „.“ nach Format (Spaltentrenner bleibt „;“) – so öffnen Excel und Numbers die Datei richtig;
-    /// der Import liest beide Formen und beide Sprachen.
-    /// Liest über eine eigene Verbindung und schreibt zeilenweise in eine Zwischendatei, die am Ende das Ziel ersetzt:
-    /// blockiert weder Graphen noch neue Punkte. Fehler als `CocoaError` (Lesen: `.fileReadUnknown`), damit die
-    /// Oberflächen dieselben Meldungen zeigen.
-    public func exportCSV(to target: URL, from: Date?, until: Date?, readable: Bool) throws {
-        guard isOpen else { throw CocoaError(.fileWriteUnknown) }
-        let source: SQLiteConnection
-        do {
-            source = try SQLiteConnection(url: url, mode: .readOnly, busyTimeout: 5000)
-        } catch {
-            throw CocoaError(.fileReadUnknown)
-        }
-        let range: [HistoryValue?] = [.integer(from.map(Self.unix) ?? Int(Int32.min)), .integer(until.map(Self.unix) ?? Int(1e12))]
-        do {
-            try source.withStatement(Self.exportSQL) { stmt in
-                stmt.bind(range)
-                try Self.writeExport(of: stmt, readable: readable, to: target)
-            }
-        } catch is HistoryDBError {
-            throw CocoaError(.fileReadUnknown)
-        }
-    }
-
-    /// Ergebniszeilen von `exportSQL` als CSV in eine Zwischendatei neben `target`, danach an die Stelle von `target`.
-    /// Bei einem Fehler bleibt `target` unverändert und die Zwischendatei verschwindet.
-    private static func writeExport(of stmt: SQLStatement, readable: Bool, to target: URL) throws {
-        let fm = FileManager.default
-        let tmp = target.deletingLastPathComponent().appendingPathComponent(".\(target.lastPathComponent).\(UUID().uuidString).tmp")
-        #if os(Windows)
-        let created = fm.createFile(atPath: tmp.path, contents: nil)
-        #else
-        let created = fm.createFile(atPath: tmp.path, contents: nil, attributes: [.posixPermissions: 0o600])
-        #endif
-        guard created, let h = try? FileHandle(forWritingTo: tmp) else { throw CocoaError(.fileWriteNoPermission) }
-        do {
-            let style = readable ? HistoryColumn.ReadableStyle() : nil
-            var buffer = readable ? HistoryLog.readableHeader : HistoryLog.header
-            try stmt.forEachRow { s in
-                buffer += exportLine(s, style: style)
-                if buffer.utf8.count >= 1 << 16 {
-                    try h.write(contentsOf: Data(buffer.utf8))
-                    buffer = ""
-                }
-            }
-            try h.write(contentsOf: Data(buffer.utf8))
-            try h.close()
-            try replace(target, with: tmp)
-        } catch {
-            try? h.close()
-            try? fm.removeItem(at: tmp)
-            throw error
-        }
-    }
-
-    /// Eine Ergebniszeile als CSV-Zeile: Zeit technisch (ISO 8601) oder lesbar (Ortszeit), Werte wie SQLite sie
-    /// ausgibt, lesbar mit Dezimalzeichen des Formats und Modus in der Sprache der Oberfläche.
-    private static func exportLine(_ s: SQLStatement, style: HistoryColumn.ReadableStyle?) -> String {
-        let t = s.date(0)
-        var fields = [style != nil ? HistoryLog.readableTime(t) : HistoryLog.isoString(t)]
-        for (i, column) in HistoryColumn.data.enumerated() {
-            fields.append(column.exportField(s.text(Int32(i + 1)), style: style))
-        }
-        return fields.joined(separator: ";") + "\n"
-    }
-
-    private static func replace(_ target: URL, with tmp: URL) throws {
-        let fm = FileManager.default
-        guard fm.fileExists(atPath: target.path) else { return try fm.moveItem(at: tmp, to: target) }
-        #if os(Windows)
-        // replaceItemAt ist unter Windows nicht umgesetzt: vorhandene Zieldatei (im Dialog „Ersetzen“) weg, dann verschieben.
-        try fm.removeItem(at: target)
-        try fm.moveItem(at: tmp, to: target)
-        #else
-        _ = try fm.replaceItemAt(target, withItemAt: tmp)
-        #endif
     }
 }

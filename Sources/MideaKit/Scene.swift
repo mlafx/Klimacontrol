@@ -34,14 +34,56 @@ public struct ACScene: Codable, Equatable, Identifiable, Sendable {
     }
 
     /// Szenen aus der Backup-Datei; gleiche Einstellungen unter gleichem Namen nur einmal.
-    public static func fromBackup(_ url: URL) throws -> [ACScene] {
-        struct Backup: Decodable { let scenes: [ACScene]? }
-        let all = (try JSONDecoder().decode(Backup.self, from: Data(contentsOf: url)).scenes ?? []).prefix(100).map(\.sanitized)
+    public static func fromBackup(_ url: URL) throws -> [ACScene] { try fromBackupReporting(url).scenes }
+
+    /// Szenen einer Sicherung und wie viele davon unlesbar waren.
+    public struct BackupScenes: Equatable, Sendable {
+        public var scenes: [ACScene]
+        /// Unlesbare Einträge (ein unlesbarer Block `scenes` zählt als einer).
+        public var unreadable: Int
+
+        public init(scenes: [ACScene], unreadable: Int) {
+            self.scenes = scenes
+            self.unreadable = unreadable
+        }
+    }
+
+    /// Wie `fromBackup`, rettet aber jede lesbare Szene einzeln und zählt die unlesbaren, damit die Oberfläche sie
+    /// melden kann. Wirft nur, wenn die Datei selbst nicht lesbar ist.
+    public static func fromBackupReporting(_ url: URL) throws -> BackupScenes {
+        struct Lossy: Decodable {
+            let scene: ACScene?
+            init(from decoder: any Decoder) throws { scene = try? ACScene(from: decoder) }
+        }
+        struct Backup: Decodable {
+            enum Keys: String, CodingKey { case scenes }
+            let entries: [Lossy]
+            let broken: Bool
+            init(from decoder: any Decoder) throws {
+                let c = try decoder.container(keyedBy: Keys.self)
+                if !c.contains(.scenes) || (try? c.decodeNil(forKey: .scenes)) == true {
+                    (entries, broken) = ([], false)
+                } else if let list = try? c.decode([Lossy].self, forKey: .scenes) {
+                    (entries, broken) = (list, false)
+                } else {
+                    (entries, broken) = ([], true)
+                }
+            }
+        }
+        let backup = try JSONDecoder().decode(Backup.self, from: Data(contentsOf: url))
+        let entries = backup.entries.prefix(100)
+        let readable = entries.compactMap(\.scene).map(\.sanitized)
+        let unreadable = entries.count - readable.count + (backup.broken ? 1 : 0)
+        if unreadable > 0 {
+            AppLog.error(LogText.t("log.scene.backupUnreadable", "Sicherung {file}: {count} Szene(n) unlesbar, nicht übernommen",
+                                   ["file": url.lastPathComponent, "count": String(unreadable)]))
+        }
         var seen = Set<String>()
-        return all.filter { s in
+        let unique = readable.filter { s in
             let sig = "\(s.name)|\(s.powerOn)|\(s.mode)|\(s.tempC)|\(s.fan)|\(s.swing)|\(s.eco)|\(s.anion)|\(s.outdoorSilent)"
             return seen.insert(sig).inserted
         }
+        return BackupScenes(scenes: unique, unreadable: unreadable)
     }
 
     public static func load(from url: URL = defaultURL) -> [ACScene] { loadReporting(from: url).scenes }

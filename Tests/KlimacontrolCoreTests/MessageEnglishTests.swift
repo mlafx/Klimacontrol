@@ -22,6 +22,8 @@ final class MessageEnglishTests: XCTestCase {
                            "The air conditioner's response could not be decrypted. Try again. (-5)")
             XCTAssertEqual(UserMessage.from(MideaError.commandNotApplied(ACState())).text,
                            "The air conditioner did not apply the change. Another app may be controlling it right now. Try again.")
+            XCTAssertEqual(UserMessage.switchNotApplied("iECO", mode: .fan).text,
+                           "The air conditioner did not apply “iECO” in “Fan” mode. The air conditioner does not accept this switch in this mode. Choose another mode and try again. (not-in-mode)")
             XCTAssertEqual(UserMessage.deviceOff(detail: nil).text,
                            "The air conditioner is off or has no power (according to the Midea cloud). Klimacontrol keeps checking. (3123)")
             let failed = MideaError.allPathsFailed([PathFailure(path: .cloud, reason: .cloud(.other, code: 3004), text: "x")])

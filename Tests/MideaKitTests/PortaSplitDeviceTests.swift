@@ -18,6 +18,9 @@ final class PortaSplitDeviceTests: XCTestCase {
         /// Gemeldete Leistungsbegrenzung (%).
         var rate = 100
         var getStates = 0, sets: [Data] = [], toggles = 0, singles = 0
+        /// Nutzdaten der Fähigkeiten-Seiten (0xB5) ab 0xB5; leer = keine Antwort.
+        var capabilityPages: [[UInt8]] = []
+        var capabilityQueries: [Data] = [], propertySets: [Data] = []
         var deadlines: [Date?] = []
         var deadlineDuringSend: Date??
 
@@ -49,7 +52,13 @@ final class PortaSplitDeviceTests: XCTestCase {
                 return [reply]
             }
             if f[10] == 0x41, f[11] != 0x21 { getStates += 1; return [reply] }
-            if f[10] == 0xB0 { return [] }   // Eigenschaft setzen: die Anlage übernimmt `rate` nicht
+            if f[10] == 0xB5 {
+                capabilityQueries.append(frame)
+                let page = f[12] == 0x01 ? 1 : 0
+                guard page < capabilityPages.count else { throw MideaError.timeout }
+                return [Frame.build(.query, capabilityPages[page], id: 3)]
+            }
+            if f[10] == 0xB0 { propertySets.append(frame); return [] }   // Eigenschaft setzen: die Anlage übernimmt `rate` nicht
             if f[10] == 0xB1 {
                 let id = PropertyId.rateSelect.rawValue
                 return [Frame.build(.query, [0xB1, 1, UInt8(id & 0xFF), UInt8(id >> 8), 0, 1, UInt8(rate)], id: 2)]
@@ -110,6 +119,48 @@ final class PortaSplitDeviceTests: XCTestCase {
         lan.fail = false
         XCTAssertEqual(try t.send(Data(), retries: 2, expect: nil), [lan.reply], "nach 60 s (nicht 120 s) wieder WLAN")
         XCTAssertEqual(lan.sends.count, tries + 1)
+    }
+
+    // MARK: Fähigkeiten
+
+    func testReadCapabilitiesReadsBothPagesAndUsesIECONumber() async throws {
+        let fake = DeviceFake()
+        fake.capabilityPages = [
+            [0xB5, 3, 0xE3, 0x00, 0x02, 0x01, 0x02, 0x14, 0x02, 0x01, 0x02, 0x2C, 0x02, 0x00, 0x01],
+            [0xB5, 1, 0x48, 0x00, 0x01, 0x01, 0x00],
+        ]
+        let dev = device(fake)
+        let read = try await dev.readCapabilities()
+        let caps = try XCTUnwrap(read)
+        let queries = fake.capabilityQueries.map { [UInt8]($0) }
+        XCTAssertEqual(queries.count, 2)
+        XCTAssertEqual(Array(queries[0][10..<13]), [0xB5, 0x01, 0x00], "erste Seite")
+        XCTAssertEqual(Array(queries[1][10..<14]), [0xB5, 0x01, 0x01, 0x01], "zweite Seite")
+        XCTAssertEqual(caps.raw, [0x00E3: [0x01, 0x02], 0x0214: [0x02], 0x0048: [0x01]])
+        XCTAssertEqual(caps.ieco, 1)
+        XCTAssertEqual(caps.iecoEnd, 2)
+        XCTAssertTrue(caps.iecoCool)
+        XCTAssertTrue(caps.iecoHeat)
+        XCTAssertEqual(caps.iecoNumber, 3)
+        XCTAssertEqual(caps.summary, "0048=01 00e3=0102 0214=02")
+        XCTAssertTrue(fake.sets.isEmpty && fake.propertySets.isEmpty, "Fähigkeiten nur gelesen")
+
+        let s = try await dev.refresh()
+        XCTAssertEqual(s.capabilities, caps, "spätere Zustände tragen die Fähigkeiten mit")
+        _ = try await dev.setIECO(true)
+        let set = try XCTUnwrap(fake.propertySets.first.map { [UInt8]($0) })
+        XCTAssertEqual(Array(set[10..<18]), [0xB0, 1, 0xE3, 0x00, 13, 0, 3, 1], "ieco_number aus den Fähigkeiten")
+    }
+
+    func testReadCapabilitiesWithoutReplyKeepsIECONumberOne() async throws {
+        let fake = DeviceFake()
+        let dev = device(fake)
+        let caps = try await dev.readCapabilities()
+        XCTAssertNil(caps)
+        XCTAssertEqual(fake.capabilityQueries.count, 1, "ohne Antwort keine zweite Seite")
+        _ = try await dev.setIECO(true)
+        let set = try XCTUnwrap(fake.propertySets.first.map { [UInt8]($0) })
+        XCTAssertEqual(Array(set[10..<18]), [0xB0, 1, 0xE3, 0x00, 13, 0, 1, 1])
     }
 
     func testRefreshSendsOptionalQueriesSingly() async throws {

@@ -14,16 +14,16 @@ enum ShortcutCommand { None, Power, Warmer, Colder, Refresh, Settings, ToggleCha
 /// bleiben wie am Mac frei: Sie gehören Scrollbereichen, Reglern und der Tastaturnavigation.
 static class Shortcuts
 {
-    /// Reine Entscheidung. `panels`: Verlauf/Diagnose lassen sich umschalten (Hauptfenster mit Werten).
-    public static ShortcutCommand Resolve(Key key, ModifierKeys mods, bool powerOn, bool typing, bool panels)
+    /// Reine Entscheidung. `targetAdjustable`: Soll verstellbar (an, nicht Lüften). `panels`: Verlauf/Diagnose lassen sich umschalten (Hauptfenster mit Werten).
+    public static ShortcutCommand Resolve(Key key, ModifierKeys mods, bool targetAdjustable, bool typing, bool panels)
     {
         if (key == Key.F5 && mods == ModifierKeys.None) return ShortcutCommand.Refresh;
         if (mods != ModifierKeys.Control) return ShortcutCommand.None;
         return key switch
         {
             Key.P => ShortcutCommand.Power,
-            Key.Up when powerOn && !typing => ShortcutCommand.Warmer,
-            Key.Down when powerOn && !typing => ShortcutCommand.Colder,
+            Key.Up when targetAdjustable && !typing => ShortcutCommand.Warmer,
+            Key.Down when targetAdjustable && !typing => ShortcutCommand.Colder,
             Key.R => ShortcutCommand.Refresh,
             Key.OemComma => ShortcutCommand.Settings,
             Key.G when panels => ShortcutCommand.ToggleCharts,
@@ -42,7 +42,7 @@ static class Shortcuts
             if (e.Handled) return;
             var key = e.Key == Key.System ? e.SystemKey : e.Key;
             var focused = Keyboard.FocusedElement;
-            var cmd = Resolve(key, Keyboard.Modifiers, Core.Shared.Snap.State?.Power == true,
+            var cmd = Resolve(key, Keyboard.Modifiers, ControlPanel.TargetAdjustable(Core.Shared.Snap),
                               controls.IsTyping || IsTextInput(focused),
                               toggleCharts != null && toggleDiag != null && Core.Shared.Snap.State != null);
             if (cmd == ShortcutCommand.None) return;

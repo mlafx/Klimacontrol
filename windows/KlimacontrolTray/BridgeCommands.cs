@@ -23,6 +23,7 @@ public static class Cmd
     public const string OutdoorSilent = "outdoorSilent";
     public const string SelfClean = "selfClean";
     public const string Ieco = "ieco";
+    public const string Sleep = "sleep";
     public const string Display = "display";
     public const string Rate = "rate";
     public const string Sound = "sound";
@@ -45,6 +46,8 @@ public static class Cmd
     public const string Currency = "currency";
     public const string DebugLog = "debugLog";
     public const string HistoryCsv = "historyCSV";
+    public const string UpdateAutoInstall = "updateAutoInstall";
+    public const string UpdateInterval = "updateInterval";
     public const string DiagnosticsVisible = "diagnosticsVisible";
     public const string UiVisible = "uiVisible";
 

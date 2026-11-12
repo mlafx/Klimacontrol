@@ -2,44 +2,11 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:l="clr-namespace:KlimacontrolTray"
-        Title="Klimacontrol" Width="506" Height="900" MinWidth="420" MinHeight="480"
+        Title="Klimacontrol"
         WindowStartupLocation="CenterScreen" UseLayoutRounding="True">
-  <!-- Links Verlauf, Mitte Steuerung, rechts Diagnose; die Spalten baut MainWindow.xaml.cs nach Layout.cs. -->
+  <!-- Links Verlauf, Mitte Steuerung, rechts Diagnose; Breiten und Mindestgröße setzt MainWindow.xaml.cs nach den
+       Regeln des Kerns (options.window, WindowLayoutMath). Größe und Mindestgröße kommen aus dem Code. -->
   <Window.Resources>
-    <!-- Reiter wie der Windows-11-SelectorBar: gewählt mit kurzem Akzentstrich darunter. -->
-    <Style x:Key="PaneTab" TargetType="RadioButton">
-      <Setter Property="FontSize" Value="14"/>
-      <Setter Property="Foreground" Value="{DynamicResource Sub}"/>
-      <Setter Property="Cursor" Value="Hand"/>
-      <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="RadioButton">
-            <Grid Margin="0,0,4,0">
-              <Border x:Name="Back" CornerRadius="4" Background="Transparent"/>
-              <ContentPresenter x:Name="Text" Margin="12,6,12,10" HorizontalAlignment="Center"/>
-              <Border x:Name="Pill" Width="16" Height="3" CornerRadius="1.5" VerticalAlignment="Bottom" Margin="0,0,0,2"
-                      Background="{DynamicResource AccentFillColorDefaultBrush}" Visibility="Hidden"/>
-            </Grid>
-            <ControlTemplate.Triggers>
-              <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="Back" Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
-              </Trigger>
-              <Trigger Property="IsKeyboardFocused" Value="True">
-                <Setter TargetName="Back" Property="BorderBrush" Value="{DynamicResource Fg}"/>
-                <Setter TargetName="Back" Property="BorderThickness" Value="1"/>
-              </Trigger>
-              <Trigger Property="IsChecked" Value="True">
-                <Setter TargetName="Pill" Property="Visibility" Value="Visible"/>
-                <Setter Property="Foreground" Value="{DynamicResource Fg}"/>
-                <Setter Property="FontWeight" Value="SemiBold"/>
-              </Trigger>
-            </ControlTemplate.Triggers>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-
     <!-- Fußzeilen-Knöpfe ohne Rahmen, Fläche erst beim Darüberfahren; für Button und ToggleButton. -->
     <Style x:Key="FooterButton" TargetType="ButtonBase">
       <Setter Property="Foreground" Value="{DynamicResource Fg}"/>
@@ -92,19 +59,67 @@
     </Style>
   </Window.Resources>
 
-  <Grid>
+  <Grid x:Name="Root">
     <Grid.RowDefinitions>
       <RowDefinition/>
       <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
 
-    <!-- Spalten baut MainWindow.xaml.cs (Relayout). -->
+    <!-- Spalten Verlauf · Steuerung · Diagnose; Breiten setzt MainWindow.xaml.cs (Relayout). Spalte 0 ist der Rand vor
+         der Steuerung, wenn sie allein in einem breiten Fenster steht. -->
     <Grid x:Name="AreaHost" ClipToBounds="True">
-      <Grid x:Name="Area" HorizontalAlignment="Center"/>
+      <Grid x:Name="Area" HorizontalAlignment="Left">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="0"/>
+          <ColumnDefinition Width="0"/>
+          <ColumnDefinition Width="0"/>
+          <ColumnDefinition Width="0"/>
+        </Grid.ColumnDefinitions>
+        <Grid x:Name="HistoryHost" Grid.Column="1" Visibility="Collapsed">
+          <ScrollViewer x:Name="HistoryScroll" Focusable="False" PanningMode="VerticalOnly"
+                        VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid x:Name="HistoryFill"/>
+          </ScrollViewer>
+          <!-- Trennlinie über dem Rand der Spalte: sie zählt zur Spaltenbreite, der Verlauf bekommt die volle Breite. -->
+          <Rectangle Width="1" HorizontalAlignment="Right" Fill="{DynamicResource Line}" IsHitTestVisible="False"/>
+        </Grid>
+        <ScrollViewer x:Name="ControlScroll" Grid.Column="2" Focusable="False" PanningMode="VerticalOnly"
+                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+          <Grid x:Name="ControlFill"/>
+        </ScrollViewer>
+        <Grid x:Name="DiagHost" Grid.Column="3" Visibility="Collapsed">
+          <ScrollViewer x:Name="DiagScroll" Focusable="False" PanningMode="VerticalOnly"
+                        VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid x:Name="DiagFill"/>
+          </ScrollViewer>
+          <Rectangle Width="1" HorizontalAlignment="Left" Fill="{DynamicResource Line}" IsHitTestVisible="False"/>
+        </Grid>
+      </Grid>
     </Grid>
 
+    <StackPanel Grid.Row="1">
+    <!-- Ansage, wenn eine Seitenspalte nicht mehr auf den Bildschirm passt (Text aus dem Katalog, verschwindet nach 10 s). -->
+    <Border x:Name="HiddenBanner" Margin="12,0,12,8" Padding="10,8" CornerRadius="8"
+            Background="{DynamicResource Tile}" Visibility="Collapsed">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock x:Name="HiddenText" TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource Sub}" VerticalAlignment="Center"
+                   AutomationProperties.LiveSetting="Polite"/>
+        <Button Grid.Column="1" Content="✕" Padding="6,2" Margin="8,0,0,0" FontSize="11" VerticalAlignment="Center"
+                Click="DismissHidden_Click" ToolTip="{l:T common.dismiss}" AutomationProperties.Name="{l:T main.windows.dismissNotice}"/>
+      </Grid>
+    </Border>
+    <!-- Hinweis, solange das ausführliche Protokoll in dieser Sitzung an ist (Text aus dem Kern). -->
+    <TextBlock x:Name="DebugLogNote" Margin="14,0,14,6" FontSize="11.5" Foreground="{DynamicResource Sub}"
+               TextWrapping="Wrap" Visibility="Collapsed"/>
+    </StackPanel>
+
     <!-- Fußzeile: Außenspalten gleich breit, damit die Mitte mittig bleibt; feste Beschriftungen, damit nichts springt. -->
-    <Border Grid.Row="1" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="10,6">
+    <Border Grid.Row="2" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="10,6">
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition/>

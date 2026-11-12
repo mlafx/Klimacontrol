@@ -396,3 +396,51 @@ final class CloudTests: XCTestCase {
         XCTAssertEqual(ACScene.loadReporting(from: url).movedAside, nil, "fehlende Datei: still")
     }
 }
+
+/// Token-Abruf bei der Einrichtung über das Midea-Konto: nur eine echte Ablehnung im Handshake heißt „lehnt das
+/// Token ab“. Belegt oder ohne Antwort nennt die Einrichtung den wahren Grund; die Reihenfolge big/little bleibt.
+final class TokenTrialTests: XCTestCase {
+    private func run(_ outcomes: [String: (any Error)?]) async -> (Result<String, any Error>, [String]) {
+        let tried = Locked<[String]>([])
+        do {
+            let found = try await MideaCloud.firstAcceptedToken(
+                kinds: [.smartHome],
+                fetch: { _, big in (big ? "big" : "little", "key") },
+                check: { token, _ in
+                    tried.mutate { $0.append(token) }
+                    return outcomes[token] ?? nil
+                })
+            return (.success(found.token), tried.value)
+        } catch {
+            return (.failure(error), tried.value)
+        }
+    }
+
+    func testBusyIsNotReportedAsRejection() async {
+        let (result, tried) = await run(["big": MideaError.busy(.otherApp), "little": MideaError.busy(.otherApp)])
+        XCTAssertEqual(tried, ["big", "little"], "Reihenfolge big, dann little endian")
+        guard case .failure(let error) = result else { return XCTFail("darf nicht gelingen") }
+        XCTAssertEqual(error as? MideaError, .busy(.otherApp))
+        XCTAssertNil(error as? MideaCloud.CloudError, "kein „lehnt das Token ab“")
+    }
+
+    func testNoAnswerIsNotReportedAsRejection() async {
+        let (result, _) = await run(["big": MideaError.authenticationFailed("falsch"), "little": MideaError.timeout])
+        guard case .failure(let error) = result else { return XCTFail("darf nicht gelingen") }
+        XCTAssertEqual(error as? MideaError, .timeout)
+    }
+
+    func testRealRejectionStaysRejection() async {
+        let (result, _) = await run(["big": MideaError.authenticationFailed("falsch"),
+                                     "little": MideaError.authenticationFailed("falsch")])
+        guard case .failure(let error) = result else { return XCTFail("darf nicht gelingen") }
+        guard case .tokenRejected? = error as? MideaCloud.CloudError else { return XCTFail("\(error)") }
+    }
+
+    func testLittleEndianAfterBigFails() async {
+        let (result, tried) = await run(["big": MideaError.authenticationFailed("falsch")])
+        XCTAssertEqual(tried, ["big", "little"])
+        guard case .success(let token) = result else { return XCTFail("little endian muss gelingen") }
+        XCTAssertEqual(token, "little")
+    }
+}

@@ -200,7 +200,16 @@ extension ACController {
     }
 
     public func setSelfClean(_ on: Bool) { command { try await $0.setSelfClean(on) } }
-    public func setIECO(_ on: Bool) { command { try await $0.setIECO(on) } }
+    public func setIECO(_ on: Bool) {
+        guard let device else { return }
+        generation += 1
+        Task {
+            // Die Anlage meldet iECO unverändert zurück: im Modus nicht möglich, nicht „eine andere App“.
+            if case .notApplied(let actual) = await perform({ try await device.setIECO(on) }), actual.ieco != on {
+                showNotice(UserMessage.switchNotApplied(L.Main.Comfort.ieco, mode: actual.mode))
+            }
+        }
+    }
     public func toggleDisplay() { command { try await $0.toggleDisplay() } }
 
     /// Leistung begrenzen (die PortaSplit kennt 100, 75 und 50 %).

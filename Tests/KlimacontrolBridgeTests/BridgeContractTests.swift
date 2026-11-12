@@ -54,14 +54,47 @@ final class BridgeContractTests: XCTestCase {
         XCTAssertEqual(missing, [], "Von der Bridge gesendet, im Muster (bridge-muster.json) nicht")
     }
 
+    /// `kc_history_json` und `kc_history_stats_json` gegen `history` und `stats` im Muster.
+    func testHistoryAndStatsFieldsAreInTheContractSample() throws {
+        let t0 = Date(timeIntervalSince1970: 1_762_358_395)
+        let samples = [
+            HistorySample(time: t0, power: 410, indoor: 25.5, outdoor: 29, target: 24, on: true, mode: .cool),
+            HistorySample(time: t0.addingTimeInterval(60), power: 400, indoor: 25.4, outdoor: 28.5, target: 24, on: true,
+                          mode: .cool),
+        ]
+        var stats = HistoryStats()
+        stats.avgWatts = 350.5
+        stats.peakWatts = 620
+        stats.kWh = 2.4
+        let history = try XCTUnwrap(JSONSerialization.jsonObject(
+            with: Data(encode(historyDTOs(samples, range: 3600), fallback: "[]").utf8)) as? [[String: Any]])
+        let statsReal = try XCTUnwrap(JSONSerialization.jsonObject(
+            with: Data(encode(StatsDTO(stats, price: 0.3, currency: "€"), fallback: "{}").utf8)) as? [String: Any])
+        XCTAssertNotNil(history.first?["outdoorSmooth"])
+        XCTAssertEqual((statsReal["line"] as? [Any])?.count, 4)
+
+        let sample = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: Self.muster)) as? [String: Any])
+        var missing: [String] = []
+        Self.collectMissing(["history": history, "stats": statsReal],
+                            in: ["history": sample["history"] as Any, "stats": sample["stats"] as Any],
+                            path: "", into: &missing)
+        XCTAssertEqual(missing, [], "Von der Bridge gesendet, im Muster (bridge-muster.json) nicht")
+    }
+
+    /// Listen von Objekten: Jeder Schlüssel eines gesendeten Eintrags muss in einem Eintrag der Musterliste stehen.
     private static func collectMissing(_ real: [String: Any], in sample: [String: Any], path: String,
                                        into missing: inout [String]) {
         for (key, value) in real {
             guard let other = sample[key] else { missing.append("\(path).\(key)"); continue }
             if let inner = value as? [String: Any], let otherInner = other as? [String: Any] {
                 collectMissing(inner, in: otherInner, path: "\(path).\(key)", into: &missing)
+            } else if let items = value as? [[String: Any]], !items.isEmpty, let otherItems = other as? [[String: Any]] {
+                let merged = otherItems.reduce(into: [String: Any]()) { all, item in
+                    all.merge(item) { first, _ in first }
+                }
+                for item in items { collectMissing(item, in: merged, path: "\(path).\(key)[]", into: &missing) }
             }
         }
-        missing.sort()
+        missing = Array(Set(missing)).sorted()
     }
 }

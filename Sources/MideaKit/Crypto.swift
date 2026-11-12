@@ -186,6 +186,8 @@ public enum ConnectionReason: Sendable, Equatable, ExpressibleByStringLiteral {
     case noLAN
     case noCloud
     case noPath
+    /// Das System lässt die App nicht ins lokale Netz (Mac: Freigabe „Lokales Netzwerk“, Windows: Firewall/Profil).
+    case localNetwork
     /// Freier Text (Systemfehler, Hinweise der Suche).
     case other(String)
 
@@ -199,6 +201,7 @@ public enum ConnectionReason: Sendable, Equatable, ExpressibleByStringLiteral {
         case .noLAN: AutoTransport.noLANText
         case .noCloud: AutoTransport.noCloudText
         case .noPath: PathFailure.noPathText
+        case .localNetwork: LANClient.localNetworkHint
         case .other(let text): text
         }
     }

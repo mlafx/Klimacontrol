@@ -58,7 +58,7 @@ final class FormatProfileTests: XCTestCase {
         XCTAssertEqual(Fmt.target(21.6, profile: de), "22°")
         XCTAssertEqual(Fmt.watts(410, profile: de), "410 W")
         XCTAssertEqual(Fmt.kwh(1.234, profile: de), "1,23 kWh")
-        XCTAssertEqual(Fmt.euro(0.3, profile: de), "0,30 €")
+        XCTAssertEqual(Fmt.money(0.3, currency: "€", profile: de), "0,30 €")
         XCTAssertEqual(Fmt.money(0.3, currency: "CHF", profile: de), "0,30 CHF")
         XCTAssertEqual(Fmt.money(nil, currency: "€", profile: de), "–")
         XCTAssertEqual(Fmt.money(12.5, currency: "$", profile: .unitedStates), "12.50 $")

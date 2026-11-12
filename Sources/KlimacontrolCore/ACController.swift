@@ -18,8 +18,13 @@ public final class ACController {
 
     public internal(set) var config: DeviceConfig?
     public internal(set) var state: ACState? {
-        didSet { if (state != nil) != hasState { hasState = state != nil } }
+        didSet {
+            if (state != nil) != hasState { hasState = state != nil }
+            noteErrorCode(state?.errorCode)
+        }
     }
+    /// Zuletzt gemeldeter Fehlercode der Anlage (nil = noch keiner gelesen); nur für die Protokollzeile beim Wechsel.
+    @ObservationIgnored var lastErrorCode: Int?
     /// Ob es einen Zustand gibt; ändert sich nur bei Wechsel zwischen „kein Zustand“ und „Zustand“, damit Ansichten,
     /// die nur das wissen wollen, nicht bei jeder Abfrage neu rechnen.
     public internal(set) var hasState = false
@@ -62,6 +67,10 @@ public final class ACController {
     public internal(set) var connectSlow = false
     @ObservationIgnored var connectSlowSeconds: Double = 10
     @ObservationIgnored var connectSlowTask: Task<Void, Never>?
+
+    /// Ausführliches Protokoll ist in dieser Sitzung an (nur Speicher, wirkt bis zum Beenden); ändern über
+    /// `setDetailedLog(_:)`.
+    public internal(set) var detailedLog = AppLog.debugEnabled
 
     // MARK: Midea-Konto (+Cloud)
 
@@ -107,6 +116,8 @@ public final class ACController {
     var storedCurrency: String
     var storedLanguage: LanguageChoice
     var storedBetaChannel: Bool
+    var storedUpdateAutoInstall: Bool
+    var storedUpdateInterval: UpdateInterval
     var storedBeep: Bool
     /// Darstellung (beobachtet); ändern nur über `setAppearance`/`applyTheme`/`resetAppearance`.
     public internal(set) var appearance: Appearance = .standard
@@ -162,6 +173,8 @@ public final class ACController {
     @ObservationIgnored var lastDiagnostics = Date.distantPast
     /// Schnellmodus: Zähler für den Block im Wechsel (`fastCycle`).
     @ObservationIgnored var fastStep = 0
+    /// Gerät, dessen Fähigkeiten schon abgefragt wurden (einmal je Gerät, auch wenn keine Antwort kam).
+    @ObservationIgnored var capabilitiesAsked: ObjectIdentifier?
     /// Gesammelte Befehle (Temperatur, Lüfter), die nach `debounceDelay` Ruhe gesendet werden.
     @ObservationIgnored var debounce: [DebounceKey: Task<Void, Never>] = [:]
     /// Ausgangsstand je gesammeltem Befehl (vor dem ersten Wert im Sammelfenster), für das Zurücksetzen.
@@ -209,6 +222,8 @@ public final class ACController {
         storedCurrency = Self.validCurrency(stored.object(forKey: SettingsKey.currency) as? String) ?? UIOptions.currencyDefault
         storedLanguage = LanguageChoice(stored: stored.object(forKey: SettingsKey.language) as? String)
         storedBetaChannel = stored.object(forKey: SettingsKey.updateBetaChannel) as? Bool ?? false
+        storedUpdateAutoInstall = AppUpdate.autoInstall(stored: stored.object(forKey: SettingsKey.updateAutoInstall))
+        storedUpdateInterval = UpdateInterval(stored: stored.object(forKey: SettingsKey.updateInterval))
         storedBeep = stored.object(forKey: SettingsKey.beep) as? Bool ?? true
         appearance = Self.loadAppearance(from: stored)
         credentialsBackedUp = stored.object(forKey: SettingsKey.credentialsBackedUp) as? Bool ?? false

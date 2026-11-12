@@ -145,35 +145,59 @@ public enum MideaCloud {
     /// Holt Token und Schlüssel und prüft sie an der Anlage (beide Byte-Reihenfolgen der udpid, beide Cloud-Zugänge).
     /// Nutzt die gemeinsame Sitzung des Kontos (keine zweite Anmeldung, wenn kurz vorher die Kontoliste kam).
     public static func fetchConfig(for dev: DiscoveredDevice, account: String, password: String) async throws -> DeviceConfig {
-        var lastError: any Error = CloudError.noToken
         AppLog.write(LogText.t("log.token.fetch", "Token-Abruf für {name} ({ip}, id {id}) mit Konto {account}", ["name": dev.name, "ip": dev.ip, "id": String(dev.deviceId), "account": AppLog.mask(account)]))
         let session = MideaCloudSession.shared(account: account, password: password)
         await session.userActed()
-        for kind in CloudKind.allCases {
+        func config(_ token: String, _ key: String) -> DeviceConfig {
+            DeviceConfig(name: dev.name, ip: dev.ip, port: dev.port, deviceId: dev.deviceId, token: token, key: key)
+        }
+        let found = try await firstAcceptedToken(
+            fetch: { kind, big in
+                try await session.token(kind: kind, udpid: Discovery.udpid(deviceId: dev.deviceId, bigEndian: big),
+                                        applianceId: dev.deviceId)
+            },
+            check: { token, key in await PortaSplitDevice.check(config(token, key), quiet: true) })
+        return config(found.token, found.key)
+    }
+
+    /// Probiert die Token der Cloud der Reihe nach (je Zugang erst big, dann little endian), bis die Anlage eines
+    /// annimmt. Nur eine echte Ablehnung im Handshake gilt als „lehnt das Token ab“; ist die Anlage belegt oder
+    /// antwortet nicht, wirft sie diesen Fehler, damit die Einrichtung den wahren Grund nennt.
+    static func firstAcceptedToken(
+        kinds: [CloudKind] = CloudKind.allCases,
+        fetch: (CloudKind, _ bigEndian: Bool) async throws -> (String, String)?,
+        check: (_ token: String, _ key: String) async -> (any Error)?
+    ) async throws -> (token: String, key: String) {
+        var lastError: any Error = CloudError.noToken
+        var unchecked: (any Error)?
+        for kind in kinds {
             do {
                 // PortaSplit nutzt big endian; little endian als Rückfall.
                 for big in [true, false] {
-                    let udpid = Discovery.udpid(deviceId: dev.deviceId, bigEndian: big)
-                    let found = try await session.token(kind: kind, udpid: udpid, applianceId: dev.deviceId)
-                    guard let (token, key) = found else {
-                        AppLog.write(LogText.t("log.token.none", "Kein Token für udpid ({order} endian, {kind})", ["order": big ? "big" : "little", "kind": kind.rawValue]))
+                    let order = big ? "big" : "little"
+                    guard let (token, key) = try await fetch(kind, big) else {
+                        AppLog.write(LogText.t("log.token.none", "Kein Token für udpid ({order} endian, {kind})", ["order": order, "kind": kind.rawValue]))
                         continue
                     }
-                    AppLog.write(LogText.t("log.token.received", "Token erhalten ({order} endian), prüfe an der Anlage …", ["order": big ? "big" : "little"]))
-                    let cfg = DeviceConfig(name: dev.name, ip: dev.ip, port: dev.port, deviceId: dev.deviceId, token: token, key: key)
-                    if await PortaSplitDevice.verify(cfg, quiet: true) {
+                    AppLog.write(LogText.t("log.token.received", "Token erhalten ({order} endian), prüfe an der Anlage …", ["order": order]))
+                    guard let failure = await check(token, key) else {
                         AppLog.write(LogText.t("log.token.accepted", "Anlage hat das Token angenommen – Einrichtung fertig"))
-                        return cfg
+                        return (token, key)
                     }
-                    AppLog.write(LogText.t("log.token.rejected", "Anlage lehnt dieses Token ab ({order} endian) – probiere die andere Variante", ["order": big ? "big" : "little"]))
-                    lastError = CloudError.tokenRejected
+                    if case .authenticationFailed? = failure as? MideaError {
+                        AppLog.write(LogText.t("log.token.rejected", "Anlage lehnt dieses Token ab ({order} endian) – probiere die andere Variante", ["order": order]))
+                        lastError = CloudError.tokenRejected
+                    } else {
+                        AppLog.write(LogText.t("log.token.unchecked", "Token nicht prüfbar ({order} endian): {error}", ["order": order, "error": failure.localizedDescription]))
+                        if unchecked == nil { unchecked = failure }
+                    }
                 }
             } catch {
                 AppLog.error(LogText.t("log.token.error", "{kind}: {error}", ["kind": kind.rawValue, "error": error.localizedDescription]))
                 lastError = error
             }
         }
-        throw lastError
+        throw unchecked ?? lastError
     }
 
     /// Listet die Anlagen des Midea-Kontos wie die MSmartHome-App (Appliance-Liste der Cloud). Findet die

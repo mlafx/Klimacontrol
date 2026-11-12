@@ -94,8 +94,48 @@ struct OptionsDTO: Encodable {
         var addressPlaceholder, addressExample, addressOrHostPrompt, tokenPrompt, keyPrompt: String
     }
 
+    /// Skala unter dem Regler der Solltemperatur (`UIText.temperatureScale*`). `fraction` ist die Lage auf der Spur
+    /// (0 = `min`, 1 = `max`), gemessen zwischen den Knopfmitten des Reglers.
+    struct TemperatureScale: Encodable {
+        struct Mark: Encodable {
+            var value, fraction: Double
+            /// Beschriftung („16°“ bzw. „Raum 23,0°“); fehlt bei `emphasized`.
+            var text: String?
+        }
+
+        var min, max: Double
+        var labels, emphasized: [Mark]
+
+        static var current: TemperatureScale {
+            TemperatureScale(
+                min: UIOptions.temperatureMin, max: UIOptions.temperatureMax,
+                labels: UIText.temperatureScaleLabels.map {
+                    Mark(value: $0, fraction: UIText.temperatureScaleFraction($0), text: Fmt.target($0))
+                },
+                emphasized: UIText.temperatureScaleEmphasized.map {
+                    Mark(value: $0, fraction: UIText.temperatureScaleFraction($0), text: nil)
+                })
+        }
+    }
+
+    /// Zeitraum des Verlaufs mit der Teilung seiner Zeitachse (`ChartAxis.timeStepMinutes`,
+    /// `ChartAxis.timeLabelHalfWidth`); ab 1440 min stehen Daten statt Uhrzeiten an der Achse.
+    struct ChartRange: Encodable {
+        var label: String
+        var seconds: Double
+        var tickMinutes: Int
+        var tickLabelHalfWidth: Double
+
+        init(_ r: UIOptions.ChartRange) {
+            label = r.label
+            seconds = r.seconds
+            tickMinutes = ChartAxis.timeStepMinutes(range: r.seconds)
+            tickLabelHalfWidth = ChartAxis.timeLabelHalfWidth(range: r.seconds)
+        }
+    }
+
     struct Chart: Encodable {
-        var ranges: [ChoiceDTO]
+        var ranges: [ChartRange]
         var defaultRange: Double
         var windowCount: Int
         /// Lücke = max(gapMinSeconds, gapFactor × Punktabstand), Punktabstand = Zeitraum / windowCount.
@@ -112,6 +152,59 @@ struct OptionsDTO: Encodable {
         var kinds: [EnergyKind]
         var defaultKind: String
         var title, help, legend, noData: String
+    }
+
+    /// Regeln des Hauptfensters aus `MainWindowLayout` (Breiten der Seitenspalten schließen ihre Trennlinie ein).
+    struct Window: Encodable {
+        struct Heights: Encodable {
+            var compact, normal, large: Double
+        }
+
+        struct ChartHeights: Encodable {
+            var power, temperature, outdoor, energy: Double
+
+            init(_ h: MainWindowLayout.ChartHeights) {
+                power = h.power
+                temperature = h.temperature
+                outdoor = h.outdoor
+                energy = h.energy
+            }
+        }
+
+        var controlWidth, historyMin, historyBalanced, historyGridFrom, diagnosticsMin, diagnosticsMax: Double
+        var controlsOnlyMaxWidth: Double
+        var minimumHeight: Heights
+        var historyBaseHeight, singleOverhead, gridOverhead, gridRowMax, chartStep, energyBarMaxWidth: Double
+        /// Graphenhöhen einspaltig ohne zusätzlichen Platz bzw. ganz ausgereizt, und kleinste Höhen im 2 × 2-Raster.
+        var chartMin, chartMax, gridChartMin: ChartHeights
+        /// Anteile an zusätzlicher Höhe (`MainWindowLayout.chartWeights`); der Verbrauch bekommt nur den Rest.
+        var chartWeights: ChartWeights
+
+        struct ChartWeights: Encodable {
+            var power, temperature, outdoor: Double
+        }
+
+        static var current: Window {
+            // Die Höhen sind im Kern privat; sie kommen hier aus `chartHeights` an den Rändern (kein Platz, unbegrenzt).
+            let unlimited = 1_000_000.0
+            return Window(
+                controlWidth: MainWindowLayout.controlWidth, historyMin: MainWindowLayout.historyMin,
+                historyBalanced: MainWindowLayout.historyBalanced, historyGridFrom: MainWindowLayout.historyGridFrom,
+                diagnosticsMin: MainWindowLayout.diagnosticsMin, diagnosticsMax: MainWindowLayout.diagnosticsMax,
+                controlsOnlyMaxWidth: MainWindowLayout.controlsOnlyMaxWidth,
+                minimumHeight: Heights(compact: MainWindowLayout.minimumHeight(.compact),
+                                       normal: MainWindowLayout.minimumHeight(.normal),
+                                       large: MainWindowLayout.minimumHeight(.large)),
+                historyBaseHeight: MainWindowLayout.historyBaseHeight, singleOverhead: MainWindowLayout.singleOverhead,
+                gridOverhead: MainWindowLayout.gridOverhead, gridRowMax: MainWindowLayout.gridRowMax,
+                chartStep: MainWindowLayout.chartStep, energyBarMaxWidth: MainWindowLayout.energyBarMaxWidth,
+                chartMin: ChartHeights(MainWindowLayout.chartHeights(columnHeight: 0)),
+                chartMax: ChartHeights(MainWindowLayout.chartHeights(columnHeight: unlimited)),
+                gridChartMin: ChartHeights(MainWindowLayout.chartHeights(columnHeight: 0, grid: true)),
+                chartWeights: ChartWeights(power: MainWindowLayout.chartWeights[0],
+                                           temperature: MainWindowLayout.chartWeights[1],
+                                           outdoor: MainWindowLayout.chartWeights[2]))
+        }
     }
 
     struct Price: Encodable {
@@ -140,6 +233,15 @@ struct OptionsDTO: Encodable {
         var updatesHelp, updatesChecking, updatesCurrent, updatesInstallingTemplate, updatesFailed, updatesCheckButton: String
     }
 
+    /// Einstellungen → Allgemein → Updates und Hinweis „Update bereit · Jetzt installieren · Später“
+    /// (Updates nicht automatisch installieren). Vorlagen mit `{version}`.
+    struct Updates: Encodable {
+        var autoInstallTitle, autoInstallHelp, intervalTitle: String
+        var intervals: [ModeOptionDTO]
+        var heldBackTitle, heldBackMessageTemplate, heldBackStatusTemplate, installNow, later: String
+        var reminderSeconds: Int
+    }
+
     var temperature: RangeDTO
     var refresh: Refresh
     var rate: Rate
@@ -147,13 +249,16 @@ struct OptionsDTO: Encodable {
     var offTimerChoices: [OffTimerDTO]
     var fan: Fan
     var credentials: Credentials
+    var temperatureScale: TemperatureScale
     var chart: Chart
+    var window: Window
     var energy: Energy
     var connectionModes: [ModeOptionDTO]
     var connectSteps: [StepDTO]
     var cloudFolder: CloudFolder
     var prompts: Prompts
     var texts: Texts
+    var updates: Updates
 
     static var current: OptionsDTO {
         let folder = UIText.cloudFolderPrompt(folder: "{folder}")
@@ -173,13 +278,15 @@ struct OptionsDTO: Encodable {
                                      defaultPort: UIOptions.defaultPort, addressPlaceholder: UIOptions.addressPlaceholder,
                                      addressExample: UIOptions.addressExample, addressOrHostPrompt: UIOptions.addressOrHostPrompt,
                                      tokenPrompt: UIOptions.tokenPrompt, keyPrompt: UIOptions.keyPrompt),
-            chart: Chart(ranges: UIOptions.chartRanges.map { ChoiceDTO(label: $0.label, seconds: $0.seconds) },
+            temperatureScale: .current,
+            chart: Chart(ranges: UIOptions.chartRanges.map(ChartRange.init),
                          defaultRange: UIOptions.chartRangeDefault, windowCount: UIOptions.chartWindowCount,
-                         gapFactor: 3, gapMinSeconds: 180,
+                         gapFactor: UIOptions.chartGapFactor, gapMinSeconds: UIOptions.chartGapMinSeconds,
                          temperatureAxis: RangeDTO(min: UIOptions.chartTemperatureAxis.lowerBound,
                                                    max: UIOptions.chartTemperatureAxis.upperBound),
                          outdoorAxis: RangeDTO(min: UIOptions.chartOutdoorAxis.lowerBound,
                                                max: UIOptions.chartOutdoorAxis.upperBound)),
+            window: .current,
             energy: Energy(kinds: UIOptions.energyKinds.map { EnergyKind(id: $0.kind.rawValue, label: $0.label, count: $0.count) },
                            defaultKind: UIOptions.energyKindDefault.rawValue, title: UIText.energyTitle,
                            help: UIText.energyHelp, legend: UIText.energyLegend, noData: UIText.energyNoData),
@@ -206,7 +313,15 @@ struct OptionsDTO: Encodable {
                          updatesHelp: UIText.updatesHelp(host: .windows), updatesChecking: UIText.updatesChecking,
                          updatesCurrent: UIText.updatesCurrent,
                          updatesInstallingTemplate: UIText.updatesInstalling(version: "{version}"),
-                         updatesFailed: UIText.updatesFailed, updatesCheckButton: UIText.updatesCheckButton))
+                         updatesFailed: UIText.updatesFailed, updatesCheckButton: UIText.updatesCheckButton),
+            updates: Updates(autoInstallTitle: UIText.updatesAutoInstallTitle, autoInstallHelp: UIText.updatesAutoInstallHelp,
+                             intervalTitle: UIText.updatesIntervalTitle,
+                             intervals: UpdateInterval.allCases.map { ModeOptionDTO(id: $0.rawValue, label: $0.title, help: "") },
+                             heldBackTitle: UIText.updatesHeldBackTitle,
+                             heldBackMessageTemplate: UIText.updatesHeldBackMessage(version: "{version}"),
+                             heldBackStatusTemplate: UIText.updatesHeldBackStatus(version: "{version}"),
+                             installNow: UIText.updatesInstallNow, later: UIText.updatesLater,
+                             reminderSeconds: Int(AppUpdate.reminderInterval)))
     }
 }
 
@@ -246,6 +361,14 @@ extension Snapshot {
             let a = c.availability(f)
             return (f.rawValue, AvailabilityDTO(enabled: a.enabled, why: a.why))
         })
+        // Lüftersperre beim Trocknen und Stellbarkeit der Solltemperatur (−/+, Regler, Tastenkürzel): Regeln des Kerns.
+        let locked = c.state.map { UIOptions.fanLocked($0.mode) } ?? false
+        availability["fan"] = AvailabilityDTO(enabled: !locked, why: locked ? UIOptions.fanLockedText : nil)
+        if let mode = c.state?.mode {
+            let r = UIOptions.rateAvailability(mode: mode, capabilities: c.state?.capabilities)
+            availability["rate"] = AvailabilityDTO(enabled: r.enabled, why: r.why)
+        }
+        availability["target"] = AvailabilityDTO(enabled: UIText.targetAdjustable(c.state), why: nil)
         connectionTooltip = c.connectionTooltip
         uiConnectionState = stateName(c.uiConnectionState)
         uiStaleSince = c.uiStaleSince?.timeIntervalSince1970
@@ -270,6 +393,10 @@ extension Snapshot {
         quitPrompt = c.quitPrompt().map(PromptDTO.init)
         forgetNeedsBackup = c.forgetNeedsBackup
         fanCaption = c.state.map(UIOptions.fanCaption) ?? ""
+        scaleRoom = c.state?.indoorTemperature.map {
+            OptionsDTO.TemperatureScale.Mark(value: $0, fraction: UIText.temperatureScaleFraction($0),
+                                             text: UIText.temperatureScaleRoom($0))
+        }
         maintenanceHints = c.state.map { UIText.maintenanceHints(filterAlert: $0.filterAlert, errorCode: $0.errorCode) } ?? []
         errorCodeValue = UIText.errorCodeValue(c.state?.errorCode ?? 0)
         filterValue = UIText.filterValue(alert: c.state?.filterAlert ?? false)

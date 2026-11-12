@@ -14,7 +14,7 @@ extension ACController {
     ///   übernommen.
     public func importBackupChecked(from url: URL, replaceScenes: Bool = false,
                                     allowOtherDevice: Bool = false) async throws -> BackupImportResult {
-        let (cfg, imported) = try readBackup(url, allowOtherDevice: allowOtherDevice)
+        let (cfg, imported, unreadable) = try readBackup(url, allowOtherDevice: allowOtherDevice)
         var verified: Bool?
         if cfg.hasLAN {
             let check = await checkExclusively(cfg)
@@ -24,16 +24,20 @@ extension ACController {
             }
             if case .accepted = check { verified = true } else { verified = false }
         }
-        return try installBackup(cfg, scenes: imported, replaceScenes: replaceScenes, verified: verified)
+        var result = try installBackup(cfg, scenes: imported, replaceScenes: replaceScenes, verified: verified)
+        result.scenesUnreadable = unreadable
+        // Unlesbare Szenen nicht still verlieren: Hinweis auf beiden Oberflächen.
+        if unreadable > 0 { showNotice(L.Message.Backup.scenesUnreadable) }
+        return result
     }
 
-    func readBackup(_ url: URL, allowOtherDevice: Bool) throws -> (DeviceConfig, [ACScene]) {
+    func readBackup(_ url: URL, allowOtherDevice: Bool) throws -> (DeviceConfig, [ACScene], unreadable: Int) {
         let cfg = try DeviceConfig.fromBackup(url).validated()
-        let imported = (try? ACScene.fromBackup(url)) ?? []
+        let scenes = (try? ACScene.fromBackupReporting(url)) ?? ACScene.BackupScenes(scenes: [], unreadable: 0)
         if !allowOtherDevice, let current = config, current.deviceId != 0, cfg.deviceId != 0, current.deviceId != cfg.deviceId {
             throw BackupImportError.otherDevice(backup: cfg.name, current: current.name)
         }
-        return (cfg, imported)
+        return (cfg, scenes.scenes, scenes.unreadable)
     }
 
     func installBackup(_ cfg: DeviceConfig, scenes imported: [ACScene], replaceScenes: Bool,
@@ -105,11 +109,14 @@ public struct BackupImportResult: Equatable, Sendable {
     public var scenesImported = 0
     /// Szenen der Sicherung, die nicht übernommen wurden, weil schon Szenen da sind (`replaceScenes` = false).
     public var scenesSkipped = 0
+    /// Szenen der Sicherung, die unlesbar waren und darum fehlen (steht zusätzlich als Hinweis in `notice`).
+    public var scenesUnreadable = 0
 
-    public init(verified: Bool?, scenesImported: Int = 0, scenesSkipped: Int = 0) {
+    public init(verified: Bool?, scenesImported: Int = 0, scenesSkipped: Int = 0, scenesUnreadable: Int = 0) {
         self.verified = verified
         self.scenesImported = scenesImported
         self.scenesSkipped = scenesSkipped
+        self.scenesUnreadable = scenesUnreadable
     }
 }
 

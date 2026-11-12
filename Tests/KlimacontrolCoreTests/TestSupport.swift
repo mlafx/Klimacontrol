@@ -87,6 +87,7 @@ final class Locked<Value: Sendable>: Sendable {
     init(_ value: Value) { mutex = Mutex(value) }
     var value: Value { mutex.withLock { $0 } }
     func set(_ value: Value) { mutex.withLock { $0 = value } }
+    func mutate(_ body: (inout Value) -> Void) { mutex.withLock { body(&$0) } }
 }
 
 /// Nachgebildete Anlage: merkt sich Befehle, kann Fehler werfen und Antworten zurückhalten (`refreshGate`).
@@ -110,6 +111,9 @@ final class FakeDevice: ACDevice, Sendable {
         var commands: [String] = []
         var acceptSilent = true
         var acceptRate = true
+        var acceptIECO = true
+        var capabilities: ACCapabilities?
+        var capabilityReads = 0
     }
     private let box = Mutex(State())
 
@@ -141,6 +145,11 @@ final class FakeDevice: ACDevice, Sendable {
     var acceptSilent: Bool { get { self[\.acceptSilent] } set { self[\.acceptSilent] = newValue } }
     /// Leistung begrenzen; `acceptRate` = false wie die PortaSplit bei 75 %.
     var acceptRate: Bool { get { self[\.acceptRate] } set { self[\.acceptRate] = newValue } }
+    /// iECO übernehmen; false = die Anlage meldet iECO unverändert zurück (z. B. beim Lüften).
+    var acceptIECO: Bool { get { self[\.acceptIECO] } set { self[\.acceptIECO] = newValue } }
+    /// Gemeldete Fähigkeiten (nil = keine Antwort) und Zahl der Abfragen.
+    var capabilities: ACCapabilities? { get { self[\.capabilities] } set { self[\.capabilities] = newValue } }
+    var capabilityReads: Int { get { self[\.capabilityReads] } set { self[\.capabilityReads] = newValue } }
 
     func refresh() async throws -> ACState {
         let (error, snapshot, gate) = box.withLock { s in
@@ -168,6 +177,7 @@ final class FakeDevice: ACDevice, Sendable {
             var parts = ["fan \(s.current.fanSpeed)"]
             if before.turbo != s.current.turbo { parts.append("turbo \(s.current.turbo ? "an" : "aus")") }
             if before.eco != s.current.eco { parts.append("eco \(s.current.eco ? "an" : "aus")") }
+            if before.sleep != s.current.sleep { parts.append("sleep \(s.current.sleep ? "an" : "aus")") }
             s.commands.append(parts.joined(separator: " "))
             return s.current
         }
@@ -182,7 +192,22 @@ final class FakeDevice: ACDevice, Sendable {
         }
     }
     func setSelfClean(_ on: Bool) async throws -> ACState { current }
-    func setIECO(_ on: Bool) async throws -> ACState { current }
+    func setIECO(_ on: Bool) async throws -> ACState {
+        try box.withLock { s in
+            s.commands.append("ieco \(on ? "an" : "aus")")
+            guard s.acceptIECO else { throw MideaError.commandNotApplied(s.current) }
+            s.current.ieco = on
+            return s.current
+        }
+    }
+    func readCapabilities() async throws -> ACCapabilities? {
+        box.withLock { s in
+            s.capabilityReads += 1
+            // Wie `PortaSplitDevice`: spätere Zustände tragen die Fähigkeiten mit.
+            s.current.capabilities = s.capabilities
+            return s.capabilities
+        }
+    }
     func setSound(_ on: Bool) async throws -> ACState {
         try box.withLock { s in
             s.soundCalls.append(on)

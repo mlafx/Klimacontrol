@@ -52,14 +52,28 @@ struct EnergySection: View {
             }
             if let periods {
                 if periods.contains(where: { $0.shownKWh != nil }) {
-                    EnergyBars(bars: periods.map { EnergyBar($0, kind: key.kind, price: price, currency: model.currency) }, color: SeriesColors(theme).outdoor,
+                    let style = ChartStyle(theme, mode: nil)
+                    EnergyBars(bars: periods.map { EnergyBar($0, kind: key.kind, count: periods.count, price: price, currency: model.currency) },
+                               average: UIText.energyAverage(periods), color: style.outdoor, averageColor: style.line,
                                plotWidth: plotWidth, hovered: $hovered)
                         .equatable()
                         .frame(height: chartHeight)
-                    Text(UIText.energySummary(periods, price: price, currency: model.currency))
-                        .font(.system(.callout, design: .rounded).weight(.semibold).monospacedDigit())
+                    // Feste Höhe für Summe und Legende: Sonst änderte die Kurzinfo beim Überfahren die Höhe der Karte
+                    // und im Raster damit den Außengraphen daneben (jeder Neuaufbau kostet Grafikspeicher).
+                    ViewThatFits(in: .horizontal) {
+                        HStack(alignment: .firstTextBaseline) {
+                            summary(periods, price: price)
+                            Spacer(minLength: 12)
+                            averageLegend(periods, color: style.line)
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            summary(periods, price: price)
+                            averageLegend(periods, color: style.line)
+                        }
+                    }
                     Text(hovered ?? UIText.energyLegend).font(.caption).foregroundStyle(.secondary)
-                        .frame(minHeight: 32, alignment: .topLeading)
+                        .lineLimit(3, reservesSpace: true)
+                        .frame(maxWidth: .infinity, alignment: .topLeading)
                 } else {
                     Text(UIText.energyNoData).font(.callout).foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, minHeight: 80)
@@ -68,8 +82,8 @@ struct EnergySection: View {
                 Color.clear.frame(height: chartHeight)
             }
         }
-        .frame(maxHeight: fill ? .infinity : nil, alignment: .top)
-        .padding(12)
+        .frame(maxWidth: .infinity, maxHeight: fill ? .infinity : nil, alignment: .topLeading)
+        .padding(ChartLayout.cardPadding)
         .plainCard(radius: 14)
         .task(id: key) {
             let db = history.db
@@ -79,6 +93,30 @@ struct EnergySection: View {
             guard !Task.isCancelled else { return }
             let fresh = Loaded(kind: kind, periods: periods)
             if fresh != loaded { loaded = fresh }
+        }
+    }
+
+    private func summary(_ periods: [EnergyPeriod], price: Double) -> some View {
+        Text(UIText.energySummary(periods, price: price, currency: model.currency))
+            .font(.system(.callout, design: .rounded).weight(.semibold).monospacedDigit())
+            .lineLimit(1).minimumScaleFactor(0.8)
+    }
+
+    /// Gestrichelte Linie mit „Durchschnitt 2,35 kWh“.
+    @ViewBuilder private func averageLegend(_ periods: [EnergyPeriod], color: Color) -> some View {
+        if let text = UIText.energyAverageText(periods) {
+            HStack(spacing: 5) {
+                Path { p in
+                    p.move(to: CGPoint(x: 0, y: 1))
+                    p.addLine(to: CGPoint(x: 16, y: 1))
+                }
+                .stroke(color.opacity(0.6), style: EnergyBars.averageStroke)
+                .frame(width: 16, height: 2)
+                .accessibilityHidden(true)
+                Text(text)
+            }
+            .font(.caption).foregroundStyle(.secondary)
+            .lineLimit(1).fixedSize()
         }
     }
 }
@@ -92,8 +130,10 @@ struct EnergyBar: Equatable, Identifiable {
     let current: Bool
     let complete: Bool
     let tooltip: String
+    /// Wert über dem Balken; nil bei zu vielen Balken.
+    let valueText: String?
 
-    init(_ p: EnergyPeriod, kind: EnergyPeriodKind, price: Double, currency: String) {
+    init(_ p: EnergyPeriod, kind: EnergyPeriodKind, count: Int, price: Double, currency: String) {
         id = p.start
         label = UIText.energyPeriodLabel(p, kind: kind)
         value = p.shownKWh ?? 0
@@ -101,9 +141,10 @@ struct EnergyBar: Equatable, Identifiable {
         current = p.current
         complete = p.complete
         tooltip = UIText.energyTooltip(p, kind: kind, price: price, currency: currency)
+        valueText = UIText.energyBarValue(p, barCount: count)
     }
 
-    /// Nicht nur über die Farbe erkennbar: zusätzlich ein Zeichen über dem Balken (`marker`).
+    /// Geschätzte Balken („ca.“) sind nur blasser; die Legende erklärt das, ein Text über jedem Balken liefe bei vielen Balken ineinander.
     var opacity: Double {
         if current { return 0.4 }
         if fromMeasurement { return 0.5 }
@@ -111,37 +152,68 @@ struct EnergyBar: Equatable, Identifiable {
     }
 }
 
-private struct EnergyBars: View, Equatable {
+struct EnergyBars: View, Equatable {
     let bars: [EnergyBar]
+    let average: Double?
     let color: Color
+    let averageColor: Color
     let plotWidth: Double
     let hovered: Binding<String?>
+    /// Gehört zum Vergleich: ändern sich die Formate zur Laufzeit, baut sich der Graph neu auf.
+    var format = FormatProfile.current
 
-    nonisolated static func == (a: Self, b: Self) -> Bool { a.bars == b.bars && a.color == b.color && a.plotWidth == b.plotWidth }
+    static let averageStroke = StrokeStyle(lineWidth: 1, dash: [4, 3])
+
+    nonisolated static func == (a: Self, b: Self) -> Bool {
+        a.bars == b.bars && a.average == b.average && a.color == b.color && a.averageColor == b.averageColor
+            && a.plotWidth == b.plotWidth && a.format == b.format
+    }
+
+    /// Bereich mit Platz über dem höchsten Balken für Wert und Zeichen darüber.
+    private var axis: ChartAxis {
+        let values = bars.map(\.value) + [average ?? 0]
+        let base = ChartAxis.power(values) ?? .fixed(0...1)
+        return base.withHeadroom(above: values.max() ?? 0, fraction: bars.contains { $0.valueText != nil } ? 0.24 : 0.12)
+    }
 
     /// Breite eines Balkens: 70 % seines Platzes, höchstens `MainWindowLayout.energyBarMaxWidth`.
     private var barWidth: Double {
         min(MainWindowLayout.energyBarMaxWidth, max(4, plotWidth / Double(max(1, bars.count)) * 0.7)).rounded()
     }
 
-    /// Bei vielen Balken nur jede zweite Beschriftung.
+    /// Nur so viele Beschriftungen, wie nebeneinander Platz haben; die letzte bleibt stehen.
     private var shownLabels: [String] {
-        let step = bars.count > 8 ? 2 : 1
-        return bars.enumerated().filter { ($0.offset + bars.count - 1) % step == 0 }.map(\.element.label)
+        let step = ChartAxis.labelStep(count: bars.count, plotWidth: plotWidth, labelLength: bars.map(\.label.count).max() ?? 0)
+        return bars.enumerated().filter { ChartAxis.showsLabel(index: $0.offset, count: bars.count, step: step) }
+            .map(\.element.label)
     }
 
     var body: some View {
-        Chart(bars) { b in
-            BarMark(x: .value(L.Charts.range, b.label), y: .value("kWh", b.value), width: .fixed(barWidth))
-                .foregroundStyle(color)
-                .opacity(b.opacity)
-                .annotation(position: .top, spacing: 2) { marker(b) }
-                .accessibilityLabel(b.label)
-                .accessibilityValue(b.tooltip)
+        let axis = axis
+        Chart {
+            ForEach(bars) { b in
+                BarMark(x: .value(L.Charts.range, b.label), y: .value("kWh", b.value), width: .fixed(barWidth))
+                    .foregroundStyle(color)
+                    .opacity(b.opacity)
+                    .annotation(position: .top, spacing: 2) { marker(b) }
+                    .accessibilityLabel(b.label)
+                    .accessibilityValue(b.tooltip)
+            }
+            if let average {
+                RuleMark(y: .value("kWh", average))
+                    .foregroundStyle(averageColor.opacity(0.6))
+                    .lineStyle(Self.averageStroke)
+                    .accessibilityHidden(true)
+            }
         }
-        .chartYAxisLabel("kWh")
+        .valueAxis(axis, shown: axis, unit: "kWh")
         .chartXAxis {
-            AxisMarks(values: shownLabels) { _ in AxisValueLabel() }
+            // Charts kürzt Beschriftungen sonst auf die Breite eines Balkens; der Abstand kommt aus `labelStep`.
+            AxisMarks(values: shownLabels) { value in
+                AxisValueLabel(collisionResolution: .disabled) {
+                    if let label = value.as(String.self) { Text(label).fixedSize() }
+                }
+            }
         }
         .chartOverlay { proxy in
             GeometryReader { geo in
@@ -164,13 +236,20 @@ private struct EnergyBars: View, Equatable {
         }
     }
 
-    @ViewBuilder private func marker(_ b: EnergyBar) -> some View {
-        if b.current {
-            Image(systemName: "clock").font(.caption2).foregroundStyle(.secondary)
-        } else if b.fromMeasurement {
-            Text(L.Charts.approxMarker).font(.caption2).foregroundStyle(.secondary)
-        } else if !b.complete {
-            Text("…").font(.caption2).foregroundStyle(.secondary)
+    /// Zeichen (läuft noch, Lücke) über dem Wert.
+    private func marker(_ b: EnergyBar) -> some View {
+        VStack(spacing: 0) {
+            if b.current {
+                Image(systemName: "clock")
+            } else if !b.complete, !b.fromMeasurement {
+                Text("…")
+            }
+            if let v = b.valueText {
+                Text(v).monospacedDigit().foregroundStyle(.primary.opacity(0.75))
+            }
         }
+        .font(.caption2)
+        .foregroundStyle(.secondary)
+        .fixedSize()
     }
 }

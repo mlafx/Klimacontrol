@@ -901,20 +901,38 @@
         }
       }
     },
-    "availability.ieco" : {
-      "comment" : "Kurzinfo iECO",
+    "availability.iecoOff" : {
+      "comment" : "Kurzinfo iECO, im aktuellen Modus gesperrt (z. B. Lüften)",
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iECO = Sparprogramm der Anlage, begrenzt die Leistungsaufnahme in jedem Modus (Eco oben gilt nur beim Kühlen)"
+            "value" : "iECO gibt es in diesem Modus nicht"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iECO is the energy-saving program of the air conditioner. It limits the power draw in every mode (Eco above only applies when cooling)."
+            "value" : "iECO is not available in this mode"
+          }
+        }
+      }
+    },
+    "availability.iecoOn" : {
+      "comment" : "Kurzinfo iECO, im aktuellen Modus verfügbar",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iECO = Sparprogramm der Anlage, begrenzt die Leistungsaufnahme (Eco oben gilt nur beim Kühlen)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iECO is the energy-saving program of the air conditioner. It limits the power draw (Eco above only applies when cooling)."
           }
         }
       }
@@ -955,6 +973,24 @@
         }
       }
     },
+    "availability.rate" : {
+      "comment" : "Kurzinfo an „Leistung begrenzen“, wenn gesperrt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistung begrenzen gilt nur beim Kühlen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limit power only applies when cooling"
+          }
+        }
+      }
+    },
     "availability.selfClean" : {
       "comment" : "Kurzinfo Selbstreinigung",
       "extractionState" : "manual",
@@ -969,6 +1005,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Self-cleaning: dries and cleans the indoor unit (about 15 min)"
+          }
+        }
+      }
+    },
+    "availability.sleepOff" : {
+      "comment" : "Kurzinfo Schlafmodus, im aktuellen Modus gesperrt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafmodus gibt es nur beim Kühlen und Heizen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep is only available when cooling or heating"
+          }
+        }
+      }
+    },
+    "availability.sleepOn" : {
+      "comment" : "Kurzinfo Schlafmodus",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafmodus: die Anlage regelt leiser und sparsamer herunter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep: the air conditioner runs quieter and more economically"
           }
         }
       }
@@ -1023,6 +1095,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Turbo on/off; the fan level stays. Far right on the fan control: Turbo and 100 % together."
+          }
+        }
+      }
+    },
+    "availability.unsupported" : {
+      "comment" : "Kurzinfo an einem gesperrten Komfort-Schalter, wenn die Anlage die Funktion laut ihren Fähigkeiten nicht hat; {feature} = Beschriftung des Schalters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Anlage unterstützt „{feature}“ nicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This air conditioner does not support “{feature}”"
+          }
+        }
+      }
+    },
+    "availability.unsupportedInMode" : {
+      "comment" : "Kurzinfo an einem gesperrten Komfort-Schalter, wenn die Anlage die Funktion laut ihren Fähigkeiten nur in anderen Modi hat; {feature} = Beschriftung des Schalters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Anlage unterstützt „{feature}“ in diesem Modus nicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This air conditioner does not support “{feature}” in this mode"
           }
         }
       }
@@ -1257,6 +1365,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "name of the window"
+          }
+        }
+      }
+    },
+    "bridge.expect.updateInterval" : {
+      "comment" : "Bridge: erwarteter Typ eines Parameters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„daily“ oder „weekly“"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“daily” or “weekly”"
           }
         }
       }
@@ -2107,24 +2233,6 @@
         }
       }
     },
-    "charts.approxMarker" : {
-      "comment" : "Verbrauch: Zeichen über einem Balken aus Messwerten",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ca."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "approx."
-          }
-        }
-      }
-    },
     "charts.axis.segment" : {
       "comment" : "Graphen: Reihenname",
       "extractionState" : "manual",
@@ -2233,6 +2341,24 @@
         }
       }
     },
+    "charts.hoverOutdoor" : {
+      "comment" : "Verlauf: Zeile unter dem Wert beim Überfahren des Temperaturgraphen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außen {outdoor}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outdoor {outdoor}"
+          }
+        }
+      }
+    },
     "charts.hoverTarget" : {
       "comment" : "Graphen: Zeile unter dem Mauszeiger",
       "extractionState" : "manual",
@@ -2247,6 +2373,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Target {target}"
+          }
+        }
+      }
+    },
+    "charts.modeBandHelp" : {
+      "comment" : "Verlauf: Kurzinfo zur Legende des Modus-Bands",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farbiges Band unter der Leistung: Zeit, in der die Anlage lief, in der Farbe der Betriebsart."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colored band below the power: time the air conditioner was running, in the color of its mode."
           }
         }
       }
@@ -2305,6 +2449,24 @@
         }
       }
     },
+    "charts.series.outdoor" : {
+      "comment" : "Verlauf: Legende und VoiceOver-Name der Außentemperatur im Temperaturgraphen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outdoor"
+          }
+        }
+      }
+    },
     "charts.series.room" : {
       "comment" : "Graphen: Reihe Raumtemperatur",
       "extractionState" : "manual",
@@ -2337,6 +2499,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Target"
+          }
+        }
+      }
+    },
+    "charts.stat.avg" : {
+      "comment" : "Verlauf: Kennzahl unter dem Leistungsgraphen, mittlere Leistung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mittel {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average {value}"
+          }
+        }
+      }
+    },
+    "charts.stat.peak" : {
+      "comment" : "Verlauf: Kennzahl unter dem Leistungsgraphen, höchste Leistung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spitze {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peak {value}"
           }
         }
       }
@@ -2395,24 +2593,6 @@
         }
       }
     },
-    "charts.tile.avg" : {
-      "comment" : "Graphen: Kennzahl",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mittel"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Average"
-          }
-        }
-      }
-    },
     "charts.tile.avgHelp" : {
       "comment" : "Graphen: Kurzinfo Kennzahl",
       "extractionState" : "manual",
@@ -2449,24 +2629,6 @@
         }
       }
     },
-    "charts.tile.cost" : {
-      "comment" : "Graphen: Kennzahl",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kosten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cost"
-          }
-        }
-      }
-    },
     "charts.tile.costHelp" : {
       "comment" : "Graphen: Kurzinfo Kosten",
       "extractionState" : "manual",
@@ -2481,24 +2643,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Consumption of the period times today’s electricity price ({price} {currency} per kWh), also for earlier days."
-          }
-        }
-      }
-    },
-    "charts.tile.peak" : {
-      "comment" : "Graphen: Kennzahl",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spitze"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Peak"
           }
         }
       }
@@ -2553,6 +2697,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Not enough data yet. The history fills with every refresh of the air conditioner."
+          }
+        }
+      }
+    },
+    "charts.unavailable" : {
+      "comment" : "Verlauf: Hinweis statt der Graphen, wenn sich die Verlaufsdatenbank nicht öffnen lässt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Verlauf kann nicht gespeichert werden. Einzelheiten stehen im Protokoll. (history-open)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History cannot be saved. See the log for details. (history-open)"
           }
         }
       }
@@ -3133,24 +3295,6 @@
         }
       }
     },
-    "common.on" : {
-      "comment" : "Zustand als Beschriftung: Ein",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ein"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "On"
-          }
-        }
-      }
-    },
     "common.seconds" : {
       "comment" : "Dauer in Sekunden",
       "extractionState" : "manual",
@@ -3207,24 +3351,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "off"
-          }
-        }
-      }
-    },
-    "common.switchOn" : {
-      "comment" : "Zustand im Satz, klein: an",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "an"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "on"
           }
         }
       }
@@ -5065,6 +5191,24 @@
         }
       }
     },
+    "energy.average" : {
+      "comment" : "Verbrauch: Legende der gestrichelten Linie (Durchschnitt der abgeschlossenen Zeiträume)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durchschnitt {kwh}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average {kwh}"
+          }
+        }
+      }
+    },
     "energy.cost.approx" : {
       "comment" : "Kosten aus Messwerten",
       "extractionState" : "manual",
@@ -5216,13 +5360,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Heller Balken: Zeitraum läuft noch · ca.: aus Messwerten, Zähler unbekannt · …: Lücke im Verlauf. Mit der Maus über einen Balken fahren zeigt Verbrauch und Kosten."
+            "value" : "Uhr: Zeitraum läuft noch · blasser Balken: ca., aus Messwerten geschätzt, Zähler unbekannt · …: Lücke im Verlauf. Mit der Maus über einen Balken fahren zeigt Verbrauch und Kosten."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Light bar: period still running · approx.: from measurements, meter unknown · …: gap in the history. Hover over a bar to see consumption and cost."
+            "value" : "Clock: period still running · pale bar: approx., estimated from measurements, meter unknown · …: gap in the history. Hover over a bar to see consumption and cost."
           }
         }
       }
@@ -6073,6 +6217,24 @@
         }
       }
     },
+    "history.column.fehlercode" : {
+      "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehlercode"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error code"
+          }
+        }
+      }
+    },
     "history.column.gesamtKwh" : {
       "comment" : "Verlauf: Spaltenname der lesbaren CSV-Form",
       "extractionState" : "manual",
@@ -6638,13 +6800,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klimacontrol sucht täglich nach Updates und fragt vor der Installation."
+            "value" : "Klimacontrol sucht nach Updates und zeigt sie im Update-Fenster. Ist „Updates automatisch installieren“ aus, wird erst nach „Jetzt installieren“ installiert."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klimacontrol checks for updates daily and asks before installing."
+            "value" : "Klimacontrol checks for updates and shows them in the update window. With “Install updates automatically” off, updates are installed only after “Install now”."
           }
         }
       }
@@ -7635,6 +7797,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ionizer"
+          }
+        }
+      }
+    },
+    "kit.control.sleep" : {
+      "comment" : "Fehlertext aus MideaKit (Protokoll und Detailzeile)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "schlafmodus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sleep"
           }
         }
       }
@@ -9097,6 +9277,24 @@
         }
       }
     },
+    "log.change.sleep" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafmodus {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep {state}"
+          }
+        }
+      }
+    },
     "log.change.swing" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -9583,6 +9781,42 @@
         }
       }
     },
+    "log.device.capabilities" : {
+      "comment" : "Protokoll: gelesene Fähigkeiten (0xB5) als hex-Liste",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fähigkeiten der Anlage (iECO {ieco}/{end}, Nummer {number}): {list}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner capabilities (iECO {ieco}/{end}, number {number}): {list}"
+          }
+        }
+      }
+    },
+    "log.device.capabilitiesNone" : {
+      "comment" : "Protokoll: Fähigkeiten-Abfrage ohne Antwort",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fähigkeiten der Anlage: keine Antwort"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner capabilities: no response"
+          }
+        }
+      }
+    },
     "log.device.configUnreadable" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -9975,6 +10209,96 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Meter reading jumped back ({old} → {new} kWh) – daily consumption restarts now"
+          }
+        }
+      }
+    },
+    "log.errorcode.cleared" : {
+      "comment" : "Protokollzeile, Fehlercode wechselt zurück auf 0",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehlercode {code} der Anlage nicht mehr gemeldet{context}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner error code {code} no longer reported{context}"
+          }
+        }
+      }
+    },
+    "log.errorcode.compressor" : {
+      "comment" : "Protokollzeile, Teil des Zusatzes beim Fehlercode",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdichter {hz} Hz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "compressor {hz} Hz"
+          }
+        }
+      }
+    },
+    "log.errorcode.context" : {
+      "comment" : "Protokollzeile, Zusatz mit Leistung und Verdichter beim Wechsel des Fehlercodes",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " ({parts})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " ({parts})"
+          }
+        }
+      }
+    },
+    "log.errorcode.power" : {
+      "comment" : "Protokollzeile, Teil des Zusatzes beim Fehlercode",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistung {watts} W"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "power {watts} W"
+          }
+        }
+      }
+    },
+    "log.errorcode.raised" : {
+      "comment" : "Protokollzeile (Warnung), Fehlercode wechselt auf einen Wert ungleich 0",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehlercode der Anlage: {code}{context}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner error code: {code}{context}"
           }
         }
       }
@@ -10735,6 +11059,24 @@
         }
       }
     },
+    "log.relocate.invalid" : {
+      "comment" : "Protokoll: Adresse neu suchen, gefundene Adresse ungültig",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlage unter {ip} gefunden, Adresse ungültig: {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner found at {ip}, address invalid: {error}"
+          }
+        }
+      }
+    },
     "log.relocate.loginFailed" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -10839,6 +11181,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Air conditioner still at {ip}"
+          }
+        }
+      }
+    },
+    "log.scene.backupUnreadable" : {
+      "comment" : "Protokoll: unlesbare Szenen in einer Sicherung",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sicherung {file}: {count} Szene(n) unlesbar, nicht übernommen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup {file}: {count} scene(s) unreadable, not imported"
           }
         }
       }
@@ -10987,6 +11347,24 @@
         }
       }
     },
+    "log.settings.asideFailed" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungsdatei {file} defekt, beiseitelegen gescheitert ({error})"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings file {file} damaged, could not set it aside ({error})"
+          }
+        }
+      }
+    },
     "log.settings.backgroundPolling" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -11059,6 +11437,24 @@
         }
       }
     },
+    "log.settings.damaged" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungsdatei defekt – beiseitegelegt als {file}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings file damaged – set aside as {file}"
+          }
+        }
+      }
+    },
     "log.settings.detailedLog" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -11127,6 +11523,60 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Refresh every {seconds} s"
+          }
+        }
+      }
+    },
+    "log.settings.unreadable" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungsdatei {file} nicht lesbar ({error}) – unverändert gelassen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings file {file} not readable ({error}) – left unchanged"
+          }
+        }
+      }
+    },
+    "log.settings.updateAutoInstall" : {
+      "comment" : "Protokollzeile beim Umschalten.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates automatisch installieren: {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install updates automatically: {state}"
+          }
+        }
+      }
+    },
+    "log.settings.updateInterval" : {
+      "comment" : "Protokollzeile beim Ändern des Suchintervalls.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach Updates suchen: {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check for updates: {value}"
           }
         }
       }
@@ -11527,6 +11977,24 @@
         }
       }
     },
+    "log.token.unchecked" : {
+      "comment" : "Protokoll: Token-Prüfung an der Anlage ohne Ergebnis (belegt, keine Antwort)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token nicht prüfbar ({order} endian): {error}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token could not be checked ({order} endian): {error}"
+          }
+        }
+      }
+    },
     "log.transport.pathDown" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -11617,6 +12085,42 @@
         }
       }
     },
+    "log.updates.betaFallback" : {
+      "comment" : "Protokollzeile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beta-Kanal nicht erreichbar ({error}) – Suche im stabilen Kanal"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beta channel not reachable ({error}) – checking the stable channel"
+          }
+        }
+      }
+    },
+    "log.updates.deferred" : {
+      "comment" : "Protokollzeile, wenn die 24-Stunden-Erinnerung noch nicht fällig ist.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: Version {version} gefunden, Hinweis erst nach der Erinnerung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: version {version} found, notice only after the reminder"
+          }
+        }
+      }
+    },
     "log.updates.downloaded" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -11653,6 +12157,24 @@
         }
       }
     },
+    "log.updates.heldBack" : {
+      "comment" : "Protokollzeile, wenn Updates nicht automatisch installiert werden.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: Version {version} geladen, Installation erst nach Bestätigung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: version {version} downloaded, installed only after confirmation"
+          }
+        }
+      }
+    },
     "log.updates.installNow" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -11685,6 +12207,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Updates: reminder in 24 h"
+          }
+        }
+      }
+    },
+    "log.updates.settings" : {
+      "comment" : "Protokollzeile beim Start und nach Änderungen der Update-Einstellungen (Mac).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: automatisch installieren {state}, Suche {interval}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: install automatically {state}, check {interval}"
+          }
+        }
+      }
+    },
+    "log.updates.withdrawn" : {
+      "comment" : "Protokollzeile nach Später oder vor dem Beenden, wenn Updates nicht automatisch installiert werden.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: vorbereitete Installation von Version {version} zurückgenommen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: prepared installation of version {version} withdrawn"
           }
         }
       }
@@ -12175,6 +12733,24 @@
         }
       }
     },
+    "main.comfort.sleep" : {
+      "comment" : "Funktion weitere Funktionen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafmodus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep"
+          }
+        }
+      }
+    },
     "main.comfort.sound" : {
       "comment" : "Kachel unter Weitere Funktionen",
       "extractionState" : "manual",
@@ -12225,6 +12801,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "{text}; state unknown"
+          }
+        }
+      }
+    },
+    "main.detailedLog.notice" : {
+      "comment" : "Dezenter Hinweis im Hauptfenster (Mac), solange das ausführliche Protokoll in dieser Sitzung an ist.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausführliches Protokoll aktiv"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detailed log on"
           }
         }
       }
@@ -12499,6 +13093,24 @@
         }
       }
     },
+    "main.hero.scaleRoom" : {
+      "comment" : "Hauptfenster: Marke der Raumtemperatur an der Skala der Solltemperatur, z. B. „Raum 19,0°“",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raum {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room {value}"
+          }
+        }
+      }
+    },
     "main.hero.targetTemperature" : {
       "comment" : "VoiceOver: Regler Solltemperatur",
       "extractionState" : "manual",
@@ -12729,6 +13341,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "More…"
+          }
+        }
+      }
+    },
+    "main.power.stateOff" : {
+      "comment" : "Hauptfenster und Menüleiste: Beschriftung am Ein/Aus-Knopf, wenn die Anlage aus ist",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        }
+      }
+    },
+    "main.power.stateOn" : {
+      "comment" : "Hauptfenster und Menüleiste: Beschriftung am Ein/Aus-Knopf, wenn die Anlage läuft",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On"
           }
         }
       }
@@ -13885,42 +14533,6 @@
         }
       }
     },
-    "main.windows.paneControls" : {
-      "comment" : "Windows: Reiter im schmalen Hauptfenster",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Steuerung"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Controls"
-          }
-        }
-      }
-    },
-    "main.windows.paneGroupName" : {
-      "comment" : "Windows: UIA-Gruppenname der Reiter im schmalen Hauptfenster",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bereiche"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sections"
-          }
-        }
-      }
-    },
     "main.windows.powerToggle" : {
       "comment" : "Windows: Kurzinfo des Ein/Aus-Knopfs im Fenster (Platzhalter)",
       "extractionState" : "manual",
@@ -14367,6 +14979,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The air conditioner rejected the credentials from the backup. The current setup is kept. Choose a newer backup."
+          }
+        }
+      }
+    },
+    "message.backup.scenesUnreadable" : {
+      "comment" : "Hinweis nach dem Einlesen einer Sicherung mit unlesbaren Szenen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einige Szenen der Sicherung sind unlesbar und wurden nicht übernommen. Die übrigen Daten der Sicherung sind eingelesen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Some scenes in the backup are unreadable and were not imported. The rest of the backup was restored."
           }
         }
       }
@@ -15145,6 +15775,42 @@
         }
       }
     },
+    "message.device.switchNotApplied.todo" : {
+      "comment" : "Hinweis: Schalter im aktuellen Modus nicht übernommen (was tun)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In diesem Modus nimmt die Anlage den Schalter nicht an. Wähle einen anderen Modus und versuche es erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner does not accept this switch in this mode. Choose another mode and try again."
+          }
+        }
+      }
+    },
+    "message.device.switchNotApplied.what" : {
+      "comment" : "Hinweis: Schalter im aktuellen Modus nicht übernommen (was); feature = Name des Schalters, mode = Modus",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage hat „{feature}“ im Modus „{mode}“ nicht übernommen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner did not apply “{feature}” in “{mode}” mode."
+          }
+        }
+      }
+    },
     "message.device.timeout.todo" : {
       "comment" : "Meldung: Zeitüberschreitung (was tun)",
       "extractionState" : "manual",
@@ -15469,6 +16135,24 @@
         }
       }
     },
+    "message.relocate.invalid" : {
+      "comment" : "Rückmeldung von Adresse neu suchen: gefundene Adresse ungültig",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Suche meldet für die Anlage eine ungültige Adresse ({ip}). Die bisherige Adresse bleibt. Versuche es in einer Minute erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The search reported an invalid address for the air conditioner ({ip}). The current address is kept. Try again in a minute."
+          }
+        }
+      }
+    },
     "message.relocate.loginFailed.todo" : {
       "comment" : "Adresse neu suchen: Anmeldung gescheitert (was tun)",
       "extractionState" : "manual",
@@ -15699,6 +16383,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The air conditioner's setup is incomplete."
+          }
+        }
+      }
+    },
+    "message.settingsReset" : {
+      "comment" : "Hinweis nach dem Start, wenn die Einstellungsdatei unlesbar war (Windows)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Einstellungen waren beschädigt und wurden zurückgesetzt. Die alte Datei liegt als {file} im selben Ordner. (settings-reset)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The settings were damaged and have been reset. The old file is in the same folder as {file}. (settings-reset)"
+          }
+        }
+      }
+    },
+    "message.settingsResetLost" : {
+      "comment" : "Hinweis nach dem Start, wenn die Einstellungsdatei unlesbar war und nicht beiseitegelegt werden konnte (Windows)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Einstellungen waren beschädigt und wurden zurückgesetzt. Die alte Datei ließ sich nicht sichern. (settings-reset)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The settings were damaged and have been reset. The old file could not be kept. (settings-reset)"
           }
         }
       }
@@ -17305,20 +18025,20 @@
         }
       }
     },
-    "reason.applianceOff" : {
-      "comment" : "Grund: Anlage aus laut Cloud; next = z. B. „in 5 min“",
+    "reason.applianceOffAt" : {
+      "comment" : "Grund: Anlage aus laut Cloud; time = Uhrzeit der nächsten Prüfung",
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung {next}"
+            "value" : "Anlage ausgeschaltet oder ohne Strom (laut Midea-Cloud) – nächste Prüfung um {time}"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Air conditioner off or without power (according to the Midea Cloud); next check {next}"
+            "value" : "Air conditioner off or without power (according to the Midea Cloud); next check at {time}"
           }
         }
       }
@@ -19005,6 +19725,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Size"
+          }
+        }
+      }
+    },
+    "settings.appearance.temperatureCombined.help" : {
+      "comment" : "Einstellungen, Darstellung, Anzeige: Hilfetext zum Schalter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raum, Soll und Außen in einem Graphen mit gemeinsamer Skala. Aus: Außen hat einen eigenen Graphen, Raum und Soll nutzen die volle Höhe."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room, target, and outdoor in one chart with a shared scale. Off: outdoor has its own chart, and room and target use the full height."
+          }
+        }
+      }
+    },
+    "settings.appearance.temperatureCombined.title" : {
+      "comment" : "Einstellungen, Darstellung, Anzeige: Schalter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außentemperatur im Temperaturgraphen zeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show outdoor temperature in the temperature chart"
           }
         }
       }
@@ -21655,6 +22411,60 @@
         }
       }
     },
+    "settings.general.windows.updateHeldInvalid" : {
+      "comment" : "Windows: Meldung, wenn die Prüfsumme des zurückgehaltenen Updates vor der Installation nicht mehr stimmt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das geladene Update ist beschädigt und wurde beiseitegelegt. Klimacontrol sucht erneut nach Updates. (update-checksum)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The downloaded update is damaged and was set aside. Klimacontrol is checking for updates again. (update-checksum)"
+          }
+        }
+      }
+    },
+    "settings.general.windows.updateStartFailed" : {
+      "comment" : "Windows: Meldung, wenn das Setup des zurückgehaltenen Updates nicht startet",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Update ließ sich nicht starten. Später erneut „Jetzt installieren“ wählen. (update-start)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The update could not be started. Choose “Install now” again later. (update-start)"
+          }
+        }
+      }
+    },
+    "settings.general.windows.updatesHeldLimit" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Updates, Grenze von WinSparkle unter dem Hilfetext",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unter Windows erscheint bei einem neuen Update zuerst immer das Update-Fenster; „Update installieren“ lädt es dort. Still im Hintergrund laden kann Klimacontrol unter Windows nicht. Ist „Updates automatisch installieren“ aus, wird das geladene Update erst nach „Jetzt installieren“ installiert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On Windows, a new update always first shows the update window; “Install update” downloads it there. Klimacontrol cannot download updates silently on Windows. With “Install updates automatically” off, the downloaded update is installed only after “Install now”."
+          }
+        }
+      }
+    },
     "settings.general.windows.updatesSetupOnly" : {
       "comment" : "Windows: Einstellungen → Allgemein → Updates, wenn nicht per Setup installiert",
       "extractionState" : "manual",
@@ -21889,38 +22699,20 @@
         }
       }
     },
-    "settings.log.detailed.off" : {
-      "comment" : "Protokoll: Erklärung bei ausgeschaltetem ausführlichem Protokoll",
+    "settings.log.detailed.scope" : {
+      "comment" : "Einstellungen, Reiter Protokoll: Satz unter dem Schalter Ausführliches Protokoll (Umfang und Dauer).",
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aus (Standard): Start, Verbindungsweg, Befehle, Fehler und Timer stehen trotzdem im Protokoll."
+            "value" : "Schreibt zusätzlich Rahmen in Hex, Suche und Cloud-Anfragen; Passwörter, Token und Schlüssel werden geschwärzt. Gilt bis zum Beenden der App."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Off (default): start, connection path, commands, errors, and timers are still in the log."
-          }
-        }
-      }
-    },
-    "settings.log.detailed.on" : {
-      "comment" : "Protokoll: Erklärung bei eingeschaltetem ausführlichem Protokoll",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "An: zusätzlich jede Nachricht an die Anlage und an Midea – groß, die Datei wird alle paar Stunden neu begonnen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "On: also records every message to the air conditioner and to Midea. Large; the file starts over every few hours."
+            "value" : "Also writes frames in hex, search and cloud requests; passwords, tokens and keys are redacted. Applies until you quit the app."
           }
         }
       }
@@ -22231,6 +23023,42 @@
         }
       }
     },
+    "settings.updates.autoInstall" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Schalter (Mac und Windows).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates automatisch installieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install updates automatically"
+          }
+        }
+      }
+    },
+    "settings.updates.autoInstallHelp" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Kurzinfo zum Schalter Updates automatisch installieren.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus: Ein geladenes Update wird erst installiert, wenn du „Jetzt installieren“ wählst. Klimacontrol erinnert alle 24 Stunden daran."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off: a downloaded update is installed only after you choose “Install now”. Klimacontrol reminds you every 24 hours."
+          }
+        }
+      }
+    },
     "settings.updates.betaChannel" : {
       "comment" : "Mac: Einstellungen → Allgemein → Updates, Schalter",
       "extractionState" : "manual",
@@ -22245,6 +23073,60 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Receive pre-release (beta) versions"
+          }
+        }
+      }
+    },
+    "settings.updates.daily" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Auswahl Nach Updates suchen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Täglich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily"
+          }
+        }
+      }
+    },
+    "settings.updates.interval" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Beschriftung der Auswahl täglich/wöchentlich.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach Updates suchen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check for updates"
+          }
+        }
+      }
+    },
+    "settings.updates.weekly" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Auswahl Nach Updates suchen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wöchentlich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly"
           }
         }
       }
@@ -25795,24 +26677,6 @@
         }
       }
     },
-    "tray.tip.roomTarget" : {
-      "comment" : "Windows: Kurzinfo am Symbol, Raum und Soll",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "{room} · {target}"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "{room} · {target}"
-          }
-        }
-      }
-    },
     "tray.tip.searching" : {
       "comment" : "Windows: Kurzinfo am Symbol beim Verbinden, Schritt Suche",
       "extractionState" : "manual",
@@ -25845,24 +26709,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "{status} · {room}"
-          }
-        }
-      }
-    },
-    "tray.tip.statusTarget" : {
-      "comment" : "Windows: Kurzinfo am Symbol, Zustand und Soll",
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "{status} · {target}"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "{status} · {target}"
           }
         }
       }
@@ -25935,6 +26781,60 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Checking for updates failed. Try again later."
+          }
+        }
+      }
+    },
+    "updates.heldBack.message" : {
+      "comment" : "Hinweis Update bereit, wenn Updates nicht automatisch installiert werden.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} ist geladen. Zum Installieren startet die App kurz neu. Mit „Später“ erinnert Klimacontrol in 24 Stunden erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} has been downloaded. The app restarts briefly to install it. With “Later”, Klimacontrol reminds you again in 24 hours."
+          }
+        }
+      }
+    },
+    "updates.heldBack.status" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Zeile unter dem Knopf, wenn ein Update auf Bestätigung wartet.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version {version} ist verfügbar und wird nur nach „Jetzt installieren“ installiert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version {version} is available and is installed only after you choose “Install now”."
+          }
+        }
+      }
+    },
+    "updates.installNow" : {
+      "comment" : "Knopf im Hinweis Update bereit, wenn Updates nicht automatisch installiert werden.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt installieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install now"
           }
         }
       }

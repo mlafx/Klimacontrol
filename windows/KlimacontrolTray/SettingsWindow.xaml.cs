@@ -186,9 +186,7 @@ public partial class SettingsWindow : Window
         var debugChanged = DebugBox.IsChecked != s.DebugLog;
         DebugBox.IsChecked = s.DebugLog;
         EventsOnlyBox.IsEnabled = s.DebugLog;
-        DebugHint.Text = s.DebugLog
-            ? L.T("settings.log.detailed.on")
-            : L.T("settings.log.detailed.off");
+        RenderDebugNotice(s);
         if (debugChanged && logRaw != null && IsVisible && CurrentTab == SettingsTab.Log) LoadLog(force: true);
     }
 

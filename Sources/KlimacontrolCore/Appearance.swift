@@ -165,6 +165,9 @@ public struct Appearance: Codable, Equatable, Sendable {
     public var menuBarColored = Appearance.platformColoredIcon
     /// Lüfter-Symbol dreht, solange die Anlage läuft.
     public var menuBarAnimated = false
+    /// Außentemperatur im Temperaturgraphen statt in einem eigenen Graphen. Standard aus: Außen liegt meist weit unter
+    /// Raum und Soll und staucht beide sonst auf einen schmalen Streifen.
+    public var temperatureCombined = false
 
     public init() {}
 
@@ -232,7 +235,8 @@ public struct Appearance: Codable, Equatable, Sendable {
 
     /// Das Thema auf dieses Aussehen anwenden: setzt die Aussehens-Werte des Themas (Thema, Modus, Farben, Hintergrund,
     /// Transparenz, Unschärfe, Leuchten, Ziffernstil, Lebendig, Wetter, farbiges Symbol). Unverändert bleiben Aufbau und
-    /// Bedienung: Größe, Groß angezeigt, Umfang, Animationen reduzieren, Vordergrund, Menüleisten-Text, animiertes Symbol.
+    /// Bedienung: Größe, Groß angezeigt, Umfang, Animationen reduzieren, Vordergrund, Menüleisten-Text, animiertes Symbol,
+    /// Außentemperatur im Temperaturgraphen.
     public func applying(_ theme: Theme) -> Appearance {
         var a = Appearance.preset(theme)
         a.size = size
@@ -242,6 +246,7 @@ public struct Appearance: Codable, Equatable, Sendable {
         a.alwaysOnTop = alwaysOnTop
         a.menuBarText = menuBarText
         a.menuBarAnimated = menuBarAnimated
+        a.temperatureCombined = temperatureCombined
         return a
     }
 
@@ -273,7 +278,7 @@ public struct Appearance: Codable, Equatable, Sendable {
 
     enum CodingKeys: String, CodingKey, CaseIterable {
         case theme, scheme, accent, customColor, background, transparency, blur, glow, size, digits, hero, scope,
-             lively, weather, reduceMotion, alwaysOnTop, menuBarText, menuBarColored, menuBarAnimated
+             lively, weather, reduceMotion, alwaysOnTop, menuBarText, menuBarColored, menuBarAnimated, temperatureCombined
     }
 
     /// Ausgangswert für fehlende oder unlesbare Felder (Standard, wenn nicht gesetzt).
@@ -306,6 +311,7 @@ public struct Appearance: Codable, Equatable, Sendable {
         menuBarText = value(.menuBarText, menuBarText)
         menuBarColored = value(.menuBarColored, menuBarColored)
         menuBarAnimated = value(.menuBarAnimated, menuBarAnimated)
+        temperatureCombined = value(.temperatureCombined, temperatureCombined)
         self = clamped()
     }
 

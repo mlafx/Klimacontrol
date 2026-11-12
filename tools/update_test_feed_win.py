@@ -238,6 +238,24 @@ def fail(text):
     sys.exit(1)
 
 
+# WinSparkle 0.9.4 zeigt die Hinweise ohne eigene Farben in WebView2 (ui.cpp, ShowReleaseNotes: SetPage(Description)).
+# Im dunklen Windows-Modus wird die Fläche dort fast schwarz, der Text bleibt schwarz. Darum ausdrücklich Hinter- und
+# Vordergrund für hell und dunkel (Kontrast >= 6,6:1). Gleicher Block wie im Vorschlag für make_release.py; steht er
+# dort schon in den Hinweisen, wird er nicht doppelt eingefügt.
+WINDOWS_NOTES_STYLE = (
+    "<style>\n"
+    ":root{color-scheme:light dark}\n"
+    "html,body{background:#ffffff;color:#1f1f1f}\n"
+    "a{color:#0f5bb5}\n"
+    "@media (prefers-color-scheme: dark){html,body{background:#1f1f1f;color:#f3f3f3}a{color:#8cc4ff}}\n"
+    "</style>\n"
+)
+
+
+def with_windows_style(notes):
+    return notes if "<style" in notes else WINDOWS_NOTES_STYLE + notes
+
+
 def notes_for(mr, version):
     try:
         text = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
@@ -245,8 +263,8 @@ def notes_for(mr, version):
         text = ""
     section = mr.changelog_section(text, version, required=False) if text else None
     if section:
-        return mr.notes_html(section[1], "windows")
-    return f"<p>Probefassung {version} für den lokalen Update-Test. Kein Eintrag im CHANGELOG.</p>"
+        return with_windows_style(mr.notes_html(section[1], "windows"))
+    return with_windows_style(f"<p>Probefassung {version} für den lokalen Update-Test. Kein Eintrag im CHANGELOG.</p>")
 
 
 def rotate(out):

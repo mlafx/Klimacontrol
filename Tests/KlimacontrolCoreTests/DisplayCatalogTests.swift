@@ -72,6 +72,17 @@ final class DisplayCatalogTests: CoreTestCase {
         XCTAssertEqual(UIOptions.fanAutoKnob, 60)
     }
 
+    func testDetailedLogTexts() {
+        XCTAssertEqual(L.Main.DetailedLog.notice, "Ausführliches Protokoll aktiv")
+        XCTAssertEqual(L.Settings.Log.Detailed.scope,
+                       "Schreibt zusätzlich Rahmen in Hex, Suche und Cloud-Anfragen; Passwörter, Token und Schlüssel werden geschwärzt. Gilt bis zum Beenden der App.")
+        Localizer.withLanguage(.en) {
+            XCTAssertEqual(L.Main.DetailedLog.notice, "Detailed log on")
+            XCTAssertEqual(L.Settings.Log.Detailed.scope,
+                           "Also writes frames in hex, search and cloud requests; passwords, tokens and keys are redacted. Applies until you quit the app.")
+        }
+    }
+
     func testRefreshWarning() {
         XCTAssertEqual(UIOptions.refreshWarning(forSeconds: 7),
                        "Unter 8 s bleibt die Verbindung dauerhaft offen – andere Apps (z. B. die Midea-App) kommen dann nicht an die Anlage.")
@@ -104,12 +115,109 @@ final class DisplayCatalogTests: CoreTestCase {
             XCTAssertEqual(enabled(.turbo, m), m == .cool || m == .heat, "Turbo nur Kühlen/Heizen")
             XCTAssertEqual(enabled(.outdoorSilent, m), m == .cool || m == .heat, "Außengerät leise nur Kühlen/Heizen")
             XCTAssertEqual(enabled(.freezeProtection, m), m == .heat, "Frostschutz nur Heizen")
-            for f in [UIOptions.ComfortFeature.swing, .ieco, .purifier, .selfClean, .display, .sound] { XCTAssertTrue(enabled(f, m)) }
+            XCTAssertEqual(enabled(.ieco, m), m == .cool, "iECO ohne Fähigkeiten nur Kühlen")
+            XCTAssertEqual(UIOptions.rateAvailability(mode: m).enabled, m == .cool, "Leistung begrenzen nur Kühlen")
+            XCTAssertEqual(enabled(.sleep, m), m == .cool || m == .heat, "Schlafmodus nur Kühlen/Heizen")
+            for f in [UIOptions.ComfortFeature.swing, .purifier, .selfClean, .display, .sound] { XCTAssertTrue(enabled(f, m)) }
+        }
+    }
+
+    func testSwitchNotAppliedMessage() {
+        XCTAssertEqual(UserMessage.switchNotApplied("iECO", mode: .fan).text,
+                       "Die Anlage hat „iECO“ im Modus „Lüften“ nicht übernommen. In diesem Modus nimmt die Anlage den Schalter nicht an. Wähle einen anderen Modus und versuche es erneut. (not-in-mode)")
+    }
+
+    func testIECOFollowsCapabilities() {
+        func enabled(_ m: OperationalMode, _ value: [UInt8]?) -> Bool {
+            let caps = value.map { ACCapabilities(raw: [0x00E3: $0]) }
+            return UIOptions.availability(.ieco, mode: m, capabilities: caps).enabled
+        }
+        let modes: [OperationalMode] = [.cool, .dry, .auto, .heat, .fan]
+        // Nur Kühlen gemeldet (PortaSplit): nur Kühlen frei.
+        XCTAssertEqual(modes.map { enabled($0, [1]) }, [true, false, false, false, false])
+        // Nur Heizen (ieco_end 3).
+        XCTAssertEqual(modes.map { enabled($0, [0, 3]) }, [false, false, false, true, false])
+        // Beides (ECOMaster).
+        XCTAssertEqual(modes.map { enabled($0, [8]) }, [true, false, false, true, false])
+        // Keine iECO-Fähigkeit gemeldet oder Fähigkeiten unbekannt: nur Kühlen.
+        XCTAssertEqual(modes.map { enabled($0, nil) }, [true, false, false, false, false])
+        let other = ACCapabilities(raw: [0x0214: [2]])
+        XCTAssertFalse(UIOptions.availability(.ieco, mode: .heat, capabilities: other).enabled)
+    }
+
+    /// Fähigkeiten der echten PortaSplit (Protokoll „Fähigkeiten der Anlage“): nichts wird gesperrt, was ohne
+    /// Fähigkeiten frei wäre.
+    func testPortaSplitCapabilitiesLockNothing() {
+        let hex = "0039=01 0048=01 0051=01 00cd=03 00e3=01 0210=01 0212=01 0213=01 0214=01 0215=00 0216=04 0217=02 "
+            + "021a=01 021e=01 021f=00 0224=01 0225=203c203c203c00 022c=01"
+        var raw: [UInt16: [UInt8]] = [:]
+        for item in hex.split(separator: " ") {
+            let parts = item.split(separator: "=")
+            let bytes = String(parts[1])
+            raw[UInt16(parts[0], radix: 16)!] = stride(from: 0, to: bytes.count, by: 2).map {
+                UInt8(bytes.dropFirst($0).prefix(2), radix: 16)!
+            }
+        }
+        let caps = ACCapabilities(raw: raw)
+        XCTAssertEqual(caps.summary, hex)
+        for m in [OperationalMode.cool, .heat, .dry, .fan, .auto] {
+            for f in UIOptions.ComfortFeature.allCases {
+                XCTAssertNotEqual(UIOptions.supported(f, capabilities: caps), false, "\(f)")
+                let without = UIOptions.availability(f, mode: m)
+                let with = UIOptions.availability(f, mode: m, capabilities: caps)
+                if f == .ieco { XCTAssertEqual(with.enabled, m == .cool) } else { XCTAssertEqual(with, without, "\(f) \(m)") }
+            }
+            XCTAssertEqual(UIOptions.rateAvailability(mode: m, capabilities: caps), UIOptions.rateAvailability(mode: m))
+        }
+        XCTAssertEqual(caps.rateSelectLevels, 2)
+        XCTAssertEqual(caps.parentControl, true)
+        XCTAssertEqual(caps.swingHorizontal, false)
+    }
+
+    func testCapabilitiesLockUnsupportedFeatures() {
+        func a(_ f: UIOptions.ComfortFeature, _ m: OperationalMode, _ raw: [UInt16: [UInt8]]) -> UIOptions.Availability {
+            UIOptions.availability(f, mode: m, capabilities: ACCapabilities(raw: raw))
+        }
+        let cases: [(UIOptions.ComfortFeature, UInt16, UInt8, String)] = [
+            (.swing, 0x0215, 3, "Schwenken"), (.eco, 0x0212, 0, "Eco"), (.turbo, 0x021A, 2, "Turbo"),
+            (.outdoorSilent, 0x00CD, 2, "Außengerät leise"), (.ieco, 0x00E3, 0, "iECO"), (.purifier, 0x021E, 0, "Ionisierer"),
+            (.freezeProtection, 0x0213, 0, "Frostschutz"), (.selfClean, 0x0039, 0, "Reinigung"),
+            (.display, 0x0224, 0, "Anzeige"), (.sound, 0x022C, 0, "Signalton"),
+        ]
+        for (f, id, value, title) in cases {
+            for m in [OperationalMode.cool, .heat, .dry, .fan, .auto] {
+                XCTAssertEqual(a(f, m, [id: [value]]),
+                               UIOptions.Availability(enabled: false, why: "Diese Anlage unterstützt „\(title)“ nicht"), "\(f) \(m)")
+                XCTAssertFalse(UIOptions.isAvailable(f, in: m, capabilities: ACCapabilities(raw: [id: [value]])))
+            }
+        }
+        // Gemeldet und vorhanden: Modusregel bleibt.
+        XCTAssertEqual(a(.eco, .heat, [0x0212: [1]]).why, "Eco gibt es nur beim Kühlen")
+        XCTAssertTrue(a(.eco, .cool, [0x0212: [2]]).enabled)
+        XCTAssertEqual(a(.freezeProtection, .cool, [0x0213: [1]]).enabled, false)
+        // Turbo nur beim Kühlen (0) bzw. nur beim Heizen (3) gemeldet.
+        XCTAssertTrue(a(.turbo, .cool, [0x021A: [0]]).enabled)
+        XCTAssertEqual(a(.turbo, .heat, [0x021A: [0]]),
+                       UIOptions.Availability(enabled: false, why: "Diese Anlage unterstützt „Turbo“ in diesem Modus nicht"))
+        XCTAssertTrue(a(.turbo, .heat, [0x021A: [3]]).enabled)
+        XCTAssertFalse(a(.turbo, .cool, [0x021A: [3]]).enabled)
+        XCTAssertEqual(a(.turbo, .dry, [0x021A: [1]]).why, "Turbo gibt es nur beim Kühlen und Heizen")
+        // Leistung begrenzen.
+        let noRate = UIOptions.rateAvailability(mode: .cool, capabilities: ACCapabilities(raw: [0x0048: [0]]))
+        XCTAssertEqual(noRate, UIOptions.Availability(enabled: false, why: "Diese Anlage unterstützt „Leistung begrenzen“ nicht"))
+        XCTAssertTrue(UIOptions.rateAvailability(mode: .cool, capabilities: ACCapabilities(raw: [0x0048: [3]])).enabled)
+        XCTAssertFalse(UIOptions.rateAvailability(mode: .heat, capabilities: ACCapabilities(raw: [0x0048: [1]])).enabled)
+        // Andere Fähigkeiten gemeldet, diese nicht: heutige Regel.
+        let other = ACCapabilities(raw: [0x0214: [1]])
+        for m in [OperationalMode.cool, .heat, .dry, .fan, .auto] {
+            for f in UIOptions.ComfortFeature.allCases {
+                XCTAssertEqual(UIOptions.availability(f, mode: m, capabilities: other), UIOptions.availability(f, mode: m))
+            }
         }
     }
 
     func testAvailabilityTexts() {
-        let cool = UIOptions.availability
+        let cool = { (f: UIOptions.ComfortFeature, m: OperationalMode) in UIOptions.availability(f, mode: m) }
         XCTAssertEqual(cool(.swing, .cool).why, "Lamellen schwenken auf und ab")
         XCTAssertEqual(cool(.eco, .cool).why, "Eco gibt es nur beim Kühlen")
         XCTAssertEqual(cool(.turbo, .cool).why,
@@ -118,12 +226,17 @@ final class DisplayCatalogTests: CoreTestCase {
         XCTAssertEqual(cool(.outdoorSilent, .heat).why,
                        "Verdichter und Lüfter draußen gedrosselt – die Lüfterstufe bleibt. Ganz links am Lüfter: zusätzlich 1 %")
         XCTAssertEqual(cool(.outdoorSilent, .fan).why, "Außengerät leise wirkt nur beim Kühlen und Heizen")
-        XCTAssertEqual(cool(.ieco, .auto).why,
-                       "iECO = Sparprogramm der Anlage, begrenzt die Leistungsaufnahme in jedem Modus (Eco oben gilt nur beim Kühlen)")
+        XCTAssertEqual(cool(.ieco, .cool).why,
+                       "iECO = Sparprogramm der Anlage, begrenzt die Leistungsaufnahme (Eco oben gilt nur beim Kühlen)")
+        XCTAssertEqual(cool(.ieco, .fan).why, "iECO gibt es in diesem Modus nicht")
+        XCTAssertEqual(UIOptions.rateAvailability(mode: .heat).why, "Leistung begrenzen gilt nur beim Kühlen")
         XCTAssertNil(cool(.purifier, .auto).why)
         XCTAssertEqual(cool(.freezeProtection, .heat).why, "Hält 8 °C – nur im Heizbetrieb")
         XCTAssertEqual(cool(.selfClean, .cool).why, "Selbstreinigung: trocknet und reinigt das Innengerät (ca. 15 Min.)")
         XCTAssertEqual(cool(.display, .cool).why, "Temperaturanzeige an der Anlage")
+        XCTAssertEqual(cool(.sleep, .cool).why, "Schlafmodus: die Anlage regelt leiser und sparsamer herunter")
+        XCTAssertEqual(cool(.sleep, .dry).why, "Schlafmodus gibt es nur beim Kühlen und Heizen")
+        XCTAssertEqual(L.Main.Comfort.sleep, "Schlafmodus")
     }
 
     func testControllerUsesTheSameRules() async throws {
@@ -173,6 +286,26 @@ final class DisplayCatalogTests: CoreTestCase {
         s.turbo = true
         s.fanSpeed = 100
         XCTAssertEqual(UIOptions.fanCaption(s), "Max · 100 %", "ohne Zonen kein Turbo-Zusatz")
+    }
+
+    func testFanZonesAndLockByModeAndCapabilities() {
+        XCTAssertEqual(UIOptions.fanZones(.cool), UIOptions.FanZones(quiet: true, turbo: true))
+        XCTAssertEqual(UIOptions.fanZones(.heat), UIOptions.FanZones(quiet: true, turbo: true))
+        for m in [OperationalMode.fan, .dry, .auto] { XCTAssertEqual(UIOptions.fanZones(m), .none) }
+        let coolTurbo = ACCapabilities(raw: [0x021A: [0], 0x00CD: [3]])
+        XCTAssertEqual(UIOptions.fanZones(.heat, capabilities: coolTurbo), UIOptions.FanZones(quiet: true, turbo: false))
+        XCTAssertEqual(UIOptions.fanZones(.cool, capabilities: ACCapabilities(raw: [0x00CD: [0]])),
+                       UIOptions.FanZones(quiet: false, turbo: true))
+        XCTAssertTrue(UIOptions.fanLocked(.dry))
+        XCTAssertFalse(UIOptions.fanLocked(.cool))
+
+        var s = ACState()
+        s.mode = .heat
+        s.fanSpeed = 100
+        s.turbo = true
+        XCTAssertEqual(UIOptions.fanCaption(s), "Turbo · 100 %")
+        s.capabilities = coolTurbo
+        XCTAssertEqual(UIOptions.fanCaption(s), "Max · 100 %", "ohne Turbo-Fähigkeit beim Heizen keine Turbo-Zone")
     }
 
     func testFanZoneHelp() {
@@ -283,6 +416,35 @@ final class DisplayCatalogTests: CoreTestCase {
         cooling(c, indoor: nil)
         XCTAssertEqual(c.heroValue, "24°", "ohne Raumtemperatur bleibt das Soll groß")
         XCTAssertEqual(c.heroCaption, "Kühlt")
+        XCTAssertEqual(c.miniValue, "24°", "Mini-Fenster nach derselben Regel wie das Hauptfenster")
+        XCTAssertEqual(c.miniCaption, "Kühlen · Raum –")
+    }
+
+    /// Mini-Fenster und große Zahl im Hauptfenster folgen einer Regel.
+    func testMiniValueFollowsHeroRule() throws {
+        let c = try controller(now: local())
+        XCTAssertEqual(c.miniValue, c.heroValue)
+        for hero in Appearance.HeroValue.allCases {
+            change(c) { $0.hero = hero }
+            for indoor in [25.5, nil] as [Double?] {
+                cooling(c, indoor: indoor)
+                XCTAssertEqual(c.miniValue, c.heroValue, "\(hero) \(String(describing: indoor))")
+            }
+        }
+    }
+
+    func testTemperatureScale() {
+        XCTAssertEqual(UIText.temperatureScaleLabels, [16, 25, 30])
+        XCTAssertEqual(UIText.temperatureScaleEmphasized, [20, 25])
+        XCTAssertEqual(UIText.temperatureScaleFraction(16), 0)
+        XCTAssertEqual(UIText.temperatureScaleFraction(30), 1)
+        XCTAssertEqual(UIText.temperatureScaleFraction(23), 0.5)
+        XCTAssertEqual(UIText.temperatureScaleFraction(12.5), 0, "unter 16° steht die Marke am linken Rand")
+        XCTAssertEqual(UIText.temperatureScaleFraction(33), 1, "über 30° steht die Marke am rechten Rand")
+        XCTAssertEqual(UIText.temperatureScaleRoom(19), "Raum 19,0°")
+        XCTAssertEqual(UIText.temperatureScaleRoom(12.46), "Raum 12,5°")
+        XCTAssertEqual(L.Main.Power.stateOn, "Ein")
+        XCTAssertEqual(L.Main.Power.stateOff, "Aus")
     }
 
     // MARK: Kosten
@@ -713,7 +875,7 @@ final class DisplayCatalogTests: CoreTestCase {
         XCTAssertEqual(UIText.updatesHelp(host: .mac),
                        "Updates werden automatisch geladen. Danach fragt Klimacontrol, ob es gleich neu starten soll; sonst wird beim Beenden installiert.")
         XCTAssertEqual(UIText.updatesHelp(host: .windows),
-                       "Klimacontrol sucht täglich nach Updates und fragt vor der Installation.")
+                       "Klimacontrol sucht nach Updates und zeigt sie im Update-Fenster. Ist „Updates automatisch installieren“ aus, wird erst nach „Jetzt installieren“ installiert.")
         XCTAssertEqual(UIText.updatesChecking, "Suche nach Updates …")
         XCTAssertEqual(UIText.updatesCurrent, "Klimacontrol ist auf dem neuesten Stand.")
         XCTAssertEqual(UIText.updatesInstalling(version: "1.2.3.4"),

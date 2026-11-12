@@ -75,7 +75,8 @@ public class AppearanceTextTests
     {
         Assert.NotNull(shown);
         if (shown!.Trim() == "{l:T " + key + "}") return;
-        if (Catalog.Available) Assert.True(shown == Catalog.Text(key, "de"), $"{where}: „{shown}“ statt {{l:T {key}}}");
+        Assert.True(Catalog.Available, "Katalog l10n/Localizable.xcstrings fehlt");
+        Assert.True(shown == Catalog.Text(key, "de"), $"{where}: „{shown}“ statt {{l:T {key}}}");
     }
 
     static XElement Named(XElement root, string name) =>
@@ -126,6 +127,86 @@ public class AppearanceTextTests
             .Select(a => $"{a.Parent!.Name.LocalName} {a.Name.LocalName}=\"{a.Value}\"")
             .ToList();
         Assert.Empty(offenders);
+    }
+
+    /// Reihenfolge des Reiters wie am Mac (AGENTS.md 9.1): Vorschau · Thema · Anzeige · Fenster und Infobereich · Anpassen ·
+    /// Zurücksetzen. Die Texte der Vorschau stehen im Katalog in beiden Sprachen.
+    [Fact]
+    public void AbschnitteInReihenfolgeWieAmMac()
+    {
+        var root = AppearanceTab().Descendants().First(e => e.Name.LocalName == "StackPanel");
+        var order = root.Elements().Select(e =>
+        {
+            var name = (string?)e.Attribute(X + "Name");
+            if (e.Name.LocalName == "AppearancePreview") return "preview";
+            if (name == "LookCustomize") return "customize";
+            if (name == "LookResetButton") return "reset";
+            var text = (string?)e.Attribute("Text");
+            return ((string?)e.Attribute("Style"))?.Contains("SectionHead") == true ? text : null;
+        }).Where(s => s != null).ToList();
+        Assert.Equal(new[]
+        {
+            "preview",
+            "{l:T settings.appearance.theme.title}",
+            "{l:T settings.appearance.display.section}",
+            "{l:T settings.appearance.windowNotify.section}",
+            "customize",
+            "reset",
+        }, order);
+
+        var panel = ReadLf(Repo("Sources", "KlimacontrolApp", "PanelsAppearance.swift"));
+        Assert.Matches(@"Form \{\s*Section \{ AppearancePreview\(\) \}", panel);
+
+        Assert.True(Catalog.Available, "Katalog l10n/Localizable.xcstrings fehlt");
+        foreach (var key in new[] { "title", "modePicker", "room", "target", "accessibility" })
+            foreach (var lang in new[] { "de", "en" })
+                Assert.False(string.IsNullOrEmpty(Catalog.Text("settings.appearance.preview." + key, lang)), key + " " + lang);
+        var source = ReadLf(Repo("windows", "KlimacontrolTray", "AppearancePreview.cs"));
+        Assert.Contains("{value}", Catalog.Text("settings.appearance.preview.room", "en"));
+        Assert.Contains("(\"value\", ", source);
+    }
+
+    /// Abschnitt „Anzeige“: dieselben Zeilen in derselben Reihenfolge wie `Section(L.Settings.Appearance.Display.section)`
+    /// in PanelsAppearance.swift, je Zeile Titel und Hilfetext aus dem Katalog.
+    [Fact]
+    public void AbschnittAnzeigeWieAmMac()
+    {
+        var panel = ReadLf(Repo("Sources", "KlimacontrolApp", "PanelsAppearance.swift"));
+        var section = Regex.Match(panel, @"Section\(L\.Settings\.Appearance\.Display\.section\) \{(?<body>.*?)\n            \}",
+            RegexOptions.Singleline);
+        Assert.True(section.Success, "Abschnitt Anzeige am Mac nicht gefunden");
+        var macRows = Regex.Matches(section.Groups["body"].Value, @"L\.Settings\.Appearance\.(\w+)\.title, L\.Settings\.Appearance\.(?<help>\w+)\.help")
+            .Select(m =>
+            {
+                Assert.Equal(m.Groups[1].Value, m.Groups["help"].Value);
+                return "settings.appearance." + LowerFirst(m.Groups[1].Value);
+            })
+            .ToList();
+        Assert.Contains("settings.appearance.temperatureCombined", macRows);
+
+        var tab = AppearanceTab();
+        var head = tab.Descendants().Single(e => e.Name.LocalName == "TextBlock"
+            && (string?)e.Attribute("Text") == "{l:T settings.appearance.display.section}");
+        var border = head.ElementsAfterSelf().First();
+        Assert.Equal("Border", border.Name.LocalName);
+        var rows = border.Descendants().Where(e => e.Name.LocalName == "Grid"
+            && ((string?)e.Attribute("Style"))?.Contains("Row") == true).ToList();
+        Assert.Equal(macRows.Count, rows.Count);
+        for (var n = 0; n < rows.Count; n++)
+        {
+            var texts = rows[n].Descendants().Where(e => e.Name.LocalName == "TextBlock").ToList();
+            AssertShows(macRows[n] + ".title", (string?)texts.Single(t => ((string?)t.Attribute("Style"))!.Contains("RowTitle")).Attribute("Text"),
+                "Anzeige Zeile " + (n + 1));
+            AssertShows(macRows[n] + ".help", (string?)texts.Single(t => ((string?)t.Attribute("Style"))!.Contains("RowHelp")).Attribute("Text"),
+                "Anzeige Zeile " + (n + 1));
+        }
+
+        var toggle = Named(tab, "LookTemperatureCombinedBox");
+        Assert.Equal("ClickCheckBox", toggle.Name.LocalName);
+        AssertShows("settings.appearance.temperatureCombined.title", (string?)toggle.Attribute(
+            XName.Get("AutomationProperties.Name")), "Schalter Außentemperatur");
+        Assert.False(string.IsNullOrEmpty(Catalog.Text("settings.appearance.temperatureCombined.title", "de")));
+        Assert.False(string.IsNullOrEmpty(Catalog.Text("settings.appearance.temperatureCombined.help", "en")));
     }
 
     [Fact]

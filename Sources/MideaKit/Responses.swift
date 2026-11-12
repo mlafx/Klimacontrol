@@ -36,6 +36,8 @@ public struct ACState: Equatable, Sendable {
     public var powerWatts: Double?
     /// Gesamtverbrauch in kWh; nil = unbekannt.
     public var totalEnergyKWh: Double?
+    /// Fähigkeiten der Anlage (0xB5), einmal je Verbindung gelesen; nil = (noch) unbekannt.
+    public var capabilities: ACCapabilities?
 
     public init() {}
 
@@ -49,6 +51,7 @@ enum Response {
     case state(ACState)
     case properties([PropertyId: Bool], raw: [PropertyId: [UInt8]])
     case energy(powerWatts: Double?, totalKWh: Double?)
+    case capabilities(ACCapabilities, more: Bool)
     case other(UInt8)
 
     /// Rahmen prüfen (Prüfsumme, Gerätetyp) und nach Antwort-ID zerlegen.
@@ -71,6 +74,10 @@ enum Response {
             return .properties(parseProperties(payload), raw: parsePropertyBytes(payload))
         case 0xC1 where payload.count > 19 && (f[13] & 0xF) == 4:
             return parseEnergy(payload)
+        case 0xB5 where f[9] == FrameType.query.rawValue:
+            // Manche Anlagen schicken ungefragt „Fähigkeiten“ mit Rahmentyp 0x05 – die zählen nicht (wie msmart-ng).
+            let page = ACCapabilities.parsePage(payload)
+            return .capabilities(page.capabilities, more: page.more)
         default:
             return .other(kind)
         }

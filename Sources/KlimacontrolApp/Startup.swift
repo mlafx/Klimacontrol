@@ -74,7 +74,7 @@ struct StartupView: View {
 private struct StartupGlass: ViewModifier {
     let on: Bool
     func body(content: Content) -> some View {
-        if on { content.klimaCard(tint: nil, radius: 20) } else { content }
+        if on { content.klimaCard(tint: nil, radius: ThemeStyle.cardRadius) } else { content }
     }
 }
 

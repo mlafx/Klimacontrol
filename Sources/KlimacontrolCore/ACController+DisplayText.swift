@@ -85,7 +85,7 @@ extension ACController {
     // MARK: Große Zahl
 
     /// „Groß angezeigt: Raumtemperatur“ – nur, wenn die Anlage sie gemeldet hat.
-    private var roomIsBig: Bool { appearance.hero == .room && state?.indoorTemperature != nil }
+    var roomIsBig: Bool { appearance.hero == .room && state?.indoorTemperature != nil }
 
     /// Große Zahl im Kopf: Soll, bei ausgeschalteter Anlage, Lüften oder „Groß angezeigt: Raum“ die Raumtemperatur.
     public var heroValue: String {
@@ -211,7 +211,7 @@ extension ACController {
 
     /// Gültigkeit der Schalter im aktuellen Modus (ohne Zustand wie im Standardmodus).
     public func availability(_ f: UIOptions.ComfortFeature) -> UIOptions.Availability {
-        UIOptions.availability(f, mode: state?.mode ?? ACState().mode)
+        UIOptions.availability(f, mode: state?.mode ?? ACState().mode, capabilities: state?.capabilities)
     }
 
     /// Die Darstellung entspricht `Appearance.standard` dieser Plattform („Auf Standard zurücksetzen“ ausgegraut).

@@ -33,6 +33,17 @@ extension ACController {
         return error is MideaCloud.CloudError
     }
 
+    /// Ausführliches Protokoll für diese Sitzung ein- oder ausschalten und das Umschalten selbst protokollieren.
+    public func setDetailedLog(_ on: Bool) {
+        guard on != detailedLog || on != AppLog.debugEnabled else { return }
+        AppLog.debugEnabled = on
+        detailedLog = on
+        AppLog.write(L.Log.Settings.detailedLog(state: on ? L.Log.Common.on : L.Log.Common.off))
+    }
+
+    /// Dezenter Dauerhinweis, solange das ausführliche Protokoll an ist; nil sonst.
+    public var detailedLogNotice: String? { detailedLog ? L.Main.DetailedLog.notice : nil }
+
     /// Verbindungsfehler setzen: Text und Teile der Meldung, Fehlerfarbe für Punkt und Symbol.
     func showConnectionError(_ m: UserMessage, deviceOff: Bool = false) {
         message = m.text
@@ -55,9 +66,15 @@ extension ACController {
     public func showNotice(_ text: String) { showNotice(UserMessage(what: text, todo: "")) }
 
     /// Wie `showNotice(_:)` mit Text und Code getrennt (der Code steht klein am Ende).
-    public func showNotice(_ message: UserMessage) {
+    public func showNotice(_ message: UserMessage) { showNotice(message, persistent: false) }
+
+    /// `persistent`: bleibt stehen, bis der Nutzer ihn wegklickt oder ein Befehl ihn ersetzt (kein Ablauf nach
+    /// `noticeSeconds`).
+    public func showNotice(_ message: UserMessage, persistent: Bool) {
         noticeTask?.cancel()
+        noticeTask = nil
         noticeMessage = message
+        guard !persistent else { return }
         noticeTask = Task { [weak self, seconds = noticeSeconds] in
             try? await Task.sleep(for: .seconds(seconds))
             guard !Task.isCancelled else { return }
@@ -69,6 +86,24 @@ extension ACController {
         noticeTask?.cancel()
         noticeTask = nil
         if noticeMessage != nil { noticeMessage = nil }
+    }
+
+    /// Ergebnis von `SettingsFileCheck.run` nach dem Start melden (Bridge nach `kc_init`): Protokollzeile in der Sprache
+    /// der Oberfläche und, wenn die Einstellungen zurückgesetzt wurden, ein Hinweis ohne Ablaufzeit.
+    /// `fileName` = Name der geprüften Datei (für das Protokoll).
+    public func reportSettingsFileCheck(_ outcome: SettingsFileCheck.Outcome, fileName: String) {
+        switch outcome {
+        case .missing, .empty, .valid:
+            return
+        case .readFailed(let error):
+            AppLog.error(L.Log.Settings.unreadable(file: fileName, error: error))
+        case .movedAside(let aside), .copiedAside(let aside):
+            AppLog.error(L.Log.Settings.damaged(file: aside))
+            showNotice(UserMessage(what: L.Message.settingsReset(file: aside), todo: ""), persistent: true)
+        case .asideFailed(let error):
+            AppLog.error(L.Log.Settings.asideFailed(file: fileName, error: error))
+            showNotice(UserMessage(what: L.Message.settingsResetLost, todo: ""), persistent: true)
+        }
     }
 
     // MARK: Startanzeige (Verbindungsschritte)
@@ -99,5 +134,26 @@ extension ACController {
     func devicePhase(_ phase: ConnectPhase, configGeneration gen: Int) {
         guard gen == configGeneration, connectPhase != nil, connectPhase != phase else { return }
         connectPhase = phase
+    }
+}
+
+extension ACController {
+    /// Schreibt einen Wechsel des Fehlercodes einmal ins Protokoll (Warnung bei einem Fehler, Info bei der Rückkehr
+    /// auf 0), mit Leistung und Verdichter zum Zeitpunkt, soweit bekannt. Ein Code, der von Anfang an 0 ist, bleibt still.
+    func noteErrorCode(_ code: Int?) {
+        guard let code else { lastErrorCode = nil; return }
+        let previous = lastErrorCode
+        guard code != previous else { return }
+        lastErrorCode = code
+        if previous == nil && code == 0 { return }
+        var parts: [String] = []
+        if let w = state?.powerWatts { parts.append(L.Log.Errorcode.power(watts: String(Int(w.rounded())))) }
+        if let hz = diagnostics?.compressorHz { parts.append(L.Log.Errorcode.compressor(hz: String(hz))) }
+        let context = parts.isEmpty ? "" : L.Log.Errorcode.context(parts: parts.joined(separator: ", "))
+        if code != 0 {
+            AppLog.write(L.Log.Errorcode.raised(code: String(code), context: context), L.Log.Level.warning)
+        } else {
+            AppLog.write(L.Log.Errorcode.cleared(code: String(previous ?? 0), context: context))
+        }
     }
 }

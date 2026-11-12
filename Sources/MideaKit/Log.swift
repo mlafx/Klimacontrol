@@ -2,8 +2,8 @@ import Foundation
 import Synchronization
 
 /// Erkennt Testläufe (XCTest, swift-testing, `swift test`), damit Protokoll und Schlüsselbund dort nie echt sind.
-enum TestEnvironment {
-    static let isRunningTests: Bool = {
+public enum TestEnvironment {
+    public static let isRunningTests: Bool = {
         let p = ProcessInfo.processInfo
         let name = p.processName
         if name.hasSuffix("xctest") || name.contains("PackageTests") || name == "swiftpm-testing-helper" { return true }
@@ -53,27 +53,34 @@ public enum AppLog {
     private static let queue = DispatchQueue(label: "klimacontrol.log")
     private static let maxBytes = 5_000_000
 
-    /// Debug-Protokoll (alle Rahmen als Hex, Cloud-Anfragen, Verbindungsschritte). Standard aus, sonst überschreibt
-    /// die Rotation den Tag nach wenigen Stunden. Einmal aus UserDefaults gelesen, danach im Speicher (jede
-    /// Rahmenzeile fragt ihn ab); der Setter schreibt beides.
+    /// Debug-Protokoll (alle Rahmen als Hex, Cloud-Anfragen, Verbindungsschritte). Gilt nur für die laufende
+    /// Sitzung (nur im Speicher, Standard aus), damit es nicht vergessen wird und die Rotation den Tag nicht nach
+    /// wenigen Stunden überschreibt. Ein früher gespeicherter Wert wird beim ersten Zugriff entfernt.
     public static var debugEnabled: Bool {
         get {
-            debugCache.withLock { cache in
-                if let v = cache { return v }
-                let v = UserDefaults.standard.object(forKey: "debugLog") as? Bool ?? false
-                cache = v
-                return v
-            }
+            _ = legacyCleanup
+            return debugFlag.withLock { $0 }
         }
         set {
-            debugCache.withLock { $0 = newValue }
-            UserDefaults.standard.set(newValue, forKey: "debugLog")
-            #if os(Windows)
-            _ = UserDefaults.standard.synchronize()  // swift-corelibs-foundation speichert sonst nicht
-            #endif
+            _ = legacyCleanup
+            debugFlag.withLock { $0 = newValue }
         }
     }
-    private static let debugCache = Mutex<Bool?>(nil)
+    private static let debugFlag = Mutex<Bool>(false)
+
+    /// Entfernt den bis 1.2 gespeicherten Schlüssel „debugLog“ (Migration, Code ab 2027-06-01 entfernen).
+    /// Nicht in Testprozessen: Tests fassen die echten Einstellungen nicht an.
+    private static let legacyCleanup: Void = {
+        if !TestEnvironment.isRunningTests { removeLegacyDebugSetting(from: .standard) }
+    }()
+
+    public static func removeLegacyDebugSetting(from defaults: UserDefaults) {
+        guard defaults.object(forKey: "debugLog") != nil else { return }
+        defaults.removeObject(forKey: "debugLog")
+        #if os(Windows)
+        _ = defaults.synchronize()  // swift-corelibs-foundation speichert sonst nicht
+        #endif
+    }
 
     public static func debug(_ message: @autoclosure () -> String) {
         guard debugEnabled else { return }

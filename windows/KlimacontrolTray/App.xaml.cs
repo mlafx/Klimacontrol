@@ -339,29 +339,20 @@ public partial class App : Application
             };
             return Line(s, step);
         }
-        return Line(s, TipDetail(s.State, tooltip) ?? s.StatusLine);
+        return Line(s, TipDetail(s.State, s.MenuTitle, tooltip) ?? s.StatusLine);
     }
 
     static string Line(Snapshot s, string text) => L.F("tray.tip.line", ("name", s.DisplayName), ("text", text));
 
-    /// Tooltip-Text nach `TrayTooltip` ohne den Namen; null = Statuszeile des Kerns (Standard "iconTarget").
-    internal static string? TipDetail(AcState st, string tooltip)
+    /// Tooltip-Text nach `TrayTooltip` ohne den Namen; null = Statuszeile des Kerns (Standard "iconTarget"). Welche
+    /// Temperaturen erscheinen, entscheidet der Kern (`menuTitle`, wie der Text neben dem Symbol in der Mac-Menüleiste).
+    internal static string? TipDetail(AcState st, string? menuTitle, string tooltip)
     {
         var status = st.Power ? Codes.Verb(st.Mode) : L.T("common.off");
-        string? room = st.Indoor is { } r ? L.F("status.room", ("temp", Fmt.Temp(r))) : null;
-        // Soll nur bei laufender Anlage und nicht beim Lüften.
-        string? target = st.Power && st.Mode != 5 ? L.F("menu.target", ("target", Fmt.Target(st.Target))) : null;
         return tooltip switch
         {
             "iconOnly" => status,
-            "iconRoom" => room == null ? status : L.F("tray.tip.statusRoom", ("status", status), ("room", room)),
-            "roomTarget" => (room, target) switch
-            {
-                ({ } ro, { } ta) => L.F("tray.tip.roomTarget", ("room", ro), ("target", ta)),
-                ({ } ro, null) => L.F("tray.tip.statusRoom", ("status", status), ("room", ro)),
-                (null, { } ta) => L.F("tray.tip.statusTarget", ("status", status), ("target", ta)),
-                _ => status,
-            },
+            "iconRoom" or "roomTarget" => menuTitle is { Length: > 0 } t ? L.F("tray.tip.statusRoom", ("status", status), ("room", t)) : status,
             _ => null,
         };
     }
