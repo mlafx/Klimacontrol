@@ -473,4 +473,20 @@ final class ControllerTests: CoreTestCase {
         try await waitUntil("Timer ausgeführt") { c.offAt == nil }
         XCTAssertFalse(fake.current.power)
     }
+
+    func testDetailedLogIsSessionOnlyWithNotice() throws {
+        let before = AppLog.debugEnabled
+        defer { AppLog.debugEnabled = before }
+        AppLog.debugEnabled = false
+        let c = makeController()
+        XCTAssertFalse(c.detailedLog)
+        XCTAssertNil(c.detailedLogNotice)
+        c.setDetailedLog(true)
+        XCTAssertTrue(AppLog.debugEnabled)
+        XCTAssertEqual(c.detailedLogNotice, "Ausführliches Protokoll aktiv")
+        XCTAssertNil(settings.object(forKey: "debugLog"))
+        c.setDetailedLog(false)
+        XCTAssertFalse(AppLog.debugEnabled)
+        XCTAssertNil(c.detailedLogNotice)
+    }
 }

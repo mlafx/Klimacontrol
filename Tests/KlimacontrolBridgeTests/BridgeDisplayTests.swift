@@ -164,6 +164,19 @@ final class BridgeDisplayTests: XCTestCase {
         }
     }
 
+    func testDetailedLogFieldsFollowTheCore() throws {
+        let before = AppLog.debugEnabled
+        defer { AppLog.debugEnabled = before }
+        controller.setDetailedLog(false)
+        var j = try json()
+        XCTAssertEqual(j["debugLog"] as? Bool, false)
+        XCTAssertTrue(j["debugLogNotice"] == nil || j["debugLogNotice"] is NSNull)
+        try runCommand(try XCTUnwrap(CommandArgs(json: #"{"cmd":"debugLog","on":true}"#)), controller)
+        j = try json()
+        XCTAssertEqual(j["debugLog"] as? Bool, true)
+        XCTAssertEqual(j["debugLogNotice"] as? String, "Ausführliches Protokoll aktiv")
+    }
+
     func testHistoryUnavailableFollowsTheDatabase() throws {
         XCTAssertEqual(try json()["historyUnavailable"] as? Bool, false)
 

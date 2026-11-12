@@ -63,6 +63,9 @@ final class OptionsEnglishTests: XCTestCase {
         english {
             XCTAssertEqual(UIOptions.availability(.eco, mode: .heat).why, "Eco is only available when cooling")
             XCTAssertFalse(UIOptions.availability(.eco, mode: .heat).enabled)
+            XCTAssertEqual(UIOptions.availability(.ieco, mode: .fan).why, "iECO is not available in this mode")
+            XCTAssertEqual(UIOptions.availability(.ieco, mode: .cool).why,
+                           "iECO is the energy-saving program of the air conditioner. It limits the power draw (Eco above only applies when cooling).")
             XCTAssertEqual(Appearance.Theme.night.label, "Night")
             XCTAssertEqual(Appearance.MenuBarText.roomTarget.label, "Room + target")
             XCTAssertEqual(Appearance.Background.glassStrong.label, "Strong glass")

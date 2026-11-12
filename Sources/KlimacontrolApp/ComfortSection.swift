@@ -72,7 +72,7 @@ struct ComfortSection: View, Equatable {
     /// Große Kachel (Symbol über Text).
     private func tile(_ title: String, _ icon: String, _ on: Bool?, _ feature: UIOptions.ComfortFeature,
                       _ action: @escaping (Bool) -> Void) -> some View {
-        let a = UIOptions.availability(feature, mode: state.mode)
+        let a = UIOptions.availability(feature, mode: state.mode, capabilities: state.capabilities)
         return switchButton(title, on, enabled: a.enabled, why: a.why, radius: 12, action) {
             VStack(spacing: 4) {
                 Image(systemName: icon).font(.system(size: 15, weight: .medium))
@@ -85,7 +85,7 @@ struct ComfortSection: View, Equatable {
     /// Flache Zeile (Symbol neben Text).
     private func row(_ title: String, _ icon: String, _ on: Bool?, _ feature: UIOptions.ComfortFeature,
                      _ action: @escaping (Bool) -> Void) -> some View {
-        let a = UIOptions.availability(feature, mode: state.mode)
+        let a = UIOptions.availability(feature, mode: state.mode, capabilities: state.capabilities)
         return switchButton(title, on, enabled: a.enabled, why: a.why, radius: 10, action) {
             HStack(spacing: 6) {
                 Image(systemName: icon).font(.system(size: 13, weight: .medium)).frame(width: 16)
@@ -146,10 +146,11 @@ struct ComfortInput: Equatable, Sendable {
     let displayOn: Bool
     let sound: Bool?
     let ratePercent: Int?
+    let capabilities: ACCapabilities?
 
     init(_ s: ACState) {
         mode = s.mode; swing = s.swing; eco = s.eco; turbo = s.turbo; outSilent = s.outSilent; ieco = s.ieco
         purifier = s.purifier; freezeProtection = s.freezeProtection; selfClean = s.selfClean
-        displayOn = s.displayOn; sound = s.sound; ratePercent = s.ratePercent
+        displayOn = s.displayOn; sound = s.sound; ratePercent = s.ratePercent; capabilities = s.capabilities
     }
 }

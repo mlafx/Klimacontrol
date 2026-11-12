@@ -25,6 +25,10 @@ public enum SettingsKey {
     public static let currency = "currency"
     /// Mac: Vorabversionen (Beta) über die Beta-Update-Datei beziehen (Standard aus).
     public static let updateBetaChannel = "updateBetaChannel"
+    /// Geladene Updates ohne Rückfrage installieren (Standard an); aus = erst nach „Jetzt installieren“.
+    public static let updateAutoInstall = "updateAutoInstall"
+    /// Suchintervall der Updates: "daily" oder "weekly" (`UpdateInterval`).
+    public static let updateInterval = "updateInterval"
     public static let beep = "beep"
     public static let timerOffAt = "timerOffAt"
     public static let timerOnAt = "timerOnAt"

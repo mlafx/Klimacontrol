@@ -374,6 +374,20 @@ final class MideaKitTests: XCTestCase {
         XCTAssertEqual(text.components(separatedBy: "***").count - 1, 2, text)
     }
 
+    func testDetailedLogIsSessionOnlyAndLegacyValueIsRemoved() throws {
+        let suite = "klimacontrol-test-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        defaults.set(true, forKey: "debugLog")
+        AppLog.removeLegacyDebugSetting(from: defaults)
+        XCTAssertNil(defaults.object(forKey: "debugLog"))
+
+        let before = AppLog.debugEnabled
+        defer { AppLog.debugEnabled = before }
+        AppLog.debugEnabled = true
+        XCTAssertTrue(AppLog.debugEnabled)
+    }
+
     func testNormalLogLinesStayUnchanged() throws {
         let lines = ["Befehl: Soll 19°", "Verbindung über WLAN",
                      "Netz-Scan über 254 Adressen: net_ac_1A2B 192.168.1.40 V3",

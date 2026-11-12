@@ -144,6 +144,8 @@ struct Snapshot: Encodable {
     var currency: String
     var beep: Bool
     var debugLog: Bool
+    /// Hinweistext „Ausführliches Protokoll aktiv“, solange `debugLog` an ist; sonst nil.
+    var debugLogNotice: String?
     var historyCSV: Bool
     var historyRevision: Int
     /// Die Verlaufsdatenbank ließ sich nicht öffnen: statt „zu wenig Daten“ den Katalogtext `charts.unavailable` zeigen.
@@ -182,9 +184,12 @@ struct Snapshot: Encodable {
     var timerRequirement = ""
     /// Darstellung (Reiter „Darstellung“), Felder wie `Appearance` (Enums als Text, Zahlen als Double).
     var appearance = Appearance.standard
-    /// Appcast für WinSparkle und Standard-Suchintervall in Sekunden (beides fest aus dem Kern).
+    /// Appcast für WinSparkle (fest aus dem Kern) und Suchintervall in Sekunden nach der Einstellung `updateInterval`.
     var updateFeedURL = AppUpdate.feedWindows
     var updateCheckInterval = AppUpdate.checkInterval
+    /// Einstellungen → Allgemein → Updates: geladene Updates ohne Rückfrage installieren; "daily" | "weekly".
+    var updateAutoInstall = AppUpdate.autoInstallDefault
+    var updateInterval = UpdateInterval.daily.rawValue
     // Anzeigetexte und Auswahllisten aus dem Kern (BridgeDisplay.swift); alles nur zum Anzeigen.
     /// Statische Auswahllisten, Grenzen, Standardwerte und feste Rückfragen.
     var options = OptionsDTO.current
@@ -327,7 +332,7 @@ func phaseName(_ p: ConnectPhase) -> String {
         offAt: c.offAt?.timeIntervalSince1970, onAt: c.onAt?.timeIntervalSince1970,
         costPerHour: c.costPerHour, todayKWh: c.todayKWh, refreshSeconds: c.refreshSeconds, price: c.pricePerKWh,
         language: c.languageChoice.rawValue, currency: c.currency,
-        beep: c.beep, debugLog: results.debugLog, historyCSV: c.historyCSV, historyRevision: c.history.revision,
+        beep: c.beep, debugLog: c.detailedLog, debugLogNotice: c.detailedLogNotice, historyCSV: c.historyCSV, historyRevision: c.history.revision,
         setup: SetupDTO(scanning: setup.scanning, cloudScanning: setup.cloudScanning, busy: setup.busy,
                         subnetScanning: setup.subnetScanning,
                         subnetSent: setup.subnetProgress?.0, subnetTotal: setup.subnetProgress?.1, error: setup.error,
@@ -343,6 +348,9 @@ func phaseName(_ p: ConnectPhase) -> String {
         CompletionDTO(path: $0.path.rawValue, suggestLANOnly: $0.suggestLANOnly, offerBackup: $0.offerBackup, note: $0.note)
     }
     snap.historyUnavailable = !c.history.db.isOpen
+    snap.updateAutoInstall = c.updateAutoInstall
+    snap.updateInterval = c.updateInterval.rawValue
+    snap.updateCheckInterval = c.updateInterval.seconds
     snap.connectPhase = c.connectPhase.map(phaseName)
     snap.connectSlow = c.connectSlow
     snap.staleSince = c.staleSince?.timeIntervalSince1970

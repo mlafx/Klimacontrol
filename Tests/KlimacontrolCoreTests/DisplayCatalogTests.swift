@@ -72,6 +72,17 @@ final class DisplayCatalogTests: CoreTestCase {
         XCTAssertEqual(UIOptions.fanAutoKnob, 60)
     }
 
+    func testDetailedLogTexts() {
+        XCTAssertEqual(L.Main.DetailedLog.notice, "Ausführliches Protokoll aktiv")
+        XCTAssertEqual(L.Settings.Log.Detailed.scope,
+                       "Schreibt zusätzlich Rahmen in Hex, Suche und Cloud-Anfragen; Passwörter, Token und Schlüssel werden geschwärzt. Gilt bis zum Beenden der App.")
+        Localizer.withLanguage(.en) {
+            XCTAssertEqual(L.Main.DetailedLog.notice, "Detailed log on")
+            XCTAssertEqual(L.Settings.Log.Detailed.scope,
+                           "Also writes frames in hex, search and cloud requests; passwords, tokens and keys are redacted. Applies until you quit the app.")
+        }
+    }
+
     func testRefreshWarning() {
         XCTAssertEqual(UIOptions.refreshWarning(forSeconds: 7),
                        "Unter 8 s bleibt die Verbindung dauerhaft offen – andere Apps (z. B. die Midea-App) kommen dann nicht an die Anlage.")
@@ -104,12 +115,35 @@ final class DisplayCatalogTests: CoreTestCase {
             XCTAssertEqual(enabled(.turbo, m), m == .cool || m == .heat, "Turbo nur Kühlen/Heizen")
             XCTAssertEqual(enabled(.outdoorSilent, m), m == .cool || m == .heat, "Außengerät leise nur Kühlen/Heizen")
             XCTAssertEqual(enabled(.freezeProtection, m), m == .heat, "Frostschutz nur Heizen")
-            for f in [UIOptions.ComfortFeature.swing, .ieco, .purifier, .selfClean, .display, .sound] { XCTAssertTrue(enabled(f, m)) }
+            XCTAssertEqual(enabled(.ieco, m), m != .fan, "iECO nicht beim Lüften")
+            for f in [UIOptions.ComfortFeature.swing, .purifier, .selfClean, .display, .sound] { XCTAssertTrue(enabled(f, m)) }
         }
     }
 
+    func testSwitchNotAppliedMessage() {
+        XCTAssertEqual(UserMessage.switchNotApplied("iECO", mode: .fan).text,
+                       "Die Anlage hat „iECO“ im Modus „Lüften“ nicht übernommen. In diesem Modus nimmt die Anlage den Schalter nicht an. Wähle einen anderen Modus und versuche es erneut. (not-in-mode)")
+    }
+
+    func testIECOFollowsCapabilities() {
+        func enabled(_ m: OperationalMode, _ value: [UInt8]?) -> Bool {
+            let caps = value.map { ACCapabilities(raw: [0x00E3: $0]) }
+            return UIOptions.availability(.ieco, mode: m, capabilities: caps).enabled
+        }
+        // Nur Kühlen gemeldet: Kühlen, Trocknen und Auto frei, Heizen und Lüften gesperrt.
+        XCTAssertEqual([OperationalMode.cool, .dry, .auto, .heat, .fan].map { enabled($0, [1]) }, [true, true, true, false, false])
+        // Nur Heizen (ieco_end 3).
+        XCTAssertEqual([OperationalMode.cool, .dry, .auto, .heat, .fan].map { enabled($0, [0, 3]) }, [false, false, true, true, false])
+        // Beides (ECOMaster).
+        XCTAssertEqual([OperationalMode.cool, .dry, .auto, .heat, .fan].map { enabled($0, [8]) }, [true, true, true, true, false])
+        // Keine iECO-Fähigkeit gemeldet oder Fähigkeiten unbekannt: bisherige Regel (alles außer Lüften).
+        XCTAssertEqual([OperationalMode.cool, .heat, .fan].map { enabled($0, nil) }, [true, true, false])
+        let other = ACCapabilities(raw: [0x0214: [2]])
+        XCTAssertTrue(UIOptions.availability(.ieco, mode: .heat, capabilities: other).enabled)
+    }
+
     func testAvailabilityTexts() {
-        let cool = UIOptions.availability
+        let cool = { (f: UIOptions.ComfortFeature, m: OperationalMode) in UIOptions.availability(f, mode: m) }
         XCTAssertEqual(cool(.swing, .cool).why, "Lamellen schwenken auf und ab")
         XCTAssertEqual(cool(.eco, .cool).why, "Eco gibt es nur beim Kühlen")
         XCTAssertEqual(cool(.turbo, .cool).why,
@@ -119,7 +153,8 @@ final class DisplayCatalogTests: CoreTestCase {
                        "Verdichter und Lüfter draußen gedrosselt – die Lüfterstufe bleibt. Ganz links am Lüfter: zusätzlich 1 %")
         XCTAssertEqual(cool(.outdoorSilent, .fan).why, "Außengerät leise wirkt nur beim Kühlen und Heizen")
         XCTAssertEqual(cool(.ieco, .auto).why,
-                       "iECO = Sparprogramm der Anlage, begrenzt die Leistungsaufnahme in jedem Modus (Eco oben gilt nur beim Kühlen)")
+                       "iECO = Sparprogramm der Anlage, begrenzt die Leistungsaufnahme (Eco oben gilt nur beim Kühlen)")
+        XCTAssertEqual(cool(.ieco, .fan).why, "iECO gibt es in diesem Modus nicht")
         XCTAssertNil(cool(.purifier, .auto).why)
         XCTAssertEqual(cool(.freezeProtection, .heat).why, "Hält 8 °C – nur im Heizbetrieb")
         XCTAssertEqual(cool(.selfClean, .cool).why, "Selbstreinigung: trocknet und reinigt das Innengerät (ca. 15 Min.)")

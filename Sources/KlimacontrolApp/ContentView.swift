@@ -222,6 +222,12 @@ private struct ControlColumn: View {
                 if let note = model.noticeMessage {
                     NoticeBanner(message: note)
                 }
+                if let note = model.detailedLogNotice {
+                    Label(note, systemImage: "doc.text.magnifyingglass")
+                        .font(.caption).foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 4)
+                }
                 FooterHost()
             }
             .modifier(GlassContainer())

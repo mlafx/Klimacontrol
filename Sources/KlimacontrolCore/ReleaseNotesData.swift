@@ -18,6 +18,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 - Darstellung: Einstellung „Außentemperatur im Temperaturgraphen zeigen“.
 - Die Skala der Solltemperatur zeigt die Raumtemperatur als Marke.
 - Windows: Eine beschädigte Einstellungsdatei wird beim Start beiseitegelegt und gemeldet, statt still durch Standardwerte ersetzt zu werden.
+- Updates: Einstellungen „Updates automatisch installieren“ und „Nach Updates suchen“ (täglich oder wöchentlich); ohne automatische Installation wird ein geladenes Update erst nach „Jetzt installieren“ installiert.
 
 ### Geändert
 - Hauptfenster: Modus und Lüfter sowie Szenen und Timer stehen jeweils in einer gemeinsamen Karte.
@@ -27,6 +28,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 - Verlauf: Leistung und Temperaturen haben auf Mac und Windows dieselben Achsen und Gitterlinien.
 - Windows: Das Hauptfenster folgt denselben Regeln für Spalten und Größe wie am Mac; Reiter und gestapelte Spalten entfallen.
 - Windows: Beim Lüften sind Solltemperatur und Skala ausgeblendet.
+- Ausführliches Protokoll: Der Schalter gilt nur bis zum Beenden der App, ein Hinweis zeigt, solange er an ist.
 
 ### Behoben
 - Verlauf: Beschriftungen unter den Verbrauchsbalken und die letzte Uhrzeit unter den Graphen wurden abgeschnitten.
@@ -42,6 +44,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 - Mini-Fenster: Bei „Groß angezeigt: Raum“ ohne Raumtemperatur stand „–“ statt der Solltemperatur.
 - ⌘↑/⌘↓ (Mac) bzw. Strg+↑/↓ (Windows) verstellten beim Lüften die Solltemperatur.
 - Windows: Zahl und Text im Infobereich zeigten beim Lüften ein Soll und rundeten Raumtemperaturen bei x,5 ab.
+- iECO lässt sich beim Lüften nicht mehr einschalten und folgt beim Kühlen und Heizen den Fähigkeiten der Anlage; nimmt die Anlage iECO im aktuellen Modus nicht an, nennt der Hinweis den Modus.
 - Technischer Unterbau überarbeitet, zahlreiche kleinere Fehler behoben.
 
 ## [1.2.0.0] – 2026-11-08
@@ -145,6 +148,7 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 - Appearance: Setting “Show outdoor temperature in the temperature chart”.
 - The target temperature scale shows the room temperature as a marker.
 - Windows: A damaged settings file is set aside and reported at startup instead of being silently replaced with default values.
+- Updates: Settings “Install updates automatically” and “Check for updates” (daily or weekly); without automatic installation, a downloaded update is installed only after “Install now”.
 
 ### Changed
 - Main window: Mode and fan, as well as scenes and timers, each share one card.
@@ -154,6 +158,7 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 - History: Power and temperatures use the same axes and grid lines on Mac and Windows.
 - Windows: The main window follows the same rules for columns and size as on the Mac; tabs and stacked columns are gone.
 - Windows: In Fan mode, the target temperature and its scale are hidden.
+- Detailed log: The switch applies only until the app quits, and a notice shows while it is on.
 
 ### Fixed
 - History: Labels under the consumption bars and the last time under the charts were cut off.
@@ -169,6 +174,7 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 - Mini window: With the room temperature shown large but not reported, “–” appeared instead of the target temperature.
 - ⌘↑/⌘↓ (Mac) and Ctrl+↑/↓ (Windows) changed the target temperature in Fan mode.
 - Windows: The number and text in the notification area showed a target in Fan mode and rounded room temperatures ending in .5 down.
+- iECO can no longer be turned on in Fan mode and follows the capabilities of the air conditioner when cooling and heating; if the air conditioner does not accept iECO in the current mode, the notice names the mode.
 - Technical foundation reworked, numerous minor bugs fixed.
 
 ## [1.2.0.0] – 2026-11-08

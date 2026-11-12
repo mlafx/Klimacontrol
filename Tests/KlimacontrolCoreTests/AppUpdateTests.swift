@@ -54,6 +54,41 @@ final class AppUpdateTests: XCTestCase {
                        AppUpdate.feedMacBeta)
     }
 
+    func testUpdateIntervals() {
+        XCTAssertEqual(UpdateInterval.allCases, [.daily, .weekly])
+        XCTAssertEqual(UpdateInterval.daily.seconds, 86_400)
+        XCTAssertEqual(UpdateInterval.weekly.seconds, 604_800)
+        XCTAssertEqual(AppUpdate.checkInterval, UpdateInterval.daily.seconds, "Info.plist-Standard = täglich")
+        XCTAssertEqual(UpdateInterval(stored: "weekly"), .weekly)
+        for bad: Any? in [nil, "monthly", "", 7, true] {
+            XCTAssertEqual(UpdateInterval(stored: bad), .daily, String(describing: bad))
+        }
+        XCTAssertEqual(UpdateInterval.daily.rawValue, "daily")
+        XCTAssertEqual(UpdateInterval.weekly.rawValue, "weekly")
+    }
+
+    func testAutoInstallDefault() {
+        XCTAssertTrue(AppUpdate.autoInstall(stored: nil))
+        XCTAssertTrue(AppUpdate.autoInstall(stored: "nein"), "falscher Typ: Standard")
+        XCTAssertFalse(AppUpdate.autoInstall(stored: false))
+        XCTAssertTrue(AppUpdate.autoInstall(stored: true))
+    }
+
+    /// „Später“ erinnert nach 24 h; ohne automatische Installation lädt eine Suche von Hand sofort.
+    func testReminderRule() {
+        let t = Date(timeIntervalSince1970: 1_800_000_000)
+        XCTAssertEqual(AppUpdate.reminderInterval, 86_400)
+        let next = AppUpdate.nextReminder(after: t)
+        XCTAssertEqual(next, t.addingTimeInterval(86_400))
+        XCTAssertTrue(AppUpdate.reminderDue(now: t, remindAt: nil), "noch nie gefragt")
+        XCTAssertFalse(AppUpdate.reminderDue(now: t.addingTimeInterval(86_399), remindAt: next))
+        XCTAssertTrue(AppUpdate.reminderDue(now: t.addingTimeInterval(86_400), remindAt: next))
+        XCTAssertFalse(AppUpdate.offersUpdate(userInitiated: false, now: t.addingTimeInterval(3600), remindAt: next))
+        XCTAssertTrue(AppUpdate.offersUpdate(userInitiated: true, now: t.addingTimeInterval(3600), remindAt: next))
+        XCTAssertTrue(AppUpdate.offersUpdate(userInitiated: false, now: t.addingTimeInterval(90_000), remindAt: next))
+        XCTAssertTrue(AppUpdate.offersUpdate(userInitiated: false, now: t, remindAt: nil))
+    }
+
     func testBetaFallbackRule() {
         XCTAssertTrue(AppUpdate.fallsBackToStable(betaFeedUsed: true, updateFound: false, noUpdate: false))
         XCTAssertFalse(AppUpdate.fallsBackToStable(betaFeedUsed: false, updateFound: false, noUpdate: false),
@@ -76,7 +111,7 @@ final class AppUpdateTests: XCTestCase {
     }
 
     func testReleaseScriptMarksUpdatesCritical() throws {
-        XCTAssertTrue(AppUpdate.installsAutomatically)
+        XCTAssertTrue(AppUpdate.autoInstallDefault)
         let script = try String(contentsOf: root.appendingPathComponent("tools/make_release.py"), encoding: .utf8)
         XCTAssertTrue(script.contains("FIRST_AUTO_INSTALL_VERSION = \"\(AppUpdate.firstAutoInstallVersion)\""))
         let macStart = try XCTUnwrap(script.range(of: "updateinfo-mac.xml\").write_text"))

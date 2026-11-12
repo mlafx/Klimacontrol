@@ -176,25 +176,42 @@ public enum UIOptions {
     }
 
     /// Einzige Quelle für „gilt im Modus“: Eco nur Kühlen, Turbo und Außengerät leise nur Kühlen/Heizen, Frostschutz
-    /// nur Heizen. `setMode`, `setEco`, `setTurbo` und die Lüfter-Zonen benutzen dieselbe Regel.
-    public static func isAvailable(_ f: ComfortFeature, in mode: OperationalMode) -> Bool {
+    /// nur Heizen, iECO nicht beim Lüften (`iecoAvailable`). `setMode`, `setEco`, `setTurbo` und die Lüfter-Zonen
+    /// benutzen dieselbe Regel. `capabilities`: Fähigkeiten der Anlage, nil = unbekannt.
+    public static func isAvailable(_ f: ComfortFeature, in mode: OperationalMode,
+                                   capabilities: ACCapabilities? = nil) -> Bool {
         switch f {
         case .eco: return mode == .cool
         case .turbo, .outdoorSilent: return mode == .cool || mode == .heat
         case .freezeProtection: return mode == .heat
-        case .swing, .ieco, .purifier, .selfClean, .display, .sound: return true
+        case .ieco: return iecoAvailable(in: mode, capabilities: capabilities)
+        case .swing, .purifier, .selfClean, .display, .sound: return true
         }
     }
 
-    public static func availability(_ f: ComfortFeature, mode: OperationalMode) -> Availability {
-        let on = isAvailable(f, in: mode)
+    /// iECO wie in midea-ac-py (`preset_modes`): Kühlen und Trocknen nach „ieco_cool“, Heizen nach „ieco_heat“,
+    /// Auto nach einem von beiden, Lüften nie. Ohne gemeldete iECO-Fähigkeit gilt es in allen Modi außer Lüften.
+    static func iecoAvailable(in mode: OperationalMode, capabilities: ACCapabilities?) -> Bool {
+        guard mode != .fan else { return false }
+        guard let c = capabilities, c.reportsIECO else { return true }
+        switch mode {
+        case .cool, .dry: return c.iecoCool
+        case .heat: return c.iecoHeat
+        case .auto: return c.iecoCool || c.iecoHeat
+        case .fan: return false
+        }
+    }
+
+    public static func availability(_ f: ComfortFeature, mode: OperationalMode,
+                                    capabilities: ACCapabilities? = nil) -> Availability {
+        let on = isAvailable(f, in: mode, capabilities: capabilities)
         switch f {
         case .swing: return Availability(enabled: on, why: L.Availability.swing)
         case .eco: return Availability(enabled: on, why: L.Availability.eco)
         case .turbo: return Availability(enabled: on, why: on ? L.Availability.turboOn : L.Availability.turboOff)
         case .outdoorSilent:
             return Availability(enabled: on, why: on ? L.Availability.outdoorSilentOn : L.Availability.outdoorSilentOff)
-        case .ieco: return Availability(enabled: on, why: L.Availability.ieco)
+        case .ieco: return Availability(enabled: on, why: on ? L.Availability.iecoOn : L.Availability.iecoOff)
         case .purifier: return Availability(enabled: on, why: nil)
         case .freezeProtection: return Availability(enabled: on, why: L.Availability.freezeProtection)
         case .selfClean: return Availability(enabled: on, why: L.Availability.selfClean)

@@ -91,6 +91,15 @@ public enum UIText {
     public static var updatesManualFailedTitle: String { L.Updates.Manual.Failed.title }
     public static var updatesManualFailedMessage: String { L.Updates.Manual.Failed.message }
     public static var updatesCheckButton: String { L.Updates.checkButton }
+    public static var updatesAutoInstallTitle: String { L.Settings.Updates.autoInstall }
+    public static var updatesAutoInstallHelp: String { L.Settings.Updates.autoInstallHelp }
+    public static var updatesIntervalTitle: String { L.Settings.Updates.interval }
+    /// Hinweis, wenn ein geladenes Update auf „Jetzt installieren“ wartet (Updates nicht automatisch installieren).
+    public static var updatesHeldBackTitle: String { L.Updates.Mac.promptTitle }
+    public static func updatesHeldBackMessage(version: String) -> String { L.Updates.HeldBack.message(version: version) }
+    public static func updatesHeldBackStatus(version: String) -> String { L.Updates.HeldBack.status(version: version) }
+    public static var updatesInstallNow: String { L.Updates.installNow }
+    public static var updatesLater: String { L.Updates.Restart.later }
 
     // MARK: Hauptfenster (Spalten)
 
@@ -409,5 +418,14 @@ public enum UIText {
     static func split(_ text: String) -> ResultMessage {
         guard let r = text.range(of: ". ") else { return .failed(what: text) }
         return .failed(what: String(text[..<r.lowerBound]) + ".", todo: String(text[r.upperBound...]))
+    }
+}
+
+extension UpdateInterval {
+    public var title: String {
+        switch self {
+        case .daily: L.Settings.Updates.daily
+        case .weekly: L.Settings.Updates.weekly
+        }
     }
 }

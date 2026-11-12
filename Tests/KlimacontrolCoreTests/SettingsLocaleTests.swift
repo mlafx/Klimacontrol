@@ -43,6 +43,24 @@ final class SettingsLocaleTests: CoreTestCase {
         XCTAssertTrue(makeController().updateBetaChannel)
     }
 
+    func testUpdateSettings() {
+        let c = makeController()
+        XCTAssertTrue(c.updateAutoInstall, "Standard: automatisch installieren")
+        XCTAssertEqual(c.updateInterval, .daily)
+        XCTAssertNil(settings.values["updateAutoInstall"])
+        c.updateAutoInstall = false
+        c.updateInterval = .weekly
+        XCTAssertEqual(settings.values["updateAutoInstall"] as? Bool, false)
+        XCTAssertEqual(settings.values["updateInterval"] as? String, "weekly")
+        let again = makeController()
+        XCTAssertFalse(again.updateAutoInstall)
+        XCTAssertEqual(again.updateInterval, .weekly)
+        settings.values["updateInterval"] = "monthly"
+        XCTAssertEqual(makeController().updateInterval, .daily)
+        XCTAssertEqual(SettingsKey.updateAutoInstall, "updateAutoInstall")
+        XCTAssertEqual(SettingsKey.updateInterval, "updateInterval")
+    }
+
     func testPriceLimit() {
         XCTAssertEqual(UIOptions.priceMax, 1000)
         XCTAssertEqual(ACController.validPrice(1000), 1000)

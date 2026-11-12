@@ -16,6 +16,7 @@
     "connectionModes": [["auto", "Automatisch (WLAN zuerst)"], ["lan", "Nur WLAN"], ["cloud", "Nur Cloud (unterwegs)"]],
     "costPerHour": 0.12,
     "debugLog": false,
+    "debugLogNotice": null,
     "deviceId": "111122223333444",
     "deviceIdentifier": "PortaSplit",
     "deviceName": "Wohnzimmer",
@@ -132,7 +133,9 @@
                    "menuBarText": "roomTarget", "menuBarColored": true, "menuBarAnimated": true,
                    "temperatureCombined": true},
     "updateFeedURL": "https://github.com/mlafx/Klimacontrol/releases/latest/download/updateinfo-win.xml",
-    "updateCheckInterval": 86400,
+    "updateCheckInterval": 604800,
+    "updateAutoInstall": false,
+    "updateInterval": "weekly",
     "options": {
       "temperature": {"min": 16, "max": 30},
       "refresh": {"choices": [{"label": "5 Sekunden", "seconds": 5}, {"label": "30 Sekunden", "seconds": 30}],
@@ -195,7 +198,15 @@
                 "updatesChecking": "Suche nach Updates …", "updatesCurrent": "Klimacontrol ist auf dem neuesten Stand.",
                 "updatesInstallingTemplate": "Version {version} wird geladen und installiert. Klimacontrol startet danach neu.",
                 "updatesFailed": "Die Suche nach Updates hat nicht geklappt. Später erneut versuchen.",
-                "updatesCheckButton": "Jetzt suchen …"}
+                "updatesCheckButton": "Jetzt suchen …"},
+      "updates": {"autoInstallTitle": "Updates automatisch installieren",
+                  "autoInstallHelp": "Aus: Ein geladenes Update wird erst installiert, wenn du „Jetzt installieren“ wählst. Klimacontrol erinnert alle 24 Stunden daran.",
+                  "intervalTitle": "Nach Updates suchen",
+                  "intervals": [{"id": "daily", "label": "Täglich", "help": ""}, {"id": "weekly", "label": "Wöchentlich", "help": ""}],
+                  "heldBackTitle": "Update bereit",
+                  "heldBackMessageTemplate": "Klimacontrol {version} ist geladen. Zum Installieren startet die App kurz neu. Mit „Später“ erinnert Klimacontrol in 24 Stunden erneut.",
+                  "heldBackStatusTemplate": "Version {version} ist verfügbar und wird nur nach „Jetzt installieren“ installiert.",
+                  "installNow": "Jetzt installieren", "later": "Später", "reminderSeconds": 86400}
     },
     "availability": {
       "fan": {"enabled": false, "why": "Beim Trocknen regelt die Anlage den Lüfter selbst."},

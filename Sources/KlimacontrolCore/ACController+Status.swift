@@ -33,6 +33,17 @@ extension ACController {
         return error is MideaCloud.CloudError
     }
 
+    /// Ausführliches Protokoll für diese Sitzung ein- oder ausschalten und das Umschalten selbst protokollieren.
+    public func setDetailedLog(_ on: Bool) {
+        guard on != detailedLog || on != AppLog.debugEnabled else { return }
+        AppLog.debugEnabled = on
+        detailedLog = on
+        AppLog.write(L.Log.Settings.detailedLog(state: on ? L.Log.Common.on : L.Log.Common.off))
+    }
+
+    /// Dezenter Dauerhinweis, solange das ausführliche Protokoll an ist; nil sonst.
+    public var detailedLogNotice: String? { detailedLog ? L.Main.DetailedLog.notice : nil }
+
     /// Verbindungsfehler setzen: Text und Teile der Meldung, Fehlerfarbe für Punkt und Symbol.
     func showConnectionError(_ m: UserMessage, deviceOff: Bool = false) {
         message = m.text

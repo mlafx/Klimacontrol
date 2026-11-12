@@ -27,7 +27,6 @@ import Observation
 
 /// Ergebnisse der Bridge-Befehle, die nicht im Kern stehen. `setup` teilen sich `setupConnect` und `manualConnect`.
 @MainActor @Observable final class BridgeResults {
-    var debugLog = false
     let login = BridgeJob<String?>(nil)
     let setup = BridgeJob(false)
     /// true = Anlage gefunden und erreichbar; der Grund bei Misserfolg steht in `notice`.

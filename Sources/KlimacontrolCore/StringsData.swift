@@ -905,20 +905,38 @@ extension StringsData {
         }
       }
     },
-    "availability.ieco" : {
-      "comment" : "Kurzinfo iECO",
+    "availability.iecoOff" : {
+      "comment" : "Kurzinfo iECO, im aktuellen Modus gesperrt (z. B. Lüften)",
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iECO = Sparprogramm der Anlage, begrenzt die Leistungsaufnahme in jedem Modus (Eco oben gilt nur beim Kühlen)"
+            "value" : "iECO gibt es in diesem Modus nicht"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iECO is the energy-saving program of the air conditioner. It limits the power draw in every mode (Eco above only applies when cooling)."
+            "value" : "iECO is not available in this mode"
+          }
+        }
+      }
+    },
+    "availability.iecoOn" : {
+      "comment" : "Kurzinfo iECO, im aktuellen Modus verfügbar",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iECO = Sparprogramm der Anlage, begrenzt die Leistungsaufnahme (Eco oben gilt nur beim Kühlen)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iECO is the energy-saving program of the air conditioner. It limits the power draw (Eco above only applies when cooling)."
           }
         }
       }
@@ -1261,6 +1279,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "name of the window"
+          }
+        }
+      }
+    },
+    "bridge.expect.updateInterval" : {
+      "comment" : "Bridge: erwarteter Typ eines Parameters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„daily“ oder „weekly“"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“daily” or “weekly”"
           }
         }
       }
@@ -9659,6 +9695,42 @@ extension StringsData {
         }
       }
     },
+    "log.device.capabilities" : {
+      "comment" : "Protokoll: gelesene Fähigkeiten (0xB5) als hex-Liste",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fähigkeiten der Anlage (iECO {ieco}/{end}, Nummer {number}): {list}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner capabilities (iECO {ieco}/{end}, number {number}): {list}"
+          }
+        }
+      }
+    },
+    "log.device.capabilitiesNone" : {
+      "comment" : "Protokoll: Fähigkeiten-Abfrage ohne Antwort",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fähigkeiten der Anlage: keine Antwort"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner capabilities: no response"
+          }
+        }
+      }
+    },
     "log.device.configUnreadable" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -11297,6 +11369,42 @@ extension StringsData {
         }
       }
     },
+    "log.settings.updateAutoInstall" : {
+      "comment" : "Protokollzeile beim Umschalten.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates automatisch installieren: {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install updates automatically: {state}"
+          }
+        }
+      }
+    },
+    "log.settings.updateInterval" : {
+      "comment" : "Protokollzeile beim Ändern des Suchintervalls.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach Updates suchen: {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check for updates: {value}"
+          }
+        }
+      }
+    },
     "log.settings.windowVisible" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -11819,6 +11927,24 @@ extension StringsData {
         }
       }
     },
+    "log.updates.deferred" : {
+      "comment" : "Protokollzeile, wenn die 24-Stunden-Erinnerung noch nicht fällig ist.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: Version {version} gefunden, Hinweis erst nach der Erinnerung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: version {version} found, notice only after the reminder"
+          }
+        }
+      }
+    },
     "log.updates.downloaded" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -11855,6 +11981,24 @@ extension StringsData {
         }
       }
     },
+    "log.updates.heldBack" : {
+      "comment" : "Protokollzeile, wenn Updates nicht automatisch installiert werden.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: Version {version} geladen, Installation erst nach Bestätigung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: version {version} downloaded, installed only after confirmation"
+          }
+        }
+      }
+    },
     "log.updates.installNow" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -11887,6 +12031,42 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Updates: reminder in 24 h"
+          }
+        }
+      }
+    },
+    "log.updates.settings" : {
+      "comment" : "Protokollzeile beim Start und nach Änderungen der Update-Einstellungen (Mac).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: automatisch installieren {state}, Suche {interval}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: install automatically {state}, check {interval}"
+          }
+        }
+      }
+    },
+    "log.updates.withdrawn" : {
+      "comment" : "Protokollzeile nach Später oder vor dem Beenden, wenn Updates nicht automatisch installiert werden.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: vorbereitete Installation von Version {version} zurückgenommen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: prepared installation of version {version} withdrawn"
           }
         }
       }
@@ -12427,6 +12607,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "{text}; state unknown"
+          }
+        }
+      }
+    },
+    "main.detailedLog.notice" : {
+      "comment" : "Dezenter Hinweis im Hauptfenster (Mac), solange das ausführliche Protokoll in dieser Sitzung an ist.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausführliches Protokoll aktiv"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detailed log on"
           }
         }
       }
@@ -15379,6 +15577,42 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "The connection dropped after sending, so it is unclear whether the change arrived."
+          }
+        }
+      }
+    },
+    "message.device.switchNotApplied.todo" : {
+      "comment" : "Hinweis: Schalter im aktuellen Modus nicht übernommen (was tun)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In diesem Modus nimmt die Anlage den Schalter nicht an. Wähle einen anderen Modus und versuche es erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner does not accept this switch in this mode. Choose another mode and try again."
+          }
+        }
+      }
+    },
+    "message.device.switchNotApplied.what" : {
+      "comment" : "Hinweis: Schalter im aktuellen Modus nicht übernommen (was); feature = Name des Schalters, mode = Modus",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage hat „{feature}“ im Modus „{mode}“ nicht übernommen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner did not apply “{feature}” in “{mode}” mode."
           }
         }
       }
@@ -22253,6 +22487,24 @@ extension StringsData {
         }
       }
     },
+    "settings.log.detailed.scope" : {
+      "comment" : "Einstellungen, Reiter Protokoll: Satz unter dem Schalter Ausführliches Protokoll (Umfang und Dauer).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schreibt zusätzlich Rahmen in Hex, Suche und Cloud-Anfragen; Passwörter, Token und Schlüssel werden geschwärzt. Gilt bis zum Beenden der App."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Also writes frames in hex, search and cloud requests; passwords, tokens and keys are redacted. Applies until you quit the app."
+          }
+        }
+      }
+    },
     "settings.log.detailed.title" : {
       "comment" : "Protokoll: Schalter",
       "extractionState" : "manual",
@@ -22559,6 +22811,42 @@ extension StringsData {
         }
       }
     },
+    "settings.updates.autoInstall" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Schalter (Mac und Windows).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates automatisch installieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install updates automatically"
+          }
+        }
+      }
+    },
+    "settings.updates.autoInstallHelp" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Kurzinfo zum Schalter Updates automatisch installieren.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus: Ein geladenes Update wird erst installiert, wenn du „Jetzt installieren“ wählst. Klimacontrol erinnert alle 24 Stunden daran."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off: a downloaded update is installed only after you choose “Install now”. Klimacontrol reminds you every 24 hours."
+          }
+        }
+      }
+    },
     "settings.updates.betaChannel" : {
       "comment" : "Mac: Einstellungen → Allgemein → Updates, Schalter",
       "extractionState" : "manual",
@@ -22573,6 +22861,60 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Receive pre-release (beta) versions"
+          }
+        }
+      }
+    },
+    "settings.updates.daily" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Auswahl Nach Updates suchen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Täglich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily"
+          }
+        }
+      }
+    },
+    "settings.updates.interval" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Beschriftung der Auswahl täglich/wöchentlich.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach Updates suchen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check for updates"
+          }
+        }
+      }
+    },
+    "settings.updates.weekly" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Auswahl Nach Updates suchen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wöchentlich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly"
           }
         }
       }
@@ -26231,6 +26573,60 @@ extension StringsData {
         }
       }
     },
+    "updates.heldBack.message" : {
+      "comment" : "Hinweis Update bereit, wenn Updates nicht automatisch installiert werden.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} ist geladen. Zum Installieren startet die App kurz neu. Mit „Später“ erinnert Klimacontrol in 24 Stunden erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} has been downloaded. The app restarts briefly to install it. With “Later”, Klimacontrol reminds you again in 24 hours."
+          }
+        }
+      }
+    },
+    "updates.heldBack.status" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Zeile unter dem Knopf, wenn ein Update auf Bestätigung wartet.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version {version} ist verfügbar und wird nur nach „Jetzt installieren“ installiert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version {version} is available and is installed only after you choose “Install now”."
+          }
+        }
+      }
+    },
+    "updates.installNow" : {
+      "comment" : "Knopf im Hinweis Update bereit, wenn Updates nicht automatisch installiert werden.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt installieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install now"
+          }
+        }
+      }
+    },
     "updates.installing" : {
       "comment" : "Status: Update wird installiert; version = Versionsnummer",
       "extractionState" : "manual",
@@ -26629,7 +27025,8 @@ extension StringsData {
         "availability.display",
         "availability.eco",
         "availability.freezeProtection",
-        "availability.ieco",
+        "availability.iecoOff",
+        "availability.iecoOn",
         "availability.outdoorSilentOff",
         "availability.outdoorSilentOn",
         "availability.selfClean",
@@ -26649,6 +27046,7 @@ extension StringsData {
         "bridge.expect.text",
         "bridge.expect.theme",
         "bridge.expect.uiName",
+        "bridge.expect.updateInterval",
         "bridge.exportFailed",
         "bridge.fanUnknown",
         "bridge.fanUnknownTodo",
@@ -27110,6 +27508,8 @@ extension StringsData {
         "log.common.on",
         "log.core.started",
         "log.core.startedNoDevice",
+        "log.device.capabilities",
+        "log.device.capabilitiesNone",
         "log.device.configUnreadable",
         "log.device.displayGaveUp",
         "log.device.displayRetry",
@@ -27201,6 +27601,8 @@ extension StringsData {
         "log.settings.languageAfterRestart",
         "log.settings.refresh",
         "log.settings.unreadable",
+        "log.settings.updateAutoInstall",
+        "log.settings.updateInterval",
         "log.settings.windowVisible",
         "log.stateLine.diagnostics",
         "log.stateLine.line",
@@ -27230,10 +27632,14 @@ extension StringsData {
         "log.updates.automatic",
         "log.updates.betaChannel",
         "log.updates.betaFallback",
+        "log.updates.deferred",
         "log.updates.downloaded",
         "log.updates.found",
+        "log.updates.heldBack",
         "log.updates.installNow",
         "log.updates.remind",
+        "log.updates.settings",
+        "log.updates.withdrawn",
         "log.windows.autostartNotUpdated",
         "log.windows.cleanupFailed",
         "log.windows.commandFailed",
@@ -27264,6 +27670,7 @@ extension StringsData {
         "main.comfort.sound",
         "main.comfort.swing",
         "main.comfort.unknownSuffix",
+        "main.detailedLog.notice",
         "main.fan.percentLabel",
         "main.fan.percentWord",
         "main.footer.diagnostics",
@@ -27428,6 +27835,8 @@ extension StringsData {
         "message.device.off.what",
         "message.device.outcomeUnknown.todo",
         "message.device.outcomeUnknown.what",
+        "message.device.switchNotApplied.todo",
+        "message.device.switchNotApplied.what",
         "message.device.timeout.todo",
         "message.device.timeout.what",
         "message.device.tryAgain",
@@ -27807,6 +28216,7 @@ extension StringsData {
         "settings.log.clear.title",
         "settings.log.detailed.off",
         "settings.log.detailed.on",
+        "settings.log.detailed.scope",
         "settings.log.detailed.title",
         "settings.log.empty",
         "settings.log.eventsOnly.help",
@@ -27824,7 +28234,12 @@ extension StringsData {
         "settings.tabs.general",
         "settings.tabs.log",
         "settings.tabs.notices",
+        "settings.updates.autoInstall",
+        "settings.updates.autoInstallHelp",
         "settings.updates.betaChannel",
+        "settings.updates.daily",
+        "settings.updates.interval",
+        "settings.updates.weekly",
         "settings.windows.notApplied",
         "setup.busy",
         "setup.cloud.applianceOffline",
@@ -28028,6 +28443,9 @@ extension StringsData {
         "updates.checking",
         "updates.current",
         "updates.failed",
+        "updates.heldBack.message",
+        "updates.heldBack.status",
+        "updates.installNow",
         "updates.installing",
         "updates.mac.betaHelp",
         "updates.mac.downloading",
@@ -28101,7 +28519,8 @@ extension StringsData {
         "availability.display": [],
         "availability.eco": [],
         "availability.freezeProtection": [],
-        "availability.ieco": [],
+        "availability.iecoOff": [],
+        "availability.iecoOn": [],
         "availability.outdoorSilentOff": [],
         "availability.outdoorSilentOn": [],
         "availability.selfClean": [],
@@ -28121,6 +28540,7 @@ extension StringsData {
         "bridge.expect.text": [],
         "bridge.expect.theme": [],
         "bridge.expect.uiName": [],
+        "bridge.expect.updateInterval": [],
         "bridge.exportFailed": [],
         "bridge.fanUnknown": [],
         "bridge.fanUnknownTodo": [],
@@ -28582,6 +29002,8 @@ extension StringsData {
         "log.common.on": [],
         "log.core.started": ["version", "name", "ip"],
         "log.core.startedNoDevice": ["version"],
+        "log.device.capabilities": ["ieco", "end", "number", "list"],
+        "log.device.capabilitiesNone": [],
         "log.device.configUnreadable": ["file", "error", "aside"],
         "log.device.displayGaveUp": [],
         "log.device.displayRetry": [],
@@ -28673,6 +29095,8 @@ extension StringsData {
         "log.settings.languageAfterRestart": ["value"],
         "log.settings.refresh": ["seconds"],
         "log.settings.unreadable": ["file", "error"],
+        "log.settings.updateAutoInstall": ["state"],
+        "log.settings.updateInterval": ["value"],
         "log.settings.windowVisible": [],
         "log.stateLine.diagnostics": ["hz", "targetHz", "watts", "amps", "volts", "t1", "t2", "t3", "t4", "tp", "eev", "indoorFan", "outdoorFan"],
         "log.stateLine.line": ["power", "mode", "target", "indoor", "outdoor", "fan", "watts", "rate"],
@@ -28702,10 +29126,14 @@ extension StringsData {
         "log.updates.automatic": ["state", "feed"],
         "log.updates.betaChannel": ["state"],
         "log.updates.betaFallback": ["error"],
+        "log.updates.deferred": ["version"],
         "log.updates.downloaded": ["version"],
         "log.updates.found": ["version"],
+        "log.updates.heldBack": ["version"],
         "log.updates.installNow": ["version"],
         "log.updates.remind": [],
+        "log.updates.settings": ["state", "interval"],
+        "log.updates.withdrawn": ["version"],
         "log.windows.autostartNotUpdated": [],
         "log.windows.cleanupFailed": [],
         "log.windows.commandFailed": [],
@@ -28736,6 +29164,7 @@ extension StringsData {
         "main.comfort.sound": [],
         "main.comfort.swing": [],
         "main.comfort.unknownSuffix": ["text"],
+        "main.detailedLog.notice": [],
         "main.fan.percentLabel": [],
         "main.fan.percentWord": [],
         "main.footer.diagnostics": [],
@@ -28900,6 +29329,8 @@ extension StringsData {
         "message.device.off.what": [],
         "message.device.outcomeUnknown.todo": [],
         "message.device.outcomeUnknown.what": [],
+        "message.device.switchNotApplied.todo": [],
+        "message.device.switchNotApplied.what": ["feature", "mode"],
         "message.device.timeout.todo": [],
         "message.device.timeout.what": [],
         "message.device.tryAgain": [],
@@ -29279,6 +29710,7 @@ extension StringsData {
         "settings.log.clear.title": [],
         "settings.log.detailed.off": [],
         "settings.log.detailed.on": [],
+        "settings.log.detailed.scope": [],
         "settings.log.detailed.title": [],
         "settings.log.empty": [],
         "settings.log.eventsOnly.help": [],
@@ -29296,7 +29728,12 @@ extension StringsData {
         "settings.tabs.general": [],
         "settings.tabs.log": [],
         "settings.tabs.notices": [],
+        "settings.updates.autoInstall": [],
+        "settings.updates.autoInstallHelp": [],
         "settings.updates.betaChannel": [],
+        "settings.updates.daily": [],
+        "settings.updates.interval": [],
+        "settings.updates.weekly": [],
         "settings.windows.notApplied": [],
         "setup.busy": [],
         "setup.cloud.applianceOffline": [],
@@ -29500,6 +29937,9 @@ extension StringsData {
         "updates.checking": [],
         "updates.current": [],
         "updates.failed": [],
+        "updates.heldBack.message": ["version"],
+        "updates.heldBack.status": ["version"],
+        "updates.installNow": [],
         "updates.installing": ["version"],
         "updates.mac.betaHelp": [],
         "updates.mac.downloading": ["version"],
@@ -29655,8 +30095,10 @@ public enum L {
         public static var eco: String { Localizer.text("availability.eco") }
         /// Keeps 8 °C; heating mode only
         public static var freezeProtection: String { Localizer.text("availability.freezeProtection") }
-        /// iECO is the energy-saving program of the air conditioner. It limits the power draw in every mode (E…
-        public static var ieco: String { Localizer.text("availability.ieco") }
+        /// iECO is not available in this mode
+        public static var iecoOff: String { Localizer.text("availability.iecoOff") }
+        /// iECO is the energy-saving program of the air conditioner. It limits the power draw (Eco above only …
+        public static var iecoOn: String { Localizer.text("availability.iecoOn") }
         /// Quiet outdoor unit only works when cooling and heating
         public static var outdoorSilentOff: String { Localizer.text("availability.outdoorSilentOff") }
         /// Compressor and outdoor fan are throttled; the fan level stays. Far left on the fan control: also 1 …
@@ -29698,6 +30140,8 @@ public enum L {
             public static var theme: String { Localizer.text("bridge.expect.theme") }
             /// name of the window
             public static var uiName: String { Localizer.text("bridge.expect.uiName") }
+            /// “daily” or “weekly”
+            public static var updateInterval: String { Localizer.text("bridge.expect.updateInterval") }
         }
         /// The history could not be saved.
         public static var exportFailed: String { Localizer.text("bridge.exportFailed") }
@@ -30760,6 +31204,10 @@ public enum L {
             public static func startedNoDevice(version: String) -> String { Localizer.text("log.core.startedNoDevice", ["version": version]) }
         }
         public enum Device {
+            /// Air conditioner capabilities (iECO {ieco}/{end}, number {number}): {list}
+            public static func capabilities(ieco: String, end: String, number: String, list: String) -> String { Localizer.text("log.device.capabilities", ["ieco": ieco, "end": end, "number": number, "list": list]) }
+            /// Air conditioner capabilities: no response
+            public static var capabilitiesNone: String { Localizer.text("log.device.capabilitiesNone") }
             /// {file} unreadable ({error}) – set aside as {aside}
             public static func configUnreadable(file: String, error: String, aside: String) -> String { Localizer.text("log.device.configUnreadable", ["file": file, "error": error, "aside": aside]) }
             /// Display toggle not applied – giving up
@@ -30974,6 +31422,10 @@ public enum L {
             public static func refresh(seconds: String) -> String { Localizer.text("log.settings.refresh", ["seconds": seconds]) }
             /// Settings file {file} not readable ({error}) – left unchanged
             public static func unreadable(file: String, error: String) -> String { Localizer.text("log.settings.unreadable", ["file": file, "error": error]) }
+            /// Install updates automatically: {state}
+            public static func updateAutoInstall(state: String) -> String { Localizer.text("log.settings.updateAutoInstall", ["state": state]) }
+            /// Check for updates: {value}
+            public static func updateInterval(value: String) -> String { Localizer.text("log.settings.updateInterval", ["value": value]) }
             /// Window visible
             public static var windowVisible: String { Localizer.text("log.settings.windowVisible") }
         }
@@ -31042,14 +31494,22 @@ public enum L {
             public static func betaChannel(state: String) -> String { Localizer.text("log.updates.betaChannel", ["state": state]) }
             /// Beta channel not reachable ({error}) – checking the stable channel
             public static func betaFallback(error: String) -> String { Localizer.text("log.updates.betaFallback", ["error": error]) }
+            /// Updates: version {version} found, notice only after the reminder
+            public static func deferred(version: String) -> String { Localizer.text("log.updates.deferred", ["version": version]) }
             /// Updates: version {version} downloaded, waiting for restart or quit
             public static func downloaded(version: String) -> String { Localizer.text("log.updates.downloaded", ["version": version]) }
             /// Updates: version {version} found
             public static func found(version: String) -> String { Localizer.text("log.updates.found", ["version": version]) }
+            /// Updates: version {version} downloaded, installed only after confirmation
+            public static func heldBack(version: String) -> String { Localizer.text("log.updates.heldBack", ["version": version]) }
             /// Updates: installing version {version} now at your request
             public static func installNow(version: String) -> String { Localizer.text("log.updates.installNow", ["version": version]) }
             /// Updates: reminder in 24 h
             public static var remind: String { Localizer.text("log.updates.remind") }
+            /// Updates: install automatically {state}, check {interval}
+            public static func settings(state: String, interval: String) -> String { Localizer.text("log.updates.settings", ["state": state, "interval": interval]) }
+            /// Updates: prepared installation of version {version} withdrawn
+            public static func withdrawn(version: String) -> String { Localizer.text("log.updates.withdrawn", ["version": version]) }
         }
         public enum Windows {
             /// Start with Windows: entry not updated
@@ -31118,6 +31578,10 @@ public enum L {
             public static var swing: String { Localizer.text("main.comfort.swing") }
             /// {text}; state unknown
             public static func unknownSuffix(text: String) -> String { Localizer.text("main.comfort.unknownSuffix", ["text": text]) }
+        }
+        public enum DetailedLog {
+            /// Detailed log on
+            public static var notice: String { Localizer.text("main.detailedLog.notice") }
         }
         public enum Fan {
             /// Fan speed in percent
@@ -31543,6 +32007,12 @@ public enum L {
                 public static var todo: String { Localizer.text("message.device.outcomeUnknown.todo") }
                 /// The connection dropped after sending, so it is unclear whether the change arrived.
                 public static var what: String { Localizer.text("message.device.outcomeUnknown.what") }
+            }
+            public enum SwitchNotApplied {
+                /// The air conditioner does not accept this switch in this mode. Choose another mode and try again.
+                public static var todo: String { Localizer.text("message.device.switchNotApplied.todo") }
+                /// The air conditioner did not apply “{feature}” in “{mode}” mode.
+                public static func what(feature: String, mode: String) -> String { Localizer.text("message.device.switchNotApplied.what", ["feature": feature, "mode": mode]) }
             }
             public enum Timeout {
                 /// Check that it has power and is connected to Wi-Fi. Klimacontrol keeps trying.
@@ -32519,6 +32989,8 @@ public enum L {
                 public static var off: String { Localizer.text("settings.log.detailed.off") }
                 /// On: also records every message to the air conditioner and to Midea. Large; the file starts over eve…
                 public static var on: String { Localizer.text("settings.log.detailed.on") }
+                /// Also writes frames in hex, search and cloud requests; passwords, tokens and keys are redacted. Appl…
+                public static var scope: String { Localizer.text("settings.log.detailed.scope") }
                 /// Detailed log
                 public static var title: String { Localizer.text("settings.log.detailed.title") }
             }
@@ -32566,8 +33038,18 @@ public enum L {
             public static var notices: String { Localizer.text("settings.tabs.notices") }
         }
         public enum Updates {
+            /// Install updates automatically
+            public static var autoInstall: String { Localizer.text("settings.updates.autoInstall") }
+            /// Off: a downloaded update is installed only after you choose “Install now”. Klimacontrol reminds you…
+            public static var autoInstallHelp: String { Localizer.text("settings.updates.autoInstallHelp") }
             /// Receive pre-release (beta) versions
             public static var betaChannel: String { Localizer.text("settings.updates.betaChannel") }
+            /// Daily
+            public static var daily: String { Localizer.text("settings.updates.daily") }
+            /// Check for updates
+            public static var interval: String { Localizer.text("settings.updates.interval") }
+            /// Weekly
+            public static var weekly: String { Localizer.text("settings.updates.weekly") }
         }
         public enum Windows {
             /// Not applied
@@ -33051,6 +33533,14 @@ public enum L {
         public static var current: String { Localizer.text("updates.current") }
         /// Checking for updates failed. Try again later.
         public static var failed: String { Localizer.text("updates.failed") }
+        public enum HeldBack {
+            /// Klimacontrol {version} has been downloaded. The app restarts briefly to install it. With “Later”, K…
+            public static func message(version: String) -> String { Localizer.text("updates.heldBack.message", ["version": version]) }
+            /// Version {version} is available and is installed only after you choose “Install now”.
+            public static func status(version: String) -> String { Localizer.text("updates.heldBack.status", ["version": version]) }
+        }
+        /// Install now
+        public static var installNow: String { Localizer.text("updates.installNow") }
         /// Downloading and installing version {version}. Klimacontrol restarts afterward.
         public static func installing(version: String) -> String { Localizer.text("updates.installing", ["version": version]) }
         public enum Mac {

@@ -200,6 +200,38 @@ final class KlimacontrolCoreTests: CoreTestCase {
         XCTAssertFalse(c.lastRefreshFailed)
     }
 
+    func testIECONotAppliedNamesTheMode() async throws {
+        fake.current.power = true
+        fake.current.mode = .heat
+        fake.current.ieco = false
+        fake.acceptIECO = false
+        let c = try await makeConnected()
+        c.setIECO(true)
+        try await waitUntil("Hinweis zu iECO") { c.notice != nil }
+        XCTAssertEqual(c.notice, "Die Anlage hat „iECO“ im Modus „Heizen“ nicht übernommen. In diesem Modus nimmt die "
+                       + "Anlage den Schalter nicht an. Wähle einen anderen Modus und versuche es erneut. (not-in-mode)")
+        XCTAssertEqual(c.state?.ieco, false, "zeigt den echten Stand")
+        XCTAssertEqual(fake.commands, ["ieco an"])
+        XCTAssertNil(c.message)
+    }
+
+    func testCapabilitiesAreReadOnceAndGateIECO() async throws {
+        fake.current.power = true
+        fake.current.mode = .heat
+        fake.capabilities = ACCapabilities(raw: [0x00E3: [1]])   // iECO nur beim Kühlen
+        let c = try await makeConnected()
+        XCTAssertEqual(fake.capabilityReads, 1)
+        XCTAssertEqual(c.state?.capabilities?.iecoCool, true)
+        XCTAssertFalse(c.availability(.ieco).enabled, "Heizen ohne ieco_heat")
+        await c.refresh()
+        XCTAssertEqual(fake.capabilityReads, 1, "nur einmal je Anlage")
+        var s = try XCTUnwrap(c.state)
+        s.mode = .cool
+        c.state = s
+        XCTAssertTrue(c.availability(.ieco).enabled)
+        XCTAssertTrue(fake.commands.isEmpty, "nur gelesen, nichts gestellt")
+    }
+
     func testNoticeDisappearsByItselfOrWithTheNextCommand() async throws {
         let c = try await makeConnected()
         c.noticeSeconds = 0.2

@@ -148,10 +148,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// Ein gestellter Timer würde mit dem Beenden still verfallen – vorher fragen.
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        if AppRestart.skipQuitPrompt { return .terminateNow }
-        guard let prompt = model?.quitPrompt() else { return .terminateNow }
-        NSApp.activate()
-        return runConfirm(prompt) ? .terminateNow : .terminateCancel
+        if !AppRestart.skipQuitPrompt, let prompt = model?.quitPrompt() {
+            NSApp.activate()
+            if !runConfirm(prompt) { return .terminateCancel }
+        }
+        // Ohne automatische Installation: Die Absage an den Installer muss ankommen, bevor die App endet.
+        if AppUpdater.shared.withdrawHeldInstallBeforeQuit() {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { NSApp.reply(toApplicationShouldTerminate: true) }
+            return .terminateLater
+        }
+        return .terminateNow
     }
 }
 

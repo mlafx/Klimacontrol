@@ -10,10 +10,12 @@ struct LogSettings: View {
     /// Neuaufbau ausgewertet).
     @State private var raw: String?
     @State private var text: String?
-    @State private var debug = AppLog.debugEnabled
+    @Environment(ACController.self) private var model
     @AppStorage(SettingsKey.logEventsOnly) private var eventsOnly = true
     @State private var confirmClear = false
     @State private var watch = LogWatch()
+
+    private var debug: Bool { model.detailedLog }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -28,8 +30,7 @@ struct LogSettings: View {
             .background(RoundedRectangle(cornerRadius: 8).fill(.quaternary.opacity(0.4)))
             VStack(alignment: .leading, spacing: 3) {
                 HStack {
-                    Toggle(L.Settings.Log.Detailed.title, isOn: $debug)
-                        .onChange(of: debug) { _, v in AppLog.debugEnabled = v; AppLog.write(L.Log.Settings.detailedLog(state: v ? L.Log.Common.on : L.Log.Common.off)) }
+                    Toggle(L.Settings.Log.Detailed.title, isOn: Binding(get: { model.detailedLog }, set: { model.setDetailedLog($0) }))
                     // Ohne Debug gibt es keine DEBUG-Zeilen zum Ausblenden.
                     Toggle(L.Settings.Log.EventsOnly.title, isOn: $eventsOnly)
                         .disabled(!debug)
@@ -38,11 +39,10 @@ struct LogSettings: View {
                     Spacer()
                     Text(L.Settings.Log.legend).font(.caption).foregroundStyle(.secondary)
                 }
-                // Standard aus: Das normale Protokoll reicht für die Fehlersuche über Tage; Debug füllt die 5 MB in
-                // wenigen Stunden und überschreibt dann die älteren Einträge.
-                Text(debug
-                     ? L.Settings.Log.Detailed.on
-                     : L.Settings.Log.Detailed.off)
+                if debug {
+                    Label(L.Main.DetailedLog.notice, systemImage: "doc.text.magnifyingglass").font(.caption.weight(.medium))
+                }
+                Text(L.Settings.Log.Detailed.scope)
                     .font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
             }
             HStack {

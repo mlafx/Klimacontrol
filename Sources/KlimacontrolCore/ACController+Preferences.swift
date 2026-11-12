@@ -95,6 +95,28 @@ extension ACController {
         }
     }
 
+    /// Geladene Updates ohne Rückfrage installieren (Standard an).
+    public var updateAutoInstall: Bool {
+        get { storedUpdateAutoInstall }
+        set {
+            guard newValue != storedUpdateAutoInstall else { return }
+            storedUpdateAutoInstall = newValue
+            settings.set(newValue, forKey: SettingsKey.updateAutoInstall)
+            AppLog.write(L.Log.Settings.updateAutoInstall(state: newValue ? L.Log.Common.on : L.Log.Common.off))
+        }
+    }
+
+    /// „Nach Updates suchen“: täglich oder wöchentlich.
+    public var updateInterval: UpdateInterval {
+        get { storedUpdateInterval }
+        set {
+            guard newValue != storedUpdateInterval else { return }
+            storedUpdateInterval = newValue
+            settings.set(newValue.rawValue, forKey: SettingsKey.updateInterval)
+            AppLog.write(L.Log.Settings.updateInterval(value: newValue.title))
+        }
+    }
+
     /// Weg zur Anlage: Automatisch (WLAN → Cloud), Nur WLAN, Nur Cloud.
     public var connectionMode: ConnectionMode {
         get { storedMode }

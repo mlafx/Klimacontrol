@@ -45,6 +45,8 @@ public static class Cmd
     public const string Currency = "currency";
     public const string DebugLog = "debugLog";
     public const string HistoryCsv = "historyCSV";
+    public const string UpdateAutoInstall = "updateAutoInstall";
+    public const string UpdateInterval = "updateInterval";
     public const string DiagnosticsVisible = "diagnosticsVisible";
     public const string UiVisible = "uiVisible";
 

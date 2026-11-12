@@ -211,7 +211,7 @@ extension ACController {
 
     /// Gültigkeit der Schalter im aktuellen Modus (ohne Zustand wie im Standardmodus).
     public func availability(_ f: UIOptions.ComfortFeature) -> UIOptions.Availability {
-        UIOptions.availability(f, mode: state?.mode ?? ACState().mode)
+        UIOptions.availability(f, mode: state?.mode ?? ACState().mode, capabilities: state?.capabilities)
     }
 
     /// Die Darstellung entspricht `Appearance.standard` dieser Plattform („Auf Standard zurücksetzen“ ausgegraut).

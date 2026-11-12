@@ -110,7 +110,6 @@ public func kc_init(_ version: UnsafePointer<CChar>?) {
         #else
         controller = ACController(appVersion: appVersion)
         #endif
-        results.debugLog = AppLog.debugEnabled
         stateRev += 1
         track()
     }

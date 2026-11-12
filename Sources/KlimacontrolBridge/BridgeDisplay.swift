@@ -233,6 +233,15 @@ struct OptionsDTO: Encodable {
         var updatesHelp, updatesChecking, updatesCurrent, updatesInstallingTemplate, updatesFailed, updatesCheckButton: String
     }
 
+    /// Einstellungen → Allgemein → Updates und Hinweis „Update bereit · Jetzt installieren · Später“
+    /// (Updates nicht automatisch installieren). Vorlagen mit `{version}`.
+    struct Updates: Encodable {
+        var autoInstallTitle, autoInstallHelp, intervalTitle: String
+        var intervals: [ModeOptionDTO]
+        var heldBackTitle, heldBackMessageTemplate, heldBackStatusTemplate, installNow, later: String
+        var reminderSeconds: Int
+    }
+
     var temperature: RangeDTO
     var refresh: Refresh
     var rate: Rate
@@ -249,6 +258,7 @@ struct OptionsDTO: Encodable {
     var cloudFolder: CloudFolder
     var prompts: Prompts
     var texts: Texts
+    var updates: Updates
 
     static var current: OptionsDTO {
         let folder = UIText.cloudFolderPrompt(folder: "{folder}")
@@ -303,7 +313,15 @@ struct OptionsDTO: Encodable {
                          updatesHelp: UIText.updatesHelp(host: .windows), updatesChecking: UIText.updatesChecking,
                          updatesCurrent: UIText.updatesCurrent,
                          updatesInstallingTemplate: UIText.updatesInstalling(version: "{version}"),
-                         updatesFailed: UIText.updatesFailed, updatesCheckButton: UIText.updatesCheckButton))
+                         updatesFailed: UIText.updatesFailed, updatesCheckButton: UIText.updatesCheckButton),
+            updates: Updates(autoInstallTitle: UIText.updatesAutoInstallTitle, autoInstallHelp: UIText.updatesAutoInstallHelp,
+                             intervalTitle: UIText.updatesIntervalTitle,
+                             intervals: UpdateInterval.allCases.map { ModeOptionDTO(id: $0.rawValue, label: $0.title, help: "") },
+                             heldBackTitle: UIText.updatesHeldBackTitle,
+                             heldBackMessageTemplate: UIText.updatesHeldBackMessage(version: "{version}"),
+                             heldBackStatusTemplate: UIText.updatesHeldBackStatus(version: "{version}"),
+                             installNow: UIText.updatesInstallNow, later: UIText.updatesLater,
+                             reminderSeconds: Int(AppUpdate.reminderInterval)))
     }
 }
 

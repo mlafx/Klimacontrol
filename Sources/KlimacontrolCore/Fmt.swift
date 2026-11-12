@@ -175,6 +175,12 @@ public struct UserMessage: Equatable, Sendable {
         return UserMessage(what: error.localizedDescription, todo: "")
     }
 
+    /// Ein Schalter wurde im aktuellen Modus nicht übernommen (die Anlage meldet ihn unverändert zurück).
+    static func switchNotApplied(_ feature: String, mode: OperationalMode) -> UserMessage {
+        UserMessage(what: L.Message.Device.SwitchNotApplied.what(feature: feature, mode: mode.title),
+                    todo: L.Message.Device.SwitchNotApplied.todo, code: "not-in-mode")
+    }
+
     static func deviceOff(detail: String?) -> UserMessage {
         UserMessage(what: L.Message.Device.Off.what, todo: L.Message.Device.Off.todo, code: "3123", detail: detail)
     }

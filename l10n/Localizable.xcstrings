@@ -901,20 +901,38 @@
         }
       }
     },
-    "availability.ieco" : {
-      "comment" : "Kurzinfo iECO",
+    "availability.iecoOff" : {
+      "comment" : "Kurzinfo iECO, im aktuellen Modus gesperrt (z. B. Lüften)",
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iECO = Sparprogramm der Anlage, begrenzt die Leistungsaufnahme in jedem Modus (Eco oben gilt nur beim Kühlen)"
+            "value" : "iECO gibt es in diesem Modus nicht"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iECO is the energy-saving program of the air conditioner. It limits the power draw in every mode (Eco above only applies when cooling)."
+            "value" : "iECO is not available in this mode"
+          }
+        }
+      }
+    },
+    "availability.iecoOn" : {
+      "comment" : "Kurzinfo iECO, im aktuellen Modus verfügbar",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iECO = Sparprogramm der Anlage, begrenzt die Leistungsaufnahme (Eco oben gilt nur beim Kühlen)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iECO is the energy-saving program of the air conditioner. It limits the power draw (Eco above only applies when cooling)."
           }
         }
       }
@@ -1257,6 +1275,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "name of the window"
+          }
+        }
+      }
+    },
+    "bridge.expect.updateInterval" : {
+      "comment" : "Bridge: erwarteter Typ eines Parameters",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„daily“ oder „weekly“"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“daily” or “weekly”"
           }
         }
       }
@@ -9655,6 +9691,42 @@
         }
       }
     },
+    "log.device.capabilities" : {
+      "comment" : "Protokoll: gelesene Fähigkeiten (0xB5) als hex-Liste",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fähigkeiten der Anlage (iECO {ieco}/{end}, Nummer {number}): {list}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner capabilities (iECO {ieco}/{end}, number {number}): {list}"
+          }
+        }
+      }
+    },
+    "log.device.capabilitiesNone" : {
+      "comment" : "Protokoll: Fähigkeiten-Abfrage ohne Antwort",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fähigkeiten der Anlage: keine Antwort"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air conditioner capabilities: no response"
+          }
+        }
+      }
+    },
     "log.device.configUnreadable" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -11293,6 +11365,42 @@
         }
       }
     },
+    "log.settings.updateAutoInstall" : {
+      "comment" : "Protokollzeile beim Umschalten.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates automatisch installieren: {state}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install updates automatically: {state}"
+          }
+        }
+      }
+    },
+    "log.settings.updateInterval" : {
+      "comment" : "Protokollzeile beim Ändern des Suchintervalls.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach Updates suchen: {value}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check for updates: {value}"
+          }
+        }
+      }
+    },
     "log.settings.windowVisible" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -11815,6 +11923,24 @@
         }
       }
     },
+    "log.updates.deferred" : {
+      "comment" : "Protokollzeile, wenn die 24-Stunden-Erinnerung noch nicht fällig ist.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: Version {version} gefunden, Hinweis erst nach der Erinnerung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: version {version} found, notice only after the reminder"
+          }
+        }
+      }
+    },
     "log.updates.downloaded" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -11851,6 +11977,24 @@
         }
       }
     },
+    "log.updates.heldBack" : {
+      "comment" : "Protokollzeile, wenn Updates nicht automatisch installiert werden.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: Version {version} geladen, Installation erst nach Bestätigung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: version {version} downloaded, installed only after confirmation"
+          }
+        }
+      }
+    },
     "log.updates.installNow" : {
       "comment" : "Protokollzeile",
       "extractionState" : "manual",
@@ -11883,6 +12027,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Updates: reminder in 24 h"
+          }
+        }
+      }
+    },
+    "log.updates.settings" : {
+      "comment" : "Protokollzeile beim Start und nach Änderungen der Update-Einstellungen (Mac).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: automatisch installieren {state}, Suche {interval}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: install automatically {state}, check {interval}"
+          }
+        }
+      }
+    },
+    "log.updates.withdrawn" : {
+      "comment" : "Protokollzeile nach Später oder vor dem Beenden, wenn Updates nicht automatisch installiert werden.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: vorbereitete Installation von Version {version} zurückgenommen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates: prepared installation of version {version} withdrawn"
           }
         }
       }
@@ -12423,6 +12603,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "{text}; state unknown"
+          }
+        }
+      }
+    },
+    "main.detailedLog.notice" : {
+      "comment" : "Dezenter Hinweis im Hauptfenster (Mac), solange das ausführliche Protokoll in dieser Sitzung an ist.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausführliches Protokoll aktiv"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detailed log on"
           }
         }
       }
@@ -15375,6 +15573,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The connection dropped after sending, so it is unclear whether the change arrived."
+          }
+        }
+      }
+    },
+    "message.device.switchNotApplied.todo" : {
+      "comment" : "Hinweis: Schalter im aktuellen Modus nicht übernommen (was tun)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In diesem Modus nimmt die Anlage den Schalter nicht an. Wähle einen anderen Modus und versuche es erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner does not accept this switch in this mode. Choose another mode and try again."
+          }
+        }
+      }
+    },
+    "message.device.switchNotApplied.what" : {
+      "comment" : "Hinweis: Schalter im aktuellen Modus nicht übernommen (was); feature = Name des Schalters, mode = Modus",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anlage hat „{feature}“ im Modus „{mode}“ nicht übernommen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The air conditioner did not apply “{feature}” in “{mode}” mode."
           }
         }
       }
@@ -22249,6 +22483,24 @@
         }
       }
     },
+    "settings.log.detailed.scope" : {
+      "comment" : "Einstellungen, Reiter Protokoll: Satz unter dem Schalter Ausführliches Protokoll (Umfang und Dauer).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schreibt zusätzlich Rahmen in Hex, Suche und Cloud-Anfragen; Passwörter, Token und Schlüssel werden geschwärzt. Gilt bis zum Beenden der App."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Also writes frames in hex, search and cloud requests; passwords, tokens and keys are redacted. Applies until you quit the app."
+          }
+        }
+      }
+    },
     "settings.log.detailed.title" : {
       "comment" : "Protokoll: Schalter",
       "extractionState" : "manual",
@@ -22555,6 +22807,42 @@
         }
       }
     },
+    "settings.updates.autoInstall" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Schalter (Mac und Windows).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates automatisch installieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install updates automatically"
+          }
+        }
+      }
+    },
+    "settings.updates.autoInstallHelp" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Kurzinfo zum Schalter Updates automatisch installieren.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus: Ein geladenes Update wird erst installiert, wenn du „Jetzt installieren“ wählst. Klimacontrol erinnert alle 24 Stunden daran."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off: a downloaded update is installed only after you choose “Install now”. Klimacontrol reminds you every 24 hours."
+          }
+        }
+      }
+    },
     "settings.updates.betaChannel" : {
       "comment" : "Mac: Einstellungen → Allgemein → Updates, Schalter",
       "extractionState" : "manual",
@@ -22569,6 +22857,60 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Receive pre-release (beta) versions"
+          }
+        }
+      }
+    },
+    "settings.updates.daily" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Auswahl Nach Updates suchen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Täglich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily"
+          }
+        }
+      }
+    },
+    "settings.updates.interval" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Beschriftung der Auswahl täglich/wöchentlich.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach Updates suchen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check for updates"
+          }
+        }
+      }
+    },
+    "settings.updates.weekly" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Auswahl Nach Updates suchen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wöchentlich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly"
           }
         }
       }
@@ -26223,6 +26565,60 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Checking for updates failed. Try again later."
+          }
+        }
+      }
+    },
+    "updates.heldBack.message" : {
+      "comment" : "Hinweis Update bereit, wenn Updates nicht automatisch installiert werden.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} ist geladen. Zum Installieren startet die App kurz neu. Mit „Später“ erinnert Klimacontrol in 24 Stunden erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klimacontrol {version} has been downloaded. The app restarts briefly to install it. With “Later”, Klimacontrol reminds you again in 24 hours."
+          }
+        }
+      }
+    },
+    "updates.heldBack.status" : {
+      "comment" : "Einstellungen → Allgemein → Updates: Zeile unter dem Knopf, wenn ein Update auf Bestätigung wartet.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version {version} ist verfügbar und wird nur nach „Jetzt installieren“ installiert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version {version} is available and is installed only after you choose “Install now”."
+          }
+        }
+      }
+    },
+    "updates.installNow" : {
+      "comment" : "Knopf im Hinweis Update bereit, wenn Updates nicht automatisch installiert werden.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt installieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install now"
           }
         }
       }

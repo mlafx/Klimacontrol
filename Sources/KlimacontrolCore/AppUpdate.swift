@@ -26,10 +26,30 @@ public enum AppUpdate {
     }
 
     public static let feedWindows = repository + "/releases/latest/download/updateinfo-win.xml"
-    /// Standard: automatisch einmal am Tag suchen.
-    public static let checkInterval = 86_400
-    /// Updates werden immer automatisch geladen und installiert; es gibt kein Überspringen und kein Abschalten.
-    public static let installsAutomatically = true
+    /// Standard: automatisch einmal am Tag suchen (`SUScheduledCheckInterval` in der Info.plist).
+    public static let checkInterval = UpdateInterval.daily.seconds
+    /// Gesucht und geladen wird immer; „Updates automatisch installieren“ ist Standard. Aus: Installation erst nach
+    /// „Jetzt installieren“, nie still beim Beenden. Ein Überspringen gibt es in keinem Fall.
+    public static let autoInstallDefault = true
+    /// Abstand der Erinnerung an ein geladenes, noch nicht installiertes Update nach „Später“.
+    public static let reminderInterval: TimeInterval = 24 * 3600
+
+    public static func autoInstall(stored: Any?) -> Bool { stored as? Bool ?? autoInstallDefault }
+
+    /// Nächste Erinnerung nach „Später“.
+    public static func nextReminder(after answer: Date) -> Date { answer.addingTimeInterval(reminderInterval) }
+
+    /// Ob der Hinweis zu einem geladenen Update jetzt erscheint; nil = noch nie gefragt.
+    public static func reminderDue(now: Date, remindAt: Date?) -> Bool {
+        guard let remindAt else { return true }
+        return now >= remindAt
+    }
+
+    /// Ohne automatische Installation: Ob ein gefundenes Update jetzt geladen und angeboten wird. Eine vom Nutzer
+    /// angestoßene Suche bietet es immer an, sonst erst, wenn die Erinnerung fällig ist.
+    public static func offersUpdate(userInitiated: Bool, now: Date, remindAt: Date?) -> Bool {
+        userInitiated || reminderDue(now: now, remindAt: remindAt)
+    }
     /// Erste Version, die Updates selbst still installiert. Ältere zeigen das Update im Standarddialog; als
     /// „kritisch“ markiert (Appcast) bietet er dort kein Überspringen an.
     public static let firstAutoInstallVersion = "1.1.0.0"
@@ -41,5 +61,22 @@ public enum AppUpdate {
         guard let value, let m = value.wholeMatch(of: /http:\/\/127\.0\.0\.1:([0-9]{1,5})\/[A-Za-z0-9._\/-]*/),
               let port = Int(m.1), (1...65535).contains(port) else { return nil }
         return value
+    }
+}
+
+/// Einstellung „Nach Updates suchen“ (`SettingsKey.updateInterval`).
+public enum UpdateInterval: String, CaseIterable, Sendable {
+    case daily, weekly
+
+    public var seconds: Int {
+        switch self {
+        case .daily: 86_400
+        case .weekly: 7 * 86_400
+        }
+    }
+
+    /// Unbekannte oder fehlende Werte gelten als täglich.
+    public init(stored: Any?) {
+        self = (stored as? String).flatMap(UpdateInterval.init(rawValue:)) ?? .daily
     }
 }

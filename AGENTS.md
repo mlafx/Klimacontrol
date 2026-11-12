@@ -572,7 +572,7 @@ sobald sie im selben Netz antwortet.
 
 ### 7.7 Einstellungen (`SettingsKey`)
 
-`displayName`, `refreshSeconds`, `pricePerKWh` (0–1000), `currency`, `language` (Windows; Mac: Systemsprache), `updateBetaChannel` (Mac), `connectionMode`, `beep`, `timerOffAt`, `timerOnAt`,
+`displayName`, `refreshSeconds`, `pricePerKWh` (0–1000), `currency`, `language` (Windows; Mac: Systemsprache), `updateBetaChannel` (Mac), `updateAutoInstall`, `updateInterval`, `connectionMode`, `beep`, `timerOffAt`, `timerOnAt`,
 `energyDayStart`, `showDiagnosticsPanel`, `historyCSV`, `credentialsBackedUp`, `appearance` (JSON),
 `loginItemDefaultOn` (Mac: „Beim Anmelden starten“ schon einmal eingetragen), `lastOpenedColumn` und `columnsBeforeFullScreen` (Mac: zuletzt geöffnete Seitenspalte; Spalten vor dem Vollbild). Mac: in
 `UserDefaults` (Domäne `de.mlafx.klimacontrol`), Windows: über die Bridge im Kern gespeichert (`UserDefaults.standard` von swift-corelibs-foundation, Datei `%LOCALAPPDATA%\Klimacontrol.exe.plist` – der Name folgt dem Prozessnamen; seit 1.0 so, darum nicht verlegen, das Setup legt den Namen der exe fest). Neue Schlüssel immer
@@ -684,7 +684,7 @@ gleichen beide ab.
 | Schalter | `swing(on)`, `eco(on)`, `turbo(on)`, `purifier(on)`, `freezeProtection(on)`, `outdoorSilent(on)`, `selfClean(on)`, `ieco(on)`, `display`, `rate(value)`, `sound(on)` |
 | Szenen | `applyScene(id)`, `deleteScene(id)`, `saveScene(name)` |
 | Timer | `offTimer(minutes?)`, `onTimer(hour, minute)` bzw. `onTimer(at?)` |
-| Einstellungen | `connectionMode(value)`, `displayName(value)`, `refreshSeconds(value)`, `price(value)`, `language(value)`, `currency(value)`, `debugLog(on)`, `historyCSV(on)`, `diagnosticsVisible(on)`, `uiVisible(id, visible)` |
+| Einstellungen | `connectionMode(value)`, `displayName(value)`, `refreshSeconds(value)`, `price(value)`, `language(value)`, `currency(value)`, `debugLog(on)`, `historyCSV(on)`, `updateAutoInstall(on)`, `updateInterval(value)`, `diagnosticsVisible(on)`, `uiVisible(id, visible)` |
 | Darstellung | `appearance(value: Objekt)`, `appearanceTheme(theme)`, `appearanceReset` |
 | Daten | `exportHistory(path, from?, until?, readable?)`, `exportHistoryStart(path, from?, until?, readable?)` (im Hintergrund, `readable` Standard an; Ergebnis `exportSeq`/`exportError`), `clearLog`, `importBackup(path, replaceScenes?, allowOtherDevice?)`, `exportBackup(path)` |
 | Konto | `cloudLogin(account, password)`, `cloudLogout` |
@@ -823,14 +823,37 @@ nach einem neuen Build nicht erneut nach Freigaben (Netzwerk, Schlüsselbund); a
 - Info.plist: `SUFeedURL` (= `AppUpdate.feedMac`), `SUPublicEDKey` (aus `tools/UPDATE_PUBLIC_KEY`),
   `SUEnableAutomaticChecks`, `SUAutomaticallyUpdate` und `SUAllowsAutomaticUpdates` = an, `SUScheduledCheckInterval` =
   86400 (täglich). `AppUpdateTests` prüft, dass Kern, Skript und Schlüsseldatei zusammenpassen.
-- **Immer automatisch, nie überspringen, Suche nicht abschaltbar** (Entscheidung des Autors): `AppUpdater` setzt beim
-  Start `automaticallyChecksForUpdates` und `automaticallyDownloadsUpdates` auf an (eine frühere Abwahl zählt nicht).
+- **Suche und Laden immer automatisch, nie überspringen, Suche nicht abschaltbar** (Entscheidung des Autors). Zwei
+  Einstellungen in Einstellungen → Allgemein → Updates (Kern, beide Plattformen gleich): „Updates automatisch
+  installieren“ (`SettingsKey.updateAutoInstall`, Standard an) und „Nach Updates suchen“ täglich/wöchentlich
+  (`SettingsKey.updateInterval`, `UpdateInterval.seconds`, Standard täglich = `SUScheduledCheckInterval` der Info.plist).
+  Erinnerungsregel als reine Funktionen in `AppUpdate` (`reminderInterval` 24 h, `nextReminder`, `reminderDue`,
+  `offersUpdate`). Bridge: Befehle `updateAutoInstall(on)`, `updateInterval(value)`, Schnappschuss `updateAutoInstall`,
+  `updateInterval`, `updateCheckInterval` (folgt der Einstellung), Texte in `options.updates`.
+  `AppUpdater` erzeugt `SPUUpdater` selbst (statt `SPUStandardUpdaterController`) mit dem eigenen `HeldUserDriver`, der
+  alles an `SPUStandardUserDriver` weiterreicht, außer im Modus „aus“. Beim Start und nach jeder Änderung setzt er
+  `automaticallyChecksForUpdates` = an, `automaticallyDownloadsUpdates` = Einstellung, `updateCheckInterval` = Einstellung
+  (eine frühere Abwahl in Sparkles UserDefaults zählt nicht).
   „Jetzt suchen …“ und das Menü nutzen `checkForUpdatesInBackground` (kein Sparkle-Dialog mit „Überspringen“);
   Status-Texte aus dem Katalog. Fassungen unter `AppUpdate.firstAutoInstallVersion` bekommen das Update im Appcast als
   `criticalUpdate` (ohne „Überspringen“).
-- **Installation ab 1.2.0.0:** Das Update wird still geladen; danach erscheint ein Hinweis „Jetzt neu starten ·
-  Später“. „Später“ fragt nach 24 h erneut, installiert wird spätestens beim Beenden. Kein Überspringen. Bis 1.1.0.0
-  installierte der Delegate sofort und startete neu (`willInstallUpdateOnQuit` → `immediateInstallationBlock`).
+- **Installation, automatisch an (Standard, ab 1.2.0.0):** Sparkles stiller Weg (`SPUAutomaticUpdateDriver`). Das Update
+  wird still geladen; danach erscheint ein Hinweis „Jetzt neu starten · Später“ (Delegate
+  `willInstallUpdateOnQuit` → true, der Block installiert sofort). „Später“ fragt nach 24 h erneut, installiert wird
+  spätestens beim Beenden. Kein Überspringen. Bis 1.1.0.0 installierte der Delegate sofort und startete neu.
+- **Installation, automatisch aus (ab 1.3.0.0):** Sparkle installiert ein über den stillen Weg geladenes Update beim
+  Beenden immer („In either case Sparkle will always attempt to install the update when the app terminates“,
+  `SPUUpdaterDelegate.h`); der Delegate kann das nicht verhindern. Darum lädt „aus“ über Sparkles Weg mit Nutzer
+  (`automaticallyDownloadsUpdates` = aus, `SPUUIBasedUpdateDriver`): `HeldUserDriver.showUpdateFound` antwortet ohne
+  Fenster `.install` (still laden), wenn die Suche von Hand kam oder die Erinnerung fällig ist, sonst `.dismiss`
+  (nichts geladen). Download- und Entpack-Fortschritt bleiben unsichtbar. `showReadyToInstallAndRelaunch` geht an
+  `AppUpdater`: Hinweis „Update bereit · Jetzt installieren · Später“. „Jetzt installieren“ = `.install` (installiert und
+  startet neu). „Später“ = `.skip`: an dieser Stelle bricht Sparkle nur die vorbereitete Installation ab
+  (`SPUInstallerDriver cancelUpdate`) und merkt die Version **nicht** als übersprungen (`SPUUserDriver.h`); nach 24 h lädt
+  `AppUpdater` neu und fragt wieder. Steht der Hinweis noch aus (z. B. anderes modales Fenster), nimmt
+  `applicationShouldTerminate` die Installation mit `.skip` zurück und beendet erst 1 s später (`.terminateLater`), damit
+  die Absage den Installer erreicht. `.skip` in `showUpdateFound` wäre echtes Überspringen und wird nie benutzt. Grenze:
+  Ein Update, das noch im Modus „an“ vorbereitet wurde, bleibt nach dem Umschalten bei „beim Beenden installieren“.
 - **Neustart ohne Beenden-Rückfrage:** Beim Neustart für ein Update oder einen Sprachwechsel entfällt die Rückfrage
   „Timer laufen – beenden?“ (`quitPrompt`), denn Timer sind gespeichert und laufen danach weiter. Liegt beim
   Sprachwechsel ein Update bereit, läuft der Neustart über Sparkles Weg „installieren und neu starten“.
@@ -849,8 +872,11 @@ nach einem neuen Build nicht erneut nach Freigaben (Netzwerk, Schlüsselbund); a
   Appcast `criticalUpdate` – WinSparkle blendet dann „Überspringen“ und „Später erinnern“ aus, nur Schließen
   (= vorerst nicht) bleibt. Ein früher gespeichertes `SkipThisVersion` wird beim Start gelöscht. Ab 1.2.0.0 erscheint der
   WinSparkle-Dialog in der Sprache der App (`win_sparkle_set_lang`).
-- Bedienung: Einstellungen → Allgemein → „Updates“ (Version, „Jetzt suchen …“, Status) und Menü Klimacontrol → „Nach
-  Updates suchen …“. Kein Schalter. Ohne Bundle (`swift run`) ist Sparkle aus.
+- Bedienung: Einstellungen → Allgemein → „Updates“ (Version, „Jetzt suchen …“, Status mit „Jetzt neu starten“ bzw.
+  „Jetzt installieren“, „Updates automatisch installieren“, „Nach Updates suchen“, Beta) und Menü Klimacontrol → „Nach
+  Updates suchen …“. Kein Schalter, der die Suche abschaltet. Ohne Bundle (`swift run`) ist Sparkle aus.
+- Windows: Die beiden Einstellungen kommen über die Bridge (`updateAutoInstall`, `updateInterval`, `options.updates`);
+  die Umsetzung mit WinSparkle (`win_sparkle_set_user_run_installer_callback`) ist noch offen.
 - **Rückmeldung nach manueller Suche:** Mac zeigt einen `NSAlert` („aktuell“ bzw. „hat nicht geklappt“) nur bei einer vom
   Nutzer ausgelösten Suche (`userInitiated`); Hintergrundsuchen bleiben still. Windows zeigt das über die
   WinSparkle-Oberfläche (`win_sparkle_check_update_with_ui`).

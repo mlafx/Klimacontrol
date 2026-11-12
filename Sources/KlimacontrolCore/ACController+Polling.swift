@@ -60,6 +60,7 @@ extension ACController {
         }
         AppLog.debug(L.Log.Polling.started)
         guard await perform(staleAware: true, { try await device.refresh() }).succeeded else { return false }
+        await readCapabilitiesOnce(device)
         if let s = state { AppLog.debug(L.Log.Polling.state(line: Fmt.stateLine(s))) }
         rememberDayStart()
         guard diagnosticsDue else { return true }
@@ -71,6 +72,17 @@ extension ACController {
             AppLog.debug(L.Log.Polling.diagnostics(line: Fmt.diagnosticsLine(d)))
         }
         return true
+    }
+
+    /// Fähigkeiten nach der ersten gelungenen Abfrage einmal lesen (nur lesend) und in den Zustand übernehmen.
+    func readCapabilitiesOnce(_ device: any ACDevice) async {
+        let id = ObjectIdentifier(device)
+        guard capabilitiesAsked != id else { return }
+        capabilitiesAsked = id
+        guard let caps = try? await device.readCapabilities(), self.device === device, var s = state,
+              s.capabilities != caps else { return }
+        s.capabilities = caps
+        state = s
     }
 
     /// Diagnose lesen: bei sichtbarer Diagnose jedes Mal, sonst höchstens alle `diagnosticsInterval` (für den Verlauf).
@@ -86,6 +98,7 @@ extension ACController {
         guard await perform(staleAware: true, { try await device.refreshFast(extras: block == 0) }).succeeded else {
             return false
         }
+        await readCapabilitiesOnce(device)
         rememberDayStart()
         guard block != 0, diagnosticsDue,
               let raw = try? await device.rawGroups([block]), let f = raw[block], self.device === device else { return true }

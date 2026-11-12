@@ -269,8 +269,24 @@ struct UpdateSettingsSection: View {
                     if updater.readyVersion != nil {
                         Spacer()
                         Button(L.App.restartNow) { AppRestart.relaunch() }
+                    } else if updater.heldVersion != nil {
+                        Spacer()
+                        Button(UIText.updatesInstallNow) { updater.installHeld() }
+                            .disabled(!updater.canCheck)
                     }
                 }
+            }
+            SettingRow(title: UIText.updatesAutoInstallTitle, help: UIText.updatesAutoInstallHelp) {
+                Toggle(UIText.updatesAutoInstallTitle, isOn: $model.updateAutoInstall).labelsHidden().toggleStyle(.switch)
+                    .onChange(of: model.updateAutoInstall) { _, _ in updater.settingsChanged() }
+            }
+            .help(UIText.updatesAutoInstallHelp)
+            LabeledContent(UIText.updatesIntervalTitle) {
+                Picker(UIText.updatesIntervalTitle, selection: $model.updateInterval) {
+                    ForEach(UpdateInterval.allCases, id: \.self) { Text($0.title).tag($0) }
+                }
+                .labelsHidden().fixedSize()
+                .onChange(of: model.updateInterval) { _, _ in updater.settingsChanged() }
             }
             SettingRow(title: L.Settings.Updates.betaChannel, help: L.Updates.Mac.betaHelp) {
                 Toggle(L.Settings.Updates.betaChannel, isOn: $model.updateBetaChannel).labelsHidden().toggleStyle(.switch)
