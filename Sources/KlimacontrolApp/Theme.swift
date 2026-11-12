@@ -171,7 +171,21 @@ struct ThemeStyle: Equatable, Sendable {
     var hairline: Color { isContrast ? Color.primary.opacity(0.6) : Color.primary.opacity(0.12) }
 
     /// Fläche eines Knopfs innerhalb einer Glaskarte: kein zweites Glas, nur eine zarte Fläche.
-    var innerFill: Color { Color.primary.opacity(isContrast ? 0.08 : (isDark ? 0.07 : 0.05)) }
+    /// Auf den grauen Karten im hellen Modus heben sich die Knöpfe hell ab.
+    var innerFill: Color {
+        if plainLightCards { return Color.white.opacity(0.6) }
+        return Color.primary.opacity(isContrast ? 0.08 : (isDark ? 0.07 : 0.05))
+    }
+
+    /// Große Karten im hellen Glas ohne eigenes Glas, wie die Karten von Verlauf und Diagnose (`plainCard`).
+    var plainLightCards: Bool {
+        guard #available(macOS 26, *) else { return false }
+        return !isDark && cardFillOpacity == 0 && !(appearance.background == .glassStrong || blurFactor > 1.5)
+    }
+
+    /// Fläche und Rand dieser Karten, wie `plainCard` der Graphen.
+    var lightCardFill: Color { Color.primary.opacity(0.05) }
+    var lightCardStroke: Color { Color.primary.opacity(0.08) }
 
     /// Deckender Fensterhintergrund (Vollbild).
     var opaqueWindowBackground: Color { Color(nsColor: .windowBackgroundColor) }

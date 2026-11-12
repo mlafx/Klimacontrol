@@ -8,32 +8,23 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 ### Added
 - Sleep as a switch under “More features” (cooling and heating only).
 - Air conditioner error code: Every change is written to the log and to the history (new column “Error code” in the export).
-- History: Power, temperature and outdoor temperature share one card with a common time axis.
-- History: A colored band below the power shows when the air conditioner ran in which mode.
 - Consumption: Value above each bar and a dashed line for the average of completed periods.
-- Appearance: Setting “Show outdoor temperature in the temperature chart”.
-- The target temperature scale shows the room temperature as a marker.
-- Windows: A damaged settings file is set aside and reported at startup instead of being silently replaced with default values.
+- Appearance: Setting “Show outdoor temperature in the temperature chart”; the target temperature scale shows the room temperature as a marker.
 - Updates: Settings “Install updates automatically” and “Check for updates” (daily or weekly); without automatic installation, a downloaded update is installed only after “Install now”.
+- Windows: A damaged settings file is set aside and reported at startup instead of being silently replaced with default values.
 - Windows: The Appearance tab shows a preview at the top that follows theme, light/dark and size immediately.
 
 ### Changed
-- Main window: Mode and fan, as well as scenes and timers, each share one card.
-- The power button is labeled “On” or “Off”.
-- History: Average, peak, consumption and cost appear as one line below the power instead of four tiles.
-- History: Target dashed in the color of the mode, outdoor temperature dotted gray and smoothed.
-- History: Power and temperatures use the same axes and grid lines on Mac and Windows.
+- Main window: Mode and fan, as well as scenes and timers, each share one card, and the power button is labeled.
+- History: Power, temperature and outdoor temperature share one card with a common time axis and the same axes on Mac and Windows; a band below the power shows the mode, key figures appear as one line instead of four tiles, target is dashed in the color of the mode, outdoor temperature dotted gray and smoothed.
 - Windows: The main window follows the same rules for columns and size as on the Mac; tabs and stacked columns are gone.
 - Windows: In Fan mode, the target temperature and its scale are hidden.
 - Detailed log: The switch applies only until the app quits, and a notice shows while it is on.
-- Switches for features the air conditioner does not have according to its capabilities are disabled; the tooltip names the reason.
-- Mac: The fan slider shows the Turbo and Quiet outdoor unit zones only if the air conditioner has the feature according to its capabilities.
+- Switches for features the air conditioner does not have according to its capabilities are disabled (the tooltip names the reason); on Mac, the fan slider shows Turbo and Quiet outdoor unit only if the feature exists.
 
 ### Fixed
-- History: Labels under the consumption bars and the last time under the charts were cut off.
-- Mac: In full screen, an empty area remained below the outdoor temperature chart.
-- Mac: Switched-on buttons were pale and hard to read in light mode, and the cards of the control column looked dark and nearly opaque in a see-through window.
-- If the history cannot be saved, a notice appears instead of “Not enough data yet”.
+- History: Labels under the consumption bars and the last time under the charts were cut off; if the history cannot be saved, a notice appears instead of “Not enough data yet”.
+- Mac: In full screen, an empty area remained below the outdoor temperature chart; switched-on buttons were pale in light mode, and the cards of the control column looked dark and nearly opaque in a see-through window, and almost white in light mode instead of matching the history and diagnostics cards.
 - Mac: With the beta channel turned on, every check failed while no pre-release existed, and stable updates were not installed.
 - Mac: The menu bar window stayed too tall after turning off the air conditioner and showed its content at the bottom without rounded corners.
 - Windows: Release notes in the update window were hard to read in dark mode.
@@ -42,8 +33,7 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 - Restore backup: One unreadable scene silently discarded all scenes of the backup.
 - Find address again: An invalid address found by the search ended without any feedback.
 - Mini window: With the room temperature shown large but not reported, “–” appeared instead of the target temperature.
-- ⌘↑/⌘↓ (Mac) and Ctrl+↑/↓ (Windows) changed the target temperature in Fan mode.
-- Windows: The number and text in the notification area showed a target in Fan mode and rounded room temperatures ending in .5 down.
+- ⌘↑/⌘↓ (Mac) and Ctrl+↑/↓ (Windows) changed the target temperature in Fan mode; Windows showed a target in the notification area in Fan mode and rounded room temperatures ending in .5 down.
 - As in the Midea app, iECO and “Limit power” can only be turned on when cooling, iECO when heating only if the air conditioner supports it; if the air conditioner does not accept iECO in the current mode, the notice names the mode.
 - Technical foundation reworked, numerous minor bugs fixed.
 

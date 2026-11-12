@@ -103,6 +103,14 @@ struct KlimaCard: ViewModifier {
                     .overlay(shape.fill((tint ?? .clear).opacity(theme.isContrast
                         ? (interactive ? 1 : 0.18) : min(1, (interactive ? 0.9 : 0.25) * f))))
             )
+        } else if theme.plainLightCards && !interactive {
+            // Hell: Klares Glas hellt große Flächen fast bis Weiß auf; dieselbe Fläche wie die Karten von Verlauf und
+            // Diagnose hält alle Karten des Fensters gleich hell. Die Tönung (Kopfkarte) liegt dezent darüber.
+            content.background(
+                shape.fill(theme.lightCardFill)
+                    .overlay(shape.fill((tint ?? .clear).opacity(min(1, 0.45 * f))))
+                    .overlay(shape.strokeBorder(theme.lightCardStroke, lineWidth: 0.5))
+            )
         } else if #available(macOS 26, *) {
             let strong = theme.appearance.background == .glassStrong
             // Eingeschaltete Knöpfe tragen weiße Schrift: Im hellen Modus hellt das Glas die Tönung so stark auf,

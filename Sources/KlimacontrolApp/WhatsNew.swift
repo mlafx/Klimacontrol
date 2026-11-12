@@ -40,7 +40,7 @@ struct WhatsNewView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(maxHeight: 360)
+            .frame(maxHeight: 720)
             HStack {
                 Spacer()
                 Button(UIText.whatsNewOK) {
@@ -51,7 +51,7 @@ struct WhatsNewView: View {
             }
         }
         .padding(20)
-        .frame(width: 460)
+        .frame(width: 760)
         .onChange(of: notes.isEmpty) { _, empty in
             if empty { dismissWindow(id: "whatsnew") }
         }
