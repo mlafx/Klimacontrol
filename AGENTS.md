@@ -24,6 +24,8 @@ Windows: `powershell -ExecutionPolicy Bypass -File tools\build_windows.ps1 -App`
 | Aufgabe | Lies zuerst | Dateien |
 |---|---|---|
 | Protokoll, Verbindung, Befehle an die Anlage | 6, 5 | `Sources/MideaKit/` |
+| Fähigkeiten der Anlage, Schalter je Modus | 6.9, 6.10 | `Capabilities.swift`, `UIOptions.swift` |
+| Etwas an der echten Anlage ausprobieren | 6.11, 5 | – (nur mit Freigabe des Autors) |
 | Verhalten der App (Abfrage, Timer, Energie, Szenen, Einrichtung) | 7 | `Sources/KlimacontrolCore/` |
 | Neue Einstellung / neuer Schalter auf beiden Plattformen | 15.1, 8 | Kern → Bridge → Mac → Windows |
 | Mac-Oberfläche | 9, 13 | `Sources/KlimacontrolApp/` |
@@ -75,7 +77,7 @@ gehören in den Kern, damit Mac und Windows sich gleich verhalten. Die Mac-App s
 | C-Schnittstelle des Kerns | `Sources/KlimacontrolBridge/` | Swift, überall übersetzt, DLL nur Windows |
 | SQLite-Amalgamation (Verlauf unter Windows/Linux) | `Sources/CSQLite/` | C, **nicht ändern** (Herkunft in `Sources/CSQLite/README.md`) |
 | Windows-App + Tests | `windows/KlimacontrolTray/`, `windows/KlimacontrolTray.Tests/` | C# / .NET 10 / WPF |
-| Swift-Tests | `Tests/MideaKitTests/`, `Tests/KlimacontrolCoreTests/` | XCTest; gemeinsame Daten für Swift und C# in `Tests/Shared/` (Rundungstabelle) |
+| Swift-Tests | `Tests/MideaKitTests/`, `Tests/KlimacontrolCoreTests/`, `Tests/KlimacontrolBridgeTests/` | XCTest; gemeinsame Daten für Swift und C# in `Tests/Shared/` (Rundung, Achsen, Zeitmarken, Graphenhöhen, Modus-Läufe, Fensterlayout) |
 | Bau- und Hilfsskripte, `VERSION`, App-Symbol | `tools/` | zsh, PowerShell, Python, Swift |
 | Text-Katalog (Deutsch, Englisch), daraus `StringsData.swift` | `l10n/Localizable.xcstrings` | JSON (String Catalog), alle Plattformen |
 | Versionshinweise, Sicherheitshinweise | `CHANGELOG.md`, `CHANGELOG.en.md`, `SECURITY.md` | Markdown |
@@ -102,7 +104,8 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 | `Crypto.swift` | `MideaCrypto` (MD5-Signatur, AES-ECB/CBC, SHA256), `AESModes` (ECB/CBC aus Einzelblöcken für swift-crypto), `MideaError` mit `PathFailure` (typisierte Gründe je Weg) |
 | `Packet.swift` | `V2Packet` (0x5A5A, Zeitstempel, Geräte-ID), `V3Codec` (0x8370: Handshake, Sitzungsschlüssel, Neusynchronisation) |
 | `Commands.swift` | `OperationalMode`, `FanSpeed`, `SwingMode`, `FrameType`, `PropertyId`, `Frame` (Befehlsrahmen 0xAA…, Prüfsumme, CRC8) |
-| `Responses.swift` | `ACState` (Zustand), `Response` (Antworten 0xC0, 0xB5, 0xB0/0xB1, Gruppen), `DeviceTimer` |
+| `Responses.swift` | `ACState` (Zustand, u. a. `sleep` aus 0xC0 Byte 10 Bit 0x01, `errorCode` aus Byte 16, `capabilities`), `Response` (Antworten 0xC0, 0xB5, 0xB0/0xB1, Gruppen), `DeviceTimer` |
+| `Capabilities.swift` | `ACCapabilities`: Fähigkeiten der Anlage (0xB5, bis zu zwei Seiten), Rohdaten je Kennung, Lesart wie msmart-ng, je Funktion `Bool?` (6.9), `summary` fürs Protokoll |
 | `Diagnostics.swift` | `Diagnostics` (Verdichter, Strom, Spannung, T1–T4, TP, EEV, Lüfter, Abtauen, Filter, Fehlercode) |
 | `Socket.swift` | `NetSocket`: blockierende TCP-/UDP-Sockets (BSD-Sockets bzw. Winsock), Zeitlimits |
 | `LANClient.swift` | eine LAN-Verbindung: Verbinden, Handshake, Senden/Empfangen, Wiederholung |
@@ -151,7 +154,7 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 | `Appearance.swift` | `Appearance` (alle Darstellungswerte, Themen, robustes Decoding) |
 | `Fmt.swift` | `Fmt` (Zahlen, Zeiten, Einheiten auf Deutsch), `UserMessage` (Meldungstexte) |
 | `MainWindowLayout.swift` | Mac-Hauptfenster als reine Rechnung (`MainWindowLayout`, `MainWindowFrame`): Spaltenbreiten und Verteilung, „passt nicht“-Regel, Mindesthöhe je Größe, Graphenhöhen, Rahmen beim Ein-/Ausblenden der Spalten (laufen auch unter Windows) |
-| `UIOptions.swift` | Anzeige-Katalog: Auswahllisten, Grenzen, Standardwerte, Gültigkeit je Modus (`availability`), Lüfter-Kopfzeile, Verlaufs-Zeiträume und Lückenschwelle |
+| `UIOptions.swift` | Anzeige-Katalog: Auswahllisten, Grenzen, Standardwerte, einzige Regel „gilt im Modus“ mit Fähigkeiten (`ComfortFeature`, `isAvailable`, `supported`, `availability`, `rateAvailability`, `fanZones`, `fanLocked`; 6.10), Lüfter-Kopfzeile, Verlaufs-Zeiträume und Lückenschwelle |
 | `UIText.swift` | Anzeige-Katalog: Rückfragen (`ConfirmPrompt`, `ForgetPrompt` für „Neu einrichten“ mit drei Knöpfen), Ergebnismeldungen (`ResultMessage`), feste Texte, Cloud-Ordner-Prüfung, `HostWords` (Mac/Windows) |
 | `UIEnergy.swift` | Anzeige-Katalog des Verbrauchs: Arten und Anzahl (`UIOptions.energyKinds`), Beschriftungen, Kurzinfos, Kosten, Summe |
 | `ACController+DisplayText.swift` | Anzeigetexte aus dem Zustand: Verbindungszeile, große Zahl, Kosten, Menüleisten-Titel, Timer-Chips, Startwerte (zeitabhängige auch mit `now:`) |
@@ -189,7 +192,7 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 | `ChartSupport.swift` | Mauszeiger-Ebene, VoiceOver-Zusammenfassung, Achsen und Karten der Graphen |
 | `EnergyChart.swift` | Abschnitt „Verbrauch“ unter den Graphen: Balken je Tag/Woche/Monat, liest im Hintergrund höchstens alle 10 min |
 | `Theme.swift` | `ThemeStyle`, `\.klimaTheme`, Farben und Symbole je Modus, `GlassContainer` |
-| `ThemeModifiers.swift` | `.klimaThemeRoot`, `.klimaCard`, `.klimaInner`, `.klimaGlow`, `PressDimStyle` |
+| `ThemeModifiers.swift` | `.klimaThemeRoot`, `.klimaCard` (`KlimaCard` mit vier Zweigen: deckend bei Matt/Kontrast, helle Fläche bei hellem Glas `plainLightCards`, Liquid Glass ab macOS 26, Material unter macOS 15; 9.3), `.klimaInner`, `.klimaGlow`, `PressDimStyle` |
 | `ThemeEffects.swift` | `LivelyBackground`, `WeatherEffect`, `EffectsBudget` |
 | `Panels.swift` | Fußzeile (Verlauf · Aktualisieren/Einstellungen · Diagnose) und gemeinsame Bausteine (Abschnittstitel, alte Werte) |
 | `PanelsSettings.swift` | Einstellungsfenster mit Reitern Allgemein · Darstellung · Verbindung · Anlage · Protokoll · Lizenzen, gemeinsame Bausteine (`SettingRow`, `FeedbackLine`) |
@@ -219,6 +222,7 @@ Anmeldeinformationsverwaltung und `CSQLite`. In `Package.swift` ist swift-crypto
 | `BridgeDisplay.swift` | Anzeige-Katalog im Schnappschuss: `options`, `availability`, fertige Anzeigetexte aus dem Kern |
 | `BridgeEnergy.swift` | `kc_energy_json`: Verbrauch je Zeitraum mit fertigen Texten |
 | `WindowsTimeZone.swift` | nur Windows: setzt in `kc_init` die Standardzone aus der Windows-Zone (über ICU), weil `TimeZone.current` dort GMT liefert |
+| `WindowsSettingsCheck.swift` | nur Windows: prüft `%LOCALAPPDATA%\<exe>.plist` einmal vor dem ersten Zugriff auf `UserDefaults.standard` (in `kc_set_locale`, sonst `kc_init`) mit `SettingsFileCheck`; das Ergebnis meldet `kc_init` dem Kern (`reportSettingsFileCheck`) |
 
 Vertrag in Abschnitt 8.
 
@@ -233,7 +237,11 @@ Vertrag in Abschnitt 8.
 | `KlimacontrolTray/Core.cs` | Brücken-Hülle: Start, Pumpe (`kc_pump` ~30 ms), Prüfung `kc_api_version`, Befehle |
 | `KlimacontrolTray/Model.cs` | C#-Abbild des JSON-Schnappschusses (inkl. `options`/`availability` des Anzeige-Katalogs) |
 | `KlimacontrolTray/BridgeCommands.cs` | `Cmd`: alle Befehlsnamen als Konstanten (gegen die Bridge geprüft) |
-| `KlimacontrolTray/MainWindow.*`, `ControlPanel.*`, `ChartsPanel.*`, `DiagnosticsPanel.*`, `ScenesSection.*`, `TimerRow.*` | Hauptfenster und seine Teile |
+| `KlimacontrolTray/MainWindow.*`, `ChartsPanel.*`, `EnergyCard.*`, `DiagnosticsPanel.*`, `ScenesSection.*`, `TimerRow.*` | Hauptfenster und seine Teile (Verlauf, Verbrauch, Diagnose, Szenen, Timer) |
+| `KlimacontrolTray/ControlPanel.xaml(.cs)` und Teile `ControlPanel.Fan.cs` (Lüfterregler, Zonen, Sperre beim Trocknen), `.Metrics.cs` (Kennzahlen), `.Status.cs` (Zustand, Meldungen), `.Density.cs` (Größen), `.Effects.cs` (Lebendig/Wetter) | Steuerspalte; Schalter folgen `availability` aus der Bridge |
+| `KlimacontrolTray/ChartMath.cs`, `EnergyMath.cs`, `TemperatureScale.cs`, `WindowLayoutMath.cs` | reine Rechnung ohne WPF, Spiegel von `ChartAxis`, `MainWindowLayout`, Modus-Läufen und der Soll-Skala; gegen die Tabellen in `Tests/Shared/` geprüft |
+| `KlimacontrolTray/AppearancePreview.cs` | Vorschau oben im Reiter „Darstellung“ (wie am Mac); Kühlen/Heizen gilt nur in der Vorschau, an die Anlage geht nichts |
+| `KlimacontrolTray/WhatsNewWindow.cs` | Fenster „Neu in Klimacontrol …“ (780 breit, Höhe nach Inhalt, höchstens 90 % des Arbeitsbereichs) |
 | `KlimacontrolTray/FlyoutWindow.*`, `TrayIcon.cs`, `NotifyArea.cs`, `Icons.cs` | Schnellsteuerung am Infobereich und Symbol |
 | `KlimacontrolTray/MiniWindow.*` | Mini-Fenster |
 | `KlimacontrolTray/SettingsWindow.*` | Einstellungen (gleiche Reiter wie am Mac), je Reiter eine partial-Datei (`SettingsWindow.General.cs` …), `SettingsTab` |
@@ -241,10 +249,11 @@ Vertrag in Abschnitt 8.
 | `KlimacontrolTray/ConnectingView.*` | Anzeige „verbindet …“ beim Start |
 | `KlimacontrolTray/Appearance.cs`, `Theme.cs`, `Backdrop.cs`, `AmbientLayer.cs`, `Surface.cs`, `SizeScale.cs`, `Layout.cs` | Darstellung (Mica/Acrylic, Themen, Größen, Effekte) |
 | `KlimacontrolTray/Prefs.cs`, `Shortcuts.cs`, `Dialogs.cs`, `DialogWindow.cs`, `ClickCheckBox.cs` | Fenster-Einstellungen, Tastenkürzel (Strg+Alt+K), Dialoge, Haken mit Click auch per Sprachausgabe |
-| `KlimacontrolTray/Updates.cs` | WinSparkle (Updates): Feed und Intervall aus dem Kern, Schlüssel aus `tools/UPDATE_PUBLIC_KEY`, nur bei Setup-Installation aktiv; `KLIMACONTROL_UPDATE_TEST_FEED` (nur `http://127.0.0.1:<port>/…`) biegt den Feed zum Prüfen um (`TestFeedOverride`) |
+| `KlimacontrolTray/Updates.cs` | WinSparkle (Updates): Feed und Intervall aus dem Kern, Schlüssel aus `tools/UPDATE_PUBLIC_KEY`, nur bei Setup-Installation aktiv; `KLIMACONTROL_UPDATE_TEST_FEED` (nur `http://127.0.0.1:<port>/…`) biegt den Feed zum Prüfen um (`TestFeedOverride`); Installer-Rückruf für „Updates automatisch installieren“ aus (10.2) |
+| `KlimacontrolTray/UpdateHold.cs` | zurückgehaltenes Update (`HeldUpdate`, `held.json` im Ordner `update` der Ablage): Kopie des Setups mit SHA-256, Erinnerungszeit, Version aus dem Dateinamen; nichts wird gelöscht, nur umbenannt |
 | `KlimacontrolTray/Klimacontrol.ico` | Programmsymbol (aus `tools/AppIcon.icns`, `tools/make_ico.ps1`) |
 | `installer/Klimacontrol.iss` | Setup (Inno Setup 6): ohne Administratorrechte nach `%LOCALAPPDATA%\Programs\Klimacontrol`, Startmenü und Desktop |
-| `KlimacontrolTray.Tests/` | `CoreTests`, `LayoutTests`, `ThemeTests`, `AppearanceTextTests`, `LocalizationTests`, `UpdatesTests` (Test-Feed nur Loopback), `VertragTests` + `Vertrag/bridge-muster.json` |
+| `KlimacontrolTray.Tests/` | `CoreTests`, `CoreRulesTests` (Regeln kommen aus der Bridge), `LayoutTests`, `WindowLayoutMathTests`, `ChartMathTests`, `EnergyMathTests`, `TemperatureScaleTests`, `ThemeTests`, `AppearanceTextTests`, `LocalizationTests`, `ModelFelderTests`, `UpdatesTests` (Test-Feed nur Loopback), `UpdateHoldTests`, `VertragTests` + `Vertrag/bridge-muster.json` |
 
 ### 2.6 `tools/`
 
@@ -349,7 +358,8 @@ baut es trotzdem. Keine `.swiftpm/`-, `*.xcodeproj`- oder sonstigen Werkzeug-Ord
 ## 5. Sicherheits- und Verhaltensregeln (verbindlich)
 
 - **Die echte Anlage nicht verstellen.** Zum Prüfen nur lesen (Zustand, Diagnose, Suche). Kein Ein/Aus, kein Modus,
-  keine Temperatur, keine Timer, keine Szenen, kein „Leistung begrenzen“ ohne ausdrücklichen Auftrag.
+  keine Temperatur, keine Timer, keine Szenen, kein „Leistung begrenzen“ ohne ausdrücklichen Auftrag. Ablauf eines
+  freigegebenen Versuchs und Regeln für Screenshots: 6.11.
 - **Keine Cloud-Anmeldung auslösen** und keine Passwörter eingeben, speichern oder ausgeben. Jede Anmeldung kann die
   Sitzung eines anderen Geräts entwerten („Konto anderswo eingeloggt“); zu viele Anmeldungen können das Konto sperren.
 - **Geheimnisse** (Token, Schlüssel, Passwort, Cloud-Sitzung, Zugangsdaten-Sicherungen) nie loggen, nie in Dateien
@@ -422,12 +432,12 @@ Meldung), Nutzdaten, Prüfsumme; die Nutzdaten tragen eine CRC8. Wichtige Nutzda
 | Befehl | Kennung | Bemerkung |
 |---|---|---|
 | Zustand abfragen | `0x41 0x81 …` | Antwort `0xC0` = Grundzustand |
-| Fähigkeiten | `0xB5 0x01 0x00` | 2 Seiten, ausgewertet wie msmart-ng |
+| Fähigkeiten | `0xB5 0x01 0x00` (zweite Seite `0xB5 0x01 0x01`) | bis zu 2 Seiten, ausgewertet wie msmart-ng (6.9) |
 | Gruppen-Daten (Diagnose) | `0x41 0x21 0x01 0x40\|Gruppe` | Gruppen 0–7, 12 |
 | Anzeige am Gerät umschalten | `0x41 0x02\|Ton …` | nur Umschalten, kein fester Zustand |
 | Eigenschaften lesen | `0xB1 n id…` | Antwort `0xB1` |
 | Eigenschaft setzen | `0xB0 1 id len wert` | Antwort `0xB0` |
-| Zustand setzen | `0x40 …` | Ein/Aus, Modus, Soll, Lüfter, Schwenken, Eco, Turbo, Ionisierer, Frostschutz; Schlafmodus = Byte 10 Bit 0x01 (live 2026-11-12: wird übernommen und in 0xC0 zurückgemeldet, beim Heizen sank das Verdichter-Soll sofort von 80 auf 52 Hz; nicht eingebaut) |
+| Zustand setzen | `0x40 …` | Ein/Aus, Modus, Soll, Lüfter, Schwenken, Eco, Turbo, Ionisierer, Frostschutz, Schlafmodus (Byte 10 Bit 0x01, seit 1.3.0.0 eingebaut; live 2026-11-12: wird übernommen und in 0xC0 zurückgemeldet, beim Heizen sank das Verdichter-Soll sofort von 80 auf 52 Hz) |
 
 Eigenschaften (`PropertyId`): `0x0039` Selbstreinigung, `0x0048` Leistung begrenzen, `0x00CD` Außengerät leise
 (Wert 3 = an), `0x00E3` iECO, `0x022C` Signalton. Modi: 1 Auto, 2 Kühlen, 3 Trocknen, 4 Heizen, 5 Lüften.
@@ -483,6 +493,102 @@ Maßgeblich ist immer, was die Anlage zurückmeldet (z. B. „Leistung begrenzen
 - Unbekannte gespeicherte Wege werden beim Start zu „Automatisch“. Bluetooth bietet die Anlage nicht als
   Steuerkanal; `bleSerial` in `device.json` wird nur mitgeführt.
 
+### 6.9 Fähigkeiten der Anlage (0xB5, `ACCapabilities`)
+
+- **Wann gelesen:** einmal je Anlage nach der ersten gelungenen Abfrage (`ACController.readCapabilitiesOnce` →
+  `PortaSplitDevice.readCapabilities`), nur lesend, je Seite eine Abfrage ohne Wiederholung. Ein Fehler sperrt das WLAN
+  nicht; ohne Antwort bleibt `ACState.capabilities` nil („Fähigkeiten der Anlage: keine Antwort“ im Protokoll). Spätere
+  Zustände tragen die Fähigkeiten mit (`PortaSplitDevice` und `FakeDevice` gleich).
+- **Lesart:** Je Eintrag Kennung (2 Byte, little endian), Länge, Daten; Länge 0 wird übersprungen, ein abgeschnittener
+  Eintrag beendet die Seite. Bleiben mehr als ein Byte übrig, sagt das vorletzte, ob eine zweite Seite folgt (wie
+  msmart-ng). Ungefragte 0xB5-Meldungen (Rahmentyp 0x05) zählen nicht. Protokollzeile: „Fähigkeiten der Anlage (iECO
+  …): `0039=01 0048=01 …`“ (`ACCapabilities.summary`, Kennung=Wert in hex).
+- **Dreiwertig, nie raten:** Jede Funktion ist `Bool?`. `nil` = nicht gemeldet bzw. Fähigkeiten unbekannt → die
+  Modusregel (6.10) gilt allein, nichts wird zusätzlich gesperrt. `true` = vorhanden → Modusregel. `false` = die Anlage
+  meldet die Funktion als nicht vorhanden → in keinem Modus frei, Kurzinfo „Diese Anlage unterstützt … nicht“
+  (`L.Availability.unsupported`). Eine Funktion nie nur deshalb sperren, weil die Kennung fehlt.
+
+| Kennung | Funktion (`ACCapabilities`) | vorhanden bei Byte 0 = | Bemerkung |
+|---|---|---|---|
+| `0x0039` | `selfClean` | 1 | |
+| `0x0048` | `rateSelect`, `rateSelectLevels` | 1 → 2 Stufen, 2/3 → 5 Stufen, sonst 0 | 0 Stufen = nicht vorhanden |
+| `0x0051` | `parentControl` | 1 (Annahme, msmart-ng liest es nicht aus) | Kindersicherung, nicht eingebaut |
+| `0x00CD` | `outSilent` | 1, 3 | Außengerät leise |
+| `0x00E3` | `ieco`, `iecoEnd`, `iecoCool`, `iecoHeat`, `iecoNumber` | Kühlen: Byte 0 ∈ {1, 3, 8} oder Byte 1 ∈ {1, 2, 8}; Heizen: Byte 0 ∈ {3, 4, 8} oder Byte 1 ∈ {2, 3, 8} | `iecoNumber` = erstes Datenbyte beim Setzen (8 ECOMaster, 3 bei Byte 1 = 1–3, sonst 1) |
+| `0x0212` | `eco` | 1, 2 | |
+| `0x0213` | `freezeProtection` | 1 | |
+| `0x0215` | `swingVertical` / `swingHorizontal` | 0, 1 / 1, 3 | die App bietet nur senkrecht |
+| `0x021A` | `turboCool` / `turboHeat` | 0, 1 / 1, 3 | Turbo je Modus |
+| `0x021E` | `anion` | 1 | Ionisierer |
+| `0x0224` | `displayControl` | 1, 2, 100 | Anzeige am Gerät |
+| `0x022C` | `sound` | 1 | Signalton |
+
+Der Schlafmodus hat keine Kennung (`supported(.sleep)` ist immer nil). **Gemessen an der PortaSplit** (Protokoll,
+festgeschrieben in `DisplayCatalogTests.testPortaSplitCapabilitiesLockNothing`):
+
+```
+0039=01 0048=01 0051=01 00cd=03 00e3=01 0210=01 0212=01 0213=01 0214=01 0215=00 0216=04 0217=02
+021a=01 021e=01 021f=00 0224=01 0225=203c203c203c00 022c=01
+```
+
+Damit sperren die Fähigkeiten an der PortaSplit nichts, was ohne sie frei wäre – einzige Ausnahme iECO (`00e3=01` = nur
+Kühlen). `0048=01` = zwei Stufen (75/50 %), `0215=00` = nur senkrecht. `0210`, `0214`, `0216`, `0217`, `021f`, `0225`
+wertet die App nicht aus (msmart-ng: u. a. Modi, Temperaturgrenzen 16–30 °C in `0225`).
+
+Neue Fähigkeit auswerten: Kennung und Lesart aus msmart-ng `CapabilitiesResponse` übernehmen, in `ACCapabilities` als
+`Bool?`, Fall in `UIOptions.supported`, Test in `CapabilitiesTests` (je Wert) und `DisplayCatalogTests`
+(PortaSplit-Liste darf nichts Neues sperren).
+
+### 6.10 Schalter je Modus
+
+Einzige Quelle ist `UIOptions.isAvailable(_:in:capabilities:)`; `availability(_:mode:capabilities:)` liefert dazu
+`enabled` und die Kurzinfo `why`. `setMode`, `setEco`, `setTurbo`, `setSleep`, die Lüfter-Zonen (`fanZones`) und die
+Bridge (`availability`, 8.3) benutzen dieselbe Regel; Oberflächen prüfen nichts selbst. Lehnt die Anlage etwas trotzdem
+ab, gilt der zurückgemeldete Zustand (6.5).
+
+| Schalter | Kühlen | Heizen | Trocknen | Auto | Lüften | Fähigkeit | Beleg |
+|---|---|---|---|---|---|---|---|
+| Eco | ✓ | – | – | – | – | `0x0212` | Regel des Kerns seit 1.0 (nicht gesondert gemessen); schaltet Turbo ab |
+| Turbo | ✓ (`turboCool`) | ✓ (`turboHeat`) | – | – | – | `0x021A` | msmart-ng (Turbo je Modus); Zone rechts am Lüfterregler; schaltet Eco ab |
+| Außengerät leise | ✓ | ✓ | – | – | – | `0x00CD` | Messung 2026-11-12 (Heizen: Wert 3 senkt den Außenlüfter, 1/2 abgelehnt, Anhang D); Zone links am Lüfterregler |
+| Frostschutz | – | ✓ | – | – | – | `0x0213` | Fähigkeiten der PortaSplit (8 °C, nur Heizen, Anhang C) |
+| iECO | ✓ (ohne Meldung: ✓) | nur mit `iecoHeat` | – | – | – | `0x00E3` | Midea-App an der PortaSplit („nur im Kühlmodus“), msmart-ng `ieco_cool`/`ieco_heat` |
+| Leistung begrenzen | ✓ | – | – | – | – | `0x0048` | Midea-App an der PortaSplit; `rateAvailability`, eigene Regel außerhalb `ComfortFeature` |
+| Schlafmodus | ✓ | ✓ | – | – | – | keine | Messung 2026-11-12 (Heizen, Verdichter-Soll sank); Kühlen nicht gemessen |
+| Schwenken (senkrecht) | ✓ | ✓ | ✓ | ✓ | ✓ | `0x0215` | nur Fähigkeit sperrt |
+| Ionisierer | ✓ | ✓ | ✓ | ✓ | ✓ | `0x021E` | nur Fähigkeit sperrt |
+| Selbstreinigung | ✓ | ✓ | ✓ | ✓ | ✓ | `0x0039` | nur Fähigkeit sperrt |
+| Anzeige (am Gerät) | ✓ | ✓ | ✓ | ✓ | ✓ | `0x0224` | nur Umschalten (6.4), nur Fähigkeit sperrt |
+| Signalton | ✓ | ✓ | ✓ | ✓ | ✓ | `0x022C` | nur Fähigkeit sperrt |
+
+Weitere Regeln außerhalb der Tabelle:
+
+- **Lüfter gesperrt** beim Trocknen (`UIOptions.fanLocked`, Text `fanLockedText` „regelt die Anlage beim Trocknen“);
+  Bridge `availability["fan"]`.
+- **Solltemperatur** stellbar nur bei eingeschalteter Anlage und nicht beim Lüften (`UIText.targetAdjustable`); daran
+  hängen auch ⌘↑/⌘↓ bzw. Strg+↑/↓. Bridge `availability["target"]`.
+- **Lüfter-Zonen** (`FanZones`: `quiet`, `turbo`) je einzeln nach Modus und Fähigkeit; ohne Fähigkeiten beide beim
+  Kühlen und Heizen. Am Mac erscheinen nur vorhandene Zonen, Windows bekommt bisher nur `fanZonesAvailable` (16).
+- Turbo, das die Anlage nur im anderen Modus hat, bekommt den Grund `unsupportedInMode`
+  („Diese Anlage unterstützt „Turbo“ in diesem Modus nicht“).
+
+### 6.11 Live-Tests an der Anlage
+
+Grundsatz bleibt 5: nur lesen. Ein Versuch, der die Anlage stellt (z. B. eine neue Eigenschaft prüfen), braucht die
+**ausdrückliche Freigabe des Autors** für genau diesen Versuch und hält sich an dessen Grenzen (Modus, Dauer, Werte).
+
+1. **Vorher:** Windows-App, installierte Mac-App und alle Test-Apps beenden bzw. vom Autor beenden lassen – die
+   Anlage nimmt nur eine WLAN-Verbindung an (6.3). Keine Leseschleifen nebenher (auch kein `query_msmart.py` im Takt).
+2. **Ausgangszustand festhalten** (Ein/Aus, Modus, Soll, Lüfter, Schalter, Eigenschaften) und im Bericht nennen.
+3. **Werkzeug außerhalb des Projekts** (Scratch- oder Temp-Ordner), nie im Repo, keine Zugangsdaten in Dateien oder
+   Ausgaben; die Zugangsdaten nur über die vorhandene Ablage lesen.
+4. Einzelne Befehle mit Abstand (≥ 2 s, 6.3), jede Antwort prüfen (Statusbyte, zurückgemeldeter Wert).
+5. **Danach den Ausgangszustand wiederherstellen** und per Abfrage bestätigen; Ergebnis mit Messgrundlage in Anhang D
+   bzw. 6.4 eintragen.
+6. **Screenshots der laufenden App:** keine Klicks auf Bedienelemente, auch nicht „zum Aktivieren“ des Fensters – ein
+   Fehlklick hat die Anlage schon einmal ausgeschaltet. Fenster per Fenster-ID fotografieren (`screencapture -l <ID>`)
+   und nur über Menübefehle oder Tastenkürzel ohne Wirkung auf die Anlage aktivieren.
+
 ---
 
 ## 7. Kern (`KlimacontrolCore`)
@@ -504,11 +610,14 @@ der Initialisierer mit Einzelparametern (`ACController(appVersion:settings:paths
 
 Wichtige Eigenschaften: `state` (letzter `ACState`), `diagnostics`, `connectionState`, `busy`, `staleSince`,
 `message` (Fehlerzeile), Notiz (`showNotice`/`clearNotice`), `displayName`, `refreshSeconds`, `pricePerKWh`,
-`connectionMode`, `beep`, `historyCSV`, `cloudConfigured`, `appearance`, `setup` (`SetupFlow`).
+`connectionMode`, `beep`, `historyCSV`, `cloudConfigured`, `appearance`, `setup` (`SetupFlow`), `fanZones`
+(Lüfter-Zonen aus Modus und Fähigkeiten, 6.10), `detailedLog`/`detailedLogNotice` (7.10), `updateAutoInstall`,
+`updateInterval` (9.5).
 
 Wichtige Aktionen: `refresh()`/`refreshNow()`, `setPower`, `setMode`, `setTemperature`, `nudgeTemperature(by:)`,
-`setFan(_:now:)`, `setFanQuiet`, `setFanTurbo`, `setEco`, `setTurbo`, `setOutdoorSilent`, `setSelfClean`, `setIECO`,
-`toggleDisplay`, `setRate`, `setSound`, `update { … }` (beliebige Zustandsänderung), `debounced(_:_:)`,
+`setFan(_:now:)`, `setFanQuiet`, `setFanTurbo`, `setEco`, `setTurbo`, `setSleep`, `setOutdoorSilent`, `setSelfClean`,
+`setIECO`, `toggleDisplay`, `setRate`, `setSound`, `update { … }` (beliebige Zustandsänderung; prüft keine Modusregel,
+darum Oberflächen und Bridge nie direkt damit schalten lassen), `debounced(_:_:)`, `setDetailedLog`,
 Timer (7.3), Szenen (`apply`, `saveCurrentAsScene`, `deleteScene`, `isActive`), `cloudLogin`/`cloudLogout`,
 `importBackupChecked`, `exportBackup`, `forgetDevice` (Neu einrichten), `relocate()` (Adresse neu suchen),
 `setAppearance`, `applyTheme`, `resetAppearance`, `stop()`.
@@ -564,6 +673,8 @@ sobald sie im selben Netz antwortet.
 - `gesamt_kwh` ist erst ab dem Merker „Zähler binär ab“ richtig; davor gilt nur `zaehler_roh` × 0,01 kWh. Ältere
   Fassungen schrieben im Aus-Zustand 10,0 °C außen als Platzhalter (wird beim Mitteln ausgefiltert).
 - Optional zusätzlich `verlauf.csv` alle 30 s (`historyCSV`, Standard aus).
+- Seit 1.3.0.0 letzte Spalte `fehlercode` (0 = keiner; ältere Zeilen leer). Sie kam per ALTER TABLE dazu; eine vorhandene
+  `verlauf.csv` mit alter Kopfzeile wurde dabei beiseitegelegt (Muster für jede neue Spalte).
 - Export: technische Form (ISO 8601 mit Zone, Spaltennamen wie Anhang B, immer deutsch) oder lesbare Form (Spaltennamen
   mit Einheit, Modus-Namen und Dezimalzeichen nach Sprache der Oberfläche bzw. Format, Ortszeit). Beide lassen sich
   wieder einlesen; der Import erkennt die deutsche und die englische lesbare Form sowie beide Dezimalzeichen. Die
@@ -586,6 +697,11 @@ sobald sie im selben Netz antwortet.
 `loginItemDefaultOn` (Mac: „Beim Anmelden starten“ schon einmal eingetragen), `lastOpenedColumn` und `columnsBeforeFullScreen` (Mac: zuletzt geöffnete Seitenspalte; Spalten vor dem Vollbild). Mac: in
 `UserDefaults` (Domäne `de.mlafx.klimacontrol`), Windows: über die Bridge im Kern gespeichert (`UserDefaults.standard` von swift-corelibs-foundation, Datei `%LOCALAPPDATA%\Klimacontrol.exe.plist` – der Name folgt dem Prozessnamen; seit 1.0 so, darum nicht verlegen, das Setup legt den Namen der exe fest). Neue Schlüssel immer
 in `SettingsKey` anlegen, nie als String-Literal in einer Oberfläche.
+
+- `updateAutoInstall` (Bool, Standard an = `AppUpdate.autoInstallDefault`) und `updateInterval` (`UpdateInterval`
+  `daily`/`weekly`, Standard täglich; `seconds` = 86400 bzw. 604800) gelten auf beiden Plattformen (9.5, 10.2).
+- Das ausführliche Protokoll ist **keine** Einstellung mehr: Bis 1.2 lag es unter dem Schlüssel `debugLog`; `AppLog`
+  entfernt den Schlüssel beim ersten Zugriff (nicht in Testprozessen; Migration bis 2027-06-01, dann Code entfernen).
 
 ### 7.8 Darstellung (`Appearance`)
 
@@ -645,6 +761,21 @@ Alle übrigen Anzeigetexte, Auswahllisten, Grenzen, Gültigkeitsregeln und Rück
 (`UIOptions`, `UIText`, `ACController+DisplayText`); Oberflächen halten keine eigenen Texte oder Regeln. Neue Texte
 zuerst dort anlegen und in `DisplayCatalogTests` wörtlich festschreiben, dann über die Bridge an Windows geben.
 
+### 7.10 Protokoll: ausführlich je Sitzung, Fehlercode
+
+- **Ausführliches Protokoll** (Rahmen in hex, Suche, Cloud-Anfragen, Verbindungsschritte) gilt seit 1.3.0.0 nur für die
+  laufende Sitzung: `AppLog.debugEnabled` liegt nur im Speicher (Standard aus), `ACController.setDetailedLog(_:)`
+  schaltet und protokolliert das Umschalten. Grund: Mit Debug waren ~96 % der Zeilen DEBUG, die Rotation (5 MB)
+  überschrieb den Tag nach wenigen Stunden, und ein vergessener Schalter blieb dauerhaft an.
+- Solange es an ist, liefert `detailedLogNotice` den Dauerhinweis „Ausführliches Protokoll aktiv“
+  (`L.Main.DetailedLog.notice`); Mac zeigt ihn dezent im Hauptfenster (`ContentView`), Windows über das
+  Schnappschuss-Feld `debugLogNotice`. Der Bridge-Befehl heißt weiter `debugLog(on)`, das Feld `debugLog`.
+- **Fehlercode der Anlage** (0xC0 Byte 16 → `ACState.errorCode`): `noteErrorCode` schreibt jeden Wechsel ins Protokoll –
+  ein neuer Code als `WARNUNG`/`WARNING` mit Leistung und Verdichterfrequenz als Zusammenhang, das Verschwinden als
+  normale Zeile. Der erste Wert 0 nach dem Start wird nicht protokolliert, ein unveränderter Code nicht wiederholt.
+  Zusätzlich steht der Code in jeder Verlaufszeile (`fehlercode`, Anhang B) und in der Diagnose
+  (`UIText.errorCodeValue`, Wartungshinweis `maintenanceHints`). Tests: `ErrorCodeTests`.
+
 ---
 
 ## 8. Bridge (C-Schnittstelle für Windows)
@@ -690,7 +821,7 @@ gleichen beide ab.
 | Gruppe | Befehle (Parameter) |
 |---|---|
 | Bedienung | `refresh`, `power(on)`, `mode(value)`, `temp(value)`, `nudgeTemp(delta)`, `fan(value, now?)`, `fanQuiet(now?)`, `fanTurbo(now?)` |
-| Schalter | `swing(on)`, `eco(on)`, `turbo(on)`, `purifier(on)`, `freezeProtection(on)`, `outdoorSilent(on)`, `selfClean(on)`, `ieco(on)`, `display`, `rate(value)`, `sound(on)` |
+| Schalter | `swing(on)`, `eco(on)`, `turbo(on)`, `purifier(on)`, `freezeProtection(on)`, `outdoorSilent(on)`, `selfClean(on)`, `ieco(on)`, `sleep(on)` (seit 1.3.0.0, `setSleep`), `display`, `rate(value)`, `sound(on)` |
 | Szenen | `applyScene(id)`, `deleteScene(id)`, `saveScene(name)` |
 | Timer | `offTimer(minutes?)`, `onTimer(hour, minute)` bzw. `onTimer(at?)` |
 | Einstellungen | `connectionMode(value)`, `displayName(value)`, `refreshSeconds(value)`, `price(value)`, `language(value)`, `currency(value)`, `debugLog(on)`, `historyCSV(on)`, `updateAutoInstall(on)`, `updateInterval(value)`, `diagnosticsVisible(on)`, `uiVisible(id, visible)` |
@@ -717,6 +848,24 @@ kommen dazu `outdoorSmooth` je Verlaufspunkt, `line` in `kc_history_stats_json` 
 sind über gemeinsame Tabellen unter `Tests/Shared/` abgesichert (Achsen, Zeitmarken, Graphenhöhen, Modus-Läufe, Fensterlayout). `options.energy` trägt Arten,
 Überschrift, Hilfe und Legende des Verbrauchs. Zeitabhängige Texte (`connectionLine`, `offTimerChip`,
 `nextRefreshLine`) stehen nur in `kc_live_json`, weil der Schnappschuss nur bei Änderungen neu gelesen wird.
+
+**Neu in 1.3.0.0 (additiv, `bridgeAPIVersion` bleibt 3):**
+
+| Feld / Befehl | Inhalt |
+|---|---|
+| `availability.<feature>` | je `ComfortFeature` (`swing`, `eco`, `turbo`, `outdoorSilent`, `ieco`, `purifier`, `freezeProtection`, `selfClean`, `display`, `sound`, `sleep`) `{enabled, why}` aus `ACController.availability` (Modus und Fähigkeiten, 6.10) |
+| `availability.fan` | Lüfterregler gesperrt beim Trocknen, `why` = `fanLockedText` |
+| `availability.target` | Solltemperatur stellbar (`UIText.targetAdjustable`); Windows sperrt danach −/+, Skala und Strg+↑/↓ |
+| `availability.rate` | „Leistung begrenzen“ (`rateAvailability`); fehlt ohne Zustand der Anlage |
+| `sleep` (im Zustand), Befehl `sleep(on)` | Schlafmodus |
+| `fanZonesAvailable` | mindestens eine Lüfter-Zone frei (einzelne Zonen noch nicht im Vertrag, 16) |
+| `debugLog`, `debugLogNotice` | ausführliches Protokoll an, Hinweistext oder nil (7.10) |
+| `updateAutoInstall`, `updateInterval` (`daily`/`weekly`), `updateCheckInterval` (Sekunden, folgt `updateInterval`) | Update-Einstellungen; Befehle `updateAutoInstall(on)`, `updateInterval(value)` |
+| `options.updates` | Titel und Hilfe der beiden Einstellungen, `intervals`, Hinweis „Update bereit“ (`heldBackTitle`, `heldBackMessageTemplate`/`heldBackStatusTemplate` mit `{version}`, `installNow`, `later`), `reminderSeconds` (24 h) |
+
+Windows liest diese Regeln nur aus dem Schnappschuss und hält keine eigenen Modusregeln (`CoreRulesTests`: Zahl im
+Infobereich, Lüftersperre, Soll, Schlafmodus). Jedes neue Feld steht zugleich in `bridge-muster.json`
+(`BridgeContractTests`) und in `Model.cs` (`ModelFelderTests`: die Musterwerte kommen im Modell an).
 
 Ergebnisse langlaufender Befehle (Anmeldung, Einrichtung, Adresse neu suchen, Sicherung einlesen, Export) stehen im
 Schnappschuss mit eigenem Zähler (`loginSeq`, `setupSeq`, `relocateSeq`, `importSeq`) und Ergebnisfeld.
@@ -793,6 +942,15 @@ der Tastaturnavigation); unter Windows gilt Strg+↑/↓.
 - Farben/Schriften kommen aus `ThemeStyle` (Umgebung `\.klimaTheme`), Karten über `.klimaCard`, Leuchten über
   `.klimaGlow`. Keine fest verdrahteten Farben in Ansichten.
 - Liquid Glass (`.glassEffect`) nur hinter `#available(macOS 26, *)`, darunter `.ultraThinMaterial`.
+- **Karten (`KlimaCard` in `ThemeModifiers.swift`), vier Zweige in dieser Reihenfolge:** (1) `cardFillOpacity` > 0
+  (Matt, Kontrast): deckende Fläche, Tönung darüber. (2) `plainLightCards` (macOS 26, hell, Glas ohne „kräftig“ und ohne
+  hohe Unschärfe) und nicht interaktiv: dieselbe helle Fläche wie die Karten von Verlauf und Diagnose
+  (`lightCardFill`/`lightCardStroke`), Tönung dezent darüber – klares Glas hellte große Flächen sonst fast bis Weiß auf.
+  (3) macOS 26 sonst: Glas; große Flächen und wenig Unschärfe als klares Glas mit leichter Abdunklung im Dunkeln (das
+  normale Glas legte dort eine fast deckende dunkle Schicht auf), eingeschaltete Knöpfe im Hellen kräftiger getönt
+  (weiße Schrift blieb sonst blass), bei „Glas kräftig“ bzw. hoher Unschärfe Material in der Karte. (4) macOS 15:
+  Material. Wer hier ändert, prüft hell **und** dunkel, Glas und Glas kräftig, Transparenz niedrig und hoch, aktives
+  Fenster (14.3a).
 - **Glas-Container:** `GlassContainer` (GlassEffectContainer) liegt INNERHALB der Scroll-Ansicht der Steuerspalte und
   getrennt um die Fußzeile. Außen gezeichnet ragt Liquid Glass ohne Zuschnitt über die Fußzeile (`.clipped()`/`.mask`
   helfen nicht).
@@ -884,8 +1042,8 @@ nach einem neuen Build nicht erneut nach Freigaben (Netzwerk, Schlüsselbund); a
 - Bedienung: Einstellungen → Allgemein → „Updates“ (Version, „Jetzt suchen …“, Status mit „Jetzt neu starten“ bzw.
   „Jetzt installieren“, „Updates automatisch installieren“, „Nach Updates suchen“, Beta) und Menü Klimacontrol → „Nach
   Updates suchen …“. Kein Schalter, der die Suche abschaltet. Ohne Bundle (`swift run`) ist Sparkle aus.
-- Windows: Die beiden Einstellungen kommen über die Bridge (`updateAutoInstall`, `updateInterval`, `options.updates`);
-  die Umsetzung mit WinSparkle (`win_sparkle_set_user_run_installer_callback`) ist noch offen.
+- Windows: dieselben beiden Einstellungen über die Bridge (`updateAutoInstall`, `updateInterval`, `options.updates`),
+  umgesetzt mit WinSparkles Installer-Rückruf und `UpdateHold` (10.2).
 - **Rückmeldung nach manueller Suche:** Mac zeigt einen `NSAlert` („aktuell“ bzw. „hat nicht geklappt“) nur bei einer vom
   Nutzer ausgelösten Suche (`userInitiated`); Hintergrundsuchen bleiben still. Windows zeigt das über die
   WinSparkle-Oberfläche (`win_sparkle_check_update_with_ui`).
@@ -917,7 +1075,8 @@ nach einem neuen Build nicht erneut nach Freigaben (Netzwerk, Schlüsselbund); a
 - Updates über **WinSparkle 0.9.4** (`res\WinSparkle.dll`, Prüfsumme fest im Skript) mit demselben Appcast-Format und
   Schlüssel wie Sparkle am Mac. Aktiv nur bei Installation per Setup (Uninstall-Eintrag zeigt auf den Programmordner);
   aus dem ZIP gestartet ist der Abschnitt „Updates“ ausgegraut. Das Setup ist nicht Authenticode-signiert
-  (SmartScreen-Hinweis beim ersten Start); die Echtheit der Updates sichert die EdDSA-Signatur.
+  (SmartScreen-Hinweis beim ersten Start); die Echtheit der Updates sichert die EdDSA-Signatur. Einstellungen und
+  Zurückhalten ohne automatische Installation: 10.2.
 - `Klimacontrol.exe` ist bewusst intern komprimiert (`EnableCompressionInSingleFile=true`, Entscheidung des Autors):
   auf der Platte ~67 statt ~150 MB, das ZIP bleibt gleich groß; dafür entpackt .NET bei jedem Start alles in den
   eigenen Speicher (gemessen: Start +0,25 s, privater Speicher +61 MB, Arbeitssatz +97 MB). Nicht ohne Rückfrage ändern. Ebenfalls ohne Gewinn
@@ -940,6 +1099,27 @@ Cloud-Sync-Ordnern. Die fertige App braucht weder Swift noch .NET installiert. U
 MideaKit-Tests als am Mac (zuletzt 130 statt 137), weil einige nur auf Darwin übersetzt werden (u. a.
 `LANLoopbackTests`, der echte TCP-Weg gegen 127.0.0.1).
 
+### 10.2 Updates unter Windows (WinSparkle, `Updates.cs`, `UpdateHold.cs`)
+
+- Start: Suche erzwungen an (`win_sparkle_set_automatic_check_for_updates(1)`), `SkipThisVersion` gelöscht, Intervall aus
+  `updateCheckInterval` (wirkt spätestens ab dem nächsten Start), zusätzlich eine stille Suche 15 s nach dem Start.
+- **Automatisch installieren an:** Der Installer-Rückruf (`win_sparkle_set_user_run_installer_callback`) antwortet 0,
+  WinSparkle startet das Setup selbst (`InstallerArguments` = `/SILENT /SP- /SUPPRESSMSGBOXES /NORESTART
+  /CLOSEAPPLICATIONS`, dieselben wie `sparkle:installerArguments` im Appcast) und bittet die App ums Beenden.
+- **Aus:** Der Rückruf (auf WinSparkles Thread) kopiert das geprüfte Setup nach `%LOCALAPPDATA%\Klimacontrol\update\`
+  (WinSparkle löscht seinen Download-Ordner beim nächsten Start), vergleicht die SHA-256 der Kopie, merkt Version
+  (aus dem Dateinamen `Klimacontrol-Windows-<Version>-Setup.exe`, sonst Dateiversion), Prüfsumme und Erinnerungszeit in
+  `held.json` und antwortet 1. Die folgende Beenden-Bitte von WinSparkle wird einmal übergangen (`skipShutdown`).
+  Hinweis „Update bereit · Jetzt installieren · Später“ (Texte aus `options.updates`), nicht über anderen Rückfragen;
+  ein Takt prüft jede Minute. „Später“ = Erinnerung nach `reminderSeconds` (24 h, mindestens 60 s). „Jetzt
+  installieren“ prüft die Prüfsumme erneut (sonst beiseitelegen, Warnung, neue Suche), startet das Setup mit denselben
+  Schaltern und beendet die App ohne Timer-Rückfrage.
+- Beim Start wird ein gemerktes Update weiter angeboten, wenn es neuer ist als die laufende Fassung; sonst (schon
+  installiert) wird es mit Zeitstempel beiseitegelegt. Nichts wird gelöscht.
+- Grenzen: WinSparkle prüft die Signatur des Setups, nicht der Update-Datei; ein zurückgehaltenes Setup ist danach nur
+  über SHA-256 gegen Veränderung geschützt. Bei „aus“ erscheint WinSparkles Fenster bei jeder Suche. Tests:
+  `UpdateHoldTests`, `UpdatesTests`.
+
 ---
 
 ## 11. Tests
@@ -948,10 +1128,10 @@ MideaKit-Tests als am Mac (zuletzt 130 statt 137), weil einige nur auf Darwin ü
 
 | Ziel | Dateien (Auswahl) |
 |---|---|
-| `MideaKitTests` | `TestSupport` (Vektoren, `Locked`, `TestClock`, `TestFrames`, `FakeTransport`), `MideaKitTests` (Rahmen, Antworten), `TransportTests` (Wegwahl, Sperren), `PortaSplitDeviceTests` (Gerät mit Fake-Transport), `CloudTests`, `RobustnessTests` (kaputte Rahmen), `PlatformTests` (Krypto-Vektoren, Schlüsselbund), `ConcurrencyTests`, `LANLoopbackTests` (echter TCP-Weg gegen 127.0.0.1, nur Darwin), `TestIsolationTests`, `vectors.json` |
-| `KlimacontrolCoreTests` | `TestSupport` (`CoreTestCase`, `FakeDevice`, `SpyPlatform`, `MemorySettings`, `waitUntil`, `AsyncGate`), `KlimacontrolCoreTests`, `ControllerTests`, `HistoryTests` (Spalten, Kopfzeilen wörtlich, Rundläufe), `LogTextTests` (Schlüssel und deutscher Text in MideaKit gegen den Katalog, Übersetzer), `DisplayCatalogTests` (Anzeige-Katalog wörtlich), `ACControllerUITests`, `SetupTests`, `SetupFlowTests`, `TimerEnergyTests`, `EnergyPeriodTests` (Verbrauch je Zeitraum, Sommerzeit, Zählerwechsel), `AppearanceTests`, `VersionTests` (CHANGELOG-Kopf = `tools/VERSION`), `ThirdPartyNoticesTests` (Swift-Texte = `docs/THIRD_PARTY_NOTICES.md`), `AppUpdateTests` (Feed, Intervall und Schlüssel passen zu `build_app.sh`), `ReleaseProtectionTests` (D1-Werte wörtlich, Abschnitt 14.1), `ReleaseScriptTests` (startet `tools/test_make_release.py`, nur Mac), `LocalizerTests`, `StringsCatalogTests`, `FormatProfileTests` (liest `Tests/Shared/rounding-table.json`), `ChartAxisTests` (liest `Tests/Shared/chart-axis-table.json`), `SettingsFileCheckTests`, `AppVersionTests`, `ChangelogParityTests`, `SettingsLocaleTests`, `DisplayNamesTests`, `AppLanguageTests`, `HistoryLanguageTests`, englische Teststände je Bereich (`MessageEnglishTests`, `PromptEnglishTests`, `OptionsEnglishTests`, `StatusEnglishTests`, `SetupEnglishTests`), `EnglishLeakTests` (kein Deutsch im englischen Katalog und in allen gesammelten Anzeigetexten, Pseudo-Sprache findet Texte am Katalog vorbei, Protokollzeilen folgen der Sprache der Oberfläche), `AppSourceTextsTests` (kein deutscher Text in `Sources/KlimacontrolApp`) |
-| `KlimacontrolBridgeTests` | `BridgeDisplayTests` (Katalog-Felder), `BridgeContractTests`: jedes Feld des echten Schnappschusses steht in `bridge-muster.json` (Gegenrichtung zu `VertragTests`); `BridgeCommandTests`: Parametertypen, Meldungen, Befehlsnamen gegen `Cmd` in C#; `BridgeEnergyTests` (`kc_energy_json`), `BridgeLocaleTests` (`kc_set_locale`, `kc_strings_json`, Befehle `language`/`currency`), `BridgeEnglishTests`, `BridgeWhatsNewTests` |
-| Windows (C#) | `CoreTests`, `LayoutTests`, `ThemeTests`, `AppearanceTextTests` (Darstellung wie am Mac), `LocalizationTests` (Textschlüssel und Katalog), `VertragTests` (Schnappschuss, Befehlsnamen, Anzeige-Katalog, keine eigenen Listen/Grenzen in der Oberfläche) |
+| `MideaKitTests` | `TestSupport` (Vektoren, `Locked`, `TestClock`, `TestFrames`, `FakeTransport`), `MideaKitTests` (Rahmen, Antworten), `CapabilitiesTests` (0xB5 zerlegen, jede Kennung je Wert wie msmart-ng), `TransportTests` (Wegwahl, Sperren), `PortaSplitDeviceTests` (Gerät mit Fake-Transport), `CloudTests`, `RobustnessTests` (kaputte Rahmen), `PlatformTests` (Krypto-Vektoren, Schlüsselbund), `ConcurrencyTests`, `LANLoopbackTests` (echter TCP-Weg gegen 127.0.0.1, nur Darwin), `TestIsolationTests`, `vectors.json` |
+| `KlimacontrolCoreTests` | `TestSupport` (`CoreTestCase`, `FakeDevice`, `SpyPlatform`, `MemorySettings`, `waitUntil`, `AsyncGate`), `KlimacontrolCoreTests`, `ControllerTests`, `HistoryTests` (Spalten, Kopfzeilen wörtlich, Rundläufe), `LogTextTests` (Schlüssel und deutscher Text in MideaKit gegen den Katalog, Übersetzer), `DisplayCatalogTests` (Anzeige-Katalog wörtlich), `ACControllerUITests`, `SetupTests`, `SetupFlowTests`, `TimerEnergyTests`, `EnergyPeriodTests` (Verbrauch je Zeitraum, Sommerzeit, Zählerwechsel), `AppearanceTests`, `ErrorCodeTests` (Fehlercode in Protokoll und Verlauf), `HistoryChartTests`, `SharedTableTests` (Tabellen unter `Tests/Shared/` gegen den Kern), `TimerDayTests`, `VersionTests` (CHANGELOG-Kopf = `tools/VERSION`), `ThirdPartyNoticesTests` (Swift-Texte = `docs/THIRD_PARTY_NOTICES.md`), `AppUpdateTests` (Feed, Intervall und Schlüssel passen zu `build_app.sh`), `ReleaseProtectionTests` (D1-Werte wörtlich, Abschnitt 14.1), `ReleaseScriptTests` (startet `tools/test_make_release.py`, nur Mac), `LocalizerTests`, `StringsCatalogTests`, `FormatProfileTests` (liest `Tests/Shared/rounding-table.json`), `ChartAxisTests` (liest `Tests/Shared/chart-axis-table.json`), `SettingsFileCheckTests`, `AppVersionTests`, `ChangelogParityTests`, `SettingsLocaleTests`, `DisplayNamesTests`, `AppLanguageTests`, `HistoryLanguageTests`, englische Teststände je Bereich (`MessageEnglishTests`, `PromptEnglishTests`, `OptionsEnglishTests`, `StatusEnglishTests`, `SetupEnglishTests`), `EnglishLeakTests` (kein Deutsch im englischen Katalog und in allen gesammelten Anzeigetexten, Pseudo-Sprache findet Texte am Katalog vorbei, Protokollzeilen folgen der Sprache der Oberfläche), `AppSourceTextsTests` (kein deutscher Text in `Sources/KlimacontrolApp`) |
+| `KlimacontrolBridgeTests` | `BridgeDisplayTests` (Katalog-Felder), `BridgeContractTests`: jedes Feld des echten Schnappschusses steht in `bridge-muster.json` (Gegenrichtung zu `VertragTests`); `BridgeCommandTests`: Parametertypen, Meldungen, Befehlsnamen gegen `Cmd` in C#; `BridgeEnergyTests` (`kc_energy_json`), `BridgeLocaleTests` (`kc_set_locale`, `kc_strings_json`, Befehle `language`/`currency`), `BridgeEnglishTests`, `BridgeWhatsNewTests`, `BridgeChartFieldsTests` (Felder der Windows-Graphen), `WindowsSettingsCheckTests` |
+| Windows (C#) | `CoreTests`, `CoreRulesTests` (Regeln aus `availability`/`menuTitle`), `LayoutTests`, `WindowLayoutMathTests`, `ChartMathTests`, `EnergyMathTests`, `TemperatureScaleTests` (gegen `Tests/Shared/`), `ThemeTests`, `AppearanceTextTests` (Darstellung wie am Mac), `LocalizationTests` (Textschlüssel und Katalog), `ModelFelderTests` (Musterwerte kommen im Modell an), `UpdatesTests`, `UpdateHoldTests` (zurückgehaltenes Update), `VertragTests` (Schnappschuss, Befehlsnamen, Anzeige-Katalog, keine eigenen Listen/Grenzen in der Oberfläche) |
 
 Stand zuletzt (12.11.2026, nach Release 1.3.0.0): Mac 700 Tests (MideaKit 151, Kern 498, Bridge 55; 2 übersprungen, beide bewusst: Live-Scan, echter
 Schlüsselbund). Windows zuletzt MideaKit 144, Kern 496, Bridge 61 und 350 C#-Tests. Zeitzonen-Tests nehmen eine feste Zone (`TimeZone(identifier:)`) oder die Ortszeit über
@@ -1153,6 +1333,13 @@ Muster: „What happened. What to do. (code)“. „Klimacontrol“ und „Porta
    `--add <teil.json> <schlüssel> <de> <en> <kommentar>` legt einen einfachen Text an, und `python3 tools/sync_strings.py
    --merge-parts` führt die Teile in den Hauptkatalog (Teile kommen in den Papierkorb). Im Normalbetrieb bleibt
    `l10n/parts/` leer (nur `.gitkeep`).
+   **Fallstrick OneDrive:** Eine schon zusammengeführte Teil-Datei kann auf dem anderen Rechner noch liegen und per Sync
+   „wiederauferstehen“; `sync_strings.py` meldet dann doppelte Schlüssel (Teil und Hauptkatalog). Vor jedem Lauf
+   `ls l10n/parts/` prüfen; eine Teil-Datei, deren Schlüssel schon im Hauptkatalog stehen, mit dem Hauptkatalog
+   vergleichen und dann in den Papierkorb legen (nicht hart löschen), nie die Einträge im Hauptkatalog entfernen.
+   **Windows ändert weder `l10n/Localizable.xcstrings` noch `l10n/parts/`:** Neue oder geänderte Texte meldet der
+   Windows-Agent mit Schlüssel, deutschem und englischem Text und Kommentar über den Briefkasten; der Mac legt sie an,
+   führt `sync_strings.py` aus und meldet zurück. Nur so bleibt ein Schreiber für den Katalog.
 9. Rohtext aus MideaKit entsteht über `LogText.t` in der Sprache der Oberfläche (Protokoll, Detailzeile); Anzeige immer über Kern und Katalog. Neuer Text im Englischen:
    Glossar oben, Satz-Großschreibung, kein deutsches Wort oder Zeichen – `EnglishLeakTests` prüft den ganzen Katalog.
 
@@ -1401,7 +1588,20 @@ Vor dem Bau am fertigen Bündel prüfen (Anlage nur lesen, 5):
 - Alle Einstellungsreiter, Menüleiste, Mini-Fenster.
 - Englisch (`-AppleLanguages '(en)'`) und Pseudo-Sprache (`KLIMACONTROL_PSEUDO=1`): nichts abgeschnitten oder unübersetzt.
 - Grafikspeicher beim Größenändern und Umschalten der Spalten (`footprint <PID>`), keine Dauerspitzen.
-- Vorher UserDefaults sichern (`defaults export`), nachher zurückspielen.
+- Vorher UserDefaults sichern (`defaults export de.mlafx.klimacontrol <Datei>`), nachher zurückspielen
+  (`defaults import de.mlafx.klimacontrol <Datei>`): Testinstanzen teilen die Domäne mit der installierten App, und
+  jede Änderung an Thema, Größe oder Spalten bleibt sonst beim Autor hängen.
+- Glas hell **und** dunkel prüfen: Die Karten nehmen je nach Hell/Dunkel, Hintergrund und Unschärfe verschiedene Zweige
+  von `KlimaCard` (9.3); im hellen Glas müssen Steuerkarten genauso hell wirken wie die Karten von Verlauf und
+  Diagnose, eingeschaltete Knöpfe kräftig getönt, im dunklen Glas bei durchscheinendem Fenster nicht fast deckend.
+- Screenshots nur mit **aktivem** Fenster (macOS 26 nimmt inaktiven Fenstern die Glas-Tönung, Kacheln wirken blass),
+  per Fenster-ID (`screencapture -l <ID>`), ohne Klick auf Bedienelemente (6.11). Vor dem Einchecken auf Namen,
+  Adressen und Konten prüfen (5).
+- Fenster „Neu in Klimacontrol …“: Mac 760 pt breit, Text bis 720 pt hoch scrollend; Windows 780 breit, Höhe nach
+  Inhalt bis 90 % des Arbeitsbereichs. Mit dem längsten CHANGELOG-Abschnitt in beiden Sprachen ansehen
+  (`lastSeenVersion` zurücksetzen), nichts abgeschnitten, OK-Knopf sichtbar.
+- Windows-Gegenstück (Windows-Agent): dieselben Punkte mit `KLIMACONTROL_CULTURE=en-US`, Vorschau im Reiter
+  „Darstellung“, Infobereich und Schnellsteuerung.
 
 ### 14.4 Release Schritt für Schritt
 
@@ -1436,6 +1636,26 @@ Ab hier nur auf ausdrückliches Kommando des Autors (veröffentlicht):
 Das Windows-Setup baut der Windows-Agent auf Anfrage über den Briefkasten (Schritt 6); die SHA-256 der Datei auf dem Mac
 immer gegen seine Meldung vergleichen (Schritt 7), bevor `make_release.py` läuft.
 
+**Lehren aus dem Release 1.3.0.0 (verbindlich):**
+
+- **Befehle ab Schritt 9 einzeln ausführen und jedes Ergebnis prüfen**, nie mit `&&`/`;` ungeprüft verketten. Nach
+  `gh pr merge` erst `gh pr view <Nr> --repo mlafx/Klimacontrol --json state,mergeCommit` lesen: `state` muss `MERGED`
+  sein, der Merge-Commit wird notiert. Scheitert der Merge (z. B. Konflikt), entsteht sonst ein Tag auf dem alten
+  `main`.
+- **Konflikte mit `main` vorher auflösen:** Hat `main` Commits, die im Entwicklungszweig fehlen (1.3: README und
+  `VersionTests` aus der Zeit nach 1.2), vor dem Release `main` in den Entwicklungszweig zusammenführen (Merge-Commit,
+  kein Rebase), Tests laufen lassen, dann erst den Pull Request. `gh pr view … --json mergeable` muss `MERGEABLE` sein.
+- **Vor dem Tag den Baum vergleichen:** `git fetch origin` und `git diff --stat <Release-Commit> origin/main` muss leer
+  sein (der Merge-Commit trägt genau den gebauten Stand). Erst dann `git tag -a v<Version> … origin/main`. Ein falscher
+  Tag lässt sich nicht verschieben (14.2).
+- **D3 mit beiden Schalterstellungen:** Mac und Windows je mit „Updates automatisch installieren“ an (stilles Laden,
+  „Jetzt neu starten · Später“) und aus („Update bereit · Jetzt installieren · Später“, nichts beim Beenden
+  installiert), dazu „Später“ einmal wirklich ausprobieren.
+- **Abschlusstest (Schritt 14) über das echte `latest`**, nicht über den Test-Feed: installierte Vorversion starten,
+  „Nach Updates suchen …“, bis zur neuen Fassung durchlaufen lassen, „Neu in …“ prüfen. Achtung Mac 1.2.0.0: Läuft
+  Sparkles stiller Download im Hintergrund schon, meldet eine Suche von Hand fälschlich „Klimacontrol ist aktuell“. Dann
+  warten (oder die App neu starten) und erneut suchen, bevor man einen Fehler meldet.
+
 Notbremse: `python3 tools/make_release.py --rollback v<Version> v<vorige>` zeigt die zwei `gh release edit`-Befehle, mit
 `--execute` werden sie ausgeführt (D4). Die Korrektur kommt als nächste Fehlerbehebungs-Version; nichts löschen, keine Tags verschieben.
 
@@ -1452,7 +1672,9 @@ nach `main`, das Vorabrelease zeigt auf den Entwicklungszweig; die erste Beta le
    Themen-Verhalten und `AppearanceTests` mitpflegen).
 2. Eigenschaft in `ACController` mit Klemmen/Prüfen im Setter, Protokollzeile, ggf. `restartPolling()`.
 3. Test im Kern (Speichern, Laden, Grenzwerte).
-4. Bridge: Feld im Schnappschuss + Befehl in `kc_command` (Pflichtparameter!), `bridge-muster.json` ergänzen;
+4. Bridge: Feld im Schnappschuss + Befehl in `kc_command` (Pflichtparameter!), `bridge-muster.json` und `Model.cs`
+   ergänzen; Befehlsname in `BridgeCommands.swift` und `Cmd` (C#); gilt ein Schalter nicht in jedem Modus, Regel in
+   `UIOptions.isAvailable` und Feld über `availability` (6.10), nie als Regel in einer Oberfläche;
    bei Bedeutungsänderung `bridgeAPIVersion` erhöhen.
 5. Mac: Steuerelement im passenden Reiter; Windows: dasselbe im selben Reiter mit demselben Text.
 6. CHANGELOG (Abschnitt der laufenden Version), beide Builds.
@@ -1492,7 +1714,8 @@ Gruppe/Byte in `Diagnostics` und `Response` lesen, in `HistorySample`/CSV-Kopf n
   und wachem Rechner).
 - „Außengerät leise“ wirkt nur beim Kühlen/Heizen.
 - Ohne Midea-Konto kann die App Token/Schlüssel nicht selbst holen.
-- Nicht eingebaut: Schlafmodus (funktioniert laut Live-Test, 6.4), Kindersicherung (0x0051). „Leise“-Stufen innen/beide (0x00CD Werte 1/2) lehnt die PortaSplit ab (Anhang D).
+- Nicht eingebaut: Kindersicherung (0x0051). „Leise“-Stufen innen/beide (0x00CD Werte 1/2) lehnt die PortaSplit ab
+  (Anhang D). Schlafmodus ist seit 1.3.0.0 eingebaut (6.4, 6.10).
 - Windows, helles Glas im Thema Standard: graue Texte und die große Zahl haben auf dem Glas wenig Kontrast (mit
   „Matt“ deutlich mehr). Bewusst so belassen, das Aussehen des Standard-Themas bleibt; nicht als Fehler verfolgen.
 - „Leistung begrenzen“ bleibt bewusst bei beiden Stufen (75 und 50 %); maßgeblich ist der zurückgemeldete Wert (6.5).
@@ -1504,7 +1727,7 @@ Gruppe/Byte in `Diagnostics` und `Response` lesen, in `HistorySample`/CSV-Kopf n
   Bridge meldet nur `fanZonesAvailable` (mindestens eine Zone). Windows zeigt darum beide Zonen, sobald eine geht;
   eine Zone ohne Fähigkeit bewirkt dort nichts (der Kern lehnt sie ab). Ein eigenes Feld je Zone folgt mit dem Vertrag.
 - WinSparkle: Das Update-Fenster erscheint erst nach dem ersten Klick; bei ausgeschalteter automatischer Installation kommt es
-  bei jeder Suche (gewollt).
+  bei jeder Suche (gewollt). Grenzen von „Updates automatisch installieren: aus“ stehen in 9.5 (Mac) und 10.2 (Windows).
 - Windows: Die Einstellungen in `%LOCALAPPDATA%\Klimacontrol.exe.plist` liest swift-corelibs-foundation; ist die Datei
   kaputt oder von einem anderen Werkzeug umgeschrieben, gelten still alle Standardwerte (seit 1.0 so). Die Datei nur als
   Text ändern, nie mit einer XML-Bibliothek neu schreiben. Robusteres Lesen ist für später vorgemerkt.
@@ -1570,6 +1793,9 @@ Sprachen. Die technische Form und die Datenbank bleiben deutsch.
 | Wert | Quelle |
 |---|---|
 | Grundzustand | Antwort 0xC0 auf Abfrage 0x41 |
+| Schlafmodus | 0xC0 Byte 10 Bit 0x01 |
+| Fehlercode | 0xC0 Byte 16 (0 = keiner) |
+| Fähigkeiten | Antwort 0xB5, bis zu zwei Seiten (6.9) |
 | Außengerät leise / Selbstreinigung / iECO / Signalton / Leistung begrenzen | Eigenschaften 0x00CD / 0x0039 / 0x00E3 / 0x022C / 0x0048 |
 | Leistung W | Gruppe 4, Byte 16–18, binär / 10 |
 | Zählerstand kWh | Gruppe 4, Byte 4–7, binär, 0,01 kWh je Schritt |
@@ -1580,7 +1806,7 @@ Sprachen. Die technische Form und die Datenbank bleiben deutsch.
 | Verdichterleistung | Gruppe 7 |
 | Gerätekennung | Eigenschaft 0x00AB (ASCII Modell-/Firmwarecode) |
 
-Fähigkeiten (0xB5) der PortaSplit: Modi Kühlen/Heizen/Trocknen/Auto (+ Lüften), Schwenken nur vertikal, Ionisierer,
+Fähigkeiten (0xB5) der PortaSplit (Rohliste und Auswertung in 6.9): Modi Kühlen/Heizen/Trocknen/Auto (+ Lüften), Schwenken nur vertikal, Ionisierer,
 Filtererinnerung, Turbo bei Kühlen und Heizen, Lüfter stufenlos, 16–30 °C ohne Nachkommastellen, Anzeige,
 Leistungsbegrenzung (2 Stufen), Signalton, Verbrauchsmessung binär, Selbstreinigung, iECO, Frostschutz (8 °C, nur
 Heizen), Kindersicherung, „Leise“ (Stufe 3). Keine Feuchte, keine Zusatzheizung, kein horizontales Schwenken.
