@@ -124,7 +124,7 @@ public sealed class Snapshot
     /// Statische Auswahllisten, Grenzen, Standardwerte und feste Rückfragen.
     public OptionsInfo Options { get; set; } = new();
     /// Gültigkeit der Schalter im aktuellen Modus je Schalter (swing, eco, turbo, outdoorSilent, ieco, purifier,
-    /// freezeProtection, selfClean, display); fehlt ein Schlüssel, gilt der Schalter.
+    /// freezeProtection, selfClean, sleep, display); fehlt ein Schlüssel, gilt der Schalter.
     public Dictionary<string, AvailabilityInfo> Availability { get; set; } = new();
     /// Kurzinfo der Verbindungszeile (die Zeile selbst steht zeitabhängig in kc_live_json).
     public string ConnectionTooltip { get; set; } = "";

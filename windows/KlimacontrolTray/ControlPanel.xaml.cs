@@ -23,7 +23,7 @@ public partial class ControlPanel : UserControl
     readonly Dictionary<int, Button> modeTiles = new();
     readonly Dictionary<int, string> modeLabels = new();
     readonly Button swingTile, ecoTile, turboTile, silentTile;
-    readonly Button ieco, purifier, freeze, clean, display, sound;
+    readonly Button ieco, sleep, purifier, freeze, clean, display, sound;
     readonly Dictionary<int, RadioButton> rateButtons = new();
     bool updating;
     DateTime lastTempDrag;
@@ -34,6 +34,7 @@ public partial class ControlPanel : UserControl
     const string Sparkles = "M7,2 L8.2,5.8 L12,7 L8.2,8.2 L7,12 L5.8,8.2 L2,7 L5.8,5.8 Z M12.5,10.5 L13,12 L14.5,12.5 L13,13 L12.5,14.5 L12,13 L10.5,12.5 L12,12 Z";
     const string SnowflakeCircle = "M8,1.5 A6.5,6.5 0 1 1 7.99,1.5 Z M8,4.5 V11.5 M5,6.25 L11,9.75 M11,6.25 L5,9.75";
     const string Bubbles = "M5.5,6 A3,3 0 1 1 5.49,6 Z M11.5,8.8 A2.2,2.2 0 1 1 11.49,8.8 Z M11,2.5 A1.5,1.5 0 1 1 10.99,2.5 Z";
+    const string Moon = "M10.5,2 A6,6 0 1 0 14,10.5 A4.8,4.8 0 0 1 10.5,2 Z";
     const string Speaker = "M2,6 H4.5 L8,3 V13 L4.5,10 H2 Z M10.5,5.5 Q12.5,8 10.5,10.5";
     const string DisplayDashed = "M2,4 H5 M7,4 H9 M11,4 H14 V6.5 M14,9.5 V12 H11 M9,12 H7 M5,12 H2 V9.5 M2,6.5 V4";
 
@@ -82,12 +83,13 @@ public partial class ControlPanel : UserControl
         foreach (var t in new[] { swingTile, ecoTile, turboTile, silentTile }) ComfortGrid.Children.Add(t);
 
         ieco = Row(L.T("main.comfort.ieco"), GaugeLow, () => Toggle(Cmd.Ieco, s => s.Ieco == true));
+        sleep = Row(L.T("main.comfort.sleep"), Moon, () => Toggle(Cmd.Sleep, s => s.Sleep));
         purifier = Row(L.T("main.comfort.ionizer"), Sparkles, () => Toggle(Cmd.Purifier, s => s.Purifier));
         freeze = Row(L.T("main.comfort.frostProtection"), SnowflakeCircle, () => Toggle(Cmd.FreezeProtection, s => s.FreezeProtection));
         clean = Row(L.T("main.comfort.selfClean"), Bubbles, () => _ = SelfClean());
         display = Row(L.T("main.comfort.display"), DisplayDashed, () => Core.Send(Cmd.Display));
         sound = Row(L.T("main.comfort.sound"), Speaker, () => Toggle(Cmd.Sound, s => s.Sound ?? Core.Snap.Beep));
-        foreach (var r in new[] { ieco, purifier, freeze, clean, display, sound }) MoreGrid.Children.Add(r);
+        foreach (var r in new[] { ieco, sleep, purifier, freeze, clean, display, sound }) MoreGrid.Children.Add(r);
         RateIcon.Content = Icons.Make(GaugeHigh, 14, null, 1.4);
 
         BuildFan();
@@ -488,6 +490,7 @@ public partial class ControlPanel : UserControl
         Feature(turboTile, s, "turbo", st.Turbo, tint);
         Feature(silentTile, s, "outdoorSilent", st.OutSilent == true, tint);
         Feature(ieco, s, "ieco", st.Ieco == true, tint);
+        Feature(sleep, s, "sleep", st.Sleep, tint);
         Feature(purifier, s, "purifier", st.Purifier, tint);
         Feature(freeze, s, "freezeProtection", st.FreezeProtection, tint);
         Feature(clean, s, "selfClean", st.SelfClean == true, tint);

@@ -103,7 +103,7 @@ public partial class ControlPanel
         }
         ComfortPanel.Margin = new Thickness(0, D(12, 6), 0, 0);
         MorePanel.Margin = new Thickness(0, D(14, 8), 0, 0);
-        foreach (var r in new[] { ieco, purifier, freeze, clean, display, sound }) r.Height = D(34, 30);
+        foreach (var r in new[] { ieco, sleep, purifier, freeze, clean, display, sound }) r.Height = D(34, 30);
         RateRow.Margin = new Thickness(0, D(10, 6), 0, 0);
         Scenes.Compact = compact;
         Timers.Compact = compact;

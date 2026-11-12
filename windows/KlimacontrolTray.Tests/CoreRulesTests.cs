@@ -6,7 +6,7 @@ using Xunit;
 namespace KlimacontrolTray.Tests;
 
 /// Regeln, die die Oberfläche vom Kern übernimmt: Zahl im Infobereich aus `menuTitle`, Lüftersperre aus `availability`,
-/// Soll verstellbar aus `availability["target"]`.
+/// Soll verstellbar aus `availability["target"]`, Schlafmodus aus `state.sleep` und `availability["sleep"]`.
 public class CoreRulesTests
 {
     [Theory]
@@ -65,5 +65,17 @@ public class CoreRulesTests
         Assert.False(ControlPanel.TargetAdjustable(s));
         s.Availability.Remove("target");
         Assert.False(ControlPanel.TargetAdjustable(s));
+    }
+
+    [Fact]
+    public void SchlafmodusAusZustandUndAvailabilityDesKerns()
+    {
+        var s = Muster();
+        Assert.False(s.State!.Sleep);
+        Assert.True(s.IsEnabled("sleep"));
+        Assert.False(string.IsNullOrEmpty(s.Why("sleep")));
+        s.Availability["sleep"] = new AvailabilityInfo { Enabled = false, Why = "x" };
+        Assert.False(s.IsEnabled("sleep"));
+        Assert.Equal("x", s.Why("sleep"));
     }
 }

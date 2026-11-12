@@ -19,8 +19,8 @@ sealed class WhatsNewWindow : Window
     {
         Title = "Klimacontrol";
         ResizeMode = ResizeMode.NoResize;
-        Width = 480;
-        MaxHeight = Math.Max(320, SystemParameters.WorkArea.Height * 0.7);
+        Width = 780;
+        MaxHeight = Math.Max(320, SystemParameters.WorkArea.Height * 0.9);
         SizeToContent = SizeToContent.Height;
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
         ShowInTaskbar = true;
