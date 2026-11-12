@@ -199,7 +199,7 @@ final class EnergyPeriodTests: XCTestCase {
         XCTAssertEqual(UIOptions.energyKindDefault, .day)
         XCTAssertEqual(UIText.energyTitle, "Verbrauch")
         XCTAssertEqual(UIText.energyHelp, "Verbrauch laut Zähler der Anlage. Die Kosten rechnen mit dem Strompreis aus den Einstellungen, auch für frühere Zeiträume.")
-        XCTAssertEqual(UIText.energyLegend, "Heller Balken: Zeitraum läuft noch · ca.: aus Messwerten, Zähler unbekannt · …: Lücke im Verlauf. Mit der Maus über einen Balken fahren zeigt Verbrauch und Kosten.")
+        XCTAssertEqual(UIText.energyLegend, "Uhr: Zeitraum läuft noch · blasser Balken: ca., aus Messwerten geschätzt, Zähler unbekannt · …: Lücke im Verlauf. Mit der Maus über einen Balken fahren zeigt Verbrauch und Kosten.")
         XCTAssertEqual(UIText.energyNoData, "Noch zu wenig Daten – der Verbrauch füllt sich, sobald der Verlauf Zählerstände enthält.")
 
         let day = EnergyPeriod(start: local(11, 2), end: local(11, 3), kWh: 4.2, measuredKWh: 4.1, complete: true, current: false)

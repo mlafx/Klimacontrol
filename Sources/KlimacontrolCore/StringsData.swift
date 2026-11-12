@@ -5292,13 +5292,13 @@ extension StringsData {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Heller Balken: Zeitraum läuft noch · ca.: aus Messwerten, Zähler unbekannt · …: Lücke im Verlauf. Mit der Maus über einen Balken fahren zeigt Verbrauch und Kosten."
+            "value" : "Uhr: Zeitraum läuft noch · blasser Balken: ca., aus Messwerten geschätzt, Zähler unbekannt · …: Lücke im Verlauf. Mit der Maus über einen Balken fahren zeigt Verbrauch und Kosten."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Light bar: period still running · approx.: from measurements, meter unknown · …: gap in the history. Hover over a bar to see consumption and cost."
+            "value" : "Clock: period still running · pale bar: approx., estimated from measurements, meter unknown · …: gap in the history. Hover over a bar to see consumption and cost."
           }
         }
       }
@@ -30193,7 +30193,7 @@ public enum L {
             /// Wk {week}
             public static func week(week: String) -> String { Localizer.text("energy.label.week", ["week": week]) }
         }
-        /// Light bar: period still running · approx.: from measurements, meter unknown · …: gap in the history…
+        /// Clock: period still running · pale bar: approx., estimated from measurements, meter unknown · …: ga…
         public static var legend: String { Localizer.text("energy.legend") }
         public enum Name {
             /// {weekday}, {month} {day}

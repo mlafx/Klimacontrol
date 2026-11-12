@@ -144,7 +144,7 @@ struct EnergyBar: Equatable, Identifiable {
         valueText = UIText.energyBarValue(p, barCount: count)
     }
 
-    /// Nicht nur über die Farbe erkennbar: zusätzlich ein Zeichen über dem Balken (`marker`).
+    /// Geschätzte Balken („ca.“) sind nur blasser; die Legende erklärt das, ein Text über jedem Balken liefe bei vielen Balken ineinander.
     var opacity: Double {
         if current { return 0.4 }
         if fromMeasurement { return 0.5 }
@@ -236,14 +236,12 @@ struct EnergyBars: View, Equatable {
         }
     }
 
-    /// Zeichen (läuft noch, ca., Lücke) über dem Wert: nicht nur über die Farbe erkennbar.
+    /// Zeichen (läuft noch, Lücke) über dem Wert.
     private func marker(_ b: EnergyBar) -> some View {
         VStack(spacing: 0) {
             if b.current {
                 Image(systemName: "clock")
-            } else if b.fromMeasurement {
-                Text(L.Charts.approxMarker)
-            } else if !b.complete {
+            } else if !b.complete, !b.fromMeasurement {
                 Text("…")
             }
             if let v = b.valueText {
