@@ -9,7 +9,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 `1.0.0.1`, Fehlerbehebung → `1.0.1.0`, Neues → `1.1.0.0`, Änderungen, die Einrichtung oder Daten unbrauchbar machen →
 `2.0.0.0`.
 
-## [1.3.0.0] – in Arbeit
+## [1.3.0.0] – 2026-11-12
 
 ### Hinzugefügt
 - Schlafmodus als Schalter unter „Weitere Funktionen“ (nur beim Kühlen und Heizen).
@@ -135,7 +135,7 @@ Erste öffentliche Fassung für Mac und Windows.
 Newest version first; sections "Added", "Changed", "Fixed", "Removed"; English, from the user's point of view.
 Versions have four parts, major.features.fixes.build. Earlier versions are available in German only.
 
-## [1.3.0.0] – in progress
+## [1.3.0.0] – 2026-11-12
 
 ### Added
 - Sleep as a switch under “More features” (cooling and heating only).

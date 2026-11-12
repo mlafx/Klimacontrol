@@ -3,7 +3,7 @@
 Newest version first; sections "Added", "Changed", "Fixed", "Removed"; English, from the user's point of view.
 Versions have four parts, major.features.fixes.build. Earlier versions are available in German only.
 
-## [1.3.0.0] – in progress
+## [1.3.0.0] – 2026-11-12
 
 ### Added
 - Sleep as a switch under “More features” (cooling and heating only).
