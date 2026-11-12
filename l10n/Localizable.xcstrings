@@ -973,6 +973,24 @@
         }
       }
     },
+    "availability.rate" : {
+      "comment" : "Kurzinfo an „Leistung begrenzen“, wenn gesperrt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistung begrenzen gilt nur beim Kühlen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limit power only applies when cooling"
+          }
+        }
+      }
+    },
     "availability.selfClean" : {
       "comment" : "Kurzinfo Selbstreinigung",
       "extractionState" : "manual",
@@ -22209,6 +22227,60 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Keyboard"
+          }
+        }
+      }
+    },
+    "settings.general.windows.updateHeldInvalid" : {
+      "comment" : "Windows: Meldung, wenn die Prüfsumme des zurückgehaltenen Updates vor der Installation nicht mehr stimmt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das geladene Update ist beschädigt und wurde beiseitegelegt. Klimacontrol sucht erneut nach Updates. (update-checksum)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The downloaded update is damaged and was set aside. Klimacontrol is checking for updates again. (update-checksum)"
+          }
+        }
+      }
+    },
+    "settings.general.windows.updateStartFailed" : {
+      "comment" : "Windows: Meldung, wenn das Setup des zurückgehaltenen Updates nicht startet",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Update ließ sich nicht starten. Später erneut „Jetzt installieren“ wählen. (update-start)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The update could not be started. Choose “Install now” again later. (update-start)"
+          }
+        }
+      }
+    },
+    "settings.general.windows.updatesHeldLimit" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Updates, Grenze von WinSparkle unter dem Hilfetext",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unter Windows erscheint bei einem neuen Update zuerst immer das Update-Fenster; „Update installieren“ lädt es dort. Still im Hintergrund laden kann Klimacontrol unter Windows nicht. Ist „Updates automatisch installieren“ aus, wird das geladene Update erst nach „Jetzt installieren“ installiert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On Windows, a new update always first shows the update window; “Install update” downloads it there. Klimacontrol cannot download updates silently on Windows. With “Install updates automatically” off, the downloaded update is installed only after “Install now”."
           }
         }
       }

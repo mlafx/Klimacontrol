@@ -176,7 +176,7 @@ public enum UIOptions {
     }
 
     /// Einzige Quelle für „gilt im Modus“: Eco nur Kühlen, Turbo und Außengerät leise nur Kühlen/Heizen, Frostschutz
-    /// nur Heizen, iECO nicht beim Lüften (`iecoAvailable`). `setMode`, `setEco`, `setTurbo` und die Lüfter-Zonen
+    /// nur Heizen, iECO nur beim Kühlen (`iecoAvailable`). `setMode`, `setEco`, `setTurbo` und die Lüfter-Zonen
     /// benutzen dieselbe Regel. `capabilities`: Fähigkeiten der Anlage, nil = unbekannt.
     public static func isAvailable(_ f: ComfortFeature, in mode: OperationalMode,
                                    capabilities: ACCapabilities? = nil) -> Bool {
@@ -189,17 +189,20 @@ public enum UIOptions {
         }
     }
 
-    /// iECO wie in midea-ac-py (`preset_modes`): Kühlen und Trocknen nach „ieco_cool“, Heizen nach „ieco_heat“,
-    /// Auto nach einem von beiden, Lüften nie. Ohne gemeldete iECO-Fähigkeit gilt es in allen Modi außer Lüften.
+    /// iECO nur beim Kühlen (wie die Midea-App an der PortaSplit: „Nur im Kühlmodus verfügbar“), beim Heizen nur, wenn
+    /// die Anlage „ieco_heat“ meldet (msmart-ng). Ohne gemeldete iECO-Fähigkeit gilt es beim Kühlen.
     static func iecoAvailable(in mode: OperationalMode, capabilities: ACCapabilities?) -> Bool {
-        guard mode != .fan else { return false }
-        guard let c = capabilities, c.reportsIECO else { return true }
+        let c = capabilities.flatMap { $0.reportsIECO ? $0 : nil }
         switch mode {
-        case .cool, .dry: return c.iecoCool
-        case .heat: return c.iecoHeat
-        case .auto: return c.iecoCool || c.iecoHeat
-        case .fan: return false
+        case .cool: return c?.iecoCool ?? true
+        case .heat: return c?.iecoHeat ?? false
+        case .dry, .auto, .fan: return false
         }
+    }
+
+    /// „Leistung begrenzen“ nur beim Kühlen (wie die Midea-App an der PortaSplit).
+    public static func rateAvailability(mode: OperationalMode) -> Availability {
+        Availability(enabled: mode == .cool, why: L.Availability.rate)
     }
 
     public static func availability(_ f: ComfortFeature, mode: OperationalMode,

@@ -977,6 +977,24 @@ extension StringsData {
         }
       }
     },
+    "availability.rate" : {
+      "comment" : "Kurzinfo an „Leistung begrenzen“, wenn gesperrt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistung begrenzen gilt nur beim Kühlen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limit power only applies when cooling"
+          }
+        }
+      }
+    },
     "availability.selfClean" : {
       "comment" : "Kurzinfo Selbstreinigung",
       "extractionState" : "manual",
@@ -22217,6 +22235,60 @@ extension StringsData {
         }
       }
     },
+    "settings.general.windows.updateHeldInvalid" : {
+      "comment" : "Windows: Meldung, wenn die Prüfsumme des zurückgehaltenen Updates vor der Installation nicht mehr stimmt",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das geladene Update ist beschädigt und wurde beiseitegelegt. Klimacontrol sucht erneut nach Updates. (update-checksum)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The downloaded update is damaged and was set aside. Klimacontrol is checking for updates again. (update-checksum)"
+          }
+        }
+      }
+    },
+    "settings.general.windows.updateStartFailed" : {
+      "comment" : "Windows: Meldung, wenn das Setup des zurückgehaltenen Updates nicht startet",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Update ließ sich nicht starten. Später erneut „Jetzt installieren“ wählen. (update-start)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The update could not be started. Choose “Install now” again later. (update-start)"
+          }
+        }
+      }
+    },
+    "settings.general.windows.updatesHeldLimit" : {
+      "comment" : "Windows: Einstellungen → Allgemein → Updates, Grenze von WinSparkle unter dem Hilfetext",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unter Windows erscheint bei einem neuen Update zuerst immer das Update-Fenster; „Update installieren“ lädt es dort. Still im Hintergrund laden kann Klimacontrol unter Windows nicht. Ist „Updates automatisch installieren“ aus, wird das geladene Update erst nach „Jetzt installieren“ installiert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On Windows, a new update always first shows the update window; “Install update” downloads it there. Klimacontrol cannot download updates silently on Windows. With “Install updates automatically” off, the downloaded update is installed only after “Install now”."
+          }
+        }
+      }
+    },
     "settings.general.windows.updatesSetupOnly" : {
       "comment" : "Windows: Einstellungen → Allgemein → Updates, wenn nicht per Setup installiert",
       "extractionState" : "manual",
@@ -27029,6 +27101,7 @@ extension StringsData {
         "availability.iecoOn",
         "availability.outdoorSilentOff",
         "availability.outdoorSilentOn",
+        "availability.rate",
         "availability.selfClean",
         "availability.swing",
         "availability.turboOff",
@@ -28201,6 +28274,9 @@ extension StringsData {
         "settings.general.windows.refreshFailedTitle",
         "settings.general.windows.refreshOutOfRange",
         "settings.general.windows.sectionKeyboard",
+        "settings.general.windows.updateHeldInvalid",
+        "settings.general.windows.updateStartFailed",
+        "settings.general.windows.updatesHeldLimit",
         "settings.general.windows.updatesSetupOnly",
         "settings.general.windows.updatesSigned",
         "settings.general.windows.versionLine",
@@ -28523,6 +28599,7 @@ extension StringsData {
         "availability.iecoOn": [],
         "availability.outdoorSilentOff": [],
         "availability.outdoorSilentOn": [],
+        "availability.rate": [],
         "availability.selfClean": [],
         "availability.swing": [],
         "availability.turboOff": [],
@@ -29695,6 +29772,9 @@ extension StringsData {
         "settings.general.windows.refreshFailedTitle": [],
         "settings.general.windows.refreshOutOfRange": ["min", "max"],
         "settings.general.windows.sectionKeyboard": [],
+        "settings.general.windows.updateHeldInvalid": [],
+        "settings.general.windows.updateStartFailed": [],
+        "settings.general.windows.updatesHeldLimit": [],
         "settings.general.windows.updatesSetupOnly": [],
         "settings.general.windows.updatesSigned": [],
         "settings.general.windows.versionLine": ["version", "folder"],
@@ -30103,6 +30183,8 @@ public enum L {
         public static var outdoorSilentOff: String { Localizer.text("availability.outdoorSilentOff") }
         /// Compressor and outdoor fan are throttled; the fan level stays. Far left on the fan control: also 1 …
         public static var outdoorSilentOn: String { Localizer.text("availability.outdoorSilentOn") }
+        /// Limit power only applies when cooling
+        public static var rate: String { Localizer.text("availability.rate") }
         /// Self-cleaning: dries and cleans the indoor unit (about 15 min)
         public static var selfClean: String { Localizer.text("availability.selfClean") }
         /// The louvers swing up and down
@@ -32951,6 +33033,12 @@ public enum L {
                 public static func refreshOutOfRange(min: String, max: String) -> String { Localizer.text("settings.general.windows.refreshOutOfRange", ["min": min, "max": max]) }
                 /// Keyboard
                 public static var sectionKeyboard: String { Localizer.text("settings.general.windows.sectionKeyboard") }
+                /// The downloaded update is damaged and was set aside. Klimacontrol is checking for updates again. (up…
+                public static var updateHeldInvalid: String { Localizer.text("settings.general.windows.updateHeldInvalid") }
+                /// The update could not be started. Choose “Install now” again later. (update-start)
+                public static var updateStartFailed: String { Localizer.text("settings.general.windows.updateStartFailed") }
+                /// On Windows, a new update always first shows the update window; “Install update” downloads it there.…
+                public static var updatesHeldLimit: String { Localizer.text("settings.general.windows.updatesHeldLimit") }
                 /// Automatic updates are available only when installed with the setup program.
                 public static var updatesSetupOnly: String { Localizer.text("settings.general.windows.updatesSetupOnly") }
                 /// New versions are signed and come only from the project’s release page.

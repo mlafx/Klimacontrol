@@ -210,6 +210,7 @@
     },
     "availability": {
       "fan": {"enabled": false, "why": "Beim Trocknen regelt die Anlage den Lüfter selbst."},
+      "rate": {"enabled": true, "why": "Leistung begrenzen gilt nur beim Kühlen"},
       "target": {"enabled": true},
       "swing": {"enabled": true, "why": "Lamellen schwenken auf und ab"},
       "eco": {"enabled": true, "why": "Eco gibt es nur beim Kühlen"},

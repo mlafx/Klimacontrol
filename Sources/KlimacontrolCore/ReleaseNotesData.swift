@@ -44,7 +44,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 - Mini-Fenster: Bei „Groß angezeigt: Raum“ ohne Raumtemperatur stand „–“ statt der Solltemperatur.
 - ⌘↑/⌘↓ (Mac) bzw. Strg+↑/↓ (Windows) verstellten beim Lüften die Solltemperatur.
 - Windows: Zahl und Text im Infobereich zeigten beim Lüften ein Soll und rundeten Raumtemperaturen bei x,5 ab.
-- iECO lässt sich beim Lüften nicht mehr einschalten und folgt beim Kühlen und Heizen den Fähigkeiten der Anlage; nimmt die Anlage iECO im aktuellen Modus nicht an, nennt der Hinweis den Modus.
+- iECO und „Leistung begrenzen“ lassen sich wie in der Midea-App nur beim Kühlen einschalten, iECO beim Heizen nur, wenn die Anlage es unterstützt; nimmt die Anlage iECO im aktuellen Modus nicht an, nennt der Hinweis den Modus.
 - Technischer Unterbau überarbeitet, zahlreiche kleinere Fehler behoben.
 
 ## [1.2.0.0] – 2026-11-08
@@ -174,7 +174,7 @@ Versions have four parts, major.features.fixes.build. Earlier versions are avail
 - Mini window: With the room temperature shown large but not reported, “–” appeared instead of the target temperature.
 - ⌘↑/⌘↓ (Mac) and Ctrl+↑/↓ (Windows) changed the target temperature in Fan mode.
 - Windows: The number and text in the notification area showed a target in Fan mode and rounded room temperatures ending in .5 down.
-- iECO can no longer be turned on in Fan mode and follows the capabilities of the air conditioner when cooling and heating; if the air conditioner does not accept iECO in the current mode, the notice names the mode.
+- As in the Midea app, iECO and “Limit power” can only be turned on when cooling, iECO when heating only if the air conditioner supports it; if the air conditioner does not accept iECO in the current mode, the notice names the mode.
 - Technical foundation reworked, numerous minor bugs fixed.
 
 ## [1.2.0.0] – 2026-11-08

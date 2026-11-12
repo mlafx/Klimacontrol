@@ -40,7 +40,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 - Mini-Fenster: Bei „Groß angezeigt: Raum“ ohne Raumtemperatur stand „–“ statt der Solltemperatur.
 - ⌘↑/⌘↓ (Mac) bzw. Strg+↑/↓ (Windows) verstellten beim Lüften die Solltemperatur.
 - Windows: Zahl und Text im Infobereich zeigten beim Lüften ein Soll und rundeten Raumtemperaturen bei x,5 ab.
-- iECO lässt sich beim Lüften nicht mehr einschalten und folgt beim Kühlen und Heizen den Fähigkeiten der Anlage; nimmt die Anlage iECO im aktuellen Modus nicht an, nennt der Hinweis den Modus.
+- iECO und „Leistung begrenzen“ lassen sich wie in der Midea-App nur beim Kühlen einschalten, iECO beim Heizen nur, wenn die Anlage es unterstützt; nimmt die Anlage iECO im aktuellen Modus nicht an, nennt der Hinweis den Modus.
 - Technischer Unterbau überarbeitet, zahlreiche kleinere Fehler behoben.
 
 ## [1.2.0.0] – 2026-11-08

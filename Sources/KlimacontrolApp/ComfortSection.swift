@@ -58,7 +58,9 @@ struct ComfortSection: View, Equatable {
                     .pickerStyle(.segmented).labelsHidden().fixedSize()
                 }
                 .padding(.top, 4)
-                .help(UIOptions.rateHelp)
+                .disabled(!UIOptions.rateAvailability(mode: state.mode).enabled)
+                .help(UIOptions.rateAvailability(mode: state.mode).enabled ? UIOptions.rateHelp
+                      : UIOptions.rateAvailability(mode: state.mode).why ?? UIOptions.rateHelp)
             }
         }
         .confirmationDialog(UIText.selfCleanPrompt.title, isPresented: $confirmSelfClean) {

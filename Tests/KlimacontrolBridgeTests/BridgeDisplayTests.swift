@@ -74,7 +74,8 @@ final class BridgeDisplayTests: XCTestCase {
         s.mode = .heat
         controller.state = s
         var a = try XCTUnwrap(json()["availability"] as? [String: [String: Any]])
-        XCTAssertEqual(Set(a.keys), Set(UIOptions.ComfortFeature.allCases.map(\.rawValue) + ["fan", "target"]))
+        XCTAssertEqual(Set(a.keys), Set(UIOptions.ComfortFeature.allCases.map(\.rawValue) + ["fan", "target", "rate"]))
+        XCTAssertEqual(a["rate"]?["enabled"] as? Bool, false)
         XCTAssertEqual(a["fan"]?["enabled"] as? Bool, true)
         XCTAssertEqual(a["target"]?["enabled"] as? Bool, true)
         XCTAssertEqual(a["eco"]?["enabled"] as? Bool, false)

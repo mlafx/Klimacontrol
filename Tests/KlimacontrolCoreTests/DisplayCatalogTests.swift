@@ -115,7 +115,8 @@ final class DisplayCatalogTests: CoreTestCase {
             XCTAssertEqual(enabled(.turbo, m), m == .cool || m == .heat, "Turbo nur Kühlen/Heizen")
             XCTAssertEqual(enabled(.outdoorSilent, m), m == .cool || m == .heat, "Außengerät leise nur Kühlen/Heizen")
             XCTAssertEqual(enabled(.freezeProtection, m), m == .heat, "Frostschutz nur Heizen")
-            XCTAssertEqual(enabled(.ieco, m), m != .fan, "iECO nicht beim Lüften")
+            XCTAssertEqual(enabled(.ieco, m), m == .cool, "iECO ohne Fähigkeiten nur Kühlen")
+            XCTAssertEqual(UIOptions.rateAvailability(mode: m).enabled, m == .cool, "Leistung begrenzen nur Kühlen")
             for f in [UIOptions.ComfortFeature.swing, .purifier, .selfClean, .display, .sound] { XCTAssertTrue(enabled(f, m)) }
         }
     }
@@ -130,16 +131,17 @@ final class DisplayCatalogTests: CoreTestCase {
             let caps = value.map { ACCapabilities(raw: [0x00E3: $0]) }
             return UIOptions.availability(.ieco, mode: m, capabilities: caps).enabled
         }
-        // Nur Kühlen gemeldet: Kühlen, Trocknen und Auto frei, Heizen und Lüften gesperrt.
-        XCTAssertEqual([OperationalMode.cool, .dry, .auto, .heat, .fan].map { enabled($0, [1]) }, [true, true, true, false, false])
+        let modes: [OperationalMode] = [.cool, .dry, .auto, .heat, .fan]
+        // Nur Kühlen gemeldet (PortaSplit): nur Kühlen frei.
+        XCTAssertEqual(modes.map { enabled($0, [1]) }, [true, false, false, false, false])
         // Nur Heizen (ieco_end 3).
-        XCTAssertEqual([OperationalMode.cool, .dry, .auto, .heat, .fan].map { enabled($0, [0, 3]) }, [false, false, true, true, false])
+        XCTAssertEqual(modes.map { enabled($0, [0, 3]) }, [false, false, false, true, false])
         // Beides (ECOMaster).
-        XCTAssertEqual([OperationalMode.cool, .dry, .auto, .heat, .fan].map { enabled($0, [8]) }, [true, true, true, true, false])
-        // Keine iECO-Fähigkeit gemeldet oder Fähigkeiten unbekannt: bisherige Regel (alles außer Lüften).
-        XCTAssertEqual([OperationalMode.cool, .heat, .fan].map { enabled($0, nil) }, [true, true, false])
+        XCTAssertEqual(modes.map { enabled($0, [8]) }, [true, false, false, true, false])
+        // Keine iECO-Fähigkeit gemeldet oder Fähigkeiten unbekannt: nur Kühlen.
+        XCTAssertEqual(modes.map { enabled($0, nil) }, [true, false, false, false, false])
         let other = ACCapabilities(raw: [0x0214: [2]])
-        XCTAssertTrue(UIOptions.availability(.ieco, mode: .heat, capabilities: other).enabled)
+        XCTAssertFalse(UIOptions.availability(.ieco, mode: .heat, capabilities: other).enabled)
     }
 
     func testAvailabilityTexts() {
@@ -152,9 +154,10 @@ final class DisplayCatalogTests: CoreTestCase {
         XCTAssertEqual(cool(.outdoorSilent, .heat).why,
                        "Verdichter und Lüfter draußen gedrosselt – die Lüfterstufe bleibt. Ganz links am Lüfter: zusätzlich 1 %")
         XCTAssertEqual(cool(.outdoorSilent, .fan).why, "Außengerät leise wirkt nur beim Kühlen und Heizen")
-        XCTAssertEqual(cool(.ieco, .auto).why,
+        XCTAssertEqual(cool(.ieco, .cool).why,
                        "iECO = Sparprogramm der Anlage, begrenzt die Leistungsaufnahme (Eco oben gilt nur beim Kühlen)")
         XCTAssertEqual(cool(.ieco, .fan).why, "iECO gibt es in diesem Modus nicht")
+        XCTAssertEqual(UIOptions.rateAvailability(mode: .heat).why, "Leistung begrenzen gilt nur beim Kühlen")
         XCTAssertNil(cool(.purifier, .auto).why)
         XCTAssertEqual(cool(.freezeProtection, .heat).why, "Hält 8 °C – nur im Heizbetrieb")
         XCTAssertEqual(cool(.selfClean, .cool).why, "Selbstreinigung: trocknet und reinigt das Innengerät (ca. 15 Min.)")
