@@ -121,4 +121,19 @@ public class EnergyMathTests
         Assert.Equal(12.5, EnergyMath.BarCenter(0, 4, 100), 9);
         Assert.Equal(87.5, EnergyMath.BarCenter(3, 4, 100), 9);
     }
+
+    [Theory]
+    [InlineData(true, false, false, 1.2, null, 0.4, false)]
+    [InlineData(false, true, false, 1.2, null, 1.0, false)]
+    [InlineData(false, false, false, 1.2, null, 0.7, true)]
+    [InlineData(false, false, true, 1.2, null, 0.5, false)]
+    [InlineData(false, false, false, null, 0.8, 0.5, false)]
+    [InlineData(true, false, true, 1.2, null, 0.4, false)]
+    public void DeckkraftUndLueckenzeichenWieAmMac(bool current, bool complete, bool interpolated, double? kWh,
+                                                   double? measured, double opacity, bool gap)
+    {
+        var p = new EnergyPeriod { Current = current, Complete = complete, Interpolated = interpolated, KWh = kWh, MeasuredKWh = measured };
+        Assert.Equal(opacity, EnergyMath.BarOpacity(p));
+        Assert.Equal(gap, EnergyMath.ShowsGap(p));
+    }
 }

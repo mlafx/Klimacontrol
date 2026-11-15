@@ -50,6 +50,13 @@ internal static class EnergyMath
         return Math.Round(width, MidpointRounding.AwayFromZero);
     }
 
+    /// Deckkraft eines Balkens wie am Mac: laufend 0,4, geschätzt 0,5, unvollständig 0,7, sonst 1. Geschätzte Balken
+    /// sind nur blasser; die Legende erklärt das, Kurzinfo und Sprachausgabe nennen „ca.“.
+    internal static double BarOpacity(EnergyPeriod p) => p.Current ? 0.4 : p.Approximate ? 0.5 : p.Complete ? 1 : 0.7;
+
+    /// „…“ über dem Balken: Zählerwert vorhanden, aber Zeitraum unvollständig und nicht geschätzt.
+    internal static bool ShowsGap(EnergyPeriod p) => !p.Current && !p.Complete && !p.Interpolated && p.KWh != null;
+
     /// Mitte des Balkens `index` von `count` auf der Zeichenfläche.
     internal static double BarCenter(int index, int count, double plotWidth) =>
         plotWidth / Math.Max(1, count) * (index + 0.5);

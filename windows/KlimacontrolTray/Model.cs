@@ -450,6 +450,8 @@ public sealed class EnergyPeriod
     public double? MeasuredKWh { get; set; }
     public bool Complete { get; set; }
     public bool Current { get; set; }
+    /// Ein Zählerstand an einer Grenze ist aus den Ständen vor und nach einer Lücke geschätzt; `KWh` ist dann gesetzt.
+    public bool Interpolated { get; set; }
     public string Label { get; set; } = "";
     public string Name { get; set; } = "";
     public string Tooltip { get; set; } = "";
@@ -457,6 +459,8 @@ public sealed class EnergyPeriod
     /// Wert über dem Balken („4,2“); fehlt ohne Wert oder bei zu vielen Balken.
     public string? ValueText { get; set; }
     public double? Shown => KWh ?? MeasuredKWh;
+    /// Geschätzt („ca.“): aus der Leistung oder mit geschätztem Zählerstand (wie `approximate` im Kern).
+    public bool Approximate => Interpolated || (KWh == null && MeasuredKWh != null);
 }
 
 public sealed class ChartOptions

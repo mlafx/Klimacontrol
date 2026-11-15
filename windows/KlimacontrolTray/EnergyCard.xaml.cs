@@ -211,7 +211,7 @@ public partial class EnergyCard : UserControl
             if (value > 0)
                 Place(new Border
                 {
-                    Background = color, Opacity = BarOpacity(p), Width = barWidth, Height = baseY - top,
+                    Background = color, Opacity = EnergyMath.BarOpacity(p), Width = barWidth, Height = baseY - top,
                     CornerRadius = new CornerRadius(corner, corner, 0, 0), IsHitTestVisible = false,
                 }, cx - barWidth / 2, top);
             if (Above(p, valueFont) is { } above)
@@ -306,9 +306,6 @@ public partial class EnergyCard : UserControl
         Plot.Children.Add(e);
     }
 
-    /// Geschätzte Balken (ohne Zählerwert) sind nur blasser; die Legende erklärt das, Kurzinfo und Sprachausgabe nennen „ca.“.
-    static double BarOpacity(EnergyPeriod p) => p.Current ? 0.4 : p.KWh == null ? 0.5 : p.Complete ? 1 : 0.7;
-
     static FrameworkElement? Marker(EnergyPeriod p, double size)
     {
         if (p.Current)
@@ -318,7 +315,7 @@ public partial class EnergyCard : UserControl
             SizeScale.Own(glyph);
             return glyph;
         }
-        if (!p.Complete && p.KWh != null) return Text("…", size, "Sub");
+        if (EnergyMath.ShowsGap(p)) return Text("…", size, "Sub");
         return null;
     }
 }
