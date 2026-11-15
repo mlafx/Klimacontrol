@@ -48,11 +48,21 @@ public struct EnergyPeriod: Equatable, Sendable, Identifiable {
     public var complete: Bool
     /// Der Zeitraum enthält jetzt.
     public var current: Bool
+    /// Mindestens ein Grenzstand ist linear aus den Zählerständen vor und nach einer Lücke im Verlauf geschätzt.
+    public var interpolated: Bool
+
+    public init(start: Date, end: Date, kWh: Double?, measuredKWh: Double?, complete: Bool, current: Bool,
+                interpolated: Bool = false) {
+        self.start = start; self.end = end; self.kWh = kWh; self.measuredKWh = measuredKWh
+        self.complete = complete; self.current = current; self.interpolated = interpolated
+    }
 
     /// Verbrauch für die Anzeige: Zähler, sonst Messwerte.
     public var shownKWh: Double? { kWh ?? measuredKWh }
     /// Der angezeigte Wert stammt aus Messwerten, weil der Zähler fehlt.
     public var fromMeasurement: Bool { kWh == nil && measuredKWh != nil }
+    /// Der angezeigte Wert ist ein Näherungswert (aus Messwerten oder aus Zählerständen vor und nach einer Lücke).
+    public var approximate: Bool { fromMeasurement || interpolated }
 }
 
 extension HistoryDB {
@@ -71,8 +81,8 @@ extension HistoryDB {
     private func energyPeriod(start: Date, end: Date, now: Date) -> EnergyPeriod {
         let current = now >= start && now < end
         let upper = current ? now : end
-        let from = counterAtStart(of: start, until: upper)
-        let to = counterAtEnd(of: upper, notBefore: start, current: current)
+        let from = counterAtStart(of: start, until: upper, now: now)
+        let to = counterAtEnd(of: upper, notBefore: start, current: current, now: now)
         var kWh: Double?
         if let from, let to, to.time > from.time {
             let delta = to.kWh - from.kWh
@@ -82,23 +92,46 @@ extension HistoryDB {
                 kWh = max(0, delta)
             }
         }
+        let estimated = kWh != nil && ((from?.interpolated ?? false) || (to?.interpolated ?? false))
         return EnergyPeriod(start: start, end: end, kWh: kWh, measuredKWh: measuredKWh(from: start, to: upper, now: now),
-                            complete: (from?.sure ?? false) && (to?.sure ?? false), current: current)
+                            complete: (from?.sure ?? false) && (to?.sure ?? false), current: current,
+                            interpolated: estimated)
     }
 
-    /// Stand am Anfang: die letzte Zeile bis 15 min davor, sonst die erste Zeile danach (dann unsicher).
-    private func counterAtStart(of start: Date, until: Date) -> (time: Date, kWh: Double, sure: Bool)? {
+    typealias CounterBoundary = (time: Date, kWh: Double, sure: Bool, interpolated: Bool)
+
+    /// Stand am Anfang: die letzte Zeile bis 15 min davor, sonst linear aus den Ständen davor und danach geschätzt,
+    /// sonst die erste Zeile danach (dann unsicher).
+    private func counterAtStart(of start: Date, until: Date, now: Date) -> CounterBoundary? {
         if let b = counter(before: start), start.timeIntervalSince(b.time) <= Self.boundarySlack {
-            return (b.time, b.kWh, true)
+            return (b.time, b.kWh, true, false)
         }
-        return counter(atOrAfter: start, until: until).map { ($0.time, $0.kWh, false) }
+        if let v = interpolatedCounter(at: start, now: now) { return (start, v, false, true) }
+        return counter(atOrAfter: start, until: until).map { ($0.time, $0.kWh, false, false) }
     }
 
     /// Stand am Ende: die letzte Zeile vor der Grenze (bzw. bis jetzt), aber nicht vor dem Anfang des Zeitraums.
-    private func counterAtEnd(of end: Date, notBefore start: Date, current: Bool) -> (time: Date, kWh: Double, sure: Bool)? {
+    /// Bei einem abgeschlossenen Zeitraum ohne Zeile nahe der Grenze wird geschätzt; der laufende nie.
+    private func counterAtEnd(of end: Date, notBefore start: Date, current: Bool, now: Date) -> CounterBoundary? {
         let limit = current ? end.addingTimeInterval(1) : end
-        guard let e = counter(before: limit), e.time >= start else { return nil }
-        return (e.time, e.kWh, end.timeIntervalSince(e.time) <= Self.boundarySlack)
+        let last = counter(before: limit).flatMap { $0.time >= start ? $0 : nil }
+        if let e = last, end.timeIntervalSince(e.time) <= Self.boundarySlack { return (e.time, e.kWh, true, false) }
+        if !current, let v = interpolatedCounter(at: end, now: now) { return (end, v, false, true) }
+        return last.map { ($0.time, $0.kWh, false, false) }
+    }
+
+    /// So groß darf die Lücke zwischen den beiden Zählerständen höchstens sein, damit dazwischen geschätzt wird.
+    static let maxInterpolationGap: TimeInterval = 14 * 86400
+
+    /// Zählerstand zur Zeit `t`, linear aus dem letzten Stand davor und dem ersten ab `t` (bis `now`). nil, wenn einer
+    /// fehlt, die Lücke über `maxInterpolationGap` liegt oder der Zuwachs nicht plausibel ist.
+    func interpolatedCounter(at t: Date, now: Date) -> Double? {
+        guard let a = counter(before: t), let b = counter(atOrAfter: t, until: max(now, t)) else { return nil }
+        let span = b.time.timeIntervalSince(a.time)
+        guard span > 0, span <= Self.maxInterpolationGap else { return nil }
+        let delta = b.kWh - a.kWh
+        guard delta >= -ACController.counterJitterKWh, delta <= ACController.maxPlausibleKW * span / 3600 + 0.05 else { return nil }
+        return a.kWh + max(0, delta) * t.timeIntervalSince(a.time) / span
     }
 }
 

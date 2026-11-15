@@ -5364,13 +5364,13 @@ extension StringsData {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uhr: Zeitraum läuft noch · blasser Balken: ca., aus Messwerten geschätzt, Zähler unbekannt · …: Lücke im Verlauf. Mit der Maus über einen Balken fahren zeigt Verbrauch und Kosten."
+            "value" : "Uhr: Zeitraum läuft noch · blasser Balken: ca., geschätzt (aus Messwerten oder aus Zählerständen vor und nach einer Lücke) · …: Lücke im Verlauf. Mit der Maus über einen Balken fahren zeigt Verbrauch und Kosten."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clock: period still running · pale bar: approx., estimated from measurements, meter unknown · …: gap in the history. Hover over a bar to see consumption and cost."
+            "value" : "Clock: period still running · pale bar: approx., estimated (from measurements or from the meter readings before and after a gap) · …: gap in the history. Hover over a bar to see consumption and cost."
           }
         }
       }
@@ -5472,13 +5472,13 @@ extension StringsData {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " · teils aus Messwerten"
+            "value" : " · teils geschätzt"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " · partly from measurements"
+            "value" : " · partly estimated"
           }
         }
       }
@@ -5551,6 +5551,24 @@ extension StringsData {
           "stringUnit" : {
             "state" : "translated",
             "value" : " · incomplete (gap in the history)"
+          }
+        }
+      }
+    },
+    "energy.tooltip.interpolated" : {
+      "comment" : "Anhang: geschätzt aus Zählerständen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " · geschätzt aus den Zählerständen vor und nach einer Lücke im Verlauf"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " · estimated from the meter readings before and after a gap in the history"
           }
         }
       }
@@ -27494,6 +27512,7 @@ extension StringsData {
         "energy.title",
         "energy.tooltip.current",
         "energy.tooltip.incomplete",
+        "energy.tooltip.interpolated",
         "energy.tooltip.measured",
         "energy.tooltip.meter",
         "energy.tooltip.noData",
@@ -29000,6 +29019,7 @@ extension StringsData {
         "energy.title": [],
         "energy.tooltip.current": [],
         "energy.tooltip.incomplete": [],
+        "energy.tooltip.interpolated": [],
         "energy.tooltip.measured": ["name", "kwh", "cost"],
         "energy.tooltip.meter": ["name", "kwh", "cost"],
         "energy.tooltip.noData": ["name"],
@@ -30881,7 +30901,7 @@ public enum L {
             /// Wk {week}
             public static func week(week: String) -> String { Localizer.text("energy.label.week", ["week": week]) }
         }
-        /// Clock: period still running · pale bar: approx., estimated from measurements, meter unknown · …: ga…
+        /// Clock: period still running · pale bar: approx., estimated (from measurements or from the meter rea…
         public static var legend: String { Localizer.text("energy.legend") }
         public enum Name {
             /// {weekday}, {month} {day}
@@ -30896,7 +30916,7 @@ public enum L {
         public enum Summary {
             /// Total –
             public static var none: String { Localizer.text("energy.summary.none") }
-            /// · partly from measurements
+            /// · partly estimated
             public static var partly: String { Localizer.text("energy.summary.partly") }
             /// Total {kwh} · {cost}
             public static func total(kwh: String, cost: String) -> String { Localizer.text("energy.summary.total", ["kwh": kwh, "cost": cost]) }
@@ -30908,6 +30928,8 @@ public enum L {
             public static var current: String { Localizer.text("energy.tooltip.current") }
             /// · incomplete (gap in the history)
             public static var incomplete: String { Localizer.text("energy.tooltip.incomplete") }
+            /// · estimated from the meter readings before and after a gap in the history
+            public static var interpolated: String { Localizer.text("energy.tooltip.interpolated") }
             /// {name}: approx. {kwh} · approx. {cost} (from measurements, meter unknown)
             public static func measured(name: String, kwh: String, cost: String) -> String { Localizer.text("energy.tooltip.measured", ["name": name, "kwh": kwh, "cost": cost]) }
             /// {name}: {kwh} · {cost} (air conditioner's meter)

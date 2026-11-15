@@ -129,10 +129,9 @@ class ReleaseScriptTests(unittest.TestCase):
         out, files = self.stable()
         names = {p.name for p in out.iterdir()}
         self.assertEqual(names, {
-            "Klimacontrol-1.2.0.0-mac.dmg", "Klimacontrol-Windows-1.2.0.0-Setup.exe", "Klimacontrol-mac.dmg",
-            "Klimacontrol-Windows-Setup.exe", "updateinfo-mac.xml", "updateinfo-win.xml", "SHA256SUMS.txt",
+            "Klimacontrol-1.2.0.0-mac.dmg", "Klimacontrol-Windows-1.2.0.0-Setup.exe", "updateinfo-mac.xml", "updateinfo-win.xml", "SHA256SUMS.txt",
             "RELEASE_NOTES.md"})
-        self.assertEqual(len(files), 7, "sieben Dateien am Release")
+        self.assertEqual(len(files), 5, "fünf Dateien am Release")
         self.assertNotIn("RELEASE_NOTES.md", {f.name for f in files})
         for feed in ("updateinfo-mac.xml", "updateinfo-win.xml"):
             text = (out / feed).read_text(encoding="utf-8")
@@ -141,49 +140,50 @@ class ReleaseScriptTests(unittest.TestCase):
             mr.verify_feed(self.p.tool, self.p.key_args, out / feed)
         self.p.verify(out, "1.2.0.0")
 
-    def test_fixed_name_copies_are_byte_identical_and_feeds_keep_versioned_names(self):
+    def test_feeds_use_versioned_names_and_no_fixed_name_copies(self):
         out, _ = self.stable()
-        self.assertEqual((out / mr.LATEST_MAC_DMG).read_bytes(), (out / "Klimacontrol-1.2.0.0-mac.dmg").read_bytes())
-        self.assertEqual((out / mr.LATEST_WINDOWS_SETUP).read_bytes(),
-                         (out / "Klimacontrol-Windows-1.2.0.0-Setup.exe").read_bytes())
+        for fixed in ("Klimacontrol-mac.dmg", "Klimacontrol-Windows-Setup.exe"):
+            self.assertFalse((out / fixed).exists(), fixed)
         for feed, name in (("updateinfo-mac.xml", "Klimacontrol-1.2.0.0-mac.dmg"),
                            ("updateinfo-win.xml", "Klimacontrol-Windows-1.2.0.0-Setup.exe")):
             text = (out / feed).read_text(encoding="utf-8")
             self.assertIn(f"{mr.REPO}/releases/download/v1.2.0.0/{name}", text)
-            self.assertNotIn(mr.LATEST_MAC_DMG, text)
-            self.assertNotIn(mr.LATEST_WINDOWS_SETUP, text)
             self.assertNotIn("/latest/", text)
 
-    def test_checksums_list_copies_with_the_same_digest(self):
+    def test_checksums_list_the_two_packages_and_two_feeds(self):
         out, _ = self.stable()
         sums = dict(reversed(line.split("  ", 1)) for line in (out / "SHA256SUMS.txt").read_text(encoding="utf-8").splitlines())
-        self.assertEqual(len(sums), 6)
-        self.assertEqual(sums[mr.LATEST_MAC_DMG], sums["Klimacontrol-1.2.0.0-mac.dmg"])
-        self.assertEqual(sums[mr.LATEST_WINDOWS_SETUP], sums["Klimacontrol-Windows-1.2.0.0-Setup.exe"])
+        self.assertEqual(set(sums), {"Klimacontrol-1.2.0.0-mac.dmg", "Klimacontrol-Windows-1.2.0.0-Setup.exe",
+                                     "updateinfo-mac.xml", "updateinfo-win.xml"})
 
-    def test_missing_copy_is_detected(self):
+    def test_unexpected_fixed_name_copy_is_detected(self):
         out, _ = self.stable()
-        (out / mr.LATEST_WINDOWS_SETUP).rename(self.p.root / "beiseite.exe")
+        (out / "Klimacontrol-mac.dmg").write_bytes(b"x")
         code, err = run_failing(self.p.verify, out, "1.2.0.0")
         self.assertEqual(code, 1)
-        self.assertIn(f"fehlende Datei: {mr.LATEST_WINDOWS_SETUP}", err)
+        self.assertIn("unerwartete Datei: Klimacontrol-mac.dmg", err)
 
-    def test_different_copy_is_detected(self):
+    def test_missing_package_is_detected(self):
         out, _ = self.stable()
-        (out / mr.LATEST_MAC_DMG).write_bytes(b"anderes dmg")
+        (out / "Klimacontrol-Windows-1.2.0.0-Setup.exe").rename(self.p.root / "beiseite.exe")
         code, err = run_failing(self.p.verify, out, "1.2.0.0")
         self.assertEqual(code, 1)
-        self.assertIn(f"{mr.LATEST_MAC_DMG} ist keine gleiche Kopie", err)
+        self.assertIn("fehlende Datei: Klimacontrol-Windows-1.2.0.0-Setup.exe", err)
 
-    def test_checksum_line_of_copy_must_match_original(self):
-        out, _ = self.stable()
-        sums = out / "SHA256SUMS.txt"
-        lines = sums.read_text(encoding="utf-8").splitlines()
-        lines = [("0" * 64 + "  " + mr.LATEST_MAC_DMG) if line.endswith("  " + mr.LATEST_MAC_DMG) else line for line in lines]
-        sums.write_text("\n".join(lines) + "\n", encoding="utf-8")
-        code, err = run_failing(self.p.verify, out, "1.2.0.0")
+    def _readme(self, version, extra=""):
+        urls = mr.readme_download_urls(version)
+        (self.p.root / "README.md").write_text("".join(f'<a href="{u}">x</a>\n' for u in urls) + extra, encoding="utf-8")
+
+    def test_readme_must_link_exactly_the_version_to_publish(self):
+        self._readme("1.2.0.0")
+        mr.check_readme(self.p.root, "1.2.0.0")
+        code, err = run_failing(mr.check_readme, self.p.root, "1.2.0.1")
         self.assertEqual(code, 1)
-        self.assertIn("dieselbe Prüfsumme", err)
+        self.assertIn("Link fehlt", err)
+        self._readme("1.2.0.0", f'<a href="{mr.REPO}/releases/latest/download/Klimacontrol-mac.dmg">x</a>')
+        code, err = run_failing(mr.check_readme, self.p.root, "1.2.0.0")
+        self.assertEqual(code, 1)
+        self.assertIn("andere Fassung", err)
 
     def test_release_notes_table_shows_versioned_names(self):
         out, _ = self.stable()
@@ -280,8 +280,6 @@ class ReleaseScriptTests(unittest.TestCase):
         self.assertEqual({p.name for p in out.iterdir()},
                          {"Klimacontrol-1.3.0.0b1-mac.dmg", "updateinfo-mac-beta.xml", "SHA256SUMS.txt", "RELEASE_NOTES.md"})
         self.assertFalse((out / "updateinfo-mac.xml").exists() or (out / "updateinfo-win.xml").exists())
-        self.assertFalse((out / mr.LATEST_MAC_DMG).exists() or (out / mr.LATEST_WINDOWS_SETUP).exists(),
-                         "Beta ohne Kopien mit festem Namen")
         versions = [mr.item_version(i) for i in mr.extract_items((out / "updateinfo-mac-beta.xml").read_text(encoding="utf-8"))]
         self.assertEqual(versions, ["1.2.0.0", "1.3.0.0b1"])
         self.p.verify(out, "1.3.0.0", 1)
@@ -378,17 +376,15 @@ class ReleaseScriptTests(unittest.TestCase):
         self.assertFalse(any(a.endswith("updateinfo-mac-beta.xml") for a in first))
         self.assertEqual(len(plan), 1, "stabil: kein Release beta, keine Beta-Datei")
         self.assertFalse(any("beta" in c for c in plan[1:]))
-        attached = {Path(a).name for a in first}
-        self.assertTrue({mr.LATEST_MAC_DMG, mr.LATEST_WINDOWS_SETUP} <= attached)
         attachments = first[first.index("--latest") + 1:]
-        self.assertEqual(len(attachments), 7, "sieben Dateien am Release")
+        self.assertEqual(len(attachments), 5, "fünf Dateien am Release")
         self.assertNotIn("RELEASE_NOTES.md", {Path(a).name for a in attachments})
         bad = [first + ["--prerelease"]]
         self.assertEqual(run_failing(mr.check_publish_plan, bad, None)[0], 1)
-        without_copy = [[a for a in first if not a.endswith(mr.LATEST_MAC_DMG)]]
-        code, err = run_failing(mr.check_publish_plan, without_copy, None)
+        with_copy = [first + [str(out / "Klimacontrol-mac.dmg")]]
+        code, err = run_failing(mr.check_publish_plan, with_copy, None)
         self.assertEqual(code, 1)
-        self.assertIn(mr.LATEST_MAC_DMG, err)
+        self.assertIn("Kopien mit festem Namen", err)
 
     def _published(self, version, feeds, missing=()):
         """check_published mit nachgebildetem Netz: feeds = {Dateiname: [Versionen]}, missing = Adressen mit HEAD 404."""
@@ -433,7 +429,7 @@ class ReleaseScriptTests(unittest.TestCase):
 
     def test_check_published_stable_checks_readme_download_links_by_head(self):
         feeds = {"updateinfo-mac.xml": ["1.2.0.0"], "updateinfo-win.xml": ["1.2.0.0"]}
-        latest = [f"{mr.REPO}/releases/latest/download/{n}" for n in (mr.LATEST_MAC_DMG, mr.LATEST_WINDOWS_SETUP)]
+        latest = mr.readme_download_urls("1.2.0.0")
         self.assertEqual(self._published("1.2.0.0", feeds), 0)
         for url in latest:
             self.assertIn(url, self.heads)
@@ -449,10 +445,6 @@ class ReleaseScriptTests(unittest.TestCase):
         out, files = quiet(self.p.build, "1.3.0.0", beta=1)
         plan = mr.publish_plan(out, "1.3.0.0", 1, files, False)
         mr.check_publish_plan(plan, 1)
-        self.assertFalse(any(a.endswith((mr.LATEST_MAC_DMG, mr.LATEST_WINDOWS_SETUP)) for c in plan for a in c))
-        copy = out / mr.LATEST_MAC_DMG
-        bad = [plan[0] + [str(copy)]] + plan[1:]
-        self.assertEqual(run_failing(mr.check_publish_plan, bad, 1)[0], 1)
         self.assertEqual(len(plan), 3)
         self.assertIn("create", plan[1])
         self.assertIn("upload", plan[2])
@@ -468,7 +460,8 @@ class ReleaseScriptTests(unittest.TestCase):
         self.assertEqual(self._published("1.2.0.0b1", {"updateinfo-mac.xml": ["1.1.0.0"],
                                                         "updateinfo-win.xml": ["1.1.0.0"],
                                                         mr.BETA_FEED: ["1.1.0.0", "1.2.0.0b1"]}), 0)
-        self.assertFalse(any(u.endswith(mr.LATEST_MAC_DMG) for u in self.heads), "Beta prüft die Download-Knöpfe nicht")
+        self.assertFalse(any("Klimacontrol-" in u and u.endswith((".dmg", ".exe")) and "1.2.0.0b1" not in u
+                             for u in self.heads), "Beta prüft die Download-Knöpfe nicht")
         feeds[mr.BETA_FEED] = ["1.1.0.0", "1.2.0.0b1"]
         feeds["updateinfo-mac.xml"] = ["1.2.0.0b1"]
         self.assertGreater(self._published("1.2.0.0b1", feeds), 0, "Beta darf nicht in der öffentlichen Datei stehen")

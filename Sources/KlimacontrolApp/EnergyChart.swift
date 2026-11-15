@@ -126,7 +126,7 @@ struct EnergyBar: Equatable, Identifiable {
     let id: Date
     let label: String
     let value: Double
-    let fromMeasurement: Bool
+    let approximate: Bool
     let current: Bool
     let complete: Bool
     let tooltip: String
@@ -137,7 +137,7 @@ struct EnergyBar: Equatable, Identifiable {
         id = p.start
         label = UIText.energyPeriodLabel(p, kind: kind)
         value = p.shownKWh ?? 0
-        fromMeasurement = p.fromMeasurement
+        approximate = p.approximate
         current = p.current
         complete = p.complete
         tooltip = UIText.energyTooltip(p, kind: kind, price: price, currency: currency)
@@ -147,7 +147,7 @@ struct EnergyBar: Equatable, Identifiable {
     /// Geschätzte Balken („ca.“) sind nur blasser; die Legende erklärt das, ein Text über jedem Balken liefe bei vielen Balken ineinander.
     var opacity: Double {
         if current { return 0.4 }
-        if fromMeasurement { return 0.5 }
+        if approximate { return 0.5 }
         return complete ? 1 : 0.7
     }
 }
@@ -241,7 +241,7 @@ struct EnergyBars: View, Equatable {
         VStack(spacing: 0) {
             if b.current {
                 Image(systemName: "clock")
-            } else if !b.complete, !b.fromMeasurement {
+            } else if !b.complete, !b.approximate {
                 Text("…")
             }
             if let v = b.valueText {

@@ -90,6 +90,8 @@ extension UIText {
         }
         if p.current {
             text += L.Energy.Tooltip.current
+        } else if p.interpolated {
+            text += L.Energy.Tooltip.interpolated
         } else if !p.complete {
             text += L.Energy.Tooltip.incomplete
         }
@@ -100,7 +102,7 @@ extension UIText {
     public static func energyCost(_ p: EnergyPeriod, price: Double, currency: String = UIOptions.currencyDefault) -> String {
         guard let v = p.shownKWh else { return "–" }
         let cost = Fmt.money(v * price, currency: currency)
-        return p.fromMeasurement ? L.Energy.Cost.approx(cost: cost) : cost
+        return p.approximate ? L.Energy.Cost.approx(cost: cost) : cost
     }
 
     /// Summenzeile unter den Balken: „Summe 31,40 kWh · 9,42 €“.
@@ -110,7 +112,7 @@ extension UIText {
         guard !shown.isEmpty else { return L.Energy.Summary.none }
         let total = shown.reduce(0, +)
         var text = L.Energy.Summary.total(kwh: Fmt.kwh(total), cost: Fmt.money(total * price, currency: currency))
-        if periods.contains(where: \.fromMeasurement) { text += L.Energy.Summary.partly }
+        if periods.contains(where: \.approximate) { text += L.Energy.Summary.partly }
         return text
     }
 

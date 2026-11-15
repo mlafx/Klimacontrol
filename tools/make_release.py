@@ -8,9 +8,9 @@
     python3 tools/make_release.py --rollback <kaputt> <vorige>         # Notbremse: zeigt die Befehle (--execute: ausführen)
 
 Stabile Fassung: legt releases/v<Version>/ an mit Klimacontrol-<Version>-mac.dmg, Klimacontrol-Windows-<Version>-Setup.exe,
-den byte-gleichen Kopien Klimacontrol-mac.dmg und Klimacontrol-Windows-Setup.exe (feste Namen für die Download-Knöpfe im
-README, …/releases/latest/download/<Name>), updateinfo-mac.xml, updateinfo-win.xml, SHA256SUMS.txt und RELEASE_NOTES.md
-(Beschreibungstext, zweisprachig, wird nicht angehängt). Die Update-Dateien nennen nur die versionierten Namen.
+updateinfo-mac.xml, updateinfo-win.xml, SHA256SUMS.txt (fünf Dateien am Release) und RELEASE_NOTES.md (Beschreibungstext,
+zweisprachig, wird nicht angehängt). Die Download-Knöpfe im README zeigen direkt auf die versionierten Pakete
+(…/releases/download/v<Version>/<Paket>); --publish bricht ab, wenn README.md nicht auf die Version verlinkt.
 Voraussetzungen: tools/VERSION, CHANGELOG.md und CHANGELOG.en.md (ab 1.2.0.0) tragen für die Version ein Datum (nicht „in Arbeit“), DMG und App darin sind notarisiert und geheftet, das Setup liegt vor.
 
 Beta (--beta <n>): Tag v<Version>b<n>, DMG aus dist/mac (gebaut mit tools/build_app.sh --beta <n>), keine Setup-Datei und
@@ -29,8 +29,8 @@ Datei hängt am festen Vorabrelease „beta“ (wird erst mit der ersten Beta an
 Release legt „beta“ nicht an und erzeugt keine Beta-Datei.
 
 --check-published prüft nach dem Veröffentlichen die Adressen, die die Apps lesen (latest, und beta, falls es dieses Release gibt): Status, Version,
-Signatur, Erreichbarkeit der Archive; bei einer stabilen Fassung auch die beiden festen Download-Adressen des README
-(nur HEAD). Es braucht den Schlüssel (nur der Autor führt es aus) und liest nur.
+Signatur, Erreichbarkeit der Archive; bei einer stabilen Fassung auch die beiden Download-Adressen des README
+(versionierte Pakete, nur HEAD). Es braucht den Schlüssel (nur der Autor führt es aus) und liest nur.
 
 --rollback ist die Notbremse: kaputtes Release auf „Vorabrelease“ stellen, vorige Fassung wieder zum neuesten machen.
 Nichts wird gelöscht, keine Tags werden verschoben; die Korrektur erscheint als nächste Fehlerbehebungs-Version.
@@ -66,10 +66,6 @@ WINDOWS_INSTALLER_ARGS = "/SILENT /SP- /SUPPRESSMSGBOXES /NORESTART /CLOSEAPPLIC
 # Ab dieser Version ist der englische CHANGELOG-Abschnitt Pflicht.
 FIRST_ENGLISH_VERSION = "1.2.0.0"
 BETA_FEED = "updateinfo-mac-beta.xml"
-# Feste Namen ohne Version, damit das README dauerhaft auf …/releases/latest/download/<Name> zeigen kann (VersionTests
-# liest sie hier). Nur stabile Releases tragen sie; die Update-Dateien verweisen weiter auf die versionierten Pakete.
-LATEST_MAC_DMG = "Klimacontrol-mac.dmg"
-LATEST_WINDOWS_SETUP = "Klimacontrol-Windows-Setup.exe"
 _NO_BETA = 10**9
 
 
@@ -378,10 +374,21 @@ def check_notarized(dmg):
     print(f"Notarisiert und geheftet: {dmg.name} und Klimacontrol.app darin")
 
 
-def latest_copies(version):
-    """Feste Download-Namen eines stabilen Releases → versioniertes Paket, dessen byte-gleiche Kopie sie sind."""
-    return {LATEST_MAC_DMG: f"Klimacontrol-{version}-mac.dmg",
-            LATEST_WINDOWS_SETUP: f"Klimacontrol-Windows-{version}-Setup.exe"}
+def readme_download_urls(version):
+    """Adressen der beiden Download-Knöpfe im README: die versionierten Pakete des Releases (wie im Update-Feed)."""
+    base = f"{REPO}/releases/download/v{version}"
+    return [f"{base}/Klimacontrol-{version}-mac.dmg", f"{base}/Klimacontrol-Windows-{version}-Setup.exe"]
+
+
+def check_readme(root, version):
+    """Bricht ab, wenn README.md nicht genau auf die zu veröffentlichende Version verlinkt."""
+    text = read_text(root, "README.md")
+    problems = [f"README.md: Link fehlt: {u}" for u in readme_download_urls(version) if f'"{u}"' not in text]
+    others = [m for m in re.findall(r'href="(' + re.escape(REPO) + r'/releases/(?:download|latest/download)/[^"]*)"', text)
+              if m not in readme_download_urls(version)]
+    problems += [f"README.md: Link auf eine andere Fassung: {m}" for m in others]
+    if problems:
+        fail("README.md passt nicht zu Version " + version + ":\n  - " + "\n  - ".join(problems))
 
 
 def release_notes(version, section, files, en_section=None, beta=None):
@@ -405,7 +412,7 @@ def release_notes(version, section, files, en_section=None, beta=None):
         lines += ["", "Beim ersten Start des aus dem Browser geladenen Windows-Setups zeigt Windows einen Sicherheitshinweis",
                   "(SmartScreen „Der Computer wurde durch Windows geschützt“ mit „Weitere Informationen“ → „Trotzdem ausführen“, "
                   "oder „Unbekannter Herausgeber“ mit „Ausführen“). Updates über die App zeigen ihn nicht.",
-                  "", f"`{LATEST_MAC_DMG}` und `{LATEST_WINDOWS_SETUP}` sind gleiche Kopien für feste Download-Links."]
+                  ""]
     lines += ["", "Prüfsummen (SHA-256) stehen in `SHA256SUMS.txt`. `updateinfo-*.xml` lesen die Apps für ihre Updates.", ""]
     if en_section is not None:
         lines += ["---", "", "## English", ""]
@@ -416,8 +423,7 @@ def release_notes(version, section, files, en_section=None, beta=None):
         if not beta:
             lines += ["", "Windows: run the setup (no administrator rights needed). When the setup is downloaded in a browser, "
                       "Windows shows a security notice on first start (SmartScreen “Windows protected your PC” with "
-                      "More info → Run anyway, or “Unknown publisher” with Run). Updates through the app do not show it.",
-                      "", f"`{LATEST_MAC_DMG}` and `{LATEST_WINDOWS_SETUP}` are identical copies for permanent download links."]
+                      "More info → Run anyway, or “Unknown publisher” with Run). Updates through the app do not show it."]
         lines += ["", "SHA-256 checksums are in `SHA256SUMS.txt`.", ""]
     return "\n".join(lines)
 
@@ -548,7 +554,7 @@ def verify_release_dir(out, version, beta, tool, key_args, min_macos):
     if beta:
         expected = {dmg, BETA_FEED, "SHA256SUMS.txt", "RELEASE_NOTES.md"}
     else:
-        expected = {dmg, f"Klimacontrol-Windows-{version}-Setup.exe", *latest_copies(version), "updateinfo-mac.xml",
+        expected = {dmg, f"Klimacontrol-Windows-{version}-Setup.exe", "updateinfo-mac.xml",
                     "updateinfo-win.xml", "SHA256SUMS.txt", "RELEASE_NOTES.md"}
     present = {p.name for p in out.iterdir()}
     problems = []
@@ -559,9 +565,6 @@ def verify_release_dir(out, version, beta, tool, key_args, min_macos):
     if not problems:
         archive = out / dmg
         if not beta:
-            for copy, original in latest_copies(version).items():
-                if sha256(out / copy) != sha256(out / original):
-                    problems.append(f"{copy} ist keine gleiche Kopie von {original}")
             mac = _check_feed(out / "updateinfo-mac.xml", platform="mac", local_version=version, local_archive=archive,
                               min_macos=min_macos, tool=tool, key_args=key_args, problems=problems)
             if mac != [version]:
@@ -598,10 +601,6 @@ def verify_release_dir(out, version, beta, tool, key_args, min_macos):
         for name, digest in listed.items():
             if (out / name).is_file() and sha256(out / name) != digest:
                 problems.append(f"SHA256SUMS.txt: Prüfsumme von {name} stimmt nicht")
-        if not beta:
-            for copy, original in latest_copies(version).items():
-                if copy in listed and listed[copy] != listed.get(original):
-                    problems.append(f"SHA256SUMS.txt: {copy} hat nicht dieselbe Prüfsumme wie {original}")
     if problems:
         fail("Prüfung des Release-Ordners fehlgeschlagen:\n  - " + "\n  - ".join(problems))
     print(f"Prüfung des Release-Ordners bestanden: {out.name}")
@@ -657,10 +656,6 @@ def build_release(root, tool, key_args, version, beta=None, stable_feed=None, fe
     for src_file in [dmg] if beta else [dmg, setup]:
         shutil.copy2(src_file, out / src_file.name)
         files.append(out / src_file.name)
-    if not beta:
-        for copy, original in latest_copies(version).items():
-            shutil.copyfile(out / original, out / copy)
-            files.append(out / copy)
 
     feeds = []
     signature, length = sign(tool, out / dmg.name, key_args)
@@ -738,11 +733,8 @@ def check_publish_plan(plan, beta):
     if any(a.endswith(BETA_FEED) for a in first):
         fail(f"{BETA_FEED} darf nicht an das Versions-Release gehängt werden.")
     names = {Path(a).name for a in first}
-    copies = {LATEST_MAC_DMG, LATEST_WINDOWS_SETUP}
-    if beta and names & copies:
-        fail("Die Kopien mit festem Namen gehören nur an ein stabiles Release.")
-    if not beta and not copies <= names:
-        fail(f"Am stabilen Release fehlen {sorted(copies - names)} (Download-Knöpfe im README).")
+    if any(re.fullmatch(r"Klimacontrol-(mac\.dmg|Windows-Setup\.exe)", n) for n in names):
+        fail("Kopien mit festem Namen gibt es nicht mehr; das README verlinkt die versionierten Pakete.")
 
 
 def publish(out, version, beta, files):
@@ -872,8 +864,7 @@ def check_published(version, tool, key_args):
                     report(http_head(enc.get("url") or "") == 200, f"Archiv erreichbar: {enc.get('url')}")
     if not is_beta:
         print("Download-Knöpfe im README:")
-        for name in (LATEST_MAC_DMG, LATEST_WINDOWS_SETUP):
-            url = f"{REPO}/releases/latest/download/{name}"
+        for url in readme_download_urls(version):
             report(http_head(url) == 200, f"erreichbar: {url}")
     print("Ergebnis: " + ("alles in Ordnung" if not errors else f"{errors} Fehler"))
     return errors
@@ -881,8 +872,8 @@ def check_published(version, tool, key_args):
 
 ROLLBACK_NOTE = """Hinweise:
   - Die Korrektur erscheint als nächste Fehlerbehebungs-Version (z. B. 1.2.0.1). Nichts löschen, keine Tags verschieben.
-  - Die Download-Knöpfe im README zeigen auf latest; fehlen der vorigen Fassung die Kopien mit festem Namen
-    (Releases bis 1.2.0.0), führen sie ins Leere, bis die Korrektur erscheint.
+  - Die Download-Knöpfe im README zeigen auf die versionierten Pakete der aktuellen Fassung; bleibt das kaputte Release
+    ein Vorabrelease, führen sie dorthin, bis das README mit der Korrektur auf die neue Fassung zeigt.
   - Fassungen ab 1.2.0.0 verlangen eine signierte Update-Datei. Die Datei von 1.1.0.0 ist nicht signiert; installierte
     1.2.0.0 lehnen sie ab. Das ist harmlos: Sie bekommen dann kein Update, bis die Korrektur erscheint."""
 
@@ -943,6 +934,8 @@ def main(argv=None):
             fail(str(e))
         sys.exit(1 if check_published(expected, tool, key_args) else 0)
 
+    if args.publish and args.beta is None:
+        check_readme(ROOT, version)
     out, files = build_release(ROOT, tool, key_args, version, args.beta, args.stable_feed, args.fetch_stable)
     print(f"Release-Ordner: {out.relative_to(ROOT)}")
     for f in files:
