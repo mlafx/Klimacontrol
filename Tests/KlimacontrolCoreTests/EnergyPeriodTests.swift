@@ -170,6 +170,72 @@ final class EnergyPeriodTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(p[0].kWh), 13.8, accuracy: 0.001)
     }
 
+    /// Zwei Blöcke mit Lücke dazwischen: A bis 2.11. 12:00 (Zähler 100 … 114,4), B ab `bStart` mit Zähler `bKWh`.
+    private func gapDB(bStart: Date, bKWh: Double, bEnd: Date) throws -> HistoryDB {
+        try makeDB(rows(from: local(11, 1, 12, 0), to: local(11, 2, 12, 0), startKWh: 100)
+                   + rows(from: bStart, to: bEnd, startKWh: bKWh))
+    }
+
+    func testDayWithoutRowsGetsInterpolatedValue() throws {
+        let db = try gapDB(bStart: local(11, 6, 12, 0), bKWh: 144.4, bEnd: local(11, 6, 18, 0))
+        let p = db.energyPeriods(.day, count: 6, now: local(11, 6, 18, 0))
+        func day(_ d: Int) throws -> EnergyPeriod { try XCTUnwrap(p.first { $0.start == local(11, d) }) }
+        // 30 kWh in 96 h
+        for d in 3...5 {
+            let x = try day(d)
+            XCTAssertEqual(try XCTUnwrap(x.kWh), 7.5, accuracy: 0.001)
+            XCTAssertTrue(x.interpolated)
+            XCTAssertFalse(x.complete)
+            XCTAssertTrue(x.approximate)
+            XCTAssertNil(x.measuredKWh)
+        }
+        // Summe über die Lücke = Zählerdifferenz
+        let sum = try (3...5).map { try XCTUnwrap(day($0).kWh) }.reduce(0, +)
+        XCTAssertEqual(sum, 22.5, accuracy: 0.001)
+        // angebrochener Tag zählt bis Mitternacht: Stand 107,15 um 23:55, geschätzt 118,15 um 0:00
+        let broken = try day(2)
+        XCTAssertTrue(broken.interpolated)
+        XCTAssertEqual(try XCTUnwrap(broken.kWh), 11.0, accuracy: 0.001)
+        XCTAssertTrue(UIText.energyTooltip(broken, kind: .day, price: 0.3).hasSuffix(L.Energy.Tooltip.interpolated))
+        XCTAssertTrue(UIText.energyCost(broken, price: 0.3).hasPrefix("ca."))
+    }
+
+    func testCurrentPeriodDoesNotExtrapolate() throws {
+        let b = try gapDB(bStart: local(11, 6, 12, 0), bKWh: 144.4, bEnd: local(11, 6, 18, 0))
+        let cur = try XCTUnwrap(b.energyPeriods(.day, count: 1, now: local(11, 6, 20, 0)).first)
+        XCTAssertTrue(cur.current)
+        XCTAssertTrue(cur.interpolated, "Anfang aus der Lücke geschätzt")
+        XCTAssertEqual(try XCTUnwrap(cur.kWh), 148.0 - 140.65, accuracy: 0.001, "Ende: letzte Zeile, nicht bis jetzt")
+    }
+
+    func testGapOverTwoWeeksGivesNoCounterValue() throws {
+        let db = try gapDB(bStart: local(11, 20, 12, 0), bKWh: 130, bEnd: local(11, 20, 18, 0))
+        let p = db.energyPeriods(.day, count: 20, now: local(11, 20, 18, 0))
+        let x = try XCTUnwrap(p.first { $0.start == local(11, 5) })
+        XCTAssertNil(x.kWh)
+        XCTAssertFalse(x.interpolated)
+    }
+
+    func testImplausibleGapGivesNoInterpolation() throws {
+        let jump = try gapDB(bStart: local(11, 6, 12, 0), bKWh: 514.4, bEnd: local(11, 6, 18, 0))
+        XCTAssertNil(try XCTUnwrap(jump.energyPeriods(.day, count: 6, now: local(11, 6, 18, 0)).first { $0.start == local(11, 4) }).kWh)
+        let back = try gapDB(bStart: local(11, 6, 12, 0), bKWh: 90, bEnd: local(11, 6, 18, 0))
+        let x = try XCTUnwrap(back.energyPeriods(.day, count: 6, now: local(11, 6, 18, 0)).first { $0.start == local(11, 4) })
+        XCTAssertNil(x.kWh)
+        XCTAssertFalse(x.interpolated)
+    }
+
+    /// Der 25. 10. 2026 hat 25 Stunden: die Schätzung folgt der echten Dauer.
+    func testInterpolationAcrossDaylightSavingEnd() throws {
+        let a = rows(from: local(10, 24, 12, 0), to: local(10, 24, 18, 0), startKWh: 100)
+        let b = rows(from: local(10, 27, 12, 0), to: local(10, 27, 13, 0), startKWh: 130.4)
+        let p = try makeDB(a + b).energyPeriods(.day, count: 3, now: local(10, 27, 13, 0))
+        let d25 = try XCTUnwrap(p.first { $0.start == local(10, 25) })
+        let d26 = try XCTUnwrap(p.first { $0.start == local(10, 26) })
+        XCTAssertEqual(try XCTUnwrap(d25.kWh), 10.0, accuracy: 0.001)
+        XCTAssertEqual(try XCTUnwrap(d26.kWh), 9.6, accuracy: 0.001)
+    }
+
     /// Vor dem Merker „Zähler binär ab“ gilt nur `zaehler_roh` × 0,01 kWh; `gesamt_kwh` ist dort verfälscht.
     func testRowsBeforeBinaryMarkerUseRawCounter() throws {
         var r = rows(from: local(11, 2, 23, 50), to: local(11, 3, 23, 55))
@@ -199,7 +265,7 @@ final class EnergyPeriodTests: XCTestCase {
         XCTAssertEqual(UIOptions.energyKindDefault, .day)
         XCTAssertEqual(UIText.energyTitle, "Verbrauch")
         XCTAssertEqual(UIText.energyHelp, "Verbrauch laut Zähler der Anlage. Die Kosten rechnen mit dem Strompreis aus den Einstellungen, auch für frühere Zeiträume.")
-        XCTAssertEqual(UIText.energyLegend, "Uhr: Zeitraum läuft noch · blasser Balken: ca., aus Messwerten geschätzt, Zähler unbekannt · …: Lücke im Verlauf. Mit der Maus über einen Balken fahren zeigt Verbrauch und Kosten.")
+        XCTAssertEqual(UIText.energyLegend, "Uhr: Zeitraum läuft noch · blasser Balken: ca., geschätzt (aus Messwerten oder aus Zählerständen vor und nach einer Lücke) · …: Lücke im Verlauf. Mit der Maus über einen Balken fahren zeigt Verbrauch und Kosten.")
         XCTAssertEqual(UIText.energyNoData, "Noch zu wenig Daten – der Verbrauch füllt sich, sobald der Verlauf Zählerstände enthält.")
 
         let day = EnergyPeriod(start: local(11, 2), end: local(11, 3), kWh: 4.2, measuredKWh: 4.1, complete: true, current: false)
@@ -232,7 +298,7 @@ final class EnergyPeriodTests: XCTestCase {
         XCTAssertEqual(UIText.energyPeriodName(month, kind: .month), "November 2026")
 
         XCTAssertEqual(UIText.energySummary([day, week], price: 0.30), "Summe 34,20 kWh · 10,26 €")
-        XCTAssertEqual(UIText.energySummary([day, measured], price: 0.30), "Summe 8,30 kWh · 2,49 € · teils aus Messwerten")
+        XCTAssertEqual(UIText.energySummary([day, measured], price: 0.30), "Summe 8,30 kWh · 2,49 € · teils geschätzt")
         XCTAssertEqual(UIText.energySummary([none], price: 0.30), "Summe –")
     }
 }

@@ -684,7 +684,10 @@ sobald sie im selben Netz antwortet.
   bewusst mitändern.
 - **Verbrauch je Tag/Woche/Monat** (`energyPeriods`): Zähler am Ende − Zähler am Anfang. Als Stand an einer Grenze gilt
   die letzte Zeile höchstens 15 min davor (wie beim Tagesbeginn, `counterAtDayStart`); sonst die nächste Zeile im
-  Zeitraum, und der Zeitraum gilt als unvollständig. Rücksprung über die Rundung oder mehr als `maxPlausibleKW` × Zeit →
+  Zeitraum, und der Zeitraum gilt als unvollständig. Fehlt ein sicherer Stand (auch bei Zeiträumen ganz ohne Zeilen),
+  wird er linear aus dem letzten Zählerstand davor und dem ersten danach geschätzt (`interpolatedCounter`, Lücke höchstens
+  14 Tage, Zuwachs plausibel wie unten; Endgrenze des laufenden Zeitraums nie geschätzt); dann `interpolated` = wahr,
+  `complete` falsch, Anzeige „ca.“ wie bei Messwerten (`approximate`). Rücksprung über die Rundung oder mehr als `maxPlausibleKW` × Zeit →
   kein Zählerwert, dann Leistung × Zeit („ca.“). Grenzen in Ortszeit über einen Kalender (Woche ab Montag), nie mit
   festen 86 400 s.
 - Lesbare Zeiten ohne Zone: Bei der doppelten Stunde am Ende der Sommerzeit gilt das früheste Vorkommen, das nicht vor
@@ -842,7 +845,7 @@ Bedienregeln (Modus, Eco, Turbo, Ein/Aus, Lüfter-Zonen) setzt die Bridge über 
 `MainWindowLayout` (Spaltenbreiten, Mindesthöhen je Größe, Graphenhöhen), damit Windows keine eigenen Zahlen hält.
 `historyUnavailable` ist wahr, wenn sich die Verlaufsdatenbank nicht öffnen ließ; die Graphen zeigen dann
 `charts.unavailable` statt „zu wenig Daten“. `kc_history_json` trägt je Punkt `mode` (Modus, nur wenn die Anlage lief),
-`kc_energy_json` zusätzlich `average`, `averageText` und je Zeitraum `valueText`. Für die Windows-Graphen und die Skala
+`kc_energy_json` zusätzlich `average`, `averageText` und je Zeitraum `valueText` und `interpolated` (Wert aus Zählerständen vor und nach einer Lücke geschätzt: blasser Balken, „ca.“, kein „…“). Für die Windows-Graphen und die Skala
 kommen dazu `outdoorSmooth` je Verlaufspunkt, `line` in `kc_history_stats_json` (Kennzahlenzeile), `options.temperatureScale`,
 `scaleRoom`, `options.chart.ranges[].tickMinutes`/`tickLabelHalfWidth` und `options.window.chartWeights`. Regeln, die C# nachbildet,
 sind über gemeinsame Tabellen unter `Tests/Shared/` abgesichert (Achsen, Zeitmarken, Graphenhöhen, Modus-Läufe, Fensterlayout). `options.energy` trägt Arten,
@@ -1301,7 +1304,7 @@ Muster: „What happened. What to do. (code)“. „Klimacontrol“ und „Porta
 | Ablage der Wahl | Mac: `AppleLanguages` der App (dieselbe Einstellung wie Systemeinstellungen → Sprache & Region → Apps); die Sprache beim Start ergibt sich aus `Bundle.preferredLocalizations(from:forPreferences: nil)` (die `.lproj`-Ordner mit `InfoPlist.strings` in `build_app.sh` machen `de` und `en` für macOS sichtbar); Windows: `SettingsKey.language` im Kern |
 | Formate | Zahlen, Uhrzeit (12/24 h) und Datum nach den Regionseinstellungen des Systems, unabhängig von der Sprache (`FormatProfile`) |
 | Währung | Freitext, 1–3 Zeichen (Buchstaben oder Währungszeichen, keine Ziffern), Standard „€“, immer nachgestellt („0,30 €“, „0.30 CHF“); Strompreis 0–1000 |
-| Versionshinweise nach einem Update | in der Sprache der Oberfläche aus `CHANGELOG.md` bzw. `CHANGELOG.en.md`; Fassungen vor 1.2.0.0 nur deutsch mit dem Hinweis „Release notes for this version are available in German only.“ |
+| Versionshinweise nach einem Update | in der Sprache der Oberfläche aus `CHANGELOG.md` bzw. `CHANGELOG.en.md`; bei Fehlerbehebungs-/Bau-Versionen (dritte oder vierte Stelle ≠ 0) zusätzlich alle früheren Abschnitte derselben a.b bis a.b.0.0 (`WhatsNew.pending`); Fassungen vor 1.2.0.0 nur deutsch mit dem Hinweis „Release notes for this version are available in German only.“ |
 | Bleibt deutsch | Update-Hinweise im Appcast (Sparkle/WinSparkle vor dem Update), README, LIESMICH; der Release-Text auf GitHub ist deutsch mit einem englischen Abschnitt aus `CHANGELOG.en.md` |
 | Nicht übersetzt | Technische CSV-Form, Datenbank-Spalten, Fehlercodes in Klammern, die Lizenztexte selbst (englische Originale), Bridge-Befehlsnamen, bereits geschriebene Protokollzeilen (das Protokoll folgt der Sprache der Oberfläche, 7.9) |
 | Mac-Paket | Zweisprachige Info.plist-Texte (`InfoPlist.strings`) und zweisprachiger DMG-Hintergrund; Mac-Oberfläche ohne eigene Texte (`AppSourceTextsTests`) |
@@ -1408,17 +1411,18 @@ Muster: „What happened. What to do. (code)“. „Klimacontrol“ und „Porta
 - Ablauf Beta (nur Mac): `tools/build_app.sh --beta <n>` · Notarisierung · `python3 tools/make_release.py --beta <n>` ·
   D3 · `--publish`. Die stabile Fassung für die Beta-Update-Datei kommt aus `--stable-feed <Datei>`, sonst aus dem
   höchsten lokalen `releases/v<a.b.c.d>/`, sonst nur mit `--fetch-stable` aus dem Netz.
-- Am stabilen Release hängen **sieben Dateien:** Mac-DMG und Windows-Setup mit Version im Namen, dieselben beiden noch einmal
-  als byte-gleiche Kopien mit festem Namen (`Klimacontrol-mac.dmg`, `Klimacontrol-Windows-Setup.exe`, Konstanten
-  `LATEST_MAC_DMG`/`LATEST_WINDOWS_SETUP` in `make_release.py`), die beiden `updateinfo-*.xml` und `SHA256SUMS.txt`. Die
-  Kopien gibt es nur bei stabilen Releases, nie bei Betas; sie dienen nur den Download-Knöpfen im README
-  (`…/releases/latest/download/Klimacontrol-mac.dmg` bzw. `…/Klimacontrol-Windows-Setup.exe`, `VersionTests` prüft das
-  README gegen die Konstanten). Die Update-Dateien und ihre Signaturen nennen weiter nur die versionierten Pakete (D1).
+- Am stabilen Release hängen **fünf Dateien** (ab 1.3.0.1): Mac-DMG und Windows-Setup mit Version im Namen, die beiden
+  `updateinfo-*.xml` und `SHA256SUMS.txt`. Die Download-Knöpfe im README zeigen direkt auf die versionierten Pakete
+  (`…/releases/download/v<Version>/Klimacontrol-<Version>-mac.dmg` bzw. `…/Klimacontrol-Windows-<Version>-Setup.exe`), dieselben,
+  die auch die Update-Dateien nennen (D1). Darum muss das README vor dem Release auf die neue Version zeigen: `VersionTests`
+  prüft die Links gegen `tools/VERSION`, `make_release.py --publish` bricht sonst ab (`check_readme`). Bis 1.3.0.0 gab es
+  zusätzlich Kopien mit festem Namen (`Klimacontrol-mac.dmg`, `Klimacontrol-Windows-Setup.exe`) für `latest/download`; die am
+  Release v1.3.0.0 darf der Autor nach dem Release von 1.3.0.1 löschen (einzige Ausnahme von „Release-Dateien nie löschen“).
   Die ZIPs aus den Bauskripten sind für Tests und Handbetrieb. `make_release.py` prüft zuerst, dass DMG und App darin notarisiert und
   geheftet sind (`stapler validate`, `spctl` „Notarized Developer ID“), und bricht sonst ab, ebenso ohne Setup.
-- `make_release.py` kopiert DMG und Setup nach `releases/v<Version>/`, legt daneben die Kopien mit festem Namen an, signiert
-  DMG und Setup, schreibt `updateinfo-mac.xml` und `updateinfo-win.xml` (Versionshinweise aus dem CHANGELOG ohne die Zeilen der anderen Plattform),
-  `SHA256SUMS.txt` (je Datei eine Zeile, die Kopien mit derselben Prüfsumme wie ihr Original) und `RELEASE_NOTES.md`
+- `make_release.py` kopiert DMG und Setup nach `releases/v<Version>/`, signiert
+  DMG und Setup, schreibt `updateinfo-mac.xml` und `updateinfo-win.xml` (Versionshinweise aus dem CHANGELOG ohne die Zeilen der anderen Plattform; bei Fehlerbehebungs-/Bau-Versionen folgen darunter die früheren Abschnitte derselben a.b bis a.b.0.0 mit der Überschrift „Enthalten aus <Version> – <Datum>“, im englischen Teil von `RELEASE_NOTES.md` „Included from …“),
+  `SHA256SUMS.txt` (je Datei eine Zeile) und `RELEASE_NOTES.md`
   (Beschreibungstext mit Download-Tabelle der versionierten Namen, wird nicht angehängt).
 - GitHub erkennt Releases nicht von selbst: den Ordnerinhalt im Release-Formular hochladen (Tag `v<Version>` auf
   `main`, „latest“, kein Vorabrelease) oder `--publish` (GitHub CLI `gh`, angemeldet) – nur auf ausdrücklichen Auftrag.
@@ -1427,9 +1431,8 @@ Muster: „What happened. What to do. (code)“. „Klimacontrol“ und „Porta
   es an und ersetzt dort `updateinfo-mac-beta.xml` (neueste stabile + neueste Beta). Ein stabiles Release legt „beta“ nicht
   an, erzeugt und lädt keine Beta-Datei; `--check-published` prüft die Beta-Adresse nur, wenn „beta“ existiert, sonst
   Hinweis „noch kein Beta-Kanal“. Die öffentliche `updateinfo-mac.xml` wird für eine Beta nie angefasst.
-- Veröffentlicht ist 1.3.0.0 (12.11.2026): `latest` trägt genau sieben Dateien (Mac-DMG, Windows-Setup, beide noch einmal mit
-  festem Namen, `updateinfo-mac.xml`, `updateinfo-win.xml`, `SHA256SUMS.txt`); v1.1.0.0 und v1.2.0.0 bleiben bestehen. Die
-  Download-Knöpfe im README (`latest/download/Klimacontrol-mac.dmg` bzw. `…/Klimacontrol-Windows-Setup.exe`) funktionieren.
+- Veröffentlicht ist 1.3.0.0 (12.11.2026): `latest` trägt sieben Dateien (noch mit den Kopien mit festem Namen);
+  v1.1.0.0 und v1.2.0.0 bleiben bestehen. Ab 1.3.0.1 fünf Dateien und versionierte README-Links (siehe oben).
   Ein Vorabrelease „beta“ gibt es noch nicht.
 - **Signatur der Update-Dateien:** `make_release.py` signiert DMG, Setup und zuletzt die `updateinfo-*.xml`, prüft
   jede Signatur (`sign_update --verify`) und verändert die Dateien danach nicht mehr. Zum Schluss prüft
@@ -1477,10 +1480,10 @@ Region, Mac „Jetzt neu starten · Später“.
 6. Automatische Tests grün: D1-Werte (`ReleaseProtectionTests`), Signatur, stabiler Eintrag in der Beta-Datei,
    Versionsvergleich (`ReleaseScriptTests` bzw. `tools/test_make_release.py`), CHANGELOG deutsch/englisch gleich aufgebaut.
 7. `make_release.py` vor dem Veröffentlichen: „latest“, kein Vorabrelease, beide Update-Dateien, Dateinamen exakt,
-   Kopien mit festem Namen vorhanden und byte-gleich (bei einer Beta keine), Signaturen gültig (läuft automatisch in
+   keine Dateien mit festem Namen, README verlinkt die Version, Signaturen gültig (läuft automatisch in
    `verify_release_dir()` und vor `--publish` als Plan-Prüfung).
 8. Nach dem Veröffentlichen: beide `latest/download`-Adressen der Update-Dateien liefern HTTP 200, die neue Version und
-   eine gültige Signatur; die beiden `latest/download`-Adressen der Download-Knöpfe liefern HTTP 200 (nur HEAD, ohne das
+   eine gültige Signatur; die beiden README-Adressen `releases/download/v<Version>/…` liefern HTTP 200 (nur HEAD, ohne das
    Paket zu laden): `python3 tools/make_release.py --check-published [<Version>]` (liest nur, braucht den Schlüssel).
 
 Öffentlich gibt es Fassungen ab 1.1.0.0; Update-Adressen sind nur `updateinfo-mac.xml`/`updateinfo-win.xml` (und die Beta-Datei).
@@ -1616,7 +1619,7 @@ Voraussetzungen: Tests beider Plattformen grün, D3-Prüfungen abgehakt (Ergebni
 6. Windows, nach dem OneDrive-Abgleich und Bescheid über den Briefkasten: `powershell -ExecutionPolicy Bypass -File tools\build_windows.ps1 -Zip`
    erzeugt `dist\windows\Klimacontrol-Windows-<Version>-Setup.exe`; Windows meldet die SHA-256.
 7. Mac: `shasum -a 256 dist/windows/Klimacontrol-Windows-<Version>-Setup.exe` gegen die Meldung prüfen; `git status` sauber.
-8. `python3 tools/make_release.py` erzeugt `releases/v<Version>/` (sieben Dateien zum Anhängen und `RELEASE_NOTES.md`);
+8. `python3 tools/make_release.py` erzeugt `releases/v<Version>/` (fünf Dateien zum Anhängen und `RELEASE_NOTES.md`);
    `RELEASE_NOTES.md` und `updateinfo-*.xml` ansehen.
 
 Ab hier nur auf ausdrückliches Kommando des Autors (veröffentlicht):

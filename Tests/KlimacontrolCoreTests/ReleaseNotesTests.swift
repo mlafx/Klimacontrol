@@ -80,9 +80,9 @@ final class ReleaseNotesTests: CoreTestCase {
         }
         XCTAssertEqual(versions("1.0.1.2"), [], "gleiche Version")
         XCTAssertEqual(versions(nil, used: false), [], "frische Installation")
-        XCTAssertEqual(versions(nil), ["1.0.1.2"], "Update ohne Merker: nur die laufende Version")
-        XCTAssertEqual(versions("1.0.1.1"), ["1.0.1.2"])
-        XCTAssertEqual(versions("1.0.0.0"), ["1.0.1.2", "1.0.1.1"], "Sprung über mehrere Versionen, neueste zuerst")
+        XCTAssertEqual(versions(nil), ["1.0.1.2", "1.0.1.1", "1.0.0.0"], "Update ohne Merker: laufende Version samt früheren Abschnitten der Fehlerbehebungs-Version")
+        XCTAssertEqual(versions("1.0.1.1"), ["1.0.1.2", "1.0.1.1", "1.0.0.0"])
+        XCTAssertEqual(versions("1.0.0.0"), ["1.0.1.2", "1.0.1.1", "1.0.0.0"], "Sprung über mehrere Versionen, neueste zuerst")
         XCTAssertEqual(versions("0.9.0.0", "1.0.1.1"), ["1.0.1.1", "1.0.0.0"], "höhere Abschnitte bleiben draußen")
         XCTAssertEqual(versions("1.0.1.0", "1.0.9.0"), [], "für die laufende Version gibt es keinen Abschnitt")
         XCTAssertEqual(versions("1.0.1.2", "1.0.1.2"), [])
@@ -121,7 +121,7 @@ final class ReleaseNotesTests: CoreTestCase {
     func testUpdateFromBuildWithoutMarkerShowsCurrentVersion() throws {
         let current = try XCTUnwrap(ReleaseNotes.parse(ReleaseNotes.changelog).first).version
         let c = try controller(version: current, seen: nil, configured: true)
-        XCTAssertEqual(c.whatsNew.map(\.version), [current])
+        XCTAssertEqual(c.whatsNew.first?.version, current)
     }
 
     func testRealChangelogHasMacItemsForCurrentVersion() throws {
@@ -137,14 +137,27 @@ final class ReleaseNotesTests: CoreTestCase {
         XCTAssertEqual(ReleaseNotes.parse("## [1.2.0.0] – 2026-12-01\n### Added\n- A.").first?.date, "2026-12-01")
     }
 
+    func testPendingBugfixIncludesEarlierSectionsOfSameMinor() {
+        let md = "## [1.3.0.1] – 2026-11-15\n### Geändert\n- A.\n\n## [1.3.0.0] – 2026-11-12\n### Hinzugefügt\n- B.\n\n## [1.2.0.0] – 2026-11-08\n### Hinzugefügt\n- C.\n"
+        let notes = ReleaseNotes.parse(md)
+        func versions(_ seen: String?, _ current: String) -> [String] {
+            WhatsNew.pending(lastSeen: seen, current: current, usedBefore: true, notes: notes).map(\.version)
+        }
+        XCTAssertEqual(versions("1.3.0.0", "1.3.0.1"), ["1.3.0.1", "1.3.0.0"])
+        XCTAssertEqual(versions("1.2.0.0", "1.3.0.1"), ["1.3.0.1", "1.3.0.0"])
+        XCTAssertEqual(versions("1.1.0.0", "1.3.0.1"), ["1.3.0.1", "1.3.0.0", "1.2.0.0"], "keine Duplikate, 1.2 nur wegen des Sprungs")
+        XCTAssertEqual(versions("1.3.0.1", "1.3.0.1"), [])
+        XCTAssertEqual(versions("1.2.0.0", "1.3.0.0"), ["1.3.0.0"], "a.b.0.0 unverändert")
+    }
+
     func testPendingWithBetas() {
         let notes = ReleaseNotes.parse(sample)
         func versions(_ seen: String?, _ current: String, used: Bool = true) -> [String] {
             WhatsNew.pending(lastSeen: seen, current: current, usedBefore: used, notes: notes).map(\.version)
         }
-        XCTAssertEqual(versions("1.0.1.1", "1.0.1.2b1"), ["1.0.1.2"])
-        XCTAssertEqual(versions("1.0.1.2b1", "1.0.1.2b2"), ["1.0.1.2"])
-        XCTAssertEqual(versions("1.0.1.2b2", "1.0.1.2"), ["1.0.1.2"])
+        XCTAssertEqual(versions("1.0.1.1", "1.0.1.2b1"), ["1.0.1.2", "1.0.1.1", "1.0.0.0"])
+        XCTAssertEqual(versions("1.0.1.2b1", "1.0.1.2b2"), ["1.0.1.2", "1.0.1.1", "1.0.0.0"])
+        XCTAssertEqual(versions("1.0.1.2b2", "1.0.1.2"), ["1.0.1.2", "1.0.1.1", "1.0.0.0"])
         XCTAssertEqual(versions("1.0.1.2", "1.0.1.2"), [])
         XCTAssertEqual(versions("1.0.1.2b2", "1.0.1.2b2"), [])
         XCTAssertEqual(versions(nil, "1.0.1.2b1", used: false), [])

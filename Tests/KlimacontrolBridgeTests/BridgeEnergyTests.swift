@@ -60,6 +60,7 @@ final class BridgeEnergyTests: XCTestCase {
         XCTAssertTrue((last["tooltip"] as? String)?.hasSuffix("noch nicht abgeschlossen") ?? false, "\(last)")
         XCTAssertNotNil(last["costText"] as? String)
         XCTAssertNotNil(last["complete"] as? Bool)
+        XCTAssertNotNil(last["interpolated"] as? Bool)
         let start = try XCTUnwrap(last["start"] as? Double), end = try XCTUnwrap(last["end"] as? Double)
         XCTAssertLessThan(start, now.timeIntervalSince1970)
         XCTAssertGreaterThan(end, now.timeIntervalSince1970)

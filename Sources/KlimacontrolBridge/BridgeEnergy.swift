@@ -8,6 +8,8 @@ struct EnergyPeriodDTO: Encodable {
     var start, end: Double
     var kWh, measuredKWh: Double?
     var complete, current: Bool
+    /// Mindestens ein Grenzstand ist aus den Zählerständen vor und nach einer Lücke geschätzt.
+    var interpolated: Bool
     var label, name, tooltip, costText: String
     /// Wert über dem Balken („4,2“); fehlt ohne Wert oder bei mehr als `UIOptions.energyValuesMaxBars` Zeiträumen.
     var valueText: String?
@@ -47,6 +49,7 @@ let energyMaxCount = 60
         periods: periods.map {
             EnergyPeriodDTO(start: $0.start.timeIntervalSince1970, end: $0.end.timeIntervalSince1970, kWh: $0.kWh,
                             measuredKWh: $0.measuredKWh, complete: $0.complete, current: $0.current,
+                            interpolated: $0.interpolated,
                             label: UIText.energyPeriodLabel($0, kind: kind), name: UIText.energyPeriodName($0, kind: kind),
                             tooltip: UIText.energyTooltip($0, kind: kind, price: price, currency: currency),
                             costText: UIText.energyCost($0, price: price, currency: currency),

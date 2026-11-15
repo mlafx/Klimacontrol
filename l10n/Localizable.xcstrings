@@ -5360,13 +5360,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uhr: Zeitraum läuft noch · blasser Balken: ca., aus Messwerten geschätzt, Zähler unbekannt · …: Lücke im Verlauf. Mit der Maus über einen Balken fahren zeigt Verbrauch und Kosten."
+            "value" : "Uhr: Zeitraum läuft noch · blasser Balken: ca., geschätzt (aus Messwerten oder aus Zählerständen vor und nach einer Lücke) · …: Lücke im Verlauf. Mit der Maus über einen Balken fahren zeigt Verbrauch und Kosten."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clock: period still running · pale bar: approx., estimated from measurements, meter unknown · …: gap in the history. Hover over a bar to see consumption and cost."
+            "value" : "Clock: period still running · pale bar: approx., estimated (from measurements or from the meter readings before and after a gap) · …: gap in the history. Hover over a bar to see consumption and cost."
           }
         }
       }
@@ -5468,13 +5468,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " · teils aus Messwerten"
+            "value" : " · teils geschätzt"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " · partly from measurements"
+            "value" : " · partly estimated"
           }
         }
       }
@@ -5547,6 +5547,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : " · incomplete (gap in the history)"
+          }
+        }
+      }
+    },
+    "energy.tooltip.interpolated" : {
+      "comment" : "Anhang: geschätzt aus Zählerständen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " · geschätzt aus den Zählerständen vor und nach einer Lücke im Verlauf"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " · estimated from the meter readings before and after a gap in the history"
           }
         }
       }

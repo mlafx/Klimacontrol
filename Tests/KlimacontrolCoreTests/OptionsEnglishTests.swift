@@ -100,7 +100,7 @@ final class OptionsEnglishTests: XCTestCase {
             XCTAssertTrue(UIText.energyTooltip(month, kind: .month, price: 0.3).hasSuffix(" · not finished yet"))
             let measured = EnergyPeriod(start: local(11, 2), end: local(11, 3), kWh: nil, measuredKWh: 1, complete: true, current: false)
             XCTAssertEqual(UIText.energyCost(measured, price: 0.5, currency: "CHF"), "approx. 0.50 CHF")
-            XCTAssertEqual(UIText.energySummary([measured], price: 0.5), "Total 1.00 kWh · 0.50 € · partly from measurements")
+            XCTAssertEqual(UIText.energySummary([measured], price: 0.5), "Total 1.00 kWh · 0.50 € · partly estimated")
             let a = EnergyPeriod(start: local(11, 2), end: local(11, 3), kWh: 31.4, measuredKWh: nil, complete: true, current: false)
             XCTAssertEqual(UIText.energySummary([a], price: 0.3, currency: "CHF"), "Total 31.40 kWh · 9.42 CHF")
             XCTAssertEqual(UIText.energySummary([], price: 0.3), "Total –")

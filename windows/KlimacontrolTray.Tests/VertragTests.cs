@@ -304,14 +304,20 @@ public class VertragTests
         const string json = """
             {"kind":"day","summary":"Zusammen 1,2 kWh",
              "periods":[{"start":1000.0,"end":87400.0,"kWh":1.2,"complete":true,"current":false,"label":"Mo","name":"Montag","tooltip":"Montag: 1,2 kWh","costText":"0,36 €"},
+                        {"start":1000.0,"end":87400.0,"kWh":2.0,"complete":false,"current":false,"interpolated":true,"label":"So","name":"Sonntag","tooltip":"Sonntag: ca. 2,0 kWh","costText":"ca. 0,60 €"},
                         {"start":87400.0,"end":173800.0,"measuredKWh":0.4,"complete":false,"current":true,"label":"Di","name":"Dienstag","tooltip":"Dienstag: ca. 0,4 kWh","costText":""}]}
             """;
         var r = JsonSerializer.Deserialize(json, Strict.EnergyResult)!;
         Assert.Null(r.Error);
         Assert.Equal(1.2, r.Periods[0].KWh);
         Assert.Null(r.Periods[0].MeasuredKWh);
-        Assert.Equal(0.4, r.Periods[1].Shown);
-        Assert.True(r.Periods[1].Current);
+        Assert.Equal(0.4, r.Periods[2].Shown);
+        Assert.False(r.Periods[0].Interpolated);
+        Assert.True(r.Periods[1].Interpolated);
+        Assert.True(r.Periods[1].Approximate);
+        Assert.Equal(2.0, r.Periods[1].Shown);
+        Assert.True(r.Periods[2].Current);
+        Assert.True(r.Periods[2].Approximate);
         Assert.Equal("Montag: 1,2 kWh", r.Periods[0].Tooltip);
         Assert.Equal("Fehler", JsonSerializer.Deserialize("{\"error\":\"Fehler\"}", Strict.EnergyResult)!.Error);
     }
