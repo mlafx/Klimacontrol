@@ -341,6 +341,43 @@ class ReleaseScriptTests(unittest.TestCase):
         self.assertLess(notes.index("Neuer Punkt"), notes.index("## English"))
         self.assertLess(notes.index("## English"), notes.index("New item"))
 
+    def bugfix(self, version="1.3.0.1"):
+        self.p.version(version)
+        de = [(version, "2026-11-15", "Fix"), ("1.3.0.0", "2026-11-12", "Mac: Alt-Mac"), ("1.2.0.0", "2026-11-08", "Zu alt")]
+        en = [(version, "2026-11-15", "Fixed"), ("1.3.0.0", "2026-11-12", "Mac: Old-Mac"), ("1.2.0.0", "2026-11-08", "Too old")]
+        self.p.changelogs(de, en)
+        # Windows-Zeile im älteren Abschnitt
+        for f in ("CHANGELOG.md", "CHANGELOG.en.md"):
+            path = self.p.root / f
+            path.write_text(path.read_text(encoding="utf-8").replace("- Mac: ", "- Windows: Nur-Win\n- Mac: "), encoding="utf-8")
+        self.p.archives(version, version)
+        return quiet(self.p.build, version)
+
+    def test_bugfix_release_includes_earlier_sections_of_same_minor(self):
+        out, _ = self.bugfix()
+        mac = (out / "updateinfo-mac.xml").read_text(encoding="utf-8")
+        win = (out / "updateinfo-win.xml").read_text(encoding="utf-8")
+        self.assertIn("Enthalten aus 1.3.0.0 – 2026-11-12", mac)
+        self.assertLess(mac.index("Fix"), mac.index("Enthalten aus 1.3.0.0"))
+        self.assertNotIn("1.2.0.0", mac)
+        self.assertIn("Alt-Mac", mac)
+        self.assertNotIn("Nur-Win", mac)
+        self.assertIn("Nur-Win", win)
+        self.assertNotIn("Alt-Mac", win)
+        notes = (out / "RELEASE_NOTES.md").read_text(encoding="utf-8")
+        self.assertIn("## Enthalten aus 1.3.0.0 – 2026-11-12", notes)
+        self.assertIn("## Included from 1.3.0.0 – 2026-11-12", notes)
+        self.assertLess(notes.index("## English"), notes.index("## Included from"))
+        self.assertNotIn("Too old", notes)
+        self.p.verify(out, "1.3.0.1")
+
+    def test_minor_release_has_no_included_sections(self):
+        out, _ = self.stable("1.3.0.0")
+        for f in ("updateinfo-mac.xml", "updateinfo-win.xml", "RELEASE_NOTES.md"):
+            text = (out / f).read_text(encoding="utf-8")
+            self.assertNotIn("Enthalten aus", text)
+            self.assertNotIn("Included from", text)
+
     def test_rollback_without_execute_runs_nothing(self):
         original = mr.subprocess_run
         mr.subprocess_run = lambda cmd: self.fail("darf nichts ausführen")

@@ -1304,7 +1304,7 @@ Muster: „What happened. What to do. (code)“. „Klimacontrol“ und „Porta
 | Ablage der Wahl | Mac: `AppleLanguages` der App (dieselbe Einstellung wie Systemeinstellungen → Sprache & Region → Apps); die Sprache beim Start ergibt sich aus `Bundle.preferredLocalizations(from:forPreferences: nil)` (die `.lproj`-Ordner mit `InfoPlist.strings` in `build_app.sh` machen `de` und `en` für macOS sichtbar); Windows: `SettingsKey.language` im Kern |
 | Formate | Zahlen, Uhrzeit (12/24 h) und Datum nach den Regionseinstellungen des Systems, unabhängig von der Sprache (`FormatProfile`) |
 | Währung | Freitext, 1–3 Zeichen (Buchstaben oder Währungszeichen, keine Ziffern), Standard „€“, immer nachgestellt („0,30 €“, „0.30 CHF“); Strompreis 0–1000 |
-| Versionshinweise nach einem Update | in der Sprache der Oberfläche aus `CHANGELOG.md` bzw. `CHANGELOG.en.md`; Fassungen vor 1.2.0.0 nur deutsch mit dem Hinweis „Release notes for this version are available in German only.“ |
+| Versionshinweise nach einem Update | in der Sprache der Oberfläche aus `CHANGELOG.md` bzw. `CHANGELOG.en.md`; bei Fehlerbehebungs-/Bau-Versionen (dritte oder vierte Stelle ≠ 0) zusätzlich alle früheren Abschnitte derselben a.b bis a.b.0.0 (`WhatsNew.pending`); Fassungen vor 1.2.0.0 nur deutsch mit dem Hinweis „Release notes for this version are available in German only.“ |
 | Bleibt deutsch | Update-Hinweise im Appcast (Sparkle/WinSparkle vor dem Update), README, LIESMICH; der Release-Text auf GitHub ist deutsch mit einem englischen Abschnitt aus `CHANGELOG.en.md` |
 | Nicht übersetzt | Technische CSV-Form, Datenbank-Spalten, Fehlercodes in Klammern, die Lizenztexte selbst (englische Originale), Bridge-Befehlsnamen, bereits geschriebene Protokollzeilen (das Protokoll folgt der Sprache der Oberfläche, 7.9) |
 | Mac-Paket | Zweisprachige Info.plist-Texte (`InfoPlist.strings`) und zweisprachiger DMG-Hintergrund; Mac-Oberfläche ohne eigene Texte (`AppSourceTextsTests`) |
@@ -1421,7 +1421,7 @@ Muster: „What happened. What to do. (code)“. „Klimacontrol“ und „Porta
   Die ZIPs aus den Bauskripten sind für Tests und Handbetrieb. `make_release.py` prüft zuerst, dass DMG und App darin notarisiert und
   geheftet sind (`stapler validate`, `spctl` „Notarized Developer ID“), und bricht sonst ab, ebenso ohne Setup.
 - `make_release.py` kopiert DMG und Setup nach `releases/v<Version>/`, signiert
-  DMG und Setup, schreibt `updateinfo-mac.xml` und `updateinfo-win.xml` (Versionshinweise aus dem CHANGELOG ohne die Zeilen der anderen Plattform),
+  DMG und Setup, schreibt `updateinfo-mac.xml` und `updateinfo-win.xml` (Versionshinweise aus dem CHANGELOG ohne die Zeilen der anderen Plattform; bei Fehlerbehebungs-/Bau-Versionen folgen darunter die früheren Abschnitte derselben a.b bis a.b.0.0 mit der Überschrift „Enthalten aus <Version> – <Datum>“, im englischen Teil von `RELEASE_NOTES.md` „Included from …“),
   `SHA256SUMS.txt` (je Datei eine Zeile) und `RELEASE_NOTES.md`
   (Beschreibungstext mit Download-Tabelle der versionierten Namen, wird nicht angehängt).
 - GitHub erkennt Releases nicht von selbst: den Ordnerinhalt im Release-Formular hochladen (Tag `v<Version>` auf

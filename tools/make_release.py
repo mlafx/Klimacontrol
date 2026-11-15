@@ -187,6 +187,27 @@ def changelog_section(text, version, required=True):
     return m.group(1), m.group(2)
 
 
+def earlier_sections(text, version):
+    """Datierte Abschnitte derselben a.b bis a.b.0.0, die älter sind als `version`, neueste zuerst: [(Version, Datum, Text)].
+    Nur bei Fehlerbehebungs-/Bau-Versionen (dritte oder vierte Stelle ungleich 0); sonst leer."""
+    cur = parse_version(version)
+    if cur[2] == 0 and cur[3] == 0:
+        return []
+    found = []
+    for m in re.finditer(r"^(## \[(\d+\.\d+\.\d+\.\d+)\][^\n]*)\n(.*?)(?=^## \[|\Z)", text, re.M | re.S):
+        v = m.group(2)
+        key = version_order(v)
+        date = section_date(m.group(1))
+        if date and v != version and key[:2] == version_order(version)[:2] and key < version_order(version):
+            found.append((key, v, date, m.group(3)))
+    return [(v, d, t) for _, v, d, t in sorted(found, reverse=True)]
+
+
+def included_html(older, platform):
+    """Ältere Abschnitte als HTML unter „Enthalten aus <Version> – <Datum>“."""
+    return "".join(f"\n<h2>Enthalten aus {v} – {d}</h2>\n" + notes_html(t, platform) for v, d, t in older)
+
+
 def section_date(heading):
     """Datum JJJJ-MM-TT aus der Kopfzeile, None bei „in Arbeit“ / „in progress“."""
     m = re.search(r"\b(\d{4}-\d{2}-\d{2})\b", heading)
@@ -391,7 +412,7 @@ def check_readme(root, version):
         fail("README.md passt nicht zu Version " + version + ":\n  - " + "\n  - ".join(problems))
 
 
-def release_notes(version, section, files, en_section=None, beta=None):
+def release_notes(version, section, files, en_section=None, beta=None, older=(), en_older=()):
     """Beschreibungstext des Releases: deutsch, darunter (wenn vorhanden) englisch."""
     purpose = {
         f"Klimacontrol-{version}-mac.dmg": "Mac: öffnen und Klimacontrol auf „Programme“ ziehen",
@@ -404,7 +425,10 @@ def release_notes(version, section, files, en_section=None, beta=None):
         lines += [f"## Vorabversion {tag}", "",
                   "Vorabversion zum Testen (nur Mac). Sie wird nur angeboten, wenn in den Einstellungen unter Allgemein "
                   "„Vorabversionen (Beta) erhalten“ eingeschaltet ist.", ""]
-    lines += [section.strip(), "", "### Downloads", "", "| Datei | Für |", "|---|---|"]
+    lines += [section.strip(), ""]
+    for v, d, t in older:
+        lines += [f"## Enthalten aus {v} – {d}", "", t.strip(), ""]
+    lines += ["### Downloads", "", "| Datei | Für |", "|---|---|"]
     for f in files:
         if f.name in purpose:
             lines.append(f"| `{f.name}` | {purpose[f.name]} |")
@@ -419,7 +443,10 @@ def release_notes(version, section, files, en_section=None, beta=None):
         if beta:
             lines += [f"Pre-release {tag} for testing (Mac only). It is offered only if “Receive pre-release (beta) versions” "
                       "is turned on in Settings → General.", ""]
-        lines += [en_section.strip(), "", "Mac: open the DMG and drag Klimacontrol to Applications."]
+        lines += [en_section.strip(), ""]
+        for v, d, t in en_older:
+            lines += [f"## Included from {v} – {d}", "", t.strip(), ""]
+        lines += ["Mac: open the DMG and drag Klimacontrol to Applications."]
         if not beta:
             lines += ["", "Windows: run the setup (no administrator rights needed). When the setup is downloaded in a browser, "
                       "Windows shows a security notice on first start (SmartScreen “Windows protected your PC” with "
@@ -631,6 +658,12 @@ def build_release(root, tool, key_args, version, beta=None, stable_feed=None, fe
             fail("Erst das Datum im CHANGELOG setzen (Abschnitt steht noch auf „in Arbeit“).")
         if en is not None and section_date(en[0]) != date:
             fail(f"CHANGELOG.en.md: Abschnitt {version} trägt nicht dasselbe Datum ({date}).")
+    older = en_older = []
+    if not beta:
+        older = earlier_sections(read_text(root, "CHANGELOG.md"), version)
+        if en is not None:
+            en_dates = {v: t for v, _, t in earlier_sections(read_text(root, "CHANGELOG.en.md"), version)}
+            en_older = [(v, d, en_dates[v]) for v, d, _ in older if v in en_dates]
     min_macos = read_min_macos(root)
     release = f"{REPO}/releases/download/v{tag}"
 
@@ -669,7 +702,7 @@ def build_release(root, tool, key_args, version, beta=None, stable_feed=None, fe
         feeds.append(out / BETA_FEED)
     else:
         (out / "updateinfo-mac.xml").write_text(appcast(
-            version, "Mac", f"{release}/{dmg.name}", signature, length, notes_html(de[1], "mac"),
+            version, "Mac", f"{release}/{dmg.name}", signature, length, notes_html(de[1], "mac") + included_html(older, "mac"),
             extra_item=f"\n      <sparkle:criticalUpdate sparkle:version=\"{FIRST_AUTO_INSTALL_VERSION}\"></sparkle:criticalUpdate>"
                        f"\n      <sparkle:minimumSystemVersion>{min_macos}</sparkle:minimumSystemVersion>"),
             encoding="utf-8")
@@ -677,7 +710,7 @@ def build_release(root, tool, key_args, version, beta=None, stable_feed=None, fe
 
         signature, length = sign(tool, out / setup.name, key_args)
         (out / "updateinfo-win.xml").write_text(appcast(
-            version, "Windows", f"{release}/{setup.name}", signature, length, with_windows_style(notes_html(de[1], "windows")),
+            version, "Windows", f"{release}/{setup.name}", signature, length, with_windows_style(notes_html(de[1], "windows") + included_html(older, "windows")),
             extra_enclosure=f' sparkle:os="windows" sparkle:installerArguments="{WINDOWS_INSTALLER_ARGS}"',
             extra_item=WINDOWS_CRITICAL),
             encoding="utf-8")
@@ -691,7 +724,7 @@ def build_release(root, tool, key_args, version, beta=None, stable_feed=None, fe
     sums = "".join(f"{sha256(f)}  {f.name}\n" for f in files)
     write_text(out / "SHA256SUMS.txt", sums)
     files.append(out / "SHA256SUMS.txt")
-    write_text(out / "RELEASE_NOTES.md", release_notes(version, de[1], files, en[1] if en else None, beta))
+    write_text(out / "RELEASE_NOTES.md", release_notes(version, de[1], files, en[1] if en else None, beta, older, en_older))
 
     verify_release_dir(out, version, beta, tool, key_args, min_macos)
     return out, files

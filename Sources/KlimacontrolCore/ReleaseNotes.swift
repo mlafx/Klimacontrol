@@ -127,11 +127,12 @@ public enum WhatsNew {
     ///   - lastSeen: zuletzt bestätigte Version (nil = noch nie gemerkt).
     ///   - current: laufende Version.
     ///   - usedBefore: eine Anlage ist schon eingerichtet.
-    /// - Returns: Abschnitte von `lastSeen` (ausgeschlossen) bis `current`, neueste zuerst; leer, wenn nichts zu zeigen ist.
+    /// - Returns: Abschnitte von `lastSeen` (ausgeschlossen) bis `current`, neueste zuerst (bei Fehlerbehebungs-/Bau-Versionen
+    ///   zusätzlich alle früheren der gleichen a.b bis a.b.0.0); leer, wenn nichts zu zeigen ist.
     public static func pending(lastSeen: String?, current: String, usedBefore: Bool, notes: [ReleaseNote]) -> [ReleaseNote] {
         guard let cur = AppVersion(current)?.base, lastSeen != current else { return [] }
         guard notes.contains(where: { AppVersion($0.version) == cur }) else { return [] }
-        let range: [ReleaseNote]
+        var range: [ReleaseNote]
         if let seenFull = lastSeen.flatMap(AppVersion.init), seenFull.isBeta, seenFull.base == cur {
             range = notes.filter { AppVersion($0.version) == cur }
         } else if let seen = lastSeen.flatMap(AppVersion.init)?.base {
@@ -143,6 +144,14 @@ public enum WhatsNew {
             range = notes.filter { AppVersion($0.version) == cur }
         } else {
             return []
+        }
+        // Fehlerbehebungs- oder Bau-Version: alle früheren Abschnitte derselben a.b bis a.b.0.0 gehören dazu.
+        if !range.isEmpty, cur.numbers[2] != 0 || cur.numbers[3] != 0 {
+            let shown = Set(range.map(\.version))
+            range += notes.filter {
+                guard let v = AppVersion($0.version), !v.isBeta, !shown.contains($0.version) else { return false }
+                return v.numbers[0] == cur.numbers[0] && v.numbers[1] == cur.numbers[1] && v <= cur
+            }
         }
         return range.sorted { (AppVersion($0.version) ?? cur) > (AppVersion($1.version) ?? cur) }
     }
