@@ -3,7 +3,7 @@
 Newest version first; sections "Added", "Changed", "Fixed", "Removed"; English, from the user's point of view.
 Versions have four parts, major.features.fixes.build. Earlier versions are available in German only.
 
-## [1.3.0.1] – in progress
+## [1.3.0.1] – 2026-11-15
 
 ### Changed
 - Consumption: days without recording get an estimated value from the meter readings before and after, and partial days count until midnight.

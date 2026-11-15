@@ -5,7 +5,7 @@ Versionen haben vier Stellen, Hauptversion.Funktionen.Fehlerbehebung.Bau: neues 
 `1.0.0.1`, Fehlerbehebung → `1.0.1.0`, Neues → `1.1.0.0`, Änderungen, die Einrichtung oder Daten unbrauchbar machen →
 `2.0.0.0`.
 
-## [1.3.0.1] – in Arbeit
+## [1.3.0.1] – 2026-11-15
 
 ### Geändert
 - Verbrauch: Tage ohne Aufzeichnung bekommen einen geschätzten Wert aus den Zählerständen davor und danach, angebrochene Tage zählen bis Mitternacht.
